@@ -1,0 +1,966 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Aperto Mockito Test-Utils - JCR
+  %%
+  Copyright (C) 2023 IBM iX
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<sv:node sv:name="aprikosen-streuselkuchen" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <sv:property sv:name="jcr:primaryType" sv:type="Name">
+    <sv:value>mgnl:page</sv:value>
+  </sv:property>
+  <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+    <sv:value>mix:lockable</sv:value>
+  </sv:property>
+  <sv:property sv:name="jcr:uuid" sv:type="String">
+    <sv:value>5a7c0215-fdbe-4ef7-8cc6-dbffded7ae2b</sv:value>
+  </sv:property>
+  <sv:property sv:name="bgPosition" sv:type="String">
+    <sv:value>bottom</sv:value>
+  </sv:property>
+  <sv:property sv:name="contentCategory" sv:type="String">
+    <sv:value>recipe</sv:value>
+  </sv:property>
+  <sv:property sv:name="contentType" sv:type="String">
+    <sv:value>- Keine Auswahl -</sv:value>
+  </sv:property>
+  <sv:property sv:name="customCategories" sv:type="String" sv:multiple="true">
+    <sv:value>25df07d3-592f-4415-9c9b-7dba32cf9962</sv:value>
+  </sv:property>
+  <sv:property sv:name="icon" sv:type="String">
+    <sv:value>jcr:8ac3cf9d-ccbd-4bfe-94e0-bf70bdb323fe</sv:value>
+  </sv:property>
+  <sv:property sv:name="image" sv:type="String">
+    <sv:value>jcr:e7736fe9-f368-4dfe-9180-133b137cc03e</sv:value>
+  </sv:property>
+  <sv:property sv:name="inheritContext" sv:type="Boolean">
+    <sv:value>true</sv:value>
+  </sv:property>
+  <sv:property sv:name="jcr:createdBy" sv:type="String">
+    <sv:value>admin</sv:value>
+  </sv:property>
+  <sv:property sv:name="labelContext" sv:type="String" sv:multiple="true"/>
+  <sv:property sv:name="metaDescription" sv:type="String">
+    <sv:value>Rezept für gluten- und laktosefreien  Aprikosen-Streuselkuchen</sv:value>
+  </sv:property>
+  <sv:property sv:name="metaKeywords" sv:type="String">
+    <sv:value>aha, Rezept, Allergene, Aprikose, glutenfrei, Kuchen</sv:value>
+  </sv:property>
+  <sv:property sv:name="metaTitle" sv:type="String">
+    <sv:value>aha Aprikosen-Streuselkuchen</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:created" sv:type="Date">
+    <sv:value>2014-11-21T16:50:16.228+01:00</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:createdBy" sv:type="String">
+    <sv:value>superuser</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+    <sv:value>2015-01-13T10:10:52.849+01:00</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+    <sv:value>superuser</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:template" sv:type="String">
+    <sv:value>aha-main:pages/recipeDetailPage</sv:value>
+  </sv:property>
+  <sv:property sv:name="ogDescription" sv:type="String">
+    <sv:value>Rezept für gluten- und laktosefreien  Aprikosen-Streuselkuchen</sv:value>
+  </sv:property>
+  <sv:property sv:name="ogImage" sv:type="String">
+    <sv:value>jcr:e7736fe9-f368-4dfe-9180-133b137cc03e</sv:value>
+  </sv:property>
+  <sv:property sv:name="ogTitle" sv:type="String">
+    <sv:value>aha Aprikosen-Streuselkuchen</sv:value>
+  </sv:property>
+  <sv:property sv:name="title" sv:type="String">
+    <sv:value>Aprikosen Streuselkuchen</sv:value>
+  </sv:property>
+  <sv:node sv:name="header">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:area</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>481fabf3-f198-4c16-a949-83730b324fbd</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2014-11-24T11:25:13.625+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:createdBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2014-11-24T11:25:13.625+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="content">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:area</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>74973d7b-6941-4e5b-9aef-6b7439a1f748</sv:value>
+    </sv:property>
+    <sv:property sv:name="autogenerated" sv:type="Boolean">
+      <sv:value>true</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2014-11-24T11:25:13.682+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:createdBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2014-11-24T11:25:13.682+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:node sv:name="01">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:component</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>0e58e621-7cf2-4a59-9525-74cdbde81712</sv:value>
+      </sv:property>
+      <sv:property sv:name="anchor" sv:type="String">
+        <sv:value>Marke Sortiment Wissen FAQ</sv:value>
+      </sv:property>
+      <sv:property sv:name="bgPosition" sv:type="String">
+        <sv:value>bottom</sv:value>
+      </sv:property>
+      <sv:property sv:name="contentCategory" sv:type="String">
+        <sv:value>none</sv:value>
+      </sv:property>
+      <sv:property sv:name="contentType" sv:type="String">
+        <sv:value>none</sv:value>
+      </sv:property>
+      <sv:property sv:name="inheritContext" sv:type="Boolean">
+        <sv:value>true</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:created" sv:type="Date">
+        <sv:value>2014-12-02T12:28:17.276+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:createdBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+        <sv:value>2014-12-02T12:28:17.276+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:template" sv:type="String">
+        <sv:value>m5-tk-campaign:components/panels/introPanel</sv:value>
+      </sv:property>
+      <sv:node sv:name="layouts">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:area</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+          <sv:value>mix:lockable</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:uuid" sv:type="String">
+          <sv:value>f5c708c9-088a-4a31-8bb4-f8f1ac5151c2</sv:value>
+        </sv:property>
+        <sv:property sv:name="autogenerated" sv:type="Boolean">
+          <sv:value>true</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:created" sv:type="Date">
+          <sv:value>2014-12-02T12:28:18.006+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:createdBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+          <sv:value>2014-12-02T12:28:18.006+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:node sv:name="0">
+          <sv:property sv:name="jcr:primaryType" sv:type="Name">
+            <sv:value>mgnl:component</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+            <sv:value>mix:lockable</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:uuid" sv:type="String">
+            <sv:value>9a319076-4b21-4c4b-b5c4-a9aa246c88e4</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:createdBy" sv:type="String">
+            <sv:value>admin</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:created" sv:type="Date">
+            <sv:value>2014-12-02T12:28:18.018+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:createdBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+            <sv:value>2014-12-02T12:28:18.018+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:template" sv:type="String">
+            <sv:value>m5-tk-campaign:components/layouts/introSliderLayoutContainer</sv:value>
+          </sv:property>
+          <sv:node sv:name="slides">
+            <sv:property sv:name="jcr:primaryType" sv:type="Name">
+              <sv:value>mgnl:area</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:uuid" sv:type="String">
+              <sv:value>29cb2833-6f20-4164-a624-f45a57d74faf</sv:value>
+            </sv:property>
+            <sv:property sv:name="autogenerated" sv:type="Boolean">
+              <sv:value>true</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:createdBy" sv:type="String">
+              <sv:value>admin</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:created" sv:type="Date">
+              <sv:value>2014-12-02T12:28:18.041+01:00</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:createdBy" sv:type="String">
+              <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+              <sv:value>2014-12-02T12:28:18.041+01:00</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+              <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:node sv:name="0">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:component</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+                <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>f344504f-2636-4894-974c-9f44f44fcfe0</sv:value>
+              </sv:property>
+              <sv:property sv:name="image" sv:type="String">
+                <sv:value>jcr:20d8be50-f492-47a7-9d4b-a30c9b70785f</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:created" sv:type="Date">
+                <sv:value>2014-12-02T12:28:18.049+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:createdBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                <sv:value>2014-12-02T12:28:18.049+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:template" sv:type="String">
+                <sv:value>m5-tk-campaign:components/contents/sliderTeaser</sv:value>
+              </sv:property>
+              <sv:property sv:name="textPosition" sv:type="String">
+                <sv:value>content-position-left</sv:value>
+              </sv:property>
+            </sv:node>
+          </sv:node>
+        </sv:node>
+        <sv:node sv:name="00">
+          <sv:property sv:name="jcr:primaryType" sv:type="Name">
+            <sv:value>mgnl:component</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:uuid" sv:type="String">
+            <sv:value>619e2ff9-8551-4bf7-abde-758d617eaab7</sv:value>
+          </sv:property>
+          <sv:property sv:name="bgPosition" sv:type="String">
+            <sv:value>bottom</sv:value>
+          </sv:property>
+          <sv:property sv:name="contentCategory" sv:type="String">
+            <sv:value>none</sv:value>
+          </sv:property>
+          <sv:property sv:name="contentType" sv:type="String">
+            <sv:value>none</sv:value>
+          </sv:property>
+          <sv:property sv:name="hideElements" sv:type="String">
+            <sv:value>off</sv:value>
+          </sv:property>
+          <sv:property sv:name="inheritContext" sv:type="Boolean">
+            <sv:value>true</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:createdBy" sv:type="String">
+            <sv:value>admin</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:created" sv:type="Date">
+            <sv:value>2015-01-08T11:25:03.464+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:createdBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+            <sv:value>2015-01-08T11:25:03.464+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:template" sv:type="String">
+            <sv:value>m5-tk-core:components/layouts/layout8Columns</sv:value>
+          </sv:property>
+          <sv:property sv:name="title" sv:type="String">
+            <sv:value>Aprikosen Streuselkuchen</sv:value>
+          </sv:property>
+          <sv:node sv:name="contents">
+            <sv:property sv:name="jcr:primaryType" sv:type="Name">
+              <sv:value>mgnl:area</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+              <sv:value>mix:lockable</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:uuid" sv:type="String">
+              <sv:value>05deb39d-4c72-4117-a8d7-2b1bc5d3cb3f</sv:value>
+            </sv:property>
+            <sv:property sv:name="autogenerated" sv:type="Boolean">
+              <sv:value>true</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:createdBy" sv:type="String">
+              <sv:value>admin</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:created" sv:type="Date">
+              <sv:value>2015-01-08T11:25:03.751+01:00</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:createdBy" sv:type="String">
+              <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+              <sv:value>2015-01-08T11:25:03.751+01:00</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+              <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:node sv:name="0">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:component</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+                <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>0a58bb43-cc55-4c30-bfc9-4f8d4b589d2d</sv:value>
+              </sv:property>
+              <sv:property sv:name="asidePosition" sv:type="String">
+                <sv:value>right</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:created" sv:type="Date">
+                <sv:value>2015-01-08T11:25:03.788+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:createdBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                <sv:value>2015-01-08T11:25:03.788+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:template" sv:type="String">
+                <sv:value>m5-tk-core:components/contents/textImage</sv:value>
+              </sv:property>
+              <sv:property sv:name="showZoom" sv:type="Boolean">
+                <sv:value>false</sv:value>
+              </sv:property>
+              <sv:property sv:name="text" sv:type="String">
+                <sv:value>&lt;p&gt;ca. 30 Minuten + ca. 75 Minuten backen + abk&amp;uuml;hlen lassen&lt;/p&gt;
+
+&lt;h3&gt;&lt;span style="line-height:1.2em"&gt;Zubereitung&lt;/span&gt;&lt;/h3&gt;
+
+&lt;p&gt;&lt;span style="line-height:1.6em"&gt;1. F&amp;uuml;r die Streusel Cornflakes grob zerbr&amp;ouml;seln. Mit dem Zucker mischen. Butter in W&amp;uuml;rfelchen dazuschneiden. Zwischen den Fingern zu einer br&amp;ouml;sligen Masse verreiben. K&amp;uuml;hl stellen.&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;2. Backofen auf 180 &amp;deg;C vorheizen. Springformboden mit Backpapier auslegen. Rand mit Butter bestreichen und mit Mehl best&amp;auml;uben. Vanilleschote aufschneiden. Mark herauskratzen. Mark mit Butter und Zucker mit dem Handr&amp;uuml;hrger&amp;auml;t ca. 5 Minuten schaumig schlagen. Eier nacheinander darunterr&amp;uuml;hren. Mehl, Natron und Milch beigeben, alles gut mischen. Teig in die Form f&amp;uuml;llen. Aprikosen halbieren und darauf verteilen. Streusel daraufgeben. In der Ofenmitte ca. 75 Minuten backen. Herausnehmen. In der Form abk&amp;uuml;hlen lassen.&lt;/p&gt;
+
+&lt;p&gt;Tipp:&lt;br /&gt;
+- Statt Aprikosen andere saisonale Fr&amp;uuml;chte verwenden. Diese zum Belegen in St&amp;uuml;cke schneiden.&lt;/p&gt;
+
+&lt;p&gt;Pro Stück ca. 1 g Eiweiss, 18 g Fett, 45 g Kohlenhydrate, 1450 kJ/340 kcal&lt;/p&gt;
+
+&lt;p&gt;&amp;mdash;&lt;br /&gt;
+&lt;span style="line-height:1.6em"&gt;* Erh&amp;auml;ltlich in aha!-Qualit&amp;auml;t.&lt;/span&gt;&lt;/p&gt;
+</sv:value>
+              </sv:property>
+              <sv:property sv:name="title" sv:type="String">
+                <sv:value>Zubereitungszeit</sv:value>
+              </sv:property>
+              <sv:node sv:name="contentAside">
+                <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                  <sv:value>mgnl:area</sv:value>
+                </sv:property>
+                <sv:property sv:name="jcr:uuid" sv:type="String">
+                  <sv:value>0ae7406c-5866-4b2f-82ba-47690031632c</sv:value>
+                </sv:property>
+                <sv:property sv:name="jcr:createdBy" sv:type="String">
+                  <sv:value>admin</sv:value>
+                </sv:property>
+                <sv:property sv:name="mgnl:created" sv:type="Date">
+                  <sv:value>2015-01-08T11:25:03.803+01:00</sv:value>
+                </sv:property>
+                <sv:property sv:name="mgnl:createdBy" sv:type="String">
+                  <sv:value>superuser</sv:value>
+                </sv:property>
+                <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                  <sv:value>2015-01-08T11:25:03.803+01:00</sv:value>
+                </sv:property>
+                <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                  <sv:value>superuser</sv:value>
+                </sv:property>
+                <sv:node sv:name="0">
+                  <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                    <sv:value>mgnl:component</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="jcr:uuid" sv:type="String">
+                    <sv:value>94163c1f-ee49-43ec-8526-3b2e7f561135</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="jcr:createdBy" sv:type="String">
+                    <sv:value>admin</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="mgnl:created" sv:type="Date">
+                    <sv:value>2015-01-08T11:25:39.040+01:00</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="mgnl:createdBy" sv:type="String">
+                    <sv:value>superuser</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                    <sv:value>2015-01-08T11:25:39.040+01:00</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                    <sv:value>superuser</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="mgnl:template" sv:type="String">
+                    <sv:value>m5-tk-campaign:components/layouts/plainText</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="text" sv:type="String">
+                    <sv:value>&lt;h3&gt;Ergibt ca. 12 St&amp;uuml;ck, f&amp;uuml;r 1 Springform &amp;agrave; ca. 24 cm &amp;Oslash;&lt;/h3&gt;
+
+&lt;p&gt;Butter* und glutenfreies Mehl* f&amp;uuml;r die Form&lt;/p&gt;
+
+&lt;table border="0" cellpadding="10" style="font-size:13.3333339691162px; line-height:20.7999992370605px"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;200 g&lt;/td&gt;
+			&lt;td&gt;Butter*&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;1&lt;/td&gt;
+			&lt;td&gt;Vanilleschote&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;225 g&lt;/td&gt;
+			&lt;td&gt;Zucker&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;5&lt;/td&gt;
+			&lt;td&gt;Eier&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;250 g&lt;/td&gt;
+			&lt;td&gt;Allzweck-Mehlmischung glutenfrei*&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;1 TL&lt;/td&gt;
+			&lt;td&gt;Natron&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;0,5 dl&lt;/td&gt;
+			&lt;td&gt;Milch*&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;375 g&lt;/td&gt;
+			&lt;td&gt;Aprikosen&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;br /&gt;
+Streusel&lt;/p&gt;
+
+&lt;table border="0" cellpadding="10" cellspacing="0" style="font-size:13.3333339691162px; line-height:20.7999992370605px"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;30 g&lt;/td&gt;
+			&lt;td&gt;Cornflakes glutenfrei*&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;50 g&lt;/td&gt;
+			&lt;td&gt;Zucker&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;50 g&lt;/td&gt;
+			&lt;td&gt;Butter, kalt*&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+</sv:value>
+                  </sv:property>
+                </sv:node>
+              </sv:node>
+            </sv:node>
+          </sv:node>
+        </sv:node>
+      </sv:node>
+    </sv:node>
+    <sv:node sv:name="0">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:component</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>b02091c7-d39e-464b-9a14-4def34ce5292</sv:value>
+      </sv:property>
+      <sv:property sv:name="bgImage" sv:type="String">
+        <sv:value>jcr:bd94eccd-2bff-4737-b743-0cb7fc93c7ff</sv:value>
+      </sv:property>
+      <sv:property sv:name="bgPosition" sv:type="String">
+        <sv:value>bottom</sv:value>
+      </sv:property>
+      <sv:property sv:name="contentCategory" sv:type="String">
+        <sv:value>none</sv:value>
+      </sv:property>
+      <sv:property sv:name="contentType" sv:type="String">
+        <sv:value>none</sv:value>
+      </sv:property>
+      <sv:property sv:name="inheritContext" sv:type="Boolean">
+        <sv:value>true</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:created" sv:type="Date">
+        <sv:value>2014-12-02T12:27:16.029+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:createdBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+        <sv:value>2014-12-02T12:27:16.029+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:template" sv:type="String">
+        <sv:value>m5-tk-core:components/panels/articleIntroPanel</sv:value>
+      </sv:property>
+      <sv:node sv:name="layouts">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:area</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+          <sv:value>mix:lockable</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:uuid" sv:type="String">
+          <sv:value>47273610-79fb-4c63-8446-7f2ce3ff6671</sv:value>
+        </sv:property>
+        <sv:property sv:name="autogenerated" sv:type="Boolean">
+          <sv:value>true</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:created" sv:type="Date">
+          <sv:value>2014-12-02T12:27:16.784+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:createdBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+          <sv:value>2014-12-02T12:27:16.784+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:node sv:name="0">
+          <sv:property sv:name="jcr:primaryType" sv:type="Name">
+            <sv:value>mgnl:component</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:uuid" sv:type="String">
+            <sv:value>7ec98e76-b04f-457a-8c31-8d8239bf4404</sv:value>
+          </sv:property>
+          <sv:property sv:name="bgPosition" sv:type="String">
+            <sv:value>bottom</sv:value>
+          </sv:property>
+          <sv:property sv:name="contentCategory" sv:type="String">
+            <sv:value>none</sv:value>
+          </sv:property>
+          <sv:property sv:name="contentType" sv:type="String">
+            <sv:value>none</sv:value>
+          </sv:property>
+          <sv:property sv:name="hideElements" sv:type="String">
+            <sv:value>off</sv:value>
+          </sv:property>
+          <sv:property sv:name="inheritContext" sv:type="Boolean">
+            <sv:value>true</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:createdBy" sv:type="String">
+            <sv:value>admin</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:created" sv:type="Date">
+            <sv:value>2014-12-10T14:09:17.447+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:createdBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+            <sv:value>2014-12-10T14:09:17.447+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:template" sv:type="String">
+            <sv:value>m5-tk-campaign:components/layouts/siblingPageNavigationContainer</sv:value>
+          </sv:property>
+        </sv:node>
+      </sv:node>
+    </sv:node>
+    <sv:node sv:name="03">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:component</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>f758bad3-86b7-40da-9515-f7c8e301c99d</sv:value>
+      </sv:property>
+      <sv:property sv:name="bgColour" sv:type="String">
+        <sv:value>Birne</sv:value>
+      </sv:property>
+      <sv:property sv:name="bgPosition" sv:type="String">
+        <sv:value>bottom</sv:value>
+      </sv:property>
+      <sv:property sv:name="contentCategory" sv:type="String">
+        <sv:value>none</sv:value>
+      </sv:property>
+      <sv:property sv:name="contentType" sv:type="String">
+        <sv:value>none</sv:value>
+      </sv:property>
+      <sv:property sv:name="inheritContext" sv:type="Boolean">
+        <sv:value>true</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:created" sv:type="Date">
+        <sv:value>2014-12-08T14:50:41.759+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:createdBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+        <sv:value>2014-12-08T14:50:41.759+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:template" sv:type="String">
+        <sv:value>m5-tk-campaign:components/panels/textPanel</sv:value>
+      </sv:property>
+      <sv:node sv:name="layouts">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:area</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+          <sv:value>mix:lockable</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:uuid" sv:type="String">
+          <sv:value>2250bacd-65c5-4eb2-9f99-8723d3190310</sv:value>
+        </sv:property>
+        <sv:property sv:name="autogenerated" sv:type="Boolean">
+          <sv:value>true</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:created" sv:type="Date">
+          <sv:value>2014-12-08T14:50:45.856+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:createdBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+          <sv:value>2014-12-08T14:50:45.856+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:node sv:name="0">
+          <sv:property sv:name="jcr:primaryType" sv:type="Name">
+            <sv:value>mgnl:component</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:uuid" sv:type="String">
+            <sv:value>ad4f4325-1992-4b4e-9b18-b1eee68bd9bb</sv:value>
+          </sv:property>
+          <sv:property sv:name="bgPosition" sv:type="String">
+            <sv:value>bottom</sv:value>
+          </sv:property>
+          <sv:property sv:name="contentCategory" sv:type="String">
+            <sv:value>none</sv:value>
+          </sv:property>
+          <sv:property sv:name="contentType" sv:type="String">
+            <sv:value>none</sv:value>
+          </sv:property>
+          <sv:property sv:name="hideElements" sv:type="String">
+            <sv:value>off</sv:value>
+          </sv:property>
+          <sv:property sv:name="inheritContext" sv:type="Boolean">
+            <sv:value>true</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:createdBy" sv:type="String">
+            <sv:value>admin</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:created" sv:type="Date">
+            <sv:value>2014-12-10T14:11:30.318+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:createdBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+            <sv:value>2014-12-10T14:11:30.318+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:template" sv:type="String">
+            <sv:value>m5-tk-campaign:components/layouts/socialMediaBarLayoutContainer</sv:value>
+          </sv:property>
+          <sv:node sv:name="contents">
+            <sv:property sv:name="jcr:primaryType" sv:type="Name">
+              <sv:value>mgnl:area</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+              <sv:value>mix:lockable</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:uuid" sv:type="String">
+              <sv:value>9e689988-d84d-428e-93f0-1047fd33e40b</sv:value>
+            </sv:property>
+            <sv:property sv:name="autogenerated" sv:type="Boolean">
+              <sv:value>true</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:createdBy" sv:type="String">
+              <sv:value>admin</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:created" sv:type="Date">
+              <sv:value>2014-12-10T14:11:30.767+01:00</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:createdBy" sv:type="String">
+              <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+              <sv:value>2014-12-10T14:11:30.767+01:00</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+              <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:node sv:name="0">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:component</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+                <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>105fe9a1-edb3-4875-b91b-bbc4a442b4ba</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:created" sv:type="Date">
+                <sv:value>2014-12-10T14:11:30.780+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:createdBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                <sv:value>2014-12-10T14:11:30.780+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:template" sv:type="String">
+                <sv:value>m5-tk-campaign:components/contents/socialMediaBar</sv:value>
+              </sv:property>
+              <sv:property sv:name="text" sv:type="String">
+                <sv:value>Sagen Sie's weiter!</sv:value>
+              </sv:property>
+            </sv:node>
+          </sv:node>
+        </sv:node>
+      </sv:node>
+    </sv:node>
+    <sv:node sv:name="04">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:component</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>24ac872b-c6a7-4e36-88bb-fd9fe7cf3526</sv:value>
+      </sv:property>
+      <sv:property sv:name="bgColour" sv:type="String">
+        <sv:value>#ffffff</sv:value>
+      </sv:property>
+      <sv:property sv:name="bgImage" sv:type="String">
+        <sv:value>jcr:5f8b4d5d-121e-4cd1-82f1-1306770dbc50</sv:value>
+      </sv:property>
+      <sv:property sv:name="bgPosition" sv:type="String">
+        <sv:value>top</sv:value>
+      </sv:property>
+      <sv:property sv:name="contentCategory" sv:type="String">
+        <sv:value>none</sv:value>
+      </sv:property>
+      <sv:property sv:name="contentType" sv:type="String">
+        <sv:value>none</sv:value>
+      </sv:property>
+      <sv:property sv:name="inheritContext" sv:type="Boolean">
+        <sv:value>true</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:created" sv:type="Date">
+        <sv:value>2014-12-10T15:40:25.088+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:createdBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+        <sv:value>2014-12-10T15:40:25.088+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:template" sv:type="String">
+        <sv:value>m5-tk-campaign:components/panels/iconTeaserPanel</sv:value>
+      </sv:property>
+      <sv:node sv:name="layouts">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:area</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+          <sv:value>mix:lockable</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:uuid" sv:type="String">
+          <sv:value>d7dfe1c0-73d3-4efd-ac28-ac02d13239ca</sv:value>
+        </sv:property>
+        <sv:property sv:name="autogenerated" sv:type="Boolean">
+          <sv:value>true</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:created" sv:type="Date">
+          <sv:value>2014-12-10T15:40:25.569+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:createdBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+          <sv:value>2014-12-10T15:40:25.569+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:node sv:name="00">
+          <sv:property sv:name="jcr:primaryType" sv:type="Name">
+            <sv:value>mgnl:component</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:uuid" sv:type="String">
+            <sv:value>74079669-8a02-4bee-bd3f-07c62b8a7845</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:createdBy" sv:type="String">
+            <sv:value>admin</sv:value>
+          </sv:property>
+          <sv:property sv:name="leftText" sv:type="String">
+            <sv:value>Ein Teil von</sv:value>
+          </sv:property>
+          <sv:property sv:name="link" sv:type="String">
+            <sv:value>http://www.migros.ch</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:created" sv:type="Date">
+            <sv:value>2014-12-10T15:42:34.647+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:createdBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+            <sv:value>2014-12-10T15:42:34.647+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:template" sv:type="String">
+            <sv:value>m5-tk-campaign:components/layouts/genmWideBannerContainer</sv:value>
+          </sv:property>
+          <sv:property sv:name="rightText" sv:type="String">
+            <sv:value>aha! leistet einen wertvollen Beitrag an die Generation von morgen.</sv:value>
+          </sv:property>
+        </sv:node>
+      </sv:node>
+    </sv:node>
+  </sv:node>
+  <sv:node sv:name="footer">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:area</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>b4463058-be08-4a67-8d33-400d9ef9d5c2</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2014-11-24T11:25:14.009+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:createdBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2014-11-24T11:25:14.009+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
+</sv:node>
