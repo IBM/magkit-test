@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.ibmix.magkit</groupId>
+        <artifactId>magkit-pom</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>magkit-test</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>magkit-test Magnolia Module</name>
+
+    <inceptionYear>2023</inceptionYear>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>src/config/checkstyle-rules.xml</configLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <scm>
+        <url>https://github.com/IBM/magkit-test.git</url>
+        <connection>scm:git:https://github.com/IBM/magkit-test.git</connection>
+        <developerConnection>scm:git:https://github.com/IBM/magkit-test.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>magnolia.community</id>
+            <name>Magnolia Public Repository</name>
+            <url>https://nexus.magnolia-cms.com/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+</project>
