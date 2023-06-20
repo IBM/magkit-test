@@ -16,12 +16,16 @@
     <modules>
         <module>magkit-test-jcr</module>
         <module>magkit-test-servlet</module>
+        <module>magkit-test-cms</module>
     </modules>
 
     <properties>
         <version.commons-lang3>3.9</version.commons-lang3>
         <version.commons-collections4>4.4</version.commons-collections4>
         <version.hamcrest-core>1.3</version.hamcrest-core>
+        <version.servlet-api>3.1.0</version.servlet-api>
+        <version.jsp-api>2.2.1</version.jsp-api>
+        <version.el-api>2.2.5</version.el-api>
     </properties>
 
     <dependencyManagement>
@@ -41,6 +45,26 @@
                 <artifactId>hamcrest-core</artifactId>
                 <version>${version.hamcrest-core}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <!-- provided servlet container libs -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${version.servlet-api}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
+                <version>${version.jsp-api}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>javax.el-api</artifactId>
+                <version>${version.el-api}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

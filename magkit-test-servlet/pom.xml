@@ -15,12 +15,6 @@
     <description>Utility classes to easily mock javax.servlet classes.</description>
     <packaging>jar</packaging>
 
-    <properties>
-        <version.servlet-api>3.1.0</version.servlet-api>
-        <version.jsp-api>2.2.1</version.jsp-api>
-        <version.el-api>2.2.5</version.el-api>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -45,24 +39,19 @@
             <artifactId>hamcrest-core</artifactId>
             <scope>compile</scope>
         </dependency>
+
         <!-- provided servlet container libs -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${version.servlet-api}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>${version.jsp-api}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
-            <version>${version.el-api}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
