@@ -189,7 +189,7 @@
 
         <!-- http://checkstyle.sourceforge.net/config_naming.html#Modules -->
         <module name="PackageName">
-            <property name="format" value="^(com[.]aperto)([.][a-z][a-z0-9]{1,15})+$"/>
+            <property name="format" value="^(de[.]ibmix)([.][a-z][a-z0-9]{1,15})+$"/>
         </module>
 
         <!-- http://checkstyle.sourceforge.net/config_naming.html#Modules -->
