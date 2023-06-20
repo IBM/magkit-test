@@ -1,0 +1,15 @@
+# idea
+.idea
+*.iml
+
+# eclipse
+.project
+.settings
+
+# build files
+target
+
+.classpath
+.project
+.settings/
+
