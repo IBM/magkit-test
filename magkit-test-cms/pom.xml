@@ -14,8 +14,6 @@
     <packaging>jar</packaging>
 
     <properties>
-        <version.magkit-test-jcr>1.0.0-SNAPSHOT</version.magkit-test-jcr>
-        <version.magkit-test-servlet>1.0.0-SNAPSHOT</version.magkit-test-servlet>
         <version.mockito-core>1.10.19</version.mockito-core>
         <version.magnolia-core>6.2.17</version.magnolia-core>
     </properties>
@@ -86,12 +84,12 @@
         <dependency>
             <groupId>de.ibmix.magkit</groupId>
             <artifactId>magkit-test-jcr</artifactId>
-            <version>${version.magkit-test-jcr}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.ibmix.magkit</groupId>
             <artifactId>magkit-test-servlet</artifactId>
-            <version>${version.magkit-test-servlet}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- Magnolia test utils -->
         <dependency>
