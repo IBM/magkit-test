@@ -37,7 +37,7 @@ import static de.ibmix.magkit.mockito.TemplateMockUtils.register;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -56,7 +56,7 @@ public class TemplateMockUtilsTest {
     }
 
     @Test
-    public void testMockTemplateManager() throws Exception {
+    public void testMockTemplateManager() {
         TemplateDefinitionRegistry mock = mockTemplateDefinitionRegistry();
         assertThat(mock, notNullValue());
         assertThat(mock.getClass().getName().contains("EnhancerByMockito"), is(true));
@@ -81,7 +81,7 @@ public class TemplateMockUtilsTest {
     }
 
     @Test
-    public void testCleanTemplateManager() throws Exception {
+    public void testCleanTemplateManager() {
         // TemplateManager.getInstance() always returns an ordinary instance of TemplateManager.
         TemplateDefinitionRegistry tm = mockTemplateDefinitionRegistry();
         TemplateDefinitionRegistry tm2 = mockTemplateDefinitionRegistry();

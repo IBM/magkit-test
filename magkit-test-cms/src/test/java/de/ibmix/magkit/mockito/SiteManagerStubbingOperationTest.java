@@ -25,13 +25,15 @@ import info.magnolia.module.site.SiteManager;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.jcr.RepositoryException;
+
 import static de.ibmix.magkit.mockito.SiteManagerStubbingOperation.stubAssignedSite;
 import static de.ibmix.magkit.mockito.SiteMockUtils.mockSite;
 import static de.ibmix.magkit.mockito.SiteMockUtils.mockSiteManager;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * TODO: comment.
@@ -50,7 +52,7 @@ public class SiteManagerStubbingOperationTest {
     }
 
     @Test
-    public void testStubDefaultSite() throws Exception {
+    public void testStubDefaultSite() throws RepositoryException {
         assertThat(_siteManager.getDefaultSite(), nullValue());
         assertThat(_siteManager.getSite("mySite"), nullValue());
         assertThat(_siteManager.getSites(), notNullValue());
@@ -67,7 +69,7 @@ public class SiteManagerStubbingOperationTest {
     }
 
     @Test
-    public void testStubAssignedSiteForDomain() throws Exception {
+    public void testStubAssignedSiteForDomain() throws RepositoryException {
         String domain = "domain";
         String uri = "http://test.aperto.de/site_manager";
         assertThat(_siteManager.getAssignedSite(domain, uri), nullValue());

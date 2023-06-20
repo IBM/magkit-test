@@ -29,7 +29,7 @@ import static de.ibmix.magkit.mockito.ModuleDefinitionStubbingOperation.stubDisp
 import static de.ibmix.magkit.mockito.ModuleDefinitionStubbingOperation.stubName;
 import static de.ibmix.magkit.mockito.ModuleDefinitionStubbingOperation.stubVersion;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * TODO: comment.

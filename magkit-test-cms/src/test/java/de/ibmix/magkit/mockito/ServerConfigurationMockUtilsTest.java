@@ -30,7 +30,7 @@ import static de.ibmix.magkit.mockito.ServerConfigurationMockUtils.mockServerCon
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,7 +48,7 @@ public class ServerConfigurationMockUtilsTest {
     }
 
     @Test
-    public void testMockServerConfiguration() throws Exception {
+    public void testMockServerConfiguration() {
         assertThat(getComponentSingleton(ServerConfiguration.class), nullValue());
 
         ServerConfigurationStubbingOperation op1 = mock(ServerConfigurationStubbingOperation.class);
@@ -61,7 +61,7 @@ public class ServerConfigurationMockUtilsTest {
     }
 
     @Test
-    public void testCleanServerConfiguration() throws Exception {
+    public void testCleanServerConfiguration() {
         assertThat(getComponentSingleton(ServerConfiguration.class), nullValue());
 
         ServerConfiguration configuration = mockServerConfiguration();

@@ -37,7 +37,7 @@ import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 import static info.magnolia.context.MgnlContext.getAccessManager;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

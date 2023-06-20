@@ -41,7 +41,7 @@ import static de.ibmix.magkit.mockito.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.mockito.jcr.NodeStubbingOperation.stubProperty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.

@@ -31,7 +31,7 @@ import org.junit.Test;
 import static de.ibmix.magkit.mockito.ThemeMockUtils.mockThemeReference;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,7 +50,7 @@ public class ThemeMockUtilsTest {
     }
 
     @Test
-    public void testMockThemeReference() throws Exception {
+    public void testMockThemeReference() {
         ThemeStubbingOperation op = mock(ThemeStubbingOperation.class);
         ThemeReference themeReference = mockThemeReference("test", op);
         assertThat(themeReference, notNullValue());
@@ -71,7 +71,7 @@ public class ThemeMockUtilsTest {
     }
 
     @Test
-    public void testMockCssFile() throws Exception {
+    public void testMockCssFile() {
         ResourceDefinition file = ThemeMockUtils.mockResource("link", "comment");
         assertThat(file, notNullValue());
         assertThat(file.getLink(), is("link"));
@@ -79,7 +79,7 @@ public class ThemeMockUtilsTest {
     }
 
     @Test
-    public void testMockResource() throws Exception {
+    public void testMockResource() {
         CssResourceDefinition file = ThemeMockUtils.mockCssFile("link", "media", "comment");
         assertThat(file, notNullValue());
         assertThat(file.getLink(), is("link"));

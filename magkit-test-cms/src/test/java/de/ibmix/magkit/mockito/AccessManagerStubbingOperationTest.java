@@ -31,7 +31,7 @@ import static de.ibmix.magkit.mockito.AccessManagerStubbingOperation.stubPermiss
 import static de.ibmix.magkit.mockito.ContextMockUtils.cleanContext;
 import static de.ibmix.magkit.mockito.ContextMockUtils.mockAccessManager;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * TODO: comment.

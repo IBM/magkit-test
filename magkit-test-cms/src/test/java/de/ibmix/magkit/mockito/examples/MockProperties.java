@@ -55,7 +55,7 @@ import static de.ibmix.magkit.mockito.ServerConfigurationStubbingOperation.stubD
 import static de.ibmix.magkit.mockito.WebContextStubbingOperation.stubContextPath;
 import static de.ibmix.magkit.mockito.jcr.NodeStubbingOperation.stubProperty;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 /**

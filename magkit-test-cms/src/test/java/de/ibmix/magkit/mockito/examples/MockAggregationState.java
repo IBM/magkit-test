@@ -41,7 +41,7 @@ import static de.ibmix.magkit.mockito.MagnoliaNodeMockUtils.mockPageNode;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Compare Magnolia Test-Utils with this API (Magkit-Mock-Utils).

@@ -45,7 +45,7 @@ import static de.ibmix.magkit.mockito.TemplateMockUtils.mockTemplateDefinition;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Testing TemplateDefinitionStubbingOperation.
@@ -64,70 +64,70 @@ public class TemplateDefinitionStubbingOperationTest {
     }
 
     @Test
-    public void testDeletable() throws Exception {
+    public void testDeletable() {
         assertThat(_template.getDeletable(), is(false));
         stubDeletable(true).of(_template);
         assertThat(_template.getDeletable(), is(true));
     }
 
     @Test
-    public void testMoveable() throws Exception {
+    public void testMoveable() {
         assertThat(_template.getMoveable(), is(false));
         stubMoveable(true).of(_template);
         assertThat(_template.getMoveable(), is(true));
     }
 
     @Test
-    public void testVisible() throws Exception {
+    public void testVisible() {
         assertThat(_template.getVisible(), is(false));
         stubVisible(true).of(_template);
         assertThat(_template.getVisible(), is(true));
     }
 
     @Test
-    public void testEditable() throws Exception {
+    public void testEditable() {
         assertThat(_template.getEditable(), is(false));
         stubEditable(true).of(_template);
         assertThat(_template.getEditable(), is(true));
     }
 
     @Test
-    public void testWritable() throws Exception {
+    public void testWritable() {
         assertThat(_template.getWritable(), is(false));
         stubWritable(true).of(_template);
         assertThat(_template.getWritable(), is(true));
     }
 
     @Test
-    public void testDialog() throws Exception {
+    public void testDialog() {
         assertThat(_template.getDialog(), nullValue());
         stubDialog("testDialog").of(_template);
         assertThat(_template.getDialog(), is("testDialog"));
     }
 
     @Test
-    public void testDescription() throws Exception {
+    public void testDescription() {
         assertThat(_template.getDescription(), nullValue());
         stubDescription("test").of(_template);
         assertThat(_template.getDescription(), is("test"));
     }
 
     @Test
-    public void testTemplateScript() throws Exception {
+    public void testTemplateScript() {
         assertThat(_template.getTemplateScript(), nullValue());
         stubTemplateScript("test").of(_template);
         assertThat(_template.getTemplateScript(), is("test"));
     }
 
     @Test
-    public void testRenderType() throws Exception {
+    public void testRenderType() {
         assertThat(_template.getRenderType(), nullValue());
         stubRenderType("test").of(_template);
         assertThat(_template.getRenderType(), is("test"));
     }
 
     @Test
-    public void testStubName() throws Exception {
+    public void testStubName() {
         assertThat(_template.getId(), is("test"));
         assertThat(_template.getName(), nullValue());
         stubName("my name").of(_template);
@@ -135,28 +135,28 @@ public class TemplateDefinitionStubbingOperationTest {
     }
 
     @Test
-    public void testStubTitle() throws Exception {
+    public void testStubTitle() {
         assertThat(_template.getTitle(), nullValue());
         stubTitle("my title").of(_template);
         assertThat(_template.getTitle(), is("my title"));
     }
 
     @Test
-    public void testStubType() throws Exception {
+    public void testStubType() {
         assertThat(_template.getType(), nullValue());
         stubType("OK").of(_template);
         assertThat(_template.getType(), is("OK"));
     }
 
     @Test
-    public void testStubSubType() throws Exception {
+    public void testStubSubType() {
         assertThat(_template.getSubtype(), nullValue());
         stubSubtype("OK").of(_template);
         assertThat(_template.getSubtype(), is("OK"));
     }
 
     @Test
-    public void stubParameterTest() throws RepositoryException {
+    public void stubParameterTest() {
         assertThat(_template.getParameters().get("name"), nullValue());
         assertThat(_template.getParameters(), notNullValue());
         assertThat(_template.getParameters().size(), is(0));

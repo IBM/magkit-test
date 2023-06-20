@@ -31,7 +31,7 @@ import static de.ibmix.magkit.mockito.ServerConfigurationStubbingOperation.stubD
 import static de.ibmix.magkit.mockito.ServerConfigurationStubbingOperation.stubIsAdmin;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Testing ServerConfigurationStubbingOperation.
@@ -50,7 +50,7 @@ public class ServerConfigurationStubbingOperationTest {
     }
 
     @Test
-    public void testStubbDefaultExtension() throws Exception {
+    public void testStubbDefaultExtension() {
         assertThat(_serverConfiguration.getDefaultExtension(), nullValue());
 
         stubDefaultExtension("test").of(_serverConfiguration);
@@ -58,7 +58,7 @@ public class ServerConfigurationStubbingOperationTest {
     }
 
     @Test
-    public void testStubbDefaultBaseUrl() throws Exception {
+    public void testStubbDefaultBaseUrl() {
         assertThat(_serverConfiguration.getDefaultBaseUrl(), nullValue());
 
         stubDefaultBaseUrl("test.aperto.de").of(_serverConfiguration);
@@ -66,7 +66,7 @@ public class ServerConfigurationStubbingOperationTest {
     }
 
     @Test
-    public void testStubbIsAdmin() throws Exception {
+    public void testStubbIsAdmin() {
         assertThat(_serverConfiguration.isAdmin(), is(false));
 
         stubIsAdmin(true).of(_serverConfiguration);

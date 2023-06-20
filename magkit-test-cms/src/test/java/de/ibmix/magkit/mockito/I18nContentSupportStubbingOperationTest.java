@@ -32,7 +32,7 @@ import static de.ibmix.magkit.mockito.I18nContentSupportStubbingOperation.stubLo
 import static de.ibmix.magkit.mockito.I18nContentSupportStubbingOperation.stubbToI18nUri;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Testing I18nContentSupportStubbingOperation.

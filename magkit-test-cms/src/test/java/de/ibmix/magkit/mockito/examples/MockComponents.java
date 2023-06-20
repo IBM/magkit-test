@@ -35,7 +35,7 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
