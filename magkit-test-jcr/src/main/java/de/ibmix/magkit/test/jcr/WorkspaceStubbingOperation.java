@@ -21,6 +21,8 @@ package de.ibmix.magkit.test.jcr;
  */
 
 
+import de.ibmix.magkit.test.StubbingOperation;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
@@ -37,8 +39,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 03.08.12
  */
-public abstract class WorkspaceStubbingOperation {
-    public abstract void of(Workspace context) throws RepositoryException;
+public abstract class WorkspaceStubbingOperation implements StubbingOperation<Workspace> {
 
     private WorkspaceStubbingOperation() {
     }

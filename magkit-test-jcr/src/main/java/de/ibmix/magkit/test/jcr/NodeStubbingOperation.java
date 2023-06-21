@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import org.apache.jackrabbit.JcrConstants;
 
 import javax.jcr.Binary;
@@ -52,12 +53,10 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 09.10.2012
  */
-public abstract class NodeStubbingOperation {
+public abstract class NodeStubbingOperation implements StubbingOperation<Node> {
     public static final String PROPNAME_TITLE = "title";
     public static final String UNTITLED = "untitled";
     public static final String UNTITLED_HANDLE = "/" + UNTITLED;
-
-    public abstract void of(Node node) throws RepositoryException;
 
     /**
      * Creates NodeStubbingOperation that stubs method {@link javax.jcr.Node#getSession()} to return the provided session.
