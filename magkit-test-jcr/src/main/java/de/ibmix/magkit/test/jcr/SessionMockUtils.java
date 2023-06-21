@@ -20,7 +20,6 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Node;
@@ -31,8 +30,6 @@ import javax.jcr.Session;
 
 import static de.ibmix.magkit.test.jcr.RepositoryStubbingOperation.stubLogin;
 import static de.ibmix.magkit.test.jcr.SessionStubbingOperation.stubRootNode;
-import static de.ibmix.magkit.test.jcr.WorkspaceMockUtils.mockWorkspace;
-import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubSession;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -49,13 +46,10 @@ public final class SessionMockUtils {
     private SessionMockUtils() {
     }
 
-    public static final Answer<Property> PROPERTY_ANSWER = new Answer<Property>() {
-        @Override
-        public Property answer(final InvocationOnMock invocation) throws RepositoryException {
-            Session s = (Session) invocation.getMock();
-            String path = (String) invocation.getArguments()[0];
-            return s == null ? null : (Property) s.getItem(path);
-        }
+    public static final Answer<Property> PROPERTY_ANSWER = invocation -> {
+        Session s = (Session) invocation.getMock();
+        String path = (String) invocation.getArguments()[0];
+        return s == null ? null : (Property) s.getItem(path);
     };
 
     public static Session mockSession(String workspace, SessionStubbingOperation... stubbings) throws RepositoryException {

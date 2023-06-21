@@ -20,14 +20,14 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import java.io.InputStream;
 import java.util.Calendar;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -97,7 +97,7 @@ public abstract class ValueFactoryStubbingOperation {
         };
     }
 
-    public static ValueFactoryStubbingOperation stubCreateValue(final InputStream value) {
+    public static ValueFactoryStubbingOperation stubCreateValue(final Binary value) {
         return new ValueFactoryStubbingOperation() {
             @Override
             public void of(final ValueFactory valueFactory) throws RepositoryException {

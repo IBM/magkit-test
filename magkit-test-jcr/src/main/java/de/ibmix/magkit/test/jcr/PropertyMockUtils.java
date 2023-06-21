@@ -22,7 +22,6 @@ package de.ibmix.magkit.test.jcr;
 
 import org.mockito.Answers;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Binary;
@@ -38,7 +37,7 @@ import java.util.Collection;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubNode;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubValues;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -59,12 +58,6 @@ public final class PropertyMockUtils {
     }
 
     public static Property mockProperty(final String name, final Binary... propertyValues) throws RepositoryException {
-        Property property = mockProperty(name);
-        stubValues(propertyValues).of(property);
-        return property;
-    }
-
-    public static Property mockProperty(final String name, final InputStream... propertyValues) throws RepositoryException {
         Property property = mockProperty(name);
         stubValues(propertyValues).of(property);
         return property;
@@ -132,79 +125,52 @@ public final class PropertyMockUtils {
         return property;
     }
 
-    public static final Answer<String> STRING_ANSWER = new Answer<String>() {
-        @Override
-        public String answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value v = ((Property) invocation.getMock()).getValue();
-            // TODO: return default ?
-            return v != null ? v.getString() : null;
-        }
+    public static final Answer<String> STRING_ANSWER = invocation -> {
+        Value v = ((Property) invocation.getMock()).getValue();
+        // TODO: return default ?
+        return v != null ? v.getString() : null;
     };
-    public static final Answer<Binary> BINARY_ANSWER = new Answer<Binary>() {
-        @Override
-        public Binary answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value v = ((Property) invocation.getMock()).getValue();
-            return v != null ? v.getBinary() : null;
-        }
+    public static final Answer<Binary> BINARY_ANSWER = invocation -> {
+        Value v = ((Property) invocation.getMock()).getValue();
+        return v != null ? v.getBinary() : null;
     };
-    public static final Answer<InputStream> STREAM_ANSWER = new Answer<InputStream>() {
-        @Override
-        public InputStream answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value v = ((Property) invocation.getMock()).getValue();
-            return v != null ? v.getStream() : null;
-        }
+    public static final Answer<InputStream> STREAM_ANSWER = invocation -> {
+        Value v = ((Property) invocation.getMock()).getValue();
+        return v != null && v.getBinary() != null ? v.getBinary().getStream() : null;
     };
-    public static final Answer<Boolean> BOOLEAN_ANSWER = new Answer<Boolean>() {
-        @Override
-        public Boolean answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value v = ((Property) invocation.getMock()).getValue();
-            // TODO: return default ?
-            return v != null ? v.getBoolean() : null;
-        }
+    public static final Answer<Boolean> BOOLEAN_ANSWER = invocation -> {
+        Value v = ((Property) invocation.getMock()).getValue();
+        // TODO: return default ?
+        return v != null ? v.getBoolean() : null;
     };
-    public static final Answer<Calendar> CALENDAR_ANSWER = new Answer<Calendar>() {
-        @Override
-        public Calendar answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value v = ((Property) invocation.getMock()).getValue();
-            return v != null ? v.getDate() : null;
-        }
+    public static final Answer<Calendar> CALENDAR_ANSWER = invocation -> {
+        Value v = ((Property) invocation.getMock()).getValue();
+        return v != null ? v.getDate() : null;
     };
-    public static final Answer<Double> DOUBLE_ANSWER = new Answer<Double>() {
-        @Override
-        public Double answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value v = ((Property) invocation.getMock()).getValue();
-            // TODO: return default ?
-            return v != null ? v.getDouble() : null;
-        }
+    public static final Answer<Double> DOUBLE_ANSWER = invocation -> {
+        Value v = ((Property) invocation.getMock()).getValue();
+        // TODO: return default ?
+        return v != null ? v.getDouble() : null;
     };
-    public static final Answer<Long> LONG_ANSWER = new Answer<Long>() {
-        @Override
-        public Long answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value v = ((Property) invocation.getMock()).getValue();
-            // TODO: return default ?
-            return v != null ? v.getLong() : null;
-        }
+    public static final Answer<Long> LONG_ANSWER = invocation -> {
+        Value v = ((Property) invocation.getMock()).getValue();
+        // TODO: return default ?
+        return v != null ? v.getLong() : null;
     };
-    public static final Answer<Integer> TYPE_ANSWER = new Answer<Integer>() {
-        @Override
-        public Integer answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value v = ((Property) invocation.getMock()).getValue();
-            return v != null ? v.getType() : PropertyType.UNDEFINED;
-        }
+    public static final Answer<Integer> TYPE_ANSWER = invocation -> {
+        Value v = ((Property) invocation.getMock()).getValue();
+        return v != null ? v.getType() : PropertyType.UNDEFINED;
     };
 
-    public static final Answer<Boolean> IS_MULTIPLE_ANSWER = new Answer<Boolean>() {
-        @Override
-        public Boolean answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value[] v = ((Property) invocation.getMock()).getValues();
-            return v != null && v.length > 1;
-        }
+    public static final Answer<Boolean> IS_MULTIPLE_ANSWER = invocation -> {
+        Value[] v = ((Property) invocation.getMock()).getValues();
+        return v != null && v.length > 1;
     };
 
     /**
      * Extended Interface to simplify mocking.
      */
-    abstract class TestProperty implements Property {
+    abstract static class TestProperty implements Property {
 
         @Override
         public void remove() throws RepositoryException {

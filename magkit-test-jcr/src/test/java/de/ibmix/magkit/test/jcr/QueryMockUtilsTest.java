@@ -29,9 +29,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
-import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
-import static de.ibmix.magkit.test.jcr.QueryMockUtils.mockQuery;
-import static de.ibmix.magkit.test.jcr.QueryMockUtils.mockQueryResult;
+import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubbResult;
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -44,7 +42,7 @@ import static org.mockito.Mockito.verify;
 /**
  * Testing QueryMockUtils.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 29.05.13
  */
 public class QueryMockUtilsTest {
@@ -93,7 +91,7 @@ public class QueryMockUtilsTest {
     @Test
     public void testMockQueryWithManager() throws RepositoryException {
         Node c = NodeMockUtils.mockNode();
-        QueryMockUtils.mockQuery("repository", "xpath", "statement", c);
+        QueryMockUtils.mockQueryWithManager("repository", "xpath", "statement", stubbResult(c));
         QueryManager queryManager = mockSession("repository").getWorkspace().getQueryManager();
         assertThat(queryManager, notNullValue());
         assertThat(queryManager.createQuery("statement", "xpath"), notNullValue());

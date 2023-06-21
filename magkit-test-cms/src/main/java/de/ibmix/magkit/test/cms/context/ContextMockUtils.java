@@ -190,7 +190,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
 
     public static Query mockQuery(final String workspace, final String language, final String statement, QueryStubbingOperation... stubbings) throws RepositoryException {
         mockWebContext(WebContextStubbingOperation.stubJcrSession(workspace));
-        return QueryMockUtils.mockQuery(workspace, language, statement, stubbings);
+        return QueryMockUtils.mockQueryWithManager(workspace, language, statement, stubbings);
     }
 
     public static QueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Node... results) throws RepositoryException {

@@ -27,7 +27,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
-import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubbResult;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,7 +35,7 @@ import static org.mockito.Mockito.mock;
 /**
  * TestingQueryStubbingOperation.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 29.05.13
  */
 public class QueryStubbingOperationTest {

@@ -35,7 +35,7 @@ import javax.jcr.Workspace;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +58,7 @@ public abstract class SessionStubbingOperation {
             public void of(Session session) {
                 assertThat(session, notNullValue());
                 when(session.getAttribute(name)).thenReturn(value);
-                String[] names = (String[]) ArrayUtils.add(session.getAttributeNames(), name);
+                String[] names = ArrayUtils.add(session.getAttributeNames(), name);
                 when(session.getAttributeNames()).thenReturn(names);
             }
         };

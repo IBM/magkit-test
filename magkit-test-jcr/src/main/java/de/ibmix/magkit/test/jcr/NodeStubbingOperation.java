@@ -32,17 +32,15 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collection;
 
-import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -126,16 +124,6 @@ public abstract class NodeStubbingOperation {
     }
 
     public static NodeStubbingOperation stubProperty(final String name, final Binary... values) {
-        return new NodeStubbingOperation() {
-            @Override
-            public void of(Node node) throws RepositoryException {
-                Property property = PropertyMockUtils.mockProperty(name, values);
-                stubProperty(property).of(node);
-            }
-        };
-    }
-
-    public static NodeStubbingOperation stubProperty(final String name, final InputStream... values) {
         return new NodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {

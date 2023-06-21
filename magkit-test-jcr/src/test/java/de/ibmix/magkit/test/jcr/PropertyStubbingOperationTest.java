@@ -23,17 +23,16 @@ package de.ibmix.magkit.test.jcr;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.jcr.Binary;
 import javax.jcr.ItemVisitor;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
-import java.io.InputStream;
 import java.util.Calendar;
 
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
-import static de.ibmix.magkit.test.jcr.PropertyMockUtils.mockProperty;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubAccept;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubNode;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubValues;
@@ -48,7 +47,7 @@ import static org.mockito.Mockito.verify;
 /**
  * Testing PropertyStubbingOperation.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 13.11.12
  */
 public class PropertyStubbingOperationTest {
@@ -87,16 +86,6 @@ public class PropertyStubbingOperationTest {
         assertThat(_property.getType(), is(PropertyType.STRING));
         assertThat(_property.isMultiple(), is(true));
     }
-
-//    @Test
-//    public void testStubUriValues() throws Exception {
-//        stubUriValues("uri1", "uri2").of(_property);
-//        assertThat(_property.getValues(), notNullValue());
-//        assertThat(_property.getValues().length, is(2));
-//        assertThat(_property.getValue(), notNullValue());
-//        assertThat(_property.getValue().getString(), is("uri1"));
-//        assertThat(_property.getType(), is(PropertyType.URI));
-//    }
 
     @Test
     public void testStubValuesLong() throws Exception {
@@ -145,31 +134,16 @@ public class PropertyStubbingOperationTest {
         assertThat(_property.isMultiple(), is(true));
     }
 
-//    @Test
-//    public void testStubValuesBinary() throws Exception {
-//        Binary bin1 = mock(Binary.class);
-//        Binary bin2 = mock(Binary.class);
-//        stubValues(bin1, bin2).of(_property);
-//        assertThat(_property.getValues(), notNullValue());
-//        assertThat(_property.getValues().length, is(2));
-//        assertThat(_property.getValue(), notNullValue());
-//        assertThat(_property.getValue().getBinary(), is(bin1));
-//        assertThat(_property.getType(), is(PropertyType.BINARY));
-//    }
-
     @Test
-    public void testStubValuesInputStream() throws Exception {
-        InputStream bin1 = mock(InputStream.class);
-        InputStream bin2 = mock(InputStream.class);
+    public void testStubValuesBinary() throws Exception {
+        Binary bin1 = mock(Binary.class);
+        Binary bin2 = mock(Binary.class);
         stubValues(bin1, bin2).of(_property);
         assertThat(_property.getValues(), notNullValue());
         assertThat(_property.getValues().length, is(2));
         assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getStream(), is(bin1));
-//        assertThat(_property.getValue().getBinary(), notNullValue());
-//        assertThat(_property.getValue().getBinary().getStream(), is(bin1));
+        assertThat(_property.getValue().getBinary(), is(bin1));
         assertThat(_property.getType(), is(PropertyType.BINARY));
-        assertThat(_property.isMultiple(), is(true));
     }
 
     @Test
@@ -191,15 +165,6 @@ public class PropertyStubbingOperationTest {
         assertThat(_property.getValue(), notNullValue());
         assertThat(_property.getValue().getString(), is("uuid2"));
         assertThat(_property.getType(), is(PropertyType.REFERENCE));
-
-//        node = mockNode("test3", stubIdentifier("uuid3"));
-//        stubNode(node, PropertyType.WEAKREFERENCE).of(_property);
-//
-//        assertThat(_property.getNode(), is(node));
-//        assertThat(_property.getValues().length, is(1));
-//        assertThat(_property.getValue(), notNullValue());
-//        assertThat(_property.getValue().getString(), is("uuid3"));
-//        assertThat(_property.getType(), is(PropertyType.WEAKREFERENCE));
     }
 
     @Test(expected = IllegalArgumentException.class)

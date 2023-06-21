@@ -37,7 +37,6 @@ import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubType;
-import static de.ibmix.magkit.test.jcr.ValueMockUtils.mockValue;
 
 /**
  * Sax-Parser that reads jcr-xml files and builds Node mocks.
@@ -49,7 +48,7 @@ public class JcrXmlHandler extends DefaultHandler {
 
     private final String _repository;
     private Node _result;
-    private Stack<Node> _currentPath = new Stack<Node>();
+    private final Stack<Node> _currentPath = new Stack<>();
     private String _currentPropertyName = null;
     private String _currentPropertyType = null;
     private List<Value> _currentValues = null;
@@ -105,7 +104,7 @@ public class JcrXmlHandler extends DefaultHandler {
                     stubIdentifier(_currentValue).of(_currentPath.peek());
                 }
             } else if ("sv:property".equalsIgnoreCase(qName)) {
-                stubProperty(_currentPropertyName, _currentValues.toArray(new Value[_currentValues.size()])).of(_currentPath.peek());
+                stubProperty(_currentPropertyName, _currentValues.toArray(new Value[0])).of(_currentPath.peek());
             } else if ("sv:node".equalsIgnoreCase(qName)) {
                 _result = _currentPath.pop();
             }
