@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import de.ibmix.magkit.test.cms.ModuleDefinitionMockUtils;
+import de.ibmix.magkit.test.cms.module.ModuleDefinitionMockUtils;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.model.ModuleDefinition;
 import org.junit.Before;

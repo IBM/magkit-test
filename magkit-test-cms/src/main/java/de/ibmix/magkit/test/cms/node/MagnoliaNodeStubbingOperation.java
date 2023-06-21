@@ -22,9 +22,9 @@ package de.ibmix.magkit.test.cms.node;
 
 import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
 import com.google.common.base.Preconditions;
-import de.ibmix.magkit.test.cms.tamplating.AreaDefinitionStubbingOperation;
-import de.ibmix.magkit.test.cms.tamplating.TemplateDefinitionStubbingOperation;
-import de.ibmix.magkit.test.cms.tamplating.TemplateMockUtils;
+import de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation;
+import de.ibmix.magkit.test.cms.templating.TemplateDefinitionStubbingOperation;
+import de.ibmix.magkit.test.cms.templating.TemplateMockUtils;
 import info.magnolia.jcr.util.NodeTypes;
 
 import javax.jcr.Node;

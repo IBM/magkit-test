@@ -37,13 +37,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-
 /**
  * Utility class to create mock {@link Node} hierarchy from JCR export xml.
  *
  * @author jfrantzius
+ * @deprecated use de.ibmix.magkit.test.jcr.NodeMockUtils.mockNodeFromXml
  */
 
+@Deprecated
 public final class MockNodeFromXml {
 
     private MockNodeFromXml() {

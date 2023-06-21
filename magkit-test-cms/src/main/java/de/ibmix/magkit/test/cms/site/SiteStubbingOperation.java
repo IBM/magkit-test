@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
-import de.ibmix.magkit.test.cms.tamplating.ThemeMockUtils;
-import de.ibmix.magkit.test.cms.tamplating.ThemeStubbingOperation;
+import de.ibmix.magkit.test.cms.templating.ThemeMockUtils;
+import de.ibmix.magkit.test.cms.templating.ThemeStubbingOperation;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.module.site.Domain;
 import info.magnolia.module.site.Site;
