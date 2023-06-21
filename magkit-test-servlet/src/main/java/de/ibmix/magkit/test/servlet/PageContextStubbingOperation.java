@@ -30,7 +30,7 @@ import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletReque
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletResponse;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockServletContext;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**

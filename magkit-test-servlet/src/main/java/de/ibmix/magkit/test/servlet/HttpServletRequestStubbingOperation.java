@@ -31,11 +31,10 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
-import static de.ibmix.magkit.test.servlet.HttpSessionStubbingOperation.stubServletContext;
 import static org.apache.commons.collections4.IteratorUtils.arrayIterator;
 import static org.apache.commons.collections4.IteratorUtils.toList;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
