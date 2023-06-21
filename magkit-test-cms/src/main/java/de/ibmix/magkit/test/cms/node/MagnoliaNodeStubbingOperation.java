@@ -21,7 +21,6 @@ package de.ibmix.magkit.test.cms.node;
  */
 
 import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
-import com.google.common.base.Preconditions;
 import de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation;
 import de.ibmix.magkit.test.cms.templating.TemplateDefinitionStubbingOperation;
 import de.ibmix.magkit.test.cms.templating.TemplateMockUtils;
@@ -31,6 +30,9 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import java.util.Calendar;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Utility class that provides NodeStubbingOperations to stub magnolia related node properties.
@@ -44,7 +46,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 TemplateMockUtils.mockTemplateDefinition(templateId, stubbings);
                 stubProperty(NodeTypes.Renderable.TEMPLATE, templateId).of(node);
             }
@@ -55,7 +57,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 TemplateMockUtils.mockAreaDefinition(templateId, stubbings);
                 stubProperty(NodeTypes.Renderable.TEMPLATE, templateId).of(node);
             }
@@ -66,7 +68,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 stubProperty(NodeTypes.Created.CREATED, creationDate).of(node);
             }
         };
@@ -76,7 +78,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 stubProperty(NodeTypes.Created.CREATED_BY, createdBy).of(node);
             }
         };
@@ -86,7 +88,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 stubProperty(NodeTypes.LastModified.LAST_MODIFIED, lastModifiedDate).of(node);
             }
         };
@@ -96,7 +98,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 stubProperty(NodeTypes.LastModified.LAST_MODIFIED_BY, modifiedBy).of(node);
             }
         };
@@ -106,7 +108,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 stubProperty(NodeTypes.Activatable.LAST_ACTIVATED, lastActivatedDate).of(node);
             }
         };
@@ -116,7 +118,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 stubProperty(NodeTypes.Activatable.LAST_ACTIVATED_BY, activatedBy).of(node);
             }
         };
@@ -126,7 +128,7 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                Preconditions.checkArgument(node != null, "The Node must not be null.");
+                assertThat(node, notNullValue());
                 stubProperty(NodeTypes.Activatable.ACTIVATION_STATUS, activated).of(node);
             }
         };

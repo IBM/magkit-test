@@ -52,7 +52,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -154,20 +154,14 @@ public final class AssetMockUtils extends ComponentsMockUtils {
         clearComponentProvider(AssetProviderRegistry.class);
     }
 
-    private static final Answer<String> ASSET_NAME_ANSWER = new Answer<String>() {
-        @Override
-        public String answer(final InvocationOnMock invocation) throws RepositoryException {
-            JcrAsset asset = (JcrAsset) invocation.getMock();
-            return asset.getNode().getName();
-        }
+    private static final Answer<String> ASSET_NAME_ANSWER = invocation -> {
+        JcrAsset asset = (JcrAsset) invocation.getMock();
+        return asset.getNode().getName();
     };
 
-    private static final Answer<String> ASSET_PATH_ANSWER = new Answer<String>() {
-        @Override
-        public String answer(final InvocationOnMock invocation) throws RepositoryException {
-            JcrAsset asset = (JcrAsset) invocation.getMock();
-            return asset.getNode().getPath();
-        }
+    private static final Answer<String> ASSET_PATH_ANSWER = invocation -> {
+        JcrAsset asset = (JcrAsset) invocation.getMock();
+        return asset.getNode().getPath();
     };
 
     private static final Answer<String> ASSET_CAPTION_ANSWER = new AssetPropertyStringAnswer(AssetNodeTypes.Asset.CAPTION);

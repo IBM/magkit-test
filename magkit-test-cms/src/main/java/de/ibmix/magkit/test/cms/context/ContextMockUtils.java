@@ -36,7 +36,6 @@ import info.magnolia.module.site.ExtendedAggregationState;
 import info.magnolia.objectfactory.Components;
 import org.apache.commons.collections4.ResettableIterator;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Node;
@@ -53,11 +52,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
-import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubJcrSession;
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -220,80 +218,62 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         SessionMockUtils.cleanSession();
     }
 
-    private static final Answer<String> REQUEST_PARAMETER_ANSWER = new Answer<String>() {
-        @Override
-        public String answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            String name = (String) invocation.getArguments()[0];
-            return context.getRequest() != null ? context.getRequest().getParameter(name) : null;
-        }
+    private static final Answer<String> REQUEST_PARAMETER_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        return context.getRequest() != null ? context.getRequest().getParameter(name) : null;
     };
 
-    private static final Answer<String[]> REQUEST_PARAMETER_VALUES_ANSWER = new Answer<String[]>() {
-        @Override
-        public String[] answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            String name = (String) invocation.getArguments()[0];
-            return context.getRequest() != null ? context.getRequest().getParameterValues(name) : null;
-        }
+    private static final Answer<String[]> REQUEST_PARAMETER_VALUES_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        return context.getRequest() != null ? context.getRequest().getParameterValues(name) : null;
     };
 
-    private static final Answer<Map<String, String[]>> REQUEST_PARAMETERS_ANSWER = new Answer<Map<String, String[]>>() {
-        @Override
-        public Map<String, String[]> answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            return context.getRequest() != null ? context.getRequest().getParameterMap() : null;
-        }
+    private static final Answer<Map<String, String[]>> REQUEST_PARAMETERS_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        return context.getRequest() != null ? context.getRequest().getParameterMap() : null;
     };
 
-    private static final Answer<String> REQUEST_CONTEXT_PATH_ANSWER = new Answer<String>() {
-        @Override
-        public String answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            return context.getRequest() != null ? context.getRequest().getContextPath() : null;
-        }
+    private static final Answer<String> REQUEST_CONTEXT_PATH_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        return context.getRequest() != null ? context.getRequest().getContextPath() : null;
     };
 
-    private static final Answer<Object> ATTRIBUTE_ANSWER = new Answer<Object>() {
-        @Override
-        public Object answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            String name = (String) invocation.getArguments()[0];
-            Object result = null;
-            HttpServletRequest request = context.getRequest();
-            if (request != null) {
-                result = context.getRequest().getAttribute(name);
-                if (result == null && request.getSession() != null) {
-                    result = request.getSession().getAttribute(name);
-                }
+    private static final Answer<Object> ATTRIBUTE_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Object result = null;
+        HttpServletRequest request = context.getRequest();
+        if (request != null) {
+            result = context.getRequest().getAttribute(name);
+            if (result == null && request.getSession() != null) {
+                result = request.getSession().getAttribute(name);
             }
-            return result;
         }
+        return result;
     };
 
-    private static final Answer<Object> SCOPED_ATTRIBUTE_ANSWER = new Answer<Object>() {
-        @Override
-        public Object answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            String name = (String) invocation.getArguments()[0];
-            int scope = (Integer) invocation.getArguments()[1];
-            Object result = null;
-            // mimic RequestAttributeStrategy:
-            switch (scope) {
-                case Context.LOCAL_SCOPE:
-                    result = getRequestAttribute(context, name);
-                    break;
-                case Context.SESSION_SCOPE:
-                    result = getSessionAttribute(context, name);
-                    break;
-                case Context.APPLICATION_SCOPE:
-                    result = ComponentsMockUtils.mockComponentInstance(SystemContext.class).getAttribute(name, Context.APPLICATION_SCOPE);
-                    break;
-                default:
-                    break;
-            }
-            return result;
+    private static final Answer<Object> SCOPED_ATTRIBUTE_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        int scope = (Integer) invocation.getArguments()[1];
+        Object result = null;
+        // mimic RequestAttributeStrategy:
+        switch (scope) {
+            case Context.LOCAL_SCOPE:
+                result = getRequestAttribute(context, name);
+                break;
+            case Context.SESSION_SCOPE:
+                result = getSessionAttribute(context, name);
+                break;
+            case Context.APPLICATION_SCOPE:
+                result = ComponentsMockUtils.mockComponentInstance(SystemContext.class).getAttribute(name, Context.APPLICATION_SCOPE);
+                break;
+            default:
+                break;
         }
+        return result;
     };
 
     private static Object getRequestAttribute(final WebContext context, final String name) {
@@ -326,7 +306,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         return result;
     }
 
-    private static final Answer<Map> ATTRIBUTES_ANSWER = invocation -> {
+    private static final Answer<Map<String, Object>> ATTRIBUTES_ANSWER = invocation -> {
         WebContext context = (WebContext) invocation.getMock();
         Map<String, Object> result = new HashMap<>();
         HttpServletRequest request = context.getRequest();
@@ -339,7 +319,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         return result;
     };
 
-    private static final Answer<Map> SCOPED_ATTRIBUTES_ANSWER = invocation -> {
+    private static final Answer<Map<String, Object>> SCOPED_ATTRIBUTES_ANSWER = invocation -> {
         WebContext context = (WebContext) invocation.getMock();
         int scope = (Integer) invocation.getArguments()[0];
         Map<String, Object> result = new HashMap<>();

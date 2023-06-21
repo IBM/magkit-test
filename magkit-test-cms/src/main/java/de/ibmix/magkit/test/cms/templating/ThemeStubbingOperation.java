@@ -34,7 +34,7 @@ import static de.ibmix.magkit.test.cms.templating.ThemeMockUtils.mockResource;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * TODO: comment.

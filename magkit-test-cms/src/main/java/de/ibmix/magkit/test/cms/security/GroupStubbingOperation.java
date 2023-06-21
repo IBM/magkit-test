@@ -23,7 +23,7 @@ package de.ibmix.magkit.test.cms.security;
 import info.magnolia.cms.security.Group;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**

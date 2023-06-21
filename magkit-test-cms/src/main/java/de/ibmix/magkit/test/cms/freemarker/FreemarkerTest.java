@@ -160,12 +160,7 @@ public abstract class FreemarkerTest {
 
         _renderingCtx = new AggregationStateBasedRenderingContext(_aggregationState, exceptionHandler);
 
-        final Provider<AggregationState> aggregationStateProvider = new Provider<AggregationState>() {
-            @Override
-            public AggregationState get() {
-                return _aggregationState;
-            }
-        };
+        final Provider<AggregationState> aggregationStateProvider = () -> _aggregationState;
         _templatingFunctions = new TemplatingFunctions(aggregationStateProvider);
         ComponentsMockUtils.getComponentProvider().setInstance(TemplatingFunctions.class, _templatingFunctions);
     }

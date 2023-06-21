@@ -26,7 +26,6 @@ import org.junit.Test;
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import java.util.Calendar;
-import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;

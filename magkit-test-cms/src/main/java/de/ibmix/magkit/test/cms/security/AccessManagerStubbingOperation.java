@@ -24,7 +24,7 @@ import info.magnolia.cms.security.AccessManager;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  * Stubbing operations to be used as parameters in ContextMockUtils.mockAccessManager(...).
  *
  * @author wolf.bubenik
- *         Date: 01.09.2010
+ * @since : 01.09.2010
  */
 public abstract class AccessManagerStubbingOperation {
     public abstract void of(AccessManager state);
