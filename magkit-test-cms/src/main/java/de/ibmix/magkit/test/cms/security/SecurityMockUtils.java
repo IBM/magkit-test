@@ -21,7 +21,6 @@ package de.ibmix.magkit.test.cms.security;
  */
 
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
-import de.ibmix.magkit.test.cms.context.WebContextStubbingOperation;
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Role;

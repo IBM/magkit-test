@@ -48,8 +48,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Compare Magnolia JCR Mock-Objects with this API.
  * Demonstrate how to mock a JCR Query for testing code that uses jcr queries and QueryManager.
  *
- * @author wolf.bubenik
- * @since 04.03.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 04.03.2016.
  */
 public class MockQueries {
 
@@ -60,16 +60,16 @@ public class MockQueries {
 
     @Test
     public void mockJcrQueryWithMagkit() throws RepositoryException {
-        // 1. die gewünschten Nodes für das Suchergebnis erzeugen:
+        // 1. mock the nodes for the search result:
         Node first = mockNode("testRepo", "result/one", stubProperty("test", "test-1"));
         Node second = mockNode("testRepo", "result/two", stubProperty("test", "test-2"));
         Node third = mockNode("testRepo", "result/three", stubProperty("test", "test-3"));
 
-        // 2. Ein QueryResult mit den gewünschten Nodes erzeugen:
-        // Erzeugt man das QueryResult-Mock mit den neuen Methoden des ContextMockUtils, wird sicher gestellt, dass die Session auch über den MagnoliaContext verfügbar ist.
+        // 2. Mock a QueryResult that returns the desired nodes:
+        // Using ContextMockUtils.mockQueryResult() ensures that the node session is available via the MgnlContext.
         ContextMockUtils.mockQueryResult("testRepo", Query.XPATH, "test query statement", first, second, third, second);
 
-        // Fertig. Die Magnolia QueryUtils funktionieren damit auch:
+        // Done. The Magnolia QueryUtils can be used to access the Query:
         NodeIterator mgnlResult = QueryUtil.search("testRepo", "test query statement", Query.XPATH);
         assertThat(mgnlResult, notNullValue());
         assertThat(mgnlResult.nextNode(), is(first));
@@ -78,7 +78,7 @@ public class MockQueries {
         // the duplicated Node (/result/two) has been removed from result by QueryUtils.
         assertThat(mgnlResult.hasNext(), is(false));
 
-        // Nimmt man die Ausführung der Query selbst in die Hand, können die Node properties auch als Rows des QueryResults abgefragt werden:
+        // When accessing the mocked QueryResult (via workspace QueryManager) we may access the Node properties as Rows:
         QueryResult result = MgnlContext.getJCRSession("testRepo").getWorkspace().getQueryManager().createQuery("test query statement", Query.XPATH).execute();
         RowIterator rows = result.getRows();
         Row firstRow = rows.nextRow();
@@ -90,9 +90,9 @@ public class MockQueries {
 
     @Test
     public void mockJcrQueryWithMagnolia() throws IOException, RepositoryException {
-        // 1. Für die Suche brauchen wir eine Session mit den Nodes des Suchergebnisses. Die werden alle zurückgeliefert.
-        // Achtung: Wir müssen die MockNodes für das QueryResult mit einem type erzeugen, der NUR aus Kleinbuchstaben besteht.
-        // Grund ist ein Bugs im MockQueryResult. Es filtert des Ergebnisses nach nodeType, der zuvor in Kleinbuchstaben umgewandelt wurde.
+        // 1. To mock a search with the Magnolia TestUtils we need a Session with the desired Nodes of the QueryResult.
+        // Note: We have to create the MockNodes with a NodeType that contains only lowercase letters.
+        // This is due to a bug in the MockQueryResult implementation that filters the result by lowercase node type.
         Session session = SessionTestUtil.createSession("testRepo",
             "/result/one.@type=mgnl:contentnode",
             "/result/two.@type=mgnl:contentnode",
@@ -101,16 +101,14 @@ public class MockQueries {
         Node first = session.getNode("/result/one");
         Node parent = session.getNode("/result");
 
-        // 2. Ein QueryResult mit der Session der gewünschten Nodes erzeugen, eine Query, deren execute()-Methode das QueryResult zurückliefert
-        // und einen QueryManager über den "testRepo"-Workspace der JcrSession verfügbar machen, der die Query mit createQuery(..) zurück gibt:
-        // Wird von der MockSession und dem MockWorkspace bereit gestellt.
+        // 2. The Magnolia MockSession and MockWorkspace create all required mocks of QueryManager, Query and QueryResult.
 
-        // Fertig. Aber Achtung: Das MockQueryResult von Magnolia filtert die Nodes in der Session nach ihrem PrimaryNodeType, den es aus dem Query-Statement extrahiert.
-        // Dort muss der passende primaryNodeType nach dem Literal "from" und ggf. vor dem Literal "where" enthalten sein.
-        // MockNodes werden von Magnolia per default mit dem Type "mgnl:contentNode" erzeugt.
+        // Done but note:  that has been extracted from the query string.
+        // The query string must contain the required primaryNodeType after the "from" and before the "where" clause.
+        // The default primaryNodeType of MockNodes created by Magnolia is "mgnl:contentNode".
         QueryResult result = session.getWorkspace().getQueryManager().createQuery("test query statement from mgnl:contentNode", Query.XPATH).execute();
         assertThat(result, notNullValue());
-        // Achtung: Das MockQueryResult liefert ALLE Knoden der Session mit passendem NodeType, auch den parent-Knoten unserer gewünschten Suchergebnisse:
+        // Achtung: The MockQueryResult of Magnolia contains ALL Nodes of the Session filtered by their PrimaryNodeType:
         assertThat(result.getNodes().nextNode(), not(is(first)));
         assertThat(result.getNodes().nextNode(), is(parent));
     }

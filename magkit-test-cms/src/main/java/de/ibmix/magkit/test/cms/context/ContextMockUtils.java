@@ -90,7 +90,8 @@ public final class ContextMockUtils extends ComponentsMockUtils {
             // while mocking it is assumed that getInstance() will always return a mock
             context = (WebContext) MgnlContext.getInstance();
         } else {
-            context = mock(WebContext.class);
+            // support injection of WebContext mock - mock as component:
+            context = mockComponentInstance(WebContext.class);
             MgnlContext.setInstance(context);
             // always provide a I18ContentSupport mock
             mockI18nContentSupport();

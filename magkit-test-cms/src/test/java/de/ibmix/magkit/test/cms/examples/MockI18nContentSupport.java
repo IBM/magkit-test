@@ -47,8 +47,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Compare Magnolia JCR Mock-Objects with this API.
  * Demonstrate how to mock a Magnolia I18nContentSupport.
  *
- * @author wolf.bubenik
- * @since 09.03.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 09.03.2016
  */
 public class MockI18nContentSupport {
 
@@ -57,40 +57,45 @@ public class MockI18nContentSupport {
         ContextMockUtils.cleanContext();
     }
 
+    /**
+     * This test demonstrates, how to create a mock af I18nContentSupport using the ComponentsMockUtils of the Magkit.
+     */
     @Test
     public void mockI18nContentSupportWithMagkit() throws RepositoryException {
-        // 1) Ein I18nContentSupport-Mock erzeugen:
+        // 1) Create a I18nContentSupport mock:
         I18nContentSupport i18n = I18nContentSupportMockUtils.mockI18nContentSupport();
-        // Der Mock wird als Component registriert:
+        // Tis mock is registered as component:
         assertThat(Components.getComponent(I18nContentSupport.class), is(i18n));
-        // Der Mock bringt ein einfaches Echo-Verhalten als Basisimplementierung mit:
+        // It provides a simple "echo behaviour" ...
         assertThat(i18n.isEnabled(), is(false));
         assertThat(i18n.toI18NURI("test"), is("test"));
-        // auch für properties
-        Node node = mockNode("Paul", stubProperty("property", "test"));
+        // ... for properties
+        Node node = mockNode("Paul", stubProperty("property", "test"), stubProperty("property_zh", "test-zh"));
         assertThat(i18n.hasProperty(node, "property"), is(true));
         assertThat(i18n.getProperty(node, "property"), is(node.getProperty("property")));
-        // Dies sollte verbessert werden und die Property "name_locale" zurückgeben
-        assertThat(i18n.getProperty(node, "property", Locale.CHINESE), is(node.getProperty("property")));
+        assertThat(i18n.getProperty(node, "property", Locale.CHINESE), is(node.getProperty("property_zh")));
     }
 
     @Test
     public void mockI18nContentSupportWithMagkitImplicit() throws RepositoryException {
-        // Beim Mocken eines WebContext wird immer auch ein I18nContentSuport mock angelegt:
+        // When mocking a WebContext the I18nContentSupport is automatically mocked:
         ContextMockUtils.mockWebContext();
         assertThat(Components.getComponent(I18nContentSupport.class), notNullValue());
     }
 
+    /**
+     * This test demonstrates, how to create a mock af I18nContentSupport using the Magnolia-Test-Utils.
+     */
     @Test
     public void mockI18nContentSupportWithMagnolia() throws RepositoryException, IOException {
-        // Die Magnolia-Test-Utils bringen keine Test-Utils für I18nContentSupport mit.
-        // Statt dessen kann mit der Magnolia-Implementierung direkt gearbeitet werden.
+        // The Magnolia-Test-Utils provide no mocking support for I18nContentSupport.
+        // Within the Magnolia mock framework you use the default implementation directly:
         ComponentsTestUtil.setInstance(I18nContentSupport.class, new DefaultI18nContentSupport());
         I18nContentSupport i18n = Components.getComponent(I18nContentSupport.class);
-        // Es steht das Standardverhalten zur Verfügung:
+        // You get the standard behaviour out of the box:
         assertThat(i18n.isEnabled(), is(false));
         assertThat(i18n.toI18NURI("test"), is("test"));
-        // auch für properties
+        // Same for properties:
         Node node = NodeTestUtil.createNode("/node", "webapp", "/node.property=test", "/node.property_zh=test_zh");
         assertThat(i18n.hasProperty(node, "property"), is(true));
         assertThat(i18n.getProperty(node, "property"), is(node.getProperty("property")));
@@ -98,8 +103,8 @@ public class MockI18nContentSupport {
     }
 
     @Test(expected = MgnlInstantiationException.class)
-    public void mockI18nContentSupportWithMagnoliaImplicit() throws RepositoryException {
-        // Beim Mocken eines WebContext wird kein I18nContentSuport angelegt:
+    public void mockI18nContentSupportWithMagnoliaImplicit() {
+        // When mocking a WebContext magnolia does not create a I18nContentSupport:
         MockUtil.getMockContext(true);
         assertThat(Components.getComponent(I18nContentSupport.class), notNullValue());
     }

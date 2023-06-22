@@ -44,8 +44,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
  *
- * @author wolf.bubenik
- * @since 05.04.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 05.04.2016
  */
 public class MockWebContext {
 
@@ -64,6 +64,8 @@ public class MockWebContext {
         assertThat(ctx.getLocale(), is(Locale.GERMAN));
         // ... und die Mock-Instanz ist im MagnoliaContext hinterlegt:
         assertThat(MgnlContext.getWebContext(), is(ctx));
+        // ... and available as Component for injection:
+        assertThat(Components.getComponent(WebContext.class), is(ctx));
         // Wiederhohltes mocken eines WebContext liefert die erste Instanz zurück (get- or- create)
         WebContext ctx2 = ContextMockUtils.mockWebContext(Locale.FRENCH);
         assertThat(ctx, is(ctx2));
@@ -101,7 +103,7 @@ public class MockWebContext {
     }
 
     @Test
-    public void mockWebContextWithMagnolia() throws RepositoryException {
+    public void mockWebContextWithMagnolia() {
         // So mockt man einen neuen Magnolia Context (ist immer ein WebContext):
         WebContext ctx = (WebContext) MockUtil.getMockContext(true);
 
