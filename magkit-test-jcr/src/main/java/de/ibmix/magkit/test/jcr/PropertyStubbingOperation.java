@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import de.ibmix.magkit.test.StubbingOperation;
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Binary;
@@ -30,7 +30,6 @@ import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.jcr.query.QueryManager;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -47,7 +46,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 05.11.12
  */
-public abstract class PropertyStubbingOperation implements StubbingOperation<Property> {
+public abstract class PropertyStubbingOperation implements ExceptionStubbingOperation<Property, RepositoryException> {
 
     public static PropertyStubbingOperation stubValues(final Value... values) {
         return new PropertyStubbingOperation() {

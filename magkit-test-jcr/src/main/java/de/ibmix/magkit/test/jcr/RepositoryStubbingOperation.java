@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import de.ibmix.magkit.test.StubbingOperation;
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 04.02.14
  */
-public abstract class RepositoryStubbingOperation implements StubbingOperation<Repository> {
+public abstract class RepositoryStubbingOperation implements ExceptionStubbingOperation<Repository, RepositoryException> {
 
     /**
      * Creates a RepositoryStubbingOperation that stubbes the login()- methods of a Repository mock.

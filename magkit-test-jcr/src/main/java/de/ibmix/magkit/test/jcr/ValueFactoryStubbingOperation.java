@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import de.ibmix.magkit.test.StubbingOperation;
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 03.08.12
  */
-public abstract class ValueFactoryStubbingOperation implements StubbingOperation<ValueFactory> {
+public abstract class ValueFactoryStubbingOperation implements ExceptionStubbingOperation<ValueFactory, RepositoryException> {
 
     private ValueFactoryStubbingOperation() {
     }

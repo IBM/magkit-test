@@ -24,9 +24,10 @@ package de.ibmix.magkit.test;
  * Interface for all StubbingOperations that do not throw an exception.
  *
  * @param <T> The type of the mocked class to be stubbed
+ * @param <E> The exception type to be thrown by the stubbed methods
  * @author wolf.bubenik@ibmix.de
  * @since 2023-06-21
  */
-public interface StubbingOperation<T> {
-    void of(T mock);
+public interface ExceptionStubbingOperation<T, E extends Throwable> {
+    void of(T mock) throws E;
 }

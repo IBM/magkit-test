@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import org.mockito.Mockito;
 
@@ -41,9 +42,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 13.12.2010
  */
-public abstract class I18nContentSupportStubbingOperation {
-
-    public abstract void of(I18nContentSupport result) throws RepositoryException;
+public abstract class I18nContentSupportStubbingOperation implements ExceptionStubbingOperation<I18nContentSupport, RepositoryException> {
 
     public static I18nContentSupportStubbingOperation stubProperty(final Node node, final String propertyName, final Property value) {
         return new I18nContentSupportStubbingOperation() {
@@ -113,7 +112,7 @@ public abstract class I18nContentSupportStubbingOperation {
 
             public void of(I18nContentSupport contentSupport) {
                 assertThat(contentSupport, notNullValue());
-                when(contentSupport.getLocales()).thenReturn(new ArrayList<Locale>(Arrays.asList(locales)));
+                when(contentSupport.getLocales()).thenReturn(new ArrayList<>(Arrays.asList(locales)));
             }
         };
     }
@@ -134,7 +133,7 @@ public abstract class I18nContentSupportStubbingOperation {
             stubbLocales(locale).of(contentSupport);
         } else if (!locales.contains(locale)) {
             locales.add(locale);
-            stubbLocales(locales.toArray(new Locale[locales.size()])).of(contentSupport);
+            stubbLocales(locales.toArray(new Locale[0])).of(contentSupport);
         }
     }
 }

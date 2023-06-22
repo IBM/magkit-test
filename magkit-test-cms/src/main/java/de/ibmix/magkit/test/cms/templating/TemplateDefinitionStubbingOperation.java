@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.templating;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.rendering.template.TemplateDefinition;
 
 import java.util.HashMap;
@@ -33,11 +34,10 @@ import static org.mockito.Mockito.doReturn;
 /**
  * Operations to stub behaviour of a TemplateDefinition mock.
  *
- * @author wolf.bubenik
- * @since 14.04.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 14.04.2016
  */
-public abstract class TemplateDefinitionStubbingOperation {
-    abstract void of(TemplateDefinition template);
+public abstract class TemplateDefinitionStubbingOperation implements StubbingOperation<TemplateDefinition> {
 
     public static TemplateDefinitionStubbingOperation stubDeletable(final boolean value) {
         return new TemplateDefinitionStubbingOperation() {

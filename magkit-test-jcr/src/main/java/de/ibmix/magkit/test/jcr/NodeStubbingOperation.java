@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import de.ibmix.magkit.test.StubbingOperation;
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.apache.jackrabbit.JcrConstants;
 
 import javax.jcr.Binary;
@@ -50,10 +50,10 @@ import static org.mockito.Mockito.when;
  * Utility class that provides factory methods for NodeStubbingOperation.
  * Stubbing operations to be used as parameters in NodeMockUtils.mock...(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 09.10.2012
  */
-public abstract class NodeStubbingOperation implements StubbingOperation<Node> {
+public abstract class NodeStubbingOperation implements ExceptionStubbingOperation<Node, RepositoryException> {
     public static final String PROPNAME_TITLE = "title";
     public static final String UNTITLED = "untitled";
     public static final String UNTITLED_HANDLE = "/" + UNTITLED;

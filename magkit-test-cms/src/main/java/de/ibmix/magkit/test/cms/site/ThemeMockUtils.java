@@ -1,4 +1,4 @@
-package de.ibmix.magkit.test.cms.templating;
+package de.ibmix.magkit.test.cms.site;
 
 /*-
  * #%L

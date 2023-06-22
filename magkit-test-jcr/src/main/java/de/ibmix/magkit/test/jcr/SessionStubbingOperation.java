@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import de.ibmix.magkit.test.StubbingOperation;
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.jcr.Item;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 03.08.12
  */
-public abstract class SessionStubbingOperation implements StubbingOperation<Session> {
+public abstract class SessionStubbingOperation implements ExceptionStubbingOperation<Session, RepositoryException> {
 
     private SessionStubbingOperation() {
     }

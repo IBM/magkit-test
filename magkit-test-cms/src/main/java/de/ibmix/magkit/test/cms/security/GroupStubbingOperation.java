@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.Group;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -27,12 +28,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**
- * The StubbingOperations for info.magnolia.cms.security.Group mocks.
+ * A factory class to create StubbingOperations that define the behaviour of info.magnolia.cms.security.Group mocks.
+ * To be used standalone or as parameter of SecurityMockUtils.mockGroup(...).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 2032-06-16
+ * @since 2023-06-16
  */
-public abstract class GroupStubbingOperation {
+public abstract class GroupStubbingOperation implements StubbingOperation<Group> {
 
     public static GroupStubbingOperation stubbName(final String name) {
         return new GroupStubbingOperation() {
@@ -54,5 +56,5 @@ public abstract class GroupStubbingOperation {
         };
     }
 
-    public abstract void of(Group group);
+    private GroupStubbingOperation() {}
 }

@@ -37,8 +37,8 @@ import static info.magnolia.repository.RepositoryConstants.WEBSITE;
  * Utility class for mocking jcr nodes with magnolia node types.
  * MgnlContext.getJcrSession("name") will be stubbed as well.
  *
- * @author wolf.bubenik
- * @since 26.08.14
+ * @author wolf.bubenik@ibmix.de
+ * @since 26.08.2014
  */
 public final class MagnoliaNodeMockUtils {
 

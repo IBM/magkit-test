@@ -28,6 +28,7 @@ import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.jcr.RepositoryException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -35,10 +36,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: comment.
+ * An util class to create Mockito mocks of magnolia security classes.
  *
- * @author wolf.bubenik
- * @since 30.04.13
+ * @author wolf.bubenik@ibmix.de
+ * @since 30.04.2013
  */
 public final class SecurityMockUtils extends ComponentsMockUtils {
 

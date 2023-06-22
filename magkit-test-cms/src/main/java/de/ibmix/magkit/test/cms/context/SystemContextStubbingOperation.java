@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.context.SystemContext;
@@ -40,8 +41,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 31.05.13
  */
-public abstract class SystemContextStubbingOperation {
-    public abstract void of(SystemContext context) throws RepositoryException;
+public abstract class SystemContextStubbingOperation implements StubbingOperation<SystemContext> {
 
     public static SystemContextStubbingOperation stubLocale(final Locale locale) {
         return new SystemContextStubbingOperation() {
@@ -75,10 +75,14 @@ public abstract class SystemContextStubbingOperation {
     public static SystemContextStubbingOperation stubJcrSession(final String repositoryId, final Session session) {
         return new SystemContextStubbingOperation() {
 
-            public void of(SystemContext context) throws RepositoryException {
+            public void of(SystemContext context) {
                 assertThat(context, notNullValue());
                 String repository = isBlank(repositoryId) ? WEBSITE : repositoryId;
-                when(context.getJCRSession(repository)).thenReturn(session);
+                try {
+                    when(context.getJCRSession(repository)).thenReturn(session);
+                } catch (RepositoryException e) {
+                    // ignore, never thrown.
+                }
             }
         };
     }
@@ -86,10 +90,14 @@ public abstract class SystemContextStubbingOperation {
     public static SystemContextStubbingOperation stubJcrSession(final String repositoryId) {
         return new SystemContextStubbingOperation() {
 
-            public void of(SystemContext context) throws RepositoryException {
+            public void of(SystemContext context) {
                 String repository = isBlank(repositoryId) ? WEBSITE : repositoryId;
-                Session session = SessionMockUtils.mockSession(repository);
-                stubJcrSession(repository, session).of(context);
+                try {
+                    Session session = SessionMockUtils.mockSession(repository);
+                    stubJcrSession(repository, session).of(context);
+                } catch (RepositoryException e) {
+                    // ignore, never thrown.
+                }
             }
         };
     }

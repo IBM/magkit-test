@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.beans.config.ServerConfiguration;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -29,12 +30,10 @@ import static org.mockito.Mockito.when;
 /**
  * TODO: comment.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 11.01.2011
  */
-public abstract class ServerConfigurationStubbingOperation {
-
-    public abstract void of(ServerConfiguration config);
+public abstract class ServerConfigurationStubbingOperation implements StubbingOperation<ServerConfiguration> {
 
     public static ServerConfigurationStubbingOperation stubDefaultExtension(final String value) {
         return new ServerConfigurationStubbingOperation() {

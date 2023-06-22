@@ -29,8 +29,8 @@ import static org.mockito.Mockito.mock;
 /**
  * Utility class for mocking javax.jcr.Workspace.
  *
- * @author wolf.bubenik
- * @since 03.08.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 03.08.2012
  */
 public final class WorkspaceMockUtils {
 

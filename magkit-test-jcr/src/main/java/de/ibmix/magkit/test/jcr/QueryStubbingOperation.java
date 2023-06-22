@@ -20,10 +20,9 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import de.ibmix.magkit.test.StubbingOperation;
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Node;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 29.05.13
  */
-public abstract class QueryStubbingOperation implements StubbingOperation<Query> {
+public abstract class QueryStubbingOperation implements ExceptionStubbingOperation<Query, RepositoryException> {
 
     public static QueryStubbingOperation stubbLanguage(final String value) {
         return new QueryStubbingOperation() {

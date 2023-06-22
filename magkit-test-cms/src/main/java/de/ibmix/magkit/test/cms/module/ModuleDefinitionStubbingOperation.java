@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.module.model.Version;
 
@@ -28,13 +29,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: comment.
+ * A factory class to create StubbingOperations that define the behaviour of info.magnolia.module.model.ModuleDefinition mocks.
+ * To be used standalone or as parameter of SecurityMockUtils.mockGroup(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  */
-public abstract class ModuleDefinitionStubbingOperation {
-
-    public abstract void of(ModuleDefinition md);
+public abstract class ModuleDefinitionStubbingOperation implements StubbingOperation<ModuleDefinition> {
 
     public static ModuleDefinitionStubbingOperation stubDisplayName(final String displayName) {
         return new ModuleDefinitionStubbingOperation() {

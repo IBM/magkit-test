@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 
@@ -35,9 +36,7 @@ import static org.mockito.Mockito.doReturn;
  * @author wolf.bubenik
  * @since 22.07.19.
  */
-public abstract class ModuleRegistryStubbingOperation {
-
-    public abstract void of(ModuleRegistry mr);
+public abstract class ModuleRegistryStubbingOperation implements StubbingOperation<ModuleRegistry> {
 
     public static ModuleRegistryStubbingOperation stubModuleDefinition(final String name, final ModuleDefinition md) {
         return new ModuleRegistryStubbingOperation() {

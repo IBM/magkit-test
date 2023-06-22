@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.AccessManager;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -33,11 +34,10 @@ import static org.mockito.Mockito.when;
  * Utility class that provides factory methods for AccessManagerStubbingOperation.
  * Stubbing operations to be used as parameters in ContextMockUtils.mockAccessManager(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since : 01.09.2010
  */
-public abstract class AccessManagerStubbingOperation {
-    public abstract void of(AccessManager state);
+public abstract class AccessManagerStubbingOperation implements StubbingOperation<AccessManager> {
 
     public static AccessManagerStubbingOperation stubPermissions(final String path, final long permissions, final boolean isGranted) {
         return new AccessManagerStubbingOperation() {

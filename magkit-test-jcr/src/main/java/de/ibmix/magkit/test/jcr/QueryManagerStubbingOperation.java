@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import de.ibmix.magkit.test.StubbingOperation;
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 29.05.13
  */
-public abstract class QueryManagerStubbingOperation implements StubbingOperation<QueryManager> {
+public abstract class QueryManagerStubbingOperation implements ExceptionStubbingOperation<QueryManager, RepositoryException> {
 
     /**
      * If null or an empty string is passes for query.getStatement(), queryManager.createQuery(..) will be stubbed for any statement and any language.

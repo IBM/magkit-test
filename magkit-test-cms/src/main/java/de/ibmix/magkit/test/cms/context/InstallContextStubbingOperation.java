@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.model.ModuleDefinition;
 
@@ -32,9 +33,7 @@ import static org.mockito.Mockito.when;
  *
  * @author wolf.bubenik
  */
-public abstract class InstallContextStubbingOperation {
-
-    public abstract void of(InstallContext ic);
+public abstract class InstallContextStubbingOperation implements StubbingOperation<InstallContext> {
 
     public static InstallContextStubbingOperation stubModuleDefinition(final ModuleDefinition md) {
         return new InstallContextStubbingOperation() {

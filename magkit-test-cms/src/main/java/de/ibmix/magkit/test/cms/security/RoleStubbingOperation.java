@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.Role;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -27,12 +28,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**
- * The StubbingOperations for info.magnolia.cms.security.Role mocks.
+ * The StubbingOperations to define the behaviour of info.magnolia.cms.security.Role mocks.
+ * Used as parameter in SecurityMockUtils.mockRole(...)
  *
  * @author wolf.bubenik@ibmix.de
- * @since 2032-06-16
+ * @since 2023-06-16
  */
-public abstract class RoleStubbingOperation {
+public abstract class RoleStubbingOperation implements StubbingOperation<Role> {
 
     public static RoleStubbingOperation stubbName(final String name) {
         return new RoleStubbingOperation() {
@@ -54,5 +56,5 @@ public abstract class RoleStubbingOperation {
         };
     }
 
-    public abstract void of(Role role);
+    private RoleStubbingOperation() {}
 }

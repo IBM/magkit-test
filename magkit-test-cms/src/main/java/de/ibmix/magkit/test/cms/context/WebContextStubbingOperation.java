@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionStubbingOperation;
 import de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation;
 import de.ibmix.magkit.test.servlet.HttpServletResponseStubbingOperation;
@@ -54,8 +55,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 02.03.2011
  */
-public abstract class WebContextStubbingOperation {
-    public abstract void of(WebContext context) throws RepositoryException;
+public abstract class WebContextStubbingOperation implements StubbingOperation<WebContext> {
 
     /**
      * Creates a WebContextStubbingOperation that stubs getLocale() to return the provided value.
@@ -130,7 +130,7 @@ public abstract class WebContextStubbingOperation {
     public static WebContextStubbingOperation stubExistingRequest(final HttpServletRequestStubbingOperation... stubbings) {
         return new WebContextStubbingOperation() {
 
-            public void of(WebContext context) throws RepositoryException {
+            public void of(WebContext context) {
                 assertThat(context, notNullValue());
                 HttpServletRequest request = context.getRequest();
                 if (request == null) {
@@ -157,7 +157,7 @@ public abstract class WebContextStubbingOperation {
     public static WebContextStubbingOperation stubParameters(final Map<String, String[]> parameterMap) {
         return new WebContextStubbingOperation() {
 
-            public void of(WebContext context) throws RepositoryException {
+            public void of(WebContext context) {
                 assertThat(context, notNullValue());
                 WebContextStubbingOperation.stubExistingRequest(HttpServletRequestStubbingOperation.stubParameterMap(parameterMap)).of(context);
             }
@@ -176,7 +176,7 @@ public abstract class WebContextStubbingOperation {
     public static WebContextStubbingOperation stubParameter(final String name, final String... values) {
         return new WebContextStubbingOperation() {
             @Override
-            public void of(WebContext context) throws RepositoryException {
+            public void of(WebContext context) {
                 assertThat(context, notNullValue());
                 assertThat(name, notNullValue());
                 stubExistingRequest(HttpServletRequestStubbingOperation.stubParameter(name, values)).of(context);
@@ -210,7 +210,7 @@ public abstract class WebContextStubbingOperation {
     public static WebContextStubbingOperation stubAttribute(final String name, final Object value, final int scope) {
         return new WebContextStubbingOperation() {
             @Override
-            public void of(WebContext context) throws RepositoryException {
+            public void of(WebContext context) {
                 assertThat(context, notNullValue());
                 assertThat(name, notNullValue());
                 if (context.getRequest() == null) {
@@ -264,7 +264,7 @@ public abstract class WebContextStubbingOperation {
     public static WebContextStubbingOperation stubExistingResponse(final HttpServletResponseStubbingOperation... stubbings) {
         return new WebContextStubbingOperation() {
 
-            public void of(WebContext context) throws RepositoryException {
+            public void of(WebContext context) {
                 assertThat(context, notNullValue());
                 HttpServletResponse response = context.getResponse();
                 if (response == null) {
@@ -302,7 +302,7 @@ public abstract class WebContextStubbingOperation {
     public static WebContextStubbingOperation stubContextPath(final String path) {
         return new WebContextStubbingOperation() {
 
-            public void of(WebContext context) throws RepositoryException {
+            public void of(WebContext context) {
                 assertThat(context, notNullValue());
                 HttpServletRequest request = context.getRequest();
                 if (request == null) {
@@ -334,9 +334,13 @@ public abstract class WebContextStubbingOperation {
     public static WebContextStubbingOperation stubJcrSession(final String workspace, final Session session) {
         return new WebContextStubbingOperation() {
 
-            public void of(WebContext context) throws RepositoryException {
+            public void of(WebContext context) {
                 assertThat(context, notNullValue());
-                when(context.getJCRSession(workspace)).thenReturn(session);
+                try {
+                    when(context.getJCRSession(workspace)).thenReturn(session);
+                } catch (RepositoryException e) {
+                    // ignore, never thrown.
+                }
             }
         };
     }
@@ -350,16 +354,20 @@ public abstract class WebContextStubbingOperation {
     public static WebContextStubbingOperation stubJcrSession(final String workspace, final SessionStubbingOperation... sessionStubbings) {
         return new WebContextStubbingOperation() {
 
-            public void of(WebContext context) throws RepositoryException {
+            public void of(WebContext context) {
                 assertThat(context, notNullValue());
-                Session session = context.getJCRSession(workspace);
-                if (session == null) {
-                    session = mockSession(workspace, sessionStubbings);
-                    when(context.getJCRSession(workspace)).thenReturn(session);
-                } else {
-                    for (SessionStubbingOperation stubbing : sessionStubbings) {
-                        stubbing.of(session);
+                try {
+                    Session session = context.getJCRSession(workspace);
+                    if (session == null) {
+                        session = mockSession(workspace, sessionStubbings);
+                        when(context.getJCRSession(workspace)).thenReturn(session);
+                    } else {
+                        for (SessionStubbingOperation stubbing : sessionStubbings) {
+                            stubbing.of(session);
+                        }
                     }
+                } catch (RepositoryException e) {
+                    // ignore, never thrown.
                 }
             }
         };
