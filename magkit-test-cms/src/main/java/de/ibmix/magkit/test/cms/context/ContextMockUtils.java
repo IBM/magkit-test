@@ -24,9 +24,7 @@ import de.ibmix.magkit.test.jcr.QueryManagerStubbingOperation;
 import de.ibmix.magkit.test.jcr.QueryMockUtils;
 import de.ibmix.magkit.test.jcr.QueryStubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
-import de.ibmix.magkit.test.cms.security.AccessManagerStubbingOperation;
 import info.magnolia.cms.core.AggregationState;
-import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.util.ServletUtil;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
@@ -52,8 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
-import static info.magnolia.repository.RepositoryConstants.WEBSITE;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAggregationState;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyInt;
@@ -115,7 +112,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         return context;
     }
 
-    public static SystemContext mockSystemContext(SystemContextStubbingOperation... stubbings) throws RepositoryException {
+    public static SystemContext mockSystemContext(SystemContextStubbingOperation... stubbings) {
         SystemContext result = mockComponentInstance(SystemContext.class);
         for (SystemContextStubbingOperation stubbing : stubbings) {
             stubbing.of(result);
@@ -125,60 +122,23 @@ public final class ContextMockUtils extends ComponentsMockUtils {
 
     /**
      * Creates an AggregationState mock. WebContext mock is created (if needed) and stubbed to return this AggregationState.
+     * If the AggregationState already exists for the WebContext, it is kept and the StubbingOperations are applied for the existing WebContext.
      *
      * @param stubbings an array of AggregationStateStubbingOperation
      * @return the AggregationState Mockito mock
      */
     public static AggregationState mockAggregationState(AggregationStateStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());
-        AggregationState aggState = mock(ExtendedAggregationState.class);
+        WebContext context = mockWebContext();
+        AggregationState aggState = context.getAggregationState();
+        if (aggState == null) {
+            aggState = mock(ExtendedAggregationState.class);
+        }
         for (AggregationStateStubbingOperation stubbing : stubbings) {
             stubbing.of(aggState);
         }
-        register(aggState);
+        stubAggregationState(aggState).of(context);
         return aggState;
-    }
-
-    public static AccessManager mockAccessManager(AccessManagerStubbingOperation... stubbings) throws RepositoryException {
-        return mockAccessManager(WEBSITE, stubbings);
-    }
-
-    public static AccessManager mockAccessManager(String repositoryId, AccessManagerStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
-        WebContext context = mockWebContext();
-        String repoId = isBlank(repositoryId) ? WEBSITE : repositoryId;
-        AccessManager am = context.getAccessManager(repoId);
-        if (am == null) {
-            am = mock(AccessManager.class);
-            register(repoId, am);
-        }
-        for (AccessManagerStubbingOperation stubbing : stubbings) {
-            stubbing.of(am);
-        }
-        return am;
-    }
-
-    /**
-     * Registers the given AccessManager for the given repository id at HierarchyManager and WebContext.
-     * Creates a mock HierarchyManager and WebContext and stubs the WebContext with this HierarchyManager.
-     * The HierarchyManager is stubbed to return the given AccessManager.
-     *
-     * @param repositoryId the repository ID/name that will be used for mocking HierarchyManager and WebContext
-     * @param am           the AccessManager to be registered
-     */
-    public static void register(String repositoryId, AccessManager am) throws RepositoryException {
-        mockWebContext(WebContextStubbingOperation.stubAccessManager(repositoryId, am));
-    }
-
-    /**
-     * Registers the given AggregationState at the WebContext.
-     * Creates a mock WebContext and stubbs the WebContext to return the given AccessManager.
-     * Any previously registered AggregationState will be overridden.
-     *
-     * @param aggState the AggregationState to be registered.
-     */
-    public static void register(AggregationState aggState) throws RepositoryException {
-        mockWebContext(WebContextStubbingOperation.stubAggregationState(aggState));
     }
 
     public static QueryManager mockQueryManager(final String workspace, QueryManagerStubbingOperation... stubbings) throws RepositoryException {

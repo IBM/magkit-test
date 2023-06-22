@@ -20,21 +20,30 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.test.cms.context.ContextMockUtils;
+import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
+import info.magnolia.context.MgnlContext;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.jcr.RepositoryException;
+
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.getComponentSingleton;
+import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockAccessManager;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockSecuritySupport;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockUserManager;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.register;
+import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,9 +53,30 @@ import static org.mockito.Mockito.when;
  * @since 03.05.13
  */
 public class SecurityMockUtilsTest {
+
     @Before
     public void setUp() throws Exception {
-        SecurityMockUtils.cleanSecuritySupport();
+        ContextMockUtils.cleanContext();
+    }
+
+    @Test
+    public void mockAccessManagerWebsiteRepositoryTest() throws RepositoryException {
+        assertThat(MgnlContext.hasInstance(), is(false));
+
+        AccessManagerStubbingOperation op1 = mock(AccessManagerStubbingOperation.class);
+        AccessManagerStubbingOperation op2 = mock(AccessManagerStubbingOperation.class);
+        AccessManager am = mockAccessManager(op1, op2);
+
+        verify(op1, times(1)).of(am);
+        verify(op2, times(1)).of(am);
+
+        assertThat(MgnlContext.hasInstance(), is(true));
+        assertThat(MgnlContext.getAccessManager(WEBSITE), is(am));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void mockAccessManagerTestForNull() throws RepositoryException {
+        mockAccessManager(null);
     }
 
     @Test

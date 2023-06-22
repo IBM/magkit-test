@@ -29,14 +29,14 @@ import javax.jcr.RepositoryException;
 
 import static de.ibmix.magkit.test.cms.security.AccessManagerStubbingOperation.stubPermissions;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.cleanContext;
-import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockAccessManager;
+import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockAccessManager;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * TODO: comment.
+ * Testing AccessManagerStubbingOperation.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 04.11.2010
  */
 public class AccessManagerStubbingOperationTest {
