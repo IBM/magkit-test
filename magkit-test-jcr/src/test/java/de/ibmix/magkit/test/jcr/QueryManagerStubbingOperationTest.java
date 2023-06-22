@@ -38,7 +38,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Testing QueryManagerStubbingOperation.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 29.05.13
  */
 public class QueryManagerStubbingOperationTest {

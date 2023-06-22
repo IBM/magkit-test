@@ -21,6 +21,7 @@ package de.ibmix.magkit.test.cms.dam;
  */
 
 
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
 import info.magnolia.dam.api.Asset;
 import info.magnolia.dam.jcr.AssetNodeTypes;
@@ -35,19 +36,18 @@ import java.util.Calendar;
 
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: comment.
+ * A factory class that creates StubbingOperations to define the behaviour of info.magnolia.dam.api.Asset mocks.
+ * To be used standalone or as parameters for AssetMockUtils.mockAsset(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 17.11.2010
  */
-public abstract class AssetStubbingOperation {
-
-    public abstract void of(Asset asset) throws RepositoryException;
+public abstract class AssetStubbingOperation implements ExceptionStubbingOperation<Asset, RepositoryException> {
 
     /*
      * *************** Stubbing of asset content node properties ***************************************

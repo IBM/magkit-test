@@ -20,6 +20,8 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
@@ -27,7 +29,7 @@ import javax.jcr.query.QueryManager;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -37,8 +39,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 29.05.13
  */
-public abstract class QueryManagerStubbingOperation {
-    public abstract void of(QueryManager manager) throws RepositoryException;
+public abstract class QueryManagerStubbingOperation implements ExceptionStubbingOperation<QueryManager, RepositoryException> {
 
     /**
      * If null or an empty string is passes for query.getStatement(), queryManager.createQuery(..) will be stubbed for any statement and any language.

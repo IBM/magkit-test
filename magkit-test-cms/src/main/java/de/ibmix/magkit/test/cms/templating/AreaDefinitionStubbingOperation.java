@@ -31,7 +31,7 @@ import java.util.Comparator;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -42,13 +42,13 @@ import static org.mockito.Mockito.mock;
  * @since 14.04.16.
  */
 public abstract class AreaDefinitionStubbingOperation extends TemplateDefinitionStubbingOperation {
-    abstract void of(AreaDefinition area);
+    public abstract void of(AreaDefinition area);
 
     public static AreaDefinitionStubbingOperation stubAvailableComponents(final Map<String, ComponentAvailability> value) {
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            void of(TemplateDefinition template) {
+            public void of(TemplateDefinition template) {
                 throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
             }
 
@@ -63,7 +63,7 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            void of(TemplateDefinition template) {
+            public void of(TemplateDefinition template) {
                 throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
             }
 
@@ -78,7 +78,7 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            void of(TemplateDefinition template) {
+            public void of(TemplateDefinition template) {
                 throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
             }
 
@@ -93,7 +93,7 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            void of(TemplateDefinition template) {
+            public void of(TemplateDefinition template) {
                 throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
             }
 
@@ -108,7 +108,7 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            void of(TemplateDefinition template) {
+            public void of(TemplateDefinition template) {
                 throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
             }
 
@@ -135,7 +135,7 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            void of(TemplateDefinition template) {
+            public void of(TemplateDefinition template) {
                 throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
             }
 
@@ -150,7 +150,7 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            void of(TemplateDefinition template) {
+            public void of(TemplateDefinition template) {
                 throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
             }
 
@@ -165,7 +165,7 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            void of(TemplateDefinition template) {
+            public void of(TemplateDefinition template) {
                 throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
             }
 

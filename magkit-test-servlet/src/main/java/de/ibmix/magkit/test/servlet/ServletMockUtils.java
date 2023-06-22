@@ -36,11 +36,10 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.TreeMap;
 
-import static de.ibmix.magkit.test.servlet.HttpSessionStubbingOperation.stubServletContext;
 import static java.util.Collections.enumeration;
 import static org.apache.commons.collections4.IteratorUtils.emptyIterator;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;

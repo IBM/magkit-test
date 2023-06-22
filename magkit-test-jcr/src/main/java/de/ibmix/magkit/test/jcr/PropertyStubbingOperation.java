@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.mockito.invocation.InvocationOnMock;
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Binary;
@@ -30,13 +30,12 @@ import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -47,8 +46,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 05.11.12
  */
-public abstract class PropertyStubbingOperation {
-    public abstract void of(Property property) throws RepositoryException;
+public abstract class PropertyStubbingOperation implements ExceptionStubbingOperation<Property, RepositoryException> {
 
     public static PropertyStubbingOperation stubValues(final Value... values) {
         return new PropertyStubbingOperation() {
@@ -72,11 +70,11 @@ public abstract class PropertyStubbingOperation {
             @Override
             public void of(final Property property) throws RepositoryException {
                 assertThat(values, notNullValue());
-                List<Value> valueList = new ArrayList<Value>(values.length);
+                List<Value> valueList = new ArrayList<>(values.length);
                 for (String value : values) {
                     valueList.add(ValueMockUtils.mockValue(value, type));
                 }
-                stubValues(valueList.toArray(new Value[valueList.size()])).of(property);
+                stubValues(valueList.toArray(new Value[0])).of(property);
             }
         };
     }
@@ -86,11 +84,11 @@ public abstract class PropertyStubbingOperation {
             @Override
             public void of(final Property property) throws RepositoryException {
                 assertThat(values, notNullValue());
-                List<Value> valueList = new ArrayList<Value>(values.length);
+                List<Value> valueList = new ArrayList<>(values.length);
                 for (Long value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
                 }
-                stubValues(valueList.toArray(new Value[valueList.size()])).of(property);
+                stubValues(valueList.toArray(new Value[0])).of(property);
             }
         };
     }
@@ -100,11 +98,11 @@ public abstract class PropertyStubbingOperation {
             @Override
             public void of(final Property property) throws RepositoryException {
                 assertThat(values, notNullValue());
-                List<Value> valueList = new ArrayList<Value>(values.length);
+                List<Value> valueList = new ArrayList<>(values.length);
                 for (Double value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
                 }
-                stubValues(valueList.toArray(new Value[valueList.size()])).of(property);
+                stubValues(valueList.toArray(new Value[0])).of(property);
             }
         };
     }
@@ -114,11 +112,11 @@ public abstract class PropertyStubbingOperation {
             @Override
             public void of(final Property property) throws RepositoryException {
                 assertThat(values, notNullValue());
-                List<Value> valueList = new ArrayList<Value>(values.length);
+                List<Value> valueList = new ArrayList<>(values.length);
                 for (Calendar value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
                 }
-                stubValues(valueList.toArray(new Value[valueList.size()])).of(property);
+                stubValues(valueList.toArray(new Value[0])).of(property);
             }
         };
     }
@@ -128,11 +126,11 @@ public abstract class PropertyStubbingOperation {
             @Override
             public void of(final Property property) throws RepositoryException {
                 assertThat(values, notNullValue());
-                List<Value> valueList = new ArrayList<Value>(values.length);
+                List<Value> valueList = new ArrayList<>(values.length);
                 for (Boolean value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
                 }
-                stubValues(valueList.toArray(new Value[valueList.size()])).of(property);
+                stubValues(valueList.toArray(new Value[0])).of(property);
             }
         };
     }
@@ -142,25 +140,11 @@ public abstract class PropertyStubbingOperation {
             @Override
             public void of(final Property property) throws RepositoryException {
                 assertThat(values, notNullValue());
-                List<Value> valueList = new ArrayList<Value>(values.length);
+                List<Value> valueList = new ArrayList<>(values.length);
                 for (Binary value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
                 }
-                stubValues(valueList.toArray(new Value[valueList.size()])).of(property);
-            }
-        };
-    }
-
-    public static PropertyStubbingOperation stubValues(final InputStream... values) {
-        return new PropertyStubbingOperation() {
-            @Override
-            public void of(final Property property) throws RepositoryException {
-                assertThat(values, notNullValue());
-                List<Value> valueList = new ArrayList<Value>(values.length);
-                for (InputStream value : values) {
-                    valueList.add(ValueMockUtils.mockValue(value));
-                }
-                stubValues(valueList.toArray(new Value[valueList.size()])).of(property);
+                stubValues(valueList.toArray(new Value[0])).of(property);
             }
         };
     }
@@ -194,14 +178,11 @@ public abstract class PropertyStubbingOperation {
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                doAnswer(new Answer<Object>() {
-                    @Override
-                    public Object answer(final InvocationOnMock invocation) throws RepositoryException {
-                        Object[] args = invocation.getArguments();
-                        ItemVisitor visitor = (ItemVisitor) args[0];
-                        visitor.visit((Property) invocation.getMock());
-                        return null;
-                    }
+                doAnswer((Answer<Object>) invocation -> {
+                    Object[] args = invocation.getArguments();
+                    ItemVisitor visitor = (ItemVisitor) args[0];
+                    visitor.visit((Property) invocation.getMock());
+                    return null;
                 }).when(property).accept(any(ItemVisitor.class));
             }
         };

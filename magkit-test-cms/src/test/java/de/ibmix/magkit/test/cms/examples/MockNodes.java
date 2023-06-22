@@ -45,8 +45,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
  *
- * @author wolf.bubenik
- * @since 29.01.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 29.01.2016.
  */
 //CHECKSTYLE:OFF
 public class MockNodes {
@@ -64,6 +64,9 @@ public class MockNodes {
     }
 
 
+    /**
+     * This test demonstrates, how to create a mock Node hierarchy using the MagnoliaNodeMockUtils of the Magkit.
+     */
     @Test
     public void mockMockitoNodeWithPath() throws RepositoryException {
         // What you do: Just mock the node for the desired workspace
@@ -122,13 +125,15 @@ public class MockNodes {
         assertThat(sessionRoot.getDepth(), is(0));
         assertThat(sessionRoot.hasNodes(), is(true));
 
-        assertThat(child.getAncestor(3), is((Item) child));
-        assertThat(child.getAncestor(2), is((Item) parent));
-        assertThat(child.getAncestor(1), is((Item) root));
-        assertThat(child.getAncestor(0), is((Item) sessionRoot));
+        assertThat(child.getAncestor(3), is(child));
+        assertThat(child.getAncestor(2), is(parent));
+        assertThat(child.getAncestor(1), is(root));
+        assertThat(child.getAncestor(0), is(sessionRoot));
     }
 
-
+    /**
+     * This test demonstrates, how to create a mock Node hierarchy using the Magnolia NodeTestUtil.
+     */
     @Test
     public void mockMagnoliaNodeWithPath() throws RepositoryException, IOException {
         // What you do: Just mock the node for the desired workspace
@@ -139,60 +144,60 @@ public class MockNodes {
 
         // And what ypu get:
         // basic node properties:
-//        assertThat(child.getName(), is("child"));
-//        assertThat(child.getPath(), is("/root/parent/child"));
-//        assertThat(child.getDepth(), is(3));
-//        assertThat(child.hasNodes(), is(false));
-//        // Magnolia mocks appear to be inconsistent here: We have one property "jcr:primaryType" but no properties..
-//        // ... but this may be correct if the magnolia Node implementation filters the node properties.
-//        //  However, I cannot see anything like this in the jackrabbit Node implementation.
-//        assertThat(child.getProperties().getSize(), is(0L));
-//        assertThat(child.hasProperties(), is(false));
-//        assertThat(child.hasProperty("jcr:primaryType"), is(false));
-//        // ... with default value "mgnl:contentNode"
-//        assertThat(child.getProperty("jcr:primaryType").getString(), is("mgnl:contentNode"));
-//        assertThat(child.getPrimaryNodeType().getName(), is("mgnl:contentNode"));
-//        assertThat(child.isNodeType(NodeTypes.ContentNode.NAME), is(true));
-//
-//        // Session
-//        Session session = child.getSession();
-//        assertThat(session, notNullValue());
-//        assertThat(session.getWorkspace().getName(), is("testWorkspace"));
-//        assertThat(session.getNode("/root/parent/child"), is(child));
-//        // We do not get the same instance here, but same values
-//        assertThat(session.getProperty("/root/parent/child/jcr:primaryType").getString(), is(child.getProperty("jcr:primaryType").getString()));
-//
-//        // hierarchy
-//        Node parent = child.getParent();
-//        assertThat(parent, notNullValue());
-//        assertThat(parent.getPath(), is("/root/parent"));
-//        assertThat(parent.getDepth(), is(2));
-//        assertThat(parent.hasNodes(), is(true));
-//        assertThat(parent.hasNode("child"), is(true));
-//        assertThat(parent.getNode("child"), is(child));
-//        assertThat(parent.getProperty("child/jcr:primaryType"), notNullValue());
-//
-//        Node root = parent.getParent();
-//        assertThat(root, notNullValue());
-//        assertThat(root.getPath(), is("/root"));
-//        assertThat(root.getDepth(), is(1));
-//        assertThat(root.hasNodes(), is(true));
-//        assertThat(root.hasNode("parent"), is(true));
-//        assertThat(root.getNode("parent"), is(parent));
-//        assertThat(root.getProperty("parent/jcr:primaryType"), notNullValue());
-//        assertThat(root.hasNode("parent/child"), is(true));
-//        assertThat(root.getNode("parent/child"), is(child));
-//        assertThat(root.getProperty("parent/child/jcr:primaryType"), notNullValue());
-//
-//        Node sessionRoot = root.getParent();
-//        assertThat(sessionRoot, notNullValue());
-//        assertThat(sessionRoot.getPath(), is("/"));
-//        assertThat(sessionRoot.getDepth(), is(0));
-//        assertThat(sessionRoot.hasNodes(), is(true));
-//
-//        assertThat(child.getAncestor(3), is((Item) child));
-//        assertThat(child.getAncestor(2), is((Item) parent));
-//        assertThat(child.getAncestor(1), is((Item) root));
-//        assertThat(child.getAncestor(0), is((Item) sessionRoot));
+        assertThat(child.getName(), is("child"));
+        assertThat(child.getPath(), is("/root/parent/child"));
+        assertThat(child.getDepth(), is(3));
+        assertThat(child.hasNodes(), is(false));
+        // Magnolia mocks appear to be inconsistent here: We have one property "jcr:primaryType" but no properties..
+        // ... but this may be correct if the magnolia Node implementation filters the node properties.
+        //  However, I cannot see anything like this in the jackrabbit Node implementation.
+        assertThat(child.getProperties().getSize(), is(0L));
+        assertThat(child.hasProperties(), is(false));
+        assertThat(child.hasProperty("jcr:primaryType"), is(false));
+        // ... with default value "mgnl:contentNode"
+        assertThat(child.getProperty("jcr:primaryType").getString(), is("mgnl:contentNode"));
+        assertThat(child.getPrimaryNodeType().getName(), is("mgnl:contentNode"));
+        assertThat(child.isNodeType(NodeTypes.ContentNode.NAME), is(true));
+
+        // Session
+        Session session = child.getSession();
+        assertThat(session, notNullValue());
+        assertThat(session.getWorkspace().getName(), is("testWorkspace"));
+        assertThat(session.getNode("/root/parent/child"), is(child));
+        // We do not get the same instance here, but same values
+        assertThat(session.getProperty("/root/parent/child/jcr:primaryType").getString(), is(child.getProperty("jcr:primaryType").getString()));
+
+        // hierarchy
+        Node parent = child.getParent();
+        assertThat(parent, notNullValue());
+        assertThat(parent.getPath(), is("/root/parent"));
+        assertThat(parent.getDepth(), is(2));
+        assertThat(parent.hasNodes(), is(true));
+        assertThat(parent.hasNode("child"), is(true));
+        assertThat(parent.getNode("child"), is(child));
+        assertThat(parent.getProperty("child/jcr:primaryType"), notNullValue());
+
+        Node root = parent.getParent();
+        assertThat(root, notNullValue());
+        assertThat(root.getPath(), is("/root"));
+        assertThat(root.getDepth(), is(1));
+        assertThat(root.hasNodes(), is(true));
+        assertThat(root.hasNode("parent"), is(true));
+        assertThat(root.getNode("parent"), is(parent));
+        assertThat(root.getProperty("parent/jcr:primaryType"), notNullValue());
+        assertThat(root.hasNode("parent/child"), is(true));
+        assertThat(root.getNode("parent/child"), is(child));
+        assertThat(root.getProperty("parent/child/jcr:primaryType"), notNullValue());
+
+        Node sessionRoot = root.getParent();
+        assertThat(sessionRoot, notNullValue());
+        assertThat(sessionRoot.getPath(), is("/"));
+        assertThat(sessionRoot.getDepth(), is(0));
+        assertThat(sessionRoot.hasNodes(), is(true));
+
+        assertThat(child.getAncestor(3), is(child));
+        assertThat(child.getAncestor(2), is(parent));
+        assertThat(child.getAncestor(1), is(root));
+        assertThat(child.getAncestor(0), is(sessionRoot));
     }
 }

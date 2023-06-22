@@ -38,10 +38,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * Compare Magnolia JCR Mock-Objects with this API.
+ * Compare Magnolia JCR Mock-Objects with ibmix MockUtils.
  *
- * @author wolf.bubenik
- * @since 18.02.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 18.02.2016.
  */
 public class MockComponents {
 
@@ -50,36 +50,41 @@ public class MockComponents {
         ContextMockUtils.cleanContext();
     }
 
-    // Die DamTemplatingFunctions-Instanz wird von Magnolia im guice IoC container gemanaged und in unsere Klasse injeziert.
+    /**
+     * This test demonstrates, how to create a mock af any class and get it injected into another class using the ComponentsMockUtils of the Magkit.
+     */
     @Test
     public void mockMagkitMagnoliaComponent() {
-        // 1. Mock-Instanz der DamTemplatingFunctions erzeugen und als Magnolia Component registrieren:
+        // 1. Create a mock instance of the DamTemplatingFunctions and register it as Magnolia Component:
         DamTemplatingFunctions dtf = ComponentsMockUtils.mockComponentInstance(DamTemplatingFunctions.class);
 
-        // Jetzt können wir den DamTemplatingFunctions-Mock direkt über die Components beziehen...
+        // Now we can access this DamTemplatingFunctions-mock directly from magnolia Components ...
         assertThat(Components.getComponent(DamTemplatingFunctions.class), is(dtf));
 
-        // 2. ... oder beim Erzeugen unserer Klasse in den annotierten Constructor injezieren lassen:
+        // 2. ... or have it injected into another class that is managed by the Magnolia Components:
         ServiceWithInjectedDamTemplatingFunctions service = Components.getComponentProvider().newInstance(ServiceWithInjectedDamTemplatingFunctions.class);
         assertThat(service.getDtf(), is(dtf));
-        // Injection geht nur über den Constructor.
-        // Wir verwenden hier den MockComponentProvider von Magnolia. Dieser unterstützt nicht Injection in annotierte Methoden und Felder.
+        // Note, that injection only works using the class constructor.
+        // Field injection is not supported by the Magnolia MockComponentProvider - the common base of both MockUtils.
     }
 
+    /**
+     * This test demonstrates, how to create a mock af any class and get it injected into another class using the Magnolia ComponentsTestUtil.
+     */
     @Test
     public void mockMagnoliaTestComponent() {
-        // 1. Mock-Instanz der DamTemplatingFunctions erzeugen und als Magnolia Component registrieren:
+        // 1. Create a mock instance of the DamTemplatingFunctions and register it as Magnolia Component:
         DamTemplatingFunctions dtf = Mockito.mock(DamTemplatingFunctions.class);
         ComponentsTestUtil.setInstance(DamTemplatingFunctions.class, dtf);
 
-        /// Jetzt können wir den DamTemplatingFunctions-Mock direkt über die Components beziehen...
+        /// Now we can access this DamTemplatingFunctions-mock directly from magnolia Components ...
         assertThat(Components.getComponent(DamTemplatingFunctions.class), is(dtf));
 
-        // 2. ... oder beim Erzeugen unserer Klasse in den annotierten Constructor injezieren lassen:
+        // 2. ... or have it injected into another class that is managed by the Magnolia Components:
         ServiceWithInjectedDamTemplatingFunctions service = Components.getComponentProvider().newInstance(ServiceWithInjectedDamTemplatingFunctions.class);
         assertThat(service.getDtf(), is(dtf));
-        // Injection geht nur über den Constructor.
-        // Der Magnolia MockComponentProvider unterstützt nicht Injection in annotierte Methoden und Felder.
+        // Again, injection only works using the class constructor.
+        // Field injection is not supported by the Magnolia MockComponentProvider - the common base of both MockUtils.
     }
 
     @After
@@ -89,7 +94,7 @@ public class MockComponents {
         MgnlContext.setInstance(null);
     }
 
-    // Scenario: Wir wollen eine Klasse testen, die DamTemplatingFunctions verwendet.
+    // Scenario: We want to test a class that internally uses the DamTemplatingFunctions.
     private class ServiceWithInjectedDamTemplatingFunctions {
         private DamTemplatingFunctions _dtf;
 

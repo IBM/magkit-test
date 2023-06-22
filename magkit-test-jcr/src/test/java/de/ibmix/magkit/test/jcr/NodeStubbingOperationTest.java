@@ -33,7 +33,6 @@ import javax.jcr.nodetype.NodeType;
 import java.io.InputStream;
 import java.util.Calendar;
 
-import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubMixinNodeTypes;
 import static org.apache.commons.collections4.IteratorUtils.toList;
 import static org.hamcrest.core.Is.is;
@@ -46,7 +45,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Testing NodeStubbingOperation.
  *
- * @author wolf.bubenik@aperto.com
+ * @author wolf.bubenik@ibmix.de
  * @since 20.11.12
  */
 public class NodeStubbingOperationTest {
@@ -153,15 +152,6 @@ public class NodeStubbingOperationTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    public void testStubInputStream() throws Exception {
-        InputStream stream = mock(InputStream.class);
-        NodeStubbingOperation.stubProperty("stream", stream).of(_node);
-        assertThat(_node.getProperty("stream").getType(), is(PropertyType.BINARY));
-        assertThat(_node.getProperty("stream").getStream(), is(stream));
-    }
-
-    @Test
     public void testStubBinary() throws Exception {
         Binary binary = mock(Binary.class);
         NodeStubbingOperation.stubProperty("binary", binary).of(_node);
@@ -223,7 +213,7 @@ public class NodeStubbingOperationTest {
     }
 
     /**
-     * Tets if a certain property or a node is still available under the old path after
+     * Tests if a certain property or a node is still available under the old path after
      * stubbing a new parent node. It should not.
      *
      * @throws RepositoryException

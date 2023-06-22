@@ -29,7 +29,7 @@ import static org.mockito.Mockito.mock;
  * Utility class for mocking a javax.jcr.Repository.
  * Repository mock ich stored in a ThreadLocale instance and holds complete jcr context (mocked session, workspace...).
  * <p/>
- * !! Note that you have to call RepositoryMockUtils.cleanRepository() to to get new mock instances of Repository, Session, Workspace, Node... . !!
+ * !! Note that you have to call RepositoryMockUtils.cleanRepository() to get new mock instances of Repository, Session, Workspace, Node... . !!
  *
  * @author wolf.bubenik
  * @since 04.02.14
@@ -38,7 +38,7 @@ public final class RepositoryMockUtils {
     private RepositoryMockUtils() {
     }
 
-    private static final ThreadLocal<Repository> REPOSITORY = new ThreadLocal<Repository>();
+    private static final ThreadLocal<Repository> REPOSITORY = new ThreadLocal<>();
 
     public static Repository mockRepository(RepositoryStubbingOperation... stubbings) throws RepositoryException {
         Repository result = REPOSITORY.get();

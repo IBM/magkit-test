@@ -28,7 +28,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Utility class to create Mockito mocks of a magnolia ModuleDefinition.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenikLibmix.de
  */
 public final class ModuleDefinitionMockUtils {
 

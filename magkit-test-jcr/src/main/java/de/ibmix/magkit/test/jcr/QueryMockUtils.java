@@ -43,14 +43,13 @@ import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubbLanguage;
 import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubbResult;
 import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubbStatement;
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
-import static de.ibmix.magkit.test.jcr.ValueMockUtils.mockValue;
 import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -139,7 +138,7 @@ public final class QueryMockUtils {
      * @return a Mockito mock of the javax.jcr.query.Query interface
      * @throws RepositoryException never, declared only to match interfaces
      */
-    public static Query mockQuery(final String workspace, final String language, final String statement, QueryStubbingOperation... stubbings) throws RepositoryException {
+    public static Query mockQueryWithManager(final String workspace, final String language, final String statement, QueryStubbingOperation... stubbings) throws RepositoryException {
         Query q = mockQuery(language, statement, stubbings);
         mockQueryManager(workspace, QueryManagerStubbingOperation.stubQuery(q));
         return q;
@@ -216,7 +215,7 @@ public final class QueryMockUtils {
      */
     public static JackrabbitQueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Node... results) throws RepositoryException {
         JackrabbitQueryResult result = mockQueryResult(results);
-        mockQuery(workspace, queryLang, queryStatement, stubbResult(result));
+        mockQueryWithManager(workspace, queryLang, queryStatement, stubbResult(result));
         return result;
     }
 
@@ -232,25 +231,8 @@ public final class QueryMockUtils {
      */
     public static JackrabbitQueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Row... results) throws RepositoryException {
         JackrabbitQueryResult result = mockQueryResult(results);
-        mockQuery(workspace, queryLang, queryStatement, stubbResult(result));
+        mockQueryWithManager(workspace, queryLang, queryStatement, stubbResult(result));
         return result;
-    }
-
-    /**
-     * Same as mockQueryResult() but without returning the QueryResult.
-     *
-     * @param workspace the workspace of the session to mock a QueryManager for
-     * @param queryLang the query language, e.g. "SQL-2", "SQL" or "XPATH"
-     * @param queryStatement the statement of the Query that returns this result
-     * @param results the Nodes to be returned as query result
-     * @throws RepositoryException never, declared only to match interfaces
-     * @deprecated use mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Node... results)
-     */
-    @Deprecated
-    public static void mockQuery(final String workspace, final String queryLang, final String queryStatement, final Node... results) throws RepositoryException {
-        mockQueryManager(workspace,
-            QueryManagerStubbingOperation.stubQuery(queryLang, queryStatement, stubbResult(results))
-        );
     }
 
     public static Row mockRow(String selector, String value, double score) throws RepositoryException {

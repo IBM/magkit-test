@@ -33,7 +33,7 @@ import java.util.HashMap;
 import static de.ibmix.magkit.test.cms.site.SiteManagerStubbingOperation.stubSite;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

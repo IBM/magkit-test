@@ -48,7 +48,7 @@ public class MessagesWrapper {
         return get(key, _messages);
     }
 
-    public String get(String key, List args) {
+    public String get(String key, List<Object> args) {
         return get(key, args, _messages);
     }
 
@@ -56,7 +56,7 @@ public class MessagesWrapper {
         return get(key, MessagesManager.getMessages(basename, _locale));
     }
 
-    public String get(String key, List args, String basename) {
+    public String get(String key, List<Object> args, String basename) {
         return get(key, args, MessagesManager.getMessages(basename, _locale));
     }
 
@@ -68,11 +68,11 @@ public class MessagesWrapper {
         return getWithDefault(key, defaultMsg, MessagesManager.getMessages(basename, _locale));
     }
 
-    public String getWithDefault(String key, List args, String defaultMsg) {
+    public String getWithDefault(String key, List<Object> args, String defaultMsg) {
         return getWithDefault(key, args, defaultMsg, _messages);
     }
 
-    public String getWithDefault(String key, List args, String defaultMsg, String basename) {
+    public String getWithDefault(String key, List<Object> args, String defaultMsg, String basename) {
         return getWithDefault(key, defaultMsg, MessagesManager.getMessages(basename, _locale));
     }
 
@@ -80,17 +80,15 @@ public class MessagesWrapper {
         return messages.get(key);
     }
 
-    protected String get(String key, List args, Messages messages) {
-        Object[] argsArray = new Object[args.size()];
-        return messages.get(key, args.toArray(argsArray));
+    protected String get(String key, List<Object> args, Messages messages) {
+        return messages.get(key, args.toArray(new Object[0]));
     }
 
     protected String getWithDefault(String key, String defaultMsg, Messages messages) {
         return messages.getWithDefault(key, defaultMsg);
     }
 
-    protected String getWithDefault(String key, List args, String defaultMsg, Messages messages) {
-        Object[] argsArray = new Object[args.size()];
-        return messages.getWithDefault(key, args.toArray(argsArray), defaultMsg);
+    protected String getWithDefault(String key, List<Object> args, String defaultMsg, Messages messages) {
+        return messages.getWithDefault(key, args.toArray(new Object[0]), defaultMsg);
     }
 }

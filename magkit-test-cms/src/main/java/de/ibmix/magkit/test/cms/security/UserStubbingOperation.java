@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.User;
 
 import java.util.Arrays;
@@ -27,16 +28,17 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**
- * The StubbingOperations for info.magnolia.cms.security.User mocks.
+ * Utility class that provides factory methods for UserStubbingOperation.
+ * Stubbing operations to be used as parameters in SecurityMockUtils.mockUser(...).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 2032-06-16
+ * @since 2023-06-16
  */
-public abstract class UserStubbingOperation {
+public abstract class UserStubbingOperation implements StubbingOperation<User> {
 
     public static UserStubbingOperation stubbName(final String name) {
         return new UserStubbingOperation() {
@@ -123,5 +125,5 @@ public abstract class UserStubbingOperation {
         };
     }
 
-    public abstract void of(User user);
+    private UserStubbingOperation() {}
 }

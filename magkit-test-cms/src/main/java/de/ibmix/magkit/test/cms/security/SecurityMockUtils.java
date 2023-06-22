@@ -21,24 +21,33 @@ package de.ibmix.magkit.test.cms.security;
  */
 
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
+import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
+import info.magnolia.context.WebContext;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.jcr.RepositoryException;
 import java.util.Arrays;
 import java.util.UUID;
 
+import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
+import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAccessManager;
+import static info.magnolia.repository.RepositoryConstants.WEBSITE;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: comment.
+ * An util class to create Mockito mocks of magnolia security classes.
  *
- * @author wolf.bubenik
- * @since 30.04.13
+ * @author wolf.bubenik@ibmix.de
+ * @since 30.04.2013
  */
 public final class SecurityMockUtils extends ComponentsMockUtils {
 
@@ -48,6 +57,25 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
 
     public static SecuritySupport mockSecuritySupport() {
         return mockComponentInstance(SecuritySupport.class);
+    }
+
+    public static AccessManager mockAccessManager(AccessManagerStubbingOperation... stubbings) throws RepositoryException {
+        return mockAccessManager(WEBSITE, stubbings);
+    }
+
+    public static AccessManager mockAccessManager(String repositoryId, AccessManagerStubbingOperation... stubbings) throws RepositoryException {
+        assertThat(stubbings, notNullValue());
+        WebContext context = mockWebContext();
+        String repoId = isBlank(repositoryId) ? WEBSITE : repositoryId;
+        AccessManager am = context.getAccessManager(repoId);
+        if (am == null) {
+            am = mock(AccessManager.class);
+            stubAccessManager(repositoryId, am).of(context);
+        }
+        for (AccessManagerStubbingOperation stubbing : stubbings) {
+            stubbing.of(am);
+        }
+        return am;
     }
 
     public static UserManager mockUserManager(String realm) {

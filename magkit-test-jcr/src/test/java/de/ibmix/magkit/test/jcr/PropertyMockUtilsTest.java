@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import javax.jcr.Binary;
-import javax.jcr.Item;
 import javax.jcr.ItemVisitor;
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -38,8 +37,6 @@ import java.util.Calendar;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
-import static de.ibmix.magkit.test.jcr.PropertyMockUtils.mockProperty;
-import static de.ibmix.magkit.test.jcr.ValueMockUtils.mockValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -51,7 +48,7 @@ import static org.mockito.Mockito.verify;
 /**
  * Testing PropertyMockUtils.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 13.11.12
  */
 public class PropertyMockUtilsTest {
@@ -81,20 +78,6 @@ public class PropertyMockUtilsTest {
         assertThat(p.getStream(), is(bin1Stream));
         assertThat(p.getValue(), notNullValue());
         assertThat(p.getValue().getBinary(), is(bin1));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(2));
-    }
-
-    @Test
-    public void testMockPropertyInputStream() throws Exception {
-        InputStream bin1 = mock(InputStream.class);
-        InputStream bin2 = mock(InputStream.class);
-        Property p = PropertyMockUtils.mockProperty("name", bin1, bin2);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.BINARY));
-        assertThat(p.getStream(), is(bin1));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getStream(), is(bin1));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(2));
     }
@@ -275,8 +258,8 @@ public class PropertyMockUtilsTest {
         Session session = node3.getSession();
         assertThat(session.getProperty("/root/level1/level2/level3/prop1"), is(prop1));
         assertThat(session.getProperty("/root/level1/level2/level3/prop2"), is(prop2));
-        assertThat(session.getItem("/root/level1/level2/level3/prop1"), is((Item) prop1));
-        assertThat(session.getItem("/root/level1/level2/level3/prop2"), is((Item) prop2));
+        assertThat(session.getItem("/root/level1/level2/level3/prop1"), is(prop1));
+        assertThat(session.getItem("/root/level1/level2/level3/prop2"), is(prop2));
 
         assertThat(session.itemExists("/root/level1/level2/level3/prop1"), is(true));
         assertThat(session.itemExists("/root/level1/level2/level3/prop2"), is(true));
@@ -294,7 +277,7 @@ public class PropertyMockUtilsTest {
         assertThat(session.getProperty("/root/level1/level2/level3/prop1"), nullValue());
         assertThat(session.getProperty("/root/level1/level2/level3/prop2"), is(prop2));
         assertThat(session.getItem("/root/level1/level2/level3/prop1"), nullValue());
-        assertThat(session.getItem("/root/level1/level2/level3/prop2"), is((Item) prop2));
+        assertThat(session.getItem("/root/level1/level2/level3/prop2"), is(prop2));
 
         assertThat(session.itemExists("/root/level1/level2/level3/prop1"), is(false));
         assertThat(session.itemExists("/root/level1/level2/level3/prop2"), is(true));

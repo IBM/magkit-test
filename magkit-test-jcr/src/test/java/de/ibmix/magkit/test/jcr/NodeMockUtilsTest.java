@@ -36,9 +36,6 @@ import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import java.util.Calendar;
 
-import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
-import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubNode;
-import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -50,7 +47,7 @@ import static org.mockito.Mockito.verify;
 /**
  * Test the NodeMockUtils test class.
  *
- * @author wolf.bubenik@aperto.com
+ * @author wolf.bubenik@ibmix.de
  * @since 31.10.2012
  */
 public class NodeMockUtilsTest {
@@ -133,8 +130,8 @@ public class NodeMockUtilsTest {
         assertThat(root.getNodes(), notNullValue());
         assertThat(root.getNodes().hasNext(), is(true));
         assertThat((Node) root.getNodes().next(), is(section));
-        assertThat(root.getAncestor(0), is((Item) sessionRoot));
-        assertThat(root.getAncestor(1), is((Item) root));
+        assertThat(root.getAncestor(0), is(sessionRoot));
+        assertThat(root.getAncestor(1), is(root));
         assertThat(root.hasProperty("rootProp"), is(true));
         assertThat(root.getProperty("rootProp").getString(), is("rootValue"));
         assertThat(root.hasNode("section"), is(true));
@@ -154,9 +151,9 @@ public class NodeMockUtilsTest {
         assertThat(section.getNodes(), notNullValue());
         assertThat(section.getNodes().hasNext(), is(true));
         assertThat((Node) section.getNodes().next(), is(page));
-        assertThat(section.getAncestor(0), is((Item) sessionRoot));
-        assertThat(section.getAncestor(1), is((Item) root));
-        assertThat(section.getAncestor(2), is((Item) section));
+        assertThat(section.getAncestor(0), is(sessionRoot));
+        assertThat(section.getAncestor(1), is(root));
+        assertThat(section.getAncestor(2), is(section));
         assertThat(section.hasProperty("sectionProp"), is(true));
         assertThat(section.getProperty("sectionProp").getString(), is("sectionValue"));
         assertThat(section.hasNode("page"), is(true));
@@ -173,10 +170,10 @@ public class NodeMockUtilsTest {
         assertThat(page.getParent(), is(section));
         assertThat(page.getNodes(), notNullValue());
         assertThat(page.getNodes().hasNext(), is(false));
-        assertThat(page.getAncestor(0), is((Item) sessionRoot));
-        assertThat(page.getAncestor(1), is((Item) root));
-        assertThat(page.getAncestor(2), is((Item) section));
-        assertThat(page.getAncestor(3), is((Item) page));
+        assertThat(page.getAncestor(0), is(sessionRoot));
+        assertThat(page.getAncestor(1), is(root));
+        assertThat(page.getAncestor(2), is(section));
+        assertThat(page.getAncestor(3), is(page));
         assertThat(page.hasProperty("pageProp"), is(true));
         assertThat(page.getProperty("pageProp").getString(), is("pageValue"));
     }

@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -42,7 +41,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  */
 public class SessionStubbingOperationTest {
 
@@ -81,7 +80,7 @@ public class SessionStubbingOperationTest {
      * Test of stubItem method, of class SessionStubbingOperation.
      */
     @Test
-    public void testStubItem() throws PathNotFoundException, RepositoryException {
+    public void testStubItem() throws RepositoryException {
         assertThat(_session.getItem("path/name1"), nullValue());
         assertThat(_session.getNodeByIdentifier("uuid-1"), nullValue());
 
@@ -97,7 +96,7 @@ public class SessionStubbingOperationTest {
         when(node.isNode()).thenReturn(Boolean.TRUE);
         when(node.getPath()).thenReturn("path/name2");
         SessionStubbingOperation.stubItem(node).of(_session);
-        assertThat(_session.getItem("path/name2"), is((Item) node));
+        assertThat(_session.getItem("path/name2"), is(node));
         assertThat(_session.getNodeByIdentifier("uuid-2"), is(node));
     }
 

@@ -20,25 +20,25 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.beans.config.ServerConfiguration;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
  * TODO: comment.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 11.01.2011
  */
-public abstract class ServerConfigurationStubbingOperation {
-
-    public abstract void of(ServerConfiguration config);
+public abstract class ServerConfigurationStubbingOperation implements StubbingOperation<ServerConfiguration> {
 
     public static ServerConfigurationStubbingOperation stubDefaultExtension(final String value) {
         return new ServerConfigurationStubbingOperation() {
             public void of(ServerConfiguration config) {
-                assertNotNull(config);
+                assertThat(config, notNullValue());
                 when(config.getDefaultExtension()).thenReturn(value);
             }
         };
@@ -47,7 +47,7 @@ public abstract class ServerConfigurationStubbingOperation {
     public static ServerConfigurationStubbingOperation stubDefaultBaseUrl(final String value) {
         return new ServerConfigurationStubbingOperation() {
             public void of(ServerConfiguration config) {
-                assertNotNull(config);
+                assertThat(config, notNullValue());
                 when(config.getDefaultBaseUrl()).thenReturn(value);
             }
         };
@@ -56,7 +56,7 @@ public abstract class ServerConfigurationStubbingOperation {
     public static ServerConfigurationStubbingOperation stubIsAdmin(final boolean value) {
         return new ServerConfigurationStubbingOperation() {
             public void of(ServerConfiguration config) {
-                assertNotNull(config);
+                assertThat(config, notNullValue());
                 when(config.isAdmin()).thenReturn(value);
             }
         };

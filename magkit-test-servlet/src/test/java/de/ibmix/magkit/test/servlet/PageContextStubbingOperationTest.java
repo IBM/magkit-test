@@ -24,8 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -110,11 +108,11 @@ public class PageContextStubbingOperationTest {
     public void testStubHttpServletRequest() {
         HttpServletRequest request = mockHttpServletRequest();
         stubHttpServletRequest(request).of(_pageContext);
-        assertThat(_pageContext.getRequest(), is((ServletRequest) request));
+        assertThat(_pageContext.getRequest(), is(request));
 
         // test that the session provided with the request will be set to page context:
-        HttpServletRequestStubbingOperation.stubHttpSession("id").of((HttpServletRequest) request);
-        stubHttpServletRequest((HttpServletRequest) request).of(_pageContext);
+        HttpServletRequestStubbingOperation.stubHttpSession("id").of(request);
+        stubHttpServletRequest(request).of(_pageContext);
         assertThat(_pageContext.getSession(), notNullValue());
         assertThat(_pageContext.getSession().getId(), is("id"));
 
@@ -139,8 +137,8 @@ public class PageContextStubbingOperationTest {
 
     @Test
     public void testStubHttpServletResponse() {
-        ServletResponse response = mockHttpServletResponse();
-        stubHttpServletResponse((HttpServletResponse) response).of(_pageContext);
+        HttpServletResponse response = mockHttpServletResponse();
+        stubHttpServletResponse(response).of(_pageContext);
         assertThat(_pageContext.getResponse(), is(response));
     }
 

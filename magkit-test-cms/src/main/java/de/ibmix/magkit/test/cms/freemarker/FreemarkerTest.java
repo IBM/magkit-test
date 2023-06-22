@@ -21,7 +21,6 @@ package de.ibmix.magkit.test.cms.freemarker;
  */
 
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
-import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.cms.core.Channel;
@@ -61,6 +60,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
+import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAggregationState;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -145,7 +146,7 @@ public abstract class FreemarkerTest {
         _aggregationState.setChannel(new Channel());
         _aggregationState.setLocale(getLocale());
         _aggregationState.setSite(_site);
-        ContextMockUtils.register(_aggregationState);
+        mockWebContext(stubAggregationState(_aggregationState));
         final RenderExceptionHandler exceptionHandler = new RenderExceptionHandler() {
             @Override
             public void handleException(RenderException renderException, RenderingContext renderingContext) {
@@ -160,12 +161,7 @@ public abstract class FreemarkerTest {
 
         _renderingCtx = new AggregationStateBasedRenderingContext(_aggregationState, exceptionHandler);
 
-        final Provider<AggregationState> aggregationStateProvider = new Provider<AggregationState>() {
-            @Override
-            public AggregationState get() {
-                return _aggregationState;
-            }
-        };
+        final Provider<AggregationState> aggregationStateProvider = () -> _aggregationState;
         _templatingFunctions = new TemplatingFunctions(aggregationStateProvider);
         ComponentsMockUtils.getComponentProvider().setInstance(TemplatingFunctions.class, _templatingFunctions);
     }

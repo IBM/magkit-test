@@ -20,8 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
-import de.ibmix.magkit.test.cms.templating.ThemeMockUtils;
-import de.ibmix.magkit.test.cms.templating.ThemeStubbingOperation;
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.module.site.Domain;
 import info.magnolia.module.site.Site;
@@ -33,18 +32,17 @@ import java.util.Map;
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: comment.
+ * Utility class that provides factory methods for SiteStubbingOperation.
+ * Stubbing operations to be used as parameters in SiteMockUtils.mock...(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 17.11.2010
  */
-public abstract class SiteStubbingOperation {
-
-    public abstract void of(Site site);
+public abstract class SiteStubbingOperation implements StubbingOperation<Site> {
 
     public static SiteStubbingOperation stubName(final String value) {
         return new SiteStubbingOperation() {

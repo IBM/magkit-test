@@ -20,14 +20,15 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
-import static de.ibmix.magkit.test.jcr.QueryMockUtils.mockQueryResult;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -36,8 +37,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 29.05.13
  */
-public abstract class QueryStubbingOperation {
-    public abstract void of(Query query) throws RepositoryException;
+public abstract class QueryStubbingOperation implements ExceptionStubbingOperation<Query, RepositoryException> {
 
     public static QueryStubbingOperation stubbLanguage(final String value) {
         return new QueryStubbingOperation() {

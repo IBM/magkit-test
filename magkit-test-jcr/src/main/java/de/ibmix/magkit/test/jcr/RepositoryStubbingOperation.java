@@ -20,12 +20,14 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
+
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -34,9 +36,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 04.02.14
  */
-public abstract class RepositoryStubbingOperation {
-
-    public abstract void of(Repository repository) throws RepositoryException;
+public abstract class RepositoryStubbingOperation implements ExceptionStubbingOperation<Repository, RepositoryException> {
 
     /**
      * Creates a RepositoryStubbingOperation that stubbes the login()- methods of a Repository mock.

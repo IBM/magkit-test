@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
 import info.magnolia.cms.core.AggregationState;
@@ -30,10 +31,9 @@ import javax.jcr.RepositoryException;
 import java.util.Locale;
 
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
-import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAttribute;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,9 +44,7 @@ import static org.mockito.Mockito.when;
  * @author wolf.bubenik
  * @since 01.09.2010
  */
-public abstract class AggregationStateStubbingOperation {
-
-    public abstract void of(AggregationState state) throws RepositoryException;
+public abstract class AggregationStateStubbingOperation implements ExceptionStubbingOperation<AggregationState, RepositoryException> {
 
     /**
      * Creates an AggregationStateStubbingOperation that stubs method getMainContentNode() to return a given Node.

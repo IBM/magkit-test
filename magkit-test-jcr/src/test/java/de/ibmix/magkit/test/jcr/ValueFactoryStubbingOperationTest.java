@@ -26,7 +26,6 @@ import org.junit.Test;
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import java.util.Calendar;
-import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -36,7 +35,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Testing ValueFactoryStubbingOperation.
  *
- * @author wolf
+ * @author wolf.bubenik@ibmix.de
  */
 public class ValueFactoryStubbingOperationTest {
 
@@ -79,12 +78,10 @@ public class ValueFactoryStubbingOperationTest {
     @Test
     public void testStubCreateValueCalendar() throws RepositoryException {
         Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance(Locale.ITALY);
         assertThat(_factory.createValue(cal1), nullValue());
 
         ValueFactoryStubbingOperation.stubCreateValue(cal1).of(_factory);
         assertThat(_factory.createValue(cal1), notNullValue());
-        //assertThat(_factory.createValue(cal2), nullValue());
     }
 
     /**

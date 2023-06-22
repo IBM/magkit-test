@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.site.Site;
 import info.magnolia.module.site.SiteManager;
 import org.apache.commons.lang3.StringUtils;
@@ -30,29 +31,29 @@ import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockSite;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Site manager stubs.
+ * Utility class that provides factory methods for SiteManagerStubbingOperation.
+ * Stubbing operations to be used as parameters in SiteMockUtils.mockSiteManager(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 17.11.2010
  */
-public abstract class SiteManagerStubbingOperation {
-
-    public abstract void of(SiteManager manager) throws RepositoryException;
+public abstract class SiteManagerStubbingOperation implements StubbingOperation<SiteManager> {
 
     public static SiteManagerStubbingOperation stubCurrentSite(final String siteId, final SiteStubbingOperation... stubbings) throws RepositoryException {
-        Site site = SiteMockUtils.mockSite(siteId, stubbings);
+        Site site = mockSite(siteId, stubbings);
         return stubCurrentSite(site);
     }
 
     public static SiteManagerStubbingOperation stubCurrentSite(final Site site) {
         return new SiteManagerStubbingOperation() {
 
-            public void of(SiteManager manager) throws RepositoryException {
+            public void of(SiteManager manager) {
                 assertThat(manager, notNullValue());
                 when(manager.getCurrentSite()).thenReturn(site);
                 stubSite(site).of(manager);
@@ -61,14 +62,14 @@ public abstract class SiteManagerStubbingOperation {
     }
 
     public static SiteManagerStubbingOperation stubDefaultSite(final String siteId, final SiteStubbingOperation... stubbings) throws RepositoryException {
-        Site site = SiteMockUtils.mockSite(siteId, stubbings);
+        Site site = mockSite(siteId, stubbings);
         return stubDefaultSite(site);
     }
 
     public static SiteManagerStubbingOperation stubDefaultSite(final Site site) {
         return new SiteManagerStubbingOperation() {
 
-            public void of(SiteManager manager) throws RepositoryException {
+            public void of(SiteManager manager) {
                 assertThat(manager, notNullValue());
                 when(manager.getDefaultSite()).thenReturn(site);
                 stubSite(site).of(manager);
@@ -77,34 +78,38 @@ public abstract class SiteManagerStubbingOperation {
     }
 
     public static SiteManagerStubbingOperation stubAssignedSite(final Node content, final String siteId, final SiteStubbingOperation... stubbings) throws RepositoryException {
-        Site site = SiteMockUtils.mockSite(siteId, stubbings);
+        Site site = mockSite(siteId, stubbings);
         return stubAssignedSite(content, site);
     }
 
     public static SiteManagerStubbingOperation stubAssignedSite(final Node content, final Site site) {
         return new SiteManagerStubbingOperation() {
 
-            public void of(SiteManager manager) throws RepositoryException {
+            public void of(SiteManager manager) {
                 assertThat(manager, notNullValue());
                 when(manager.getAssignedSite(content)).thenReturn(site);
                 stubSite(site).of(manager);
-                NodeIterator children = content.getNodes();
-                while (children.hasNext()) {
-                    stubAssignedSite(children.nextNode(), site).of(manager);
+                try {
+                    NodeIterator children = content.getNodes();
+                    while (children.hasNext()) {
+                        stubAssignedSite(children.nextNode(), site).of(manager);
+                    }
+                } catch (RepositoryException e) {
+                    // ignore. Never thrown.
                 }
             }
         };
     }
 
     public static SiteManagerStubbingOperation stubAssignedSite(final String domain, final String uri, final String siteId, final SiteStubbingOperation... stubbings) throws RepositoryException {
-        Site site = SiteMockUtils.mockSite(siteId, stubbings);
+        Site site = mockSite(siteId, stubbings);
         return stubAssignedSite(domain, uri, site);
     }
 
     public static SiteManagerStubbingOperation stubAssignedSite(final String domain, final String uri, final Site site) {
         return new SiteManagerStubbingOperation() {
 
-            public void of(SiteManager manager) throws RepositoryException {
+            public void of(SiteManager manager) {
                 assertThat(manager, notNullValue());
                 when(manager.getAssignedSite(domain, uri)).thenReturn(site);
                 stubSite(site).of(manager);
@@ -113,7 +118,7 @@ public abstract class SiteManagerStubbingOperation {
     }
 
     public static SiteManagerStubbingOperation stubSite(final String siteId, final SiteStubbingOperation... stubbings) throws RepositoryException {
-        Site site = SiteMockUtils.mockSite(siteId, stubbings);
+        Site site = mockSite(siteId, stubbings);
         return stubSite(site);
     }
 

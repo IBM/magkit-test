@@ -61,8 +61,8 @@ import static org.junit.Assert.fail;
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
  *
- * @author wolf.bubenik
- * @since 17.02.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 17.02.2016.
  */
 //CHECKSTYLE:OFF
 public class MockProperties {
@@ -79,6 +79,9 @@ public class MockProperties {
         MgnlContext.setInstance(null);
     }
 
+    /**
+     * This test demonstrates, how to mock node properties using the MagnoliaNodeMockUtils of the Magkit.
+     */
     @Test
     public void mockMockitoNodeWithProperties() throws RepositoryException {
         // What you do...
@@ -141,10 +144,10 @@ public class MockProperties {
         assertThat(testNode.hasProperty("binary"), is(true));
         assertThat(testNode.getProperty("binary").getType(), is(PropertyType.BINARY));
         assertThat(testNode.getProperty("binary").getString(), is("test bytes"));
-        // Accessing Binary property values as date, double or long SHOULD result in a ValueFormatException, but DOES NOT:
-//        assertValueFormatExceptionForDate(testNode, "binary");
-//        assertValueFormatExceptionForDouble(testNode, "binary");
-//        assertValueFormatExceptionForLong(testNode, "binary");
+        // Accessing Binary property values as date, double or long result in a ValueFormatException.
+        assertValueFormatExceptionForDate(testNode, "binary");
+        assertValueFormatExceptionForDouble(testNode, "binary");
+        assertValueFormatExceptionForLong(testNode, "binary");
 
         assertThat(testNode.hasProperty("calendar"), is(true));
         assertThat(testNode.getProperty("calendar").getType(), is(PropertyType.DATE));
@@ -179,63 +182,64 @@ public class MockProperties {
         testNode.setProperty("calendar", now);
 
         // ... and what you get:
-//        assertThat(testNode.hasProperties(), is(true));
-//        // Here we have one Property less than expected!
-//        assertThat(testNode.getProperties().getSize(), is(6L));
-//
-//        assertThat(testNode.hasProperty("string"), is(true));
-//        assertThat(testNode.getProperty("string").getType(), is(PropertyType.STRING));
-//        assertThat(testNode.getProperty("string").getString(), is("testString"));
-//        assertThat(testNode.getProperty("string").getValue().getString(), is("testString"));
-//        // Accessing String property values as boolean results in a ValueFormatException:
-//        assertValueFormatExceptionForBoolean(testNode, "string");
-//        // Accessing String property values as date, double or long results in a ValueFormatException:
-//        assertValueFormatExceptionForDate(testNode, "string");
-//        assertValueFormatExceptionForDouble(testNode, "string");
-//        assertValueFormatExceptionForLong(testNode, "string");
-//
-//        assertThat(testNode.hasProperty("boolean"), is(true));
-//        assertThat(testNode.getProperty("boolean").getType(), is(PropertyType.BOOLEAN));
-//        assertThat(testNode.getProperty("boolean").getString(), is("true"));
-//        assertThat(testNode.getProperty("boolean").getBoolean(), is(true));
-//        // Accessing Boolean property values as date, double or long results in a ValueFormatException:
-//        assertValueFormatExceptionForDate(testNode, "boolean");
-//        assertValueFormatExceptionForDouble(testNode, "boolean");
-//        assertValueFormatExceptionForLong(testNode, "boolean");
-//
-//        assertThat(testNode.hasProperty("double"), is(true));
-//        assertThat(testNode.getProperty("double").getType(), is(PropertyType.DOUBLE));
-//        assertThat(testNode.getProperty("double").getString(), is("1.25"));
-//        assertThat(testNode.getProperty("double").getDouble(), is(1.25D));
-//        // Accessing Double property values as boolean, long or date results in a ValueFormatException:
-//        assertValueFormatExceptionForDate(testNode, "double");
-//        assertValueFormatExceptionForBoolean(testNode, "double");
-//        assertValueFormatExceptionForLong(testNode, "double");
-//
-//        assertThat(testNode.hasProperty("long"), is(true));
-//        assertThat(testNode.getProperty("long").getType(), is(PropertyType.LONG));
-//        assertThat(testNode.getProperty("long").getString(), is("123456"));
-//        assertThat(testNode.getProperty("long").getLong(), is(123456L));
-//        // Accessing Long property values as boolean, double or date results in a ValueFormatException:
-//        assertValueFormatExceptionForDate(testNode, "long");
-//        assertValueFormatExceptionForBoolean(testNode, "long");
-//        assertValueFormatExceptionForDouble(testNode, "long");
-//
-//        assertThat(testNode.hasProperty("binary"), is(true));
-//        assertThat(testNode.getProperty("binary").getType(), is(PropertyType.BINARY));
-//        assertThat(testNode.getProperty("binary").getString(), is("test bytes"));
-//        assertValueFormatExceptionForDate(testNode, "binary");
-//        assertValueFormatExceptionForDouble(testNode, "binary");
-//        assertValueFormatExceptionForLong(testNode, "binary");
-//
-//        assertThat(testNode.hasProperty("calendar"), is(true));
-//        assertThat(testNode.getProperty("calendar").getType(), is(PropertyType.DATE));
-//        assertThat(testNode.getProperty("calendar").getString(), is(ISO8601.format(now)));
-//        assertThat(testNode.getProperty("calendar").getDate(), is(now));
-//        // Accessing Date property values as boolean, double or long results in a ValueFormatException:
-//        assertValueFormatExceptionForBoolean(testNode, "calendar");
-//        assertValueFormatExceptionForDouble(testNode, "calendar");
-//        assertValueFormatExceptionForLong(testNode, "calendar");
+        assertThat(testNode.hasProperties(), is(true));
+        // Here we have one Property less than expected!
+        assertThat(testNode.getProperties().getSize(), is(6L));
+
+        assertThat(testNode.hasProperty("string"), is(true));
+        assertThat(testNode.getProperty("string").getType(), is(PropertyType.STRING));
+        assertThat(testNode.getProperty("string").getString(), is("testString"));
+        assertThat(testNode.getProperty("string").getValue().getString(), is("testString"));
+        // Accessing String property values as boolean results in a ValueFormatException:
+        assertValueFormatExceptionForBoolean(testNode, "string");
+        // Accessing String property values as date, double or long results in a ValueFormatException:
+        assertValueFormatExceptionForDate(testNode, "string");
+        assertValueFormatExceptionForDouble(testNode, "string");
+        assertValueFormatExceptionForLong(testNode, "string");
+
+        assertThat(testNode.hasProperty("boolean"), is(true));
+        assertThat(testNode.getProperty("boolean").getType(), is(PropertyType.BOOLEAN));
+        assertThat(testNode.getProperty("boolean").getString(), is("true"));
+        assertThat(testNode.getProperty("boolean").getBoolean(), is(true));
+        // Accessing Boolean property values as date, double or long results in a ValueFormatException:
+        assertValueFormatExceptionForDate(testNode, "boolean");
+        assertValueFormatExceptionForDouble(testNode, "boolean");
+        assertValueFormatExceptionForLong(testNode, "boolean");
+
+        assertThat(testNode.hasProperty("double"), is(true));
+        assertThat(testNode.getProperty("double").getType(), is(PropertyType.DOUBLE));
+        assertThat(testNode.getProperty("double").getString(), is("1.25"));
+        assertThat(testNode.getProperty("double").getDouble(), is(1.25D));
+        // Accessing Double property values as boolean, long or date results in a ValueFormatException:
+        assertValueFormatExceptionForDate(testNode, "double");
+        assertValueFormatExceptionForBoolean(testNode, "double");
+        assertValueFormatExceptionForLong(testNode, "double");
+
+        assertThat(testNode.hasProperty("long"), is(true));
+        assertThat(testNode.getProperty("long").getType(), is(PropertyType.LONG));
+        assertThat(testNode.getProperty("long").getString(), is("123456"));
+        assertThat(testNode.getProperty("long").getLong(), is(123456L));
+        // Accessing Long property values as boolean, double or date results in a ValueFormatException:
+        assertValueFormatExceptionForDate(testNode, "long");
+        assertValueFormatExceptionForBoolean(testNode, "long");
+        assertValueFormatExceptionForDouble(testNode, "long");
+
+        assertThat(testNode.hasProperty("binary"), is(true));
+        assertThat(testNode.getProperty("binary").getType(), is(PropertyType.BINARY));
+        assertThat(testNode.getProperty("binary").getString(), is("test bytes"));
+        // Accessing Binary property values as date, double or long result in a ValueFormatException.
+        assertValueFormatExceptionForDate(testNode, "binary");
+        assertValueFormatExceptionForDouble(testNode, "binary");
+        assertValueFormatExceptionForLong(testNode, "binary");
+
+        assertThat(testNode.hasProperty("calendar"), is(true));
+        assertThat(testNode.getProperty("calendar").getType(), is(PropertyType.DATE));
+        assertThat(testNode.getProperty("calendar").getString(), is(ISO8601.format(now)));
+        assertThat(testNode.getProperty("calendar").getDate(), is(now));
+        // Accessing Date property values as boolean, double or long results in a ValueFormatException:
+        assertValueFormatExceptionForBoolean(testNode, "calendar");
+        assertValueFormatExceptionForDouble(testNode, "calendar");
+        assertValueFormatExceptionForLong(testNode, "calendar");
     }
 
     private void assertValueFormatExceptionForDate(Node node, String name) throws RepositoryException {

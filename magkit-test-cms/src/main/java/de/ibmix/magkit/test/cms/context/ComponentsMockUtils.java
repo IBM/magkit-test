@@ -32,8 +32,8 @@ import static org.mockito.Mockito.when;
 /**
  * TODO: comment.
  *
- * @author wolf.bubenik
- * @since 06.06.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 06.06.2012
  */
 public abstract class ComponentsMockUtils {
 

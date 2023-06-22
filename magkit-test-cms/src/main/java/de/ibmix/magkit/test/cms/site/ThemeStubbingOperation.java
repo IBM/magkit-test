@@ -1,4 +1,4 @@
-package de.ibmix.magkit.test.cms.templating;
+package de.ibmix.magkit.test.cms.site;
 
 /*-
  * #%L
@@ -21,28 +21,30 @@ package de.ibmix.magkit.test.cms.templating;
  */
 
 
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.imaging.ImagingSupport;
 import info.magnolia.module.site.CssResourceDefinition;
 import info.magnolia.module.site.ResourceDefinition;
 import info.magnolia.module.site.theme.Theme;
-import org.mockito.Mockito;
 
 import java.util.List;
 
-import static de.ibmix.magkit.test.cms.templating.ThemeMockUtils.mockCssFile;
-import static de.ibmix.magkit.test.cms.templating.ThemeMockUtils.mockResource;
+import static de.ibmix.magkit.test.cms.site.ThemeMockUtils.mockCssFile;
+import static de.ibmix.magkit.test.cms.site.ThemeMockUtils.mockResource;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.doReturn;
 
 /**
- * TODO: comment.
+ * Utility class that provides factory methods for ThemeStubbingOperation.
+ * Stubbing operations to be used as parameters in ThemeMockUtils.mock...(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 05.06.13
  */
-public abstract class ThemeStubbingOperation {
+public abstract class ThemeStubbingOperation implements StubbingOperation<Theme> {
 
     public static ThemeStubbingOperation stubCssFiles(final String... links) {
         return new ThemeStubbingOperation() {
@@ -107,7 +109,7 @@ public abstract class ThemeStubbingOperation {
             @Override
             public void of(Theme theme) {
                 assertThat(theme, notNullValue());
-                Mockito.doReturn(imagingSupport).when(theme).getImaging();
+                doReturn(imagingSupport).when(theme).getImaging();
             }
         };
     }

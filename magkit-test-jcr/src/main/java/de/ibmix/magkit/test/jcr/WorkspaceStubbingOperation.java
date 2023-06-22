@@ -21,6 +21,8 @@ package de.ibmix.magkit.test.jcr;
  */
 
 
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
@@ -28,17 +30,16 @@ import javax.jcr.query.QueryManager;
 
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
  * Utility class for stubbing javax.jcr.Workspace.
  *
- * @author wolf.bubenik
- * @since 03.08.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 03.08.2012
  */
-public abstract class WorkspaceStubbingOperation {
-    public abstract void of(Workspace context) throws RepositoryException;
+public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOperation<Workspace, RepositoryException> {
 
     private WorkspaceStubbingOperation() {
     }

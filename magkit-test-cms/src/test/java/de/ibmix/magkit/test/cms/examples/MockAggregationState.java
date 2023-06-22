@@ -46,7 +46,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Compare Magnolia Test-Utils with this API (Magkit-Mock-Utils).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 14.04.16.
  */
 public class MockAggregationState {
@@ -56,43 +56,53 @@ public class MockAggregationState {
         ContextMockUtils.cleanContext();
     }
 
+    /**
+     * This test demonstrates the mocking on an AggregationState using the Magkit MockUtils.
+     * @throws RepositoryException when the stubbed methods do.
+     */
     @Test
     public void mockAggregationStateWithMagkit() throws RepositoryException {
-        // Ein AggregationState wird mit den ContextMockUtils erstellt:
+        // An AggregationState mock is created with ContextMockUtils:
         AggregationState state = mockAggregationState(
             stubMainContentNode(mockPageNode("page")),
             stubCurrentContentNode(mockComponentNode("page/component"))
         );
 
-        // Wir erhalten dann einen WebContext...
+        // Now we have a WebContext in the MgnlContext...
         assertThat(MgnlContext.getInstance(), notNullValue());
-        // ...mit dem AggregationState Mock..
+        // ...with the AggregationState mock..
         assertThat(((WebContext) MgnlContext.getInstance()).getAggregationState(), is(state));
-        // ...und den gesetzten Nodes:
+        // ...and the stubbed Nodes:
         assertThat(state.getCurrentContentNode().getPath(), is("/page/component"));
         assertThat(state.getMainContentNode().getPath(), is("/page"));
-        // und mit dazu passenden Handle und Repository:
+        // Note that current/active nodes and AggregationState properties are consistent:
         assertThat(state.getHandle(), is("/page/component"));
         assertThat(state.getRepository(), is(RepositoryConstants.WEBSITE));
     }
 
+    /**
+     * This test demonstrates the mocking on an AggregationState using the Magnolia MockUtil.
+     *
+     * @throws RepositoryException as we do
+     * @throws IOException why ever
+     */
     @Test
     public void mockAggregationStateWithMagnolia() throws RepositoryException, IOException {
-        // Ein AggregationState erhält man immer, wenn man einen MockContext erzeugt:
+        // Creating a MockContext implicitly creates an AggregationState:
         AggregationState state = ((WebContext) MockUtil.getMockContext(true)).getAggregationState();
         state.setMainContentNode(NodeTestUtil.createNode("/page", RepositoryConstants.WEBSITE, "/page"));
         state.setCurrentContentNode(NodeTestUtil.createNode("/page/component", RepositoryConstants.WEBSITE, "/page/component"));
 
-        // Wir haben dann naturlich einen WebContext...
+        // Of course we have a WebContext...
         assertThat(MgnlContext.getInstance(), notNullValue());
-        // ...mit dem AggregationState Mock...
+        // ...with the AggregationState mock...
         assertThat(((WebContext) MgnlContext.getInstance()).getAggregationState(), is(state));
-        // und den gesetzten Nodes:
+        // and the nodes set:
         assertThat(state.getCurrentContentNode().getPath(), is("/page/component"));
         assertThat(state.getMainContentNode().getPath(), is("/page"));
-        // Nur das handle ist nicht gesetzt...
+        // Only the handle is not set...
         assertThat(state.getHandle(), nullValue());
-        // ..und das Repository auch nicht:
+        // .. and the Repository either:
         assertThat(state.getRepository(), nullValue());
     }
 }

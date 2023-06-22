@@ -20,9 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import de.ibmix.magkit.test.cms.security.AccessManagerStubbingOperation;
 import info.magnolia.cms.core.AggregationState;
-import info.magnolia.cms.security.AccessManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.WebContext;
 import org.junit.Before;
@@ -31,11 +29,8 @@ import org.junit.Test;
 import javax.jcr.RepositoryException;
 
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.cleanContext;
-import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockAccessManager;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockAggregationState;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
-import static info.magnolia.repository.RepositoryConstants.WEBSITE;
-import static info.magnolia.context.MgnlContext.getAccessManager;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -108,15 +103,13 @@ public class ContextMockUtilsTest {
 
         // validate that WebContext has been mocked to return AggregationState
         AggregationState mgnlState = MgnlContext.getWebContext().getAggregationState();
-        assertThat(mgnlState, notNullValue());
-        assertThat(state.hashCode(), is(mgnlState.hashCode()));
+        assertThat(mgnlState, is(state));
         assertThat(MgnlContext.getAggregationState(), is(state));
 
-        // test that we get a new mock on every call
+        // test that we get The same mock on repeated call
         mockAggregationState();
         mgnlState = MgnlContext.getWebContext().getAggregationState();
-        assertThat(mgnlState, notNullValue());
-        assertThat(state.hashCode() != mgnlState.hashCode(), is(true));
+        assertThat(mgnlState, is(state));
     }
 
     @Test
@@ -131,26 +124,5 @@ public class ContextMockUtilsTest {
     @Test(expected = AssertionError.class)
     public void mockAggregationStateTestNull() throws RepositoryException {
         mockAggregationState(null);
-    }
-
-    @Test
-    public void mockAccessManagerWebsiteRepositoryTest() throws RepositoryException {
-        assertThat(MgnlContext.hasInstance(), is(false));
-
-        AccessManagerStubbingOperation op1 = mock(AccessManagerStubbingOperation.class);
-        AccessManagerStubbingOperation op2 = mock(AccessManagerStubbingOperation.class);
-        AccessManager am = mockAccessManager(op1, op2);
-
-        verify(op1, times(1)).of(am);
-        verify(op2, times(1)).of(am);
-
-        assertThat(MgnlContext.hasInstance(), is(true));
-        assertThat(getAccessManager(WEBSITE), notNullValue());
-        assertThat(getAccessManager(WEBSITE).hashCode(), is(am.hashCode()));
-    }
-
-    @Test(expected = AssertionError.class)
-    public void mockAccessManagerTestForNull() throws RepositoryException {
-        mockAccessManager(null);
     }
 }

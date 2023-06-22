@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.apache.jackrabbit.JcrConstants;
 
 import javax.jcr.Binary;
@@ -32,17 +33,15 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collection;
 
-import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -51,15 +50,13 @@ import static org.mockito.Mockito.when;
  * Utility class that provides factory methods for NodeStubbingOperation.
  * Stubbing operations to be used as parameters in NodeMockUtils.mock...(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 09.10.2012
  */
-public abstract class NodeStubbingOperation {
+public abstract class NodeStubbingOperation implements ExceptionStubbingOperation<Node, RepositoryException> {
     public static final String PROPNAME_TITLE = "title";
     public static final String UNTITLED = "untitled";
     public static final String UNTITLED_HANDLE = "/" + UNTITLED;
-
-    public abstract void of(Node node) throws RepositoryException;
 
     /**
      * Creates NodeStubbingOperation that stubs method {@link javax.jcr.Node#getSession()} to return the provided session.
@@ -126,16 +123,6 @@ public abstract class NodeStubbingOperation {
     }
 
     public static NodeStubbingOperation stubProperty(final String name, final Binary... values) {
-        return new NodeStubbingOperation() {
-            @Override
-            public void of(Node node) throws RepositoryException {
-                Property property = PropertyMockUtils.mockProperty(name, values);
-                stubProperty(property).of(node);
-            }
-        };
-    }
-
-    public static NodeStubbingOperation stubProperty(final String name, final InputStream... values) {
         return new NodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {

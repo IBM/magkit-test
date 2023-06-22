@@ -49,13 +49,10 @@ import static org.mockito.Mockito.when;
  * @since 04.08.2012
  */
 public final class ValueMockUtils {
-    public static final Answer<InputStream> STREAM_ANSWER = new Answer<InputStream>() {
-        @Override
-        public InputStream answer(final InvocationOnMock invocation) throws RepositoryException {
-            Value value = (Value) invocation.getMock();
-            Binary binary = value.getBinary();
-            return binary == null ? null : binary.getStream();
-        }
+    public static final Answer<InputStream> STREAM_ANSWER = invocation -> {
+        Value value = (Value) invocation.getMock();
+        Binary binary = value.getBinary();
+        return binary == null ? null : binary.getStream();
     };
 
     private ValueMockUtils() {
@@ -141,14 +138,6 @@ public final class ValueMockUtils {
 
     public static Value mockValue(Node value) throws RepositoryException {
         return mockValue(value.getIdentifier(), PropertyType.REFERENCE);
-    }
-
-    @Deprecated
-    public static Value mockValue(InputStream value) throws RepositoryException {
-        Value result = mock(Value.class);
-        when(result.getStream()).thenReturn(value);
-        when(result.getType()).thenReturn(PropertyType.BINARY);
-        return result;
     }
 
     public static Binary mockBinary(String value) throws RepositoryException {

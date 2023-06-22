@@ -24,9 +24,7 @@ import de.ibmix.magkit.test.jcr.QueryManagerStubbingOperation;
 import de.ibmix.magkit.test.jcr.QueryMockUtils;
 import de.ibmix.magkit.test.jcr.QueryStubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
-import de.ibmix.magkit.test.cms.security.AccessManagerStubbingOperation;
 import info.magnolia.cms.core.AggregationState;
-import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.util.ServletUtil;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
@@ -36,7 +34,6 @@ import info.magnolia.module.site.ExtendedAggregationState;
 import info.magnolia.objectfactory.Components;
 import org.apache.commons.collections4.ResettableIterator;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Node;
@@ -53,11 +50,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
-import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubJcrSession;
-import static info.magnolia.repository.RepositoryConstants.WEBSITE;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAggregationState;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -95,7 +90,8 @@ public final class ContextMockUtils extends ComponentsMockUtils {
             // while mocking it is assumed that getInstance() will always return a mock
             context = (WebContext) MgnlContext.getInstance();
         } else {
-            context = mock(WebContext.class);
+            // support injection of WebContext mock - mock as component:
+            context = mockComponentInstance(WebContext.class);
             MgnlContext.setInstance(context);
             // always provide a I18ContentSupport mock
             mockI18nContentSupport();
@@ -117,7 +113,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         return context;
     }
 
-    public static SystemContext mockSystemContext(SystemContextStubbingOperation... stubbings) throws RepositoryException {
+    public static SystemContext mockSystemContext(SystemContextStubbingOperation... stubbings) {
         SystemContext result = mockComponentInstance(SystemContext.class);
         for (SystemContextStubbingOperation stubbing : stubbings) {
             stubbing.of(result);
@@ -127,60 +123,23 @@ public final class ContextMockUtils extends ComponentsMockUtils {
 
     /**
      * Creates an AggregationState mock. WebContext mock is created (if needed) and stubbed to return this AggregationState.
+     * If the AggregationState already exists for the WebContext, it is kept and the StubbingOperations are applied for the existing WebContext.
      *
      * @param stubbings an array of AggregationStateStubbingOperation
      * @return the AggregationState Mockito mock
      */
     public static AggregationState mockAggregationState(AggregationStateStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());
-        AggregationState aggState = mock(ExtendedAggregationState.class);
+        WebContext context = mockWebContext();
+        AggregationState aggState = context.getAggregationState();
+        if (aggState == null) {
+            aggState = mock(ExtendedAggregationState.class);
+        }
         for (AggregationStateStubbingOperation stubbing : stubbings) {
             stubbing.of(aggState);
         }
-        register(aggState);
+        stubAggregationState(aggState).of(context);
         return aggState;
-    }
-
-    public static AccessManager mockAccessManager(AccessManagerStubbingOperation... stubbings) throws RepositoryException {
-        return mockAccessManager(WEBSITE, stubbings);
-    }
-
-    public static AccessManager mockAccessManager(String repositoryId, AccessManagerStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
-        WebContext context = mockWebContext();
-        String repoId = isBlank(repositoryId) ? WEBSITE : repositoryId;
-        AccessManager am = context.getAccessManager(repoId);
-        if (am == null) {
-            am = mock(AccessManager.class);
-            register(repoId, am);
-        }
-        for (AccessManagerStubbingOperation stubbing : stubbings) {
-            stubbing.of(am);
-        }
-        return am;
-    }
-
-    /**
-     * Registers the given AccessManager for the given repository id at HierarchyManager and WebContext.
-     * Creates a mock HierarchyManager and WebContext and stubs the WebContext with this HierarchyManager.
-     * The HierarchyManager is stubbed to return the given AccessManager.
-     *
-     * @param repositoryId the repository ID/name that will be used for mocking HierarchyManager and WebContext
-     * @param am           the AccessManager to be registered
-     */
-    public static void register(String repositoryId, AccessManager am) throws RepositoryException {
-        mockWebContext(WebContextStubbingOperation.stubAccessManager(repositoryId, am));
-    }
-
-    /**
-     * Registers the given AggregationState at the WebContext.
-     * Creates a mock WebContext and stubbs the WebContext to return the given AccessManager.
-     * Any previously registered AggregationState will be overridden.
-     *
-     * @param aggState the AggregationState to be registered.
-     */
-    public static void register(AggregationState aggState) throws RepositoryException {
-        mockWebContext(WebContextStubbingOperation.stubAggregationState(aggState));
     }
 
     public static QueryManager mockQueryManager(final String workspace, QueryManagerStubbingOperation... stubbings) throws RepositoryException {
@@ -190,7 +149,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
 
     public static Query mockQuery(final String workspace, final String language, final String statement, QueryStubbingOperation... stubbings) throws RepositoryException {
         mockWebContext(WebContextStubbingOperation.stubJcrSession(workspace));
-        return QueryMockUtils.mockQuery(workspace, language, statement, stubbings);
+        return QueryMockUtils.mockQueryWithManager(workspace, language, statement, stubbings);
     }
 
     public static QueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Node... results) throws RepositoryException {
@@ -220,80 +179,62 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         SessionMockUtils.cleanSession();
     }
 
-    private static final Answer<String> REQUEST_PARAMETER_ANSWER = new Answer<String>() {
-        @Override
-        public String answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            String name = (String) invocation.getArguments()[0];
-            return context.getRequest() != null ? context.getRequest().getParameter(name) : null;
-        }
+    private static final Answer<String> REQUEST_PARAMETER_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        return context.getRequest() != null ? context.getRequest().getParameter(name) : null;
     };
 
-    private static final Answer<String[]> REQUEST_PARAMETER_VALUES_ANSWER = new Answer<String[]>() {
-        @Override
-        public String[] answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            String name = (String) invocation.getArguments()[0];
-            return context.getRequest() != null ? context.getRequest().getParameterValues(name) : null;
-        }
+    private static final Answer<String[]> REQUEST_PARAMETER_VALUES_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        return context.getRequest() != null ? context.getRequest().getParameterValues(name) : null;
     };
 
-    private static final Answer<Map<String, String[]>> REQUEST_PARAMETERS_ANSWER = new Answer<Map<String, String[]>>() {
-        @Override
-        public Map<String, String[]> answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            return context.getRequest() != null ? context.getRequest().getParameterMap() : null;
-        }
+    private static final Answer<Map<String, String[]>> REQUEST_PARAMETERS_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        return context.getRequest() != null ? context.getRequest().getParameterMap() : null;
     };
 
-    private static final Answer<String> REQUEST_CONTEXT_PATH_ANSWER = new Answer<String>() {
-        @Override
-        public String answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            return context.getRequest() != null ? context.getRequest().getContextPath() : null;
-        }
+    private static final Answer<String> REQUEST_CONTEXT_PATH_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        return context.getRequest() != null ? context.getRequest().getContextPath() : null;
     };
 
-    private static final Answer<Object> ATTRIBUTE_ANSWER = new Answer<Object>() {
-        @Override
-        public Object answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            String name = (String) invocation.getArguments()[0];
-            Object result = null;
-            HttpServletRequest request = context.getRequest();
-            if (request != null) {
-                result = context.getRequest().getAttribute(name);
-                if (result == null && request.getSession() != null) {
-                    result = request.getSession().getAttribute(name);
-                }
+    private static final Answer<Object> ATTRIBUTE_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Object result = null;
+        HttpServletRequest request = context.getRequest();
+        if (request != null) {
+            result = context.getRequest().getAttribute(name);
+            if (result == null && request.getSession() != null) {
+                result = request.getSession().getAttribute(name);
             }
-            return result;
         }
+        return result;
     };
 
-    private static final Answer<Object> SCOPED_ATTRIBUTE_ANSWER = new Answer<Object>() {
-        @Override
-        public Object answer(final InvocationOnMock invocation) {
-            WebContext context = (WebContext) invocation.getMock();
-            String name = (String) invocation.getArguments()[0];
-            int scope = (Integer) invocation.getArguments()[1];
-            Object result = null;
-            // mimic RequestAttributeStrategy:
-            switch (scope) {
-                case Context.LOCAL_SCOPE:
-                    result = getRequestAttribute(context, name);
-                    break;
-                case Context.SESSION_SCOPE:
-                    result = getSessionAttribute(context, name);
-                    break;
-                case Context.APPLICATION_SCOPE:
-                    result = ComponentsMockUtils.mockComponentInstance(SystemContext.class).getAttribute(name, Context.APPLICATION_SCOPE);
-                    break;
-                default:
-                    break;
-            }
-            return result;
+    private static final Answer<Object> SCOPED_ATTRIBUTE_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        int scope = (Integer) invocation.getArguments()[1];
+        Object result = null;
+        // mimic RequestAttributeStrategy:
+        switch (scope) {
+            case Context.LOCAL_SCOPE:
+                result = getRequestAttribute(context, name);
+                break;
+            case Context.SESSION_SCOPE:
+                result = getSessionAttribute(context, name);
+                break;
+            case Context.APPLICATION_SCOPE:
+                result = ComponentsMockUtils.mockComponentInstance(SystemContext.class).getAttribute(name, Context.APPLICATION_SCOPE);
+                break;
+            default:
+                break;
         }
+        return result;
     };
 
     private static Object getRequestAttribute(final WebContext context, final String name) {
@@ -326,7 +267,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         return result;
     }
 
-    private static final Answer<Map> ATTRIBUTES_ANSWER = invocation -> {
+    private static final Answer<Map<String, Object>> ATTRIBUTES_ANSWER = invocation -> {
         WebContext context = (WebContext) invocation.getMock();
         Map<String, Object> result = new HashMap<>();
         HttpServletRequest request = context.getRequest();
@@ -339,7 +280,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         return result;
     };
 
-    private static final Answer<Map> SCOPED_ATTRIBUTES_ANSWER = invocation -> {
+    private static final Answer<Map<String, Object>> SCOPED_ATTRIBUTES_ANSWER = invocation -> {
         WebContext context = (WebContext) invocation.getMock();
         int scope = (Integer) invocation.getArguments()[0];
         Map<String, Object> result = new HashMap<>();

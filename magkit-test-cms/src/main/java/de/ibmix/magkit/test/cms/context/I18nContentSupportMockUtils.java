@@ -21,7 +21,6 @@ package de.ibmix.magkit.test.cms.context;
  */
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import org.apache.commons.lang3.StringUtils;
 import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -29,6 +28,7 @@ import org.mockito.stubbing.Answer;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+
 import java.util.Locale;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -46,17 +46,14 @@ import static org.mockito.Mockito.when;
  */
 public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
 
-    static final Answer<Boolean> HAS_PROPERTY_ANSWER = new Answer<Boolean>() {
-        @Override
-        public Boolean answer(InvocationOnMock invocation) throws RepositoryException {
-            Object[] arguments = invocation.getArguments();
-            Node node = getNode(arguments);
-            String propertyName = getName(arguments);
-            return node != null && isNotBlank(propertyName) && node.hasProperty(propertyName);
-        }
+    static final Answer<Boolean> HAS_PROPERTY_ANSWER = invocation -> {
+        Object[] arguments = invocation.getArguments();
+        Node node = getNode(arguments);
+        String propertyName = getName(arguments);
+        return node != null && isNotBlank(propertyName) && node.hasProperty(propertyName);
     };
 
-    static final Answer<String> FIRST_ARGUMENT_AS_STRING = new Answer<String>() {
+    static final Answer<String> FIRST_ARGUMENT_AS_STRING = new Answer<>() {
         @Override
         public String answer(InvocationOnMock invocation) {
             Object[] arguments = invocation.getArguments();
@@ -68,18 +65,33 @@ public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
         }
     };
 
-    static final Answer<Property> PROPERTY_FOR_NAME = new Answer<Property>() {
-        @Override
-        public Property answer(InvocationOnMock invocation) throws RepositoryException {
-            Object[] arguments = invocation.getArguments();
-            Node content = getNode(arguments);
-            String nodeDataName = getName(arguments);
-            Property result = null;
-            if (content != null && StringUtils.isNotBlank(nodeDataName)) {
-                result = content.getProperty(nodeDataName);
-            }
-            return result;
+    static final Answer<Property> PROPERTY_FOR_NAME = invocation -> {
+        Object[] arguments = invocation.getArguments();
+        Node content = getNode(arguments);
+        String propertyName = getName(arguments);
+        Property result = null;
+        if (content != null && isNotBlank(propertyName)) {
+            result = content.getProperty(propertyName);
         }
+        return result;
+    };
+
+    static final Answer<Property> PROPERTY_FOR_NAME_LOCALE = invocation -> {
+        Object[] arguments = invocation.getArguments();
+        Node content = getNode(arguments);
+        String propertyName = getName(arguments);
+        Locale local = getLocal(arguments);
+
+        Property result = null;
+        if (content != null && isNotBlank(propertyName)) {
+            if (local != null) {
+                result = content.getProperty(propertyName + '_' + local.getLanguage());
+            }
+            if (result == null) {
+                result = content.getProperty(propertyName);
+            }
+        }
+        return result;
     };
 
     private I18nContentSupportMockUtils() {
@@ -96,9 +108,9 @@ public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
     public static I18nContentSupport mockI18nContentSupport() throws RepositoryException {
         I18nContentSupport result = mock(I18nContentSupport.class);
         when(result.toI18NURI(anyString())).thenAnswer(FIRST_ARGUMENT_AS_STRING);
-        when(result.getProperty(Matchers.<Node>any(), anyString())).thenAnswer(PROPERTY_FOR_NAME);
-        when(result.getProperty(Matchers.<Node>any(), anyString(), Matchers.<Locale>any())).thenAnswer(PROPERTY_FOR_NAME);
-        when(result.hasProperty(Matchers.<Node>any(), anyString())).thenAnswer(HAS_PROPERTY_ANSWER);
+        when(result.getProperty(Matchers.any(), anyString())).thenAnswer(PROPERTY_FOR_NAME);
+        when(result.getProperty(Matchers.any(), anyString(), Matchers.any())).thenAnswer(PROPERTY_FOR_NAME_LOCALE);
+        when(result.hasProperty(Matchers.any(), anyString())).thenAnswer(HAS_PROPERTY_ANSWER);
 
         mockComponentFactory(I18nContentSupport.class, result);
         return result;
@@ -110,6 +122,10 @@ public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
 
     public static String getName(Object[] arguments) {
         return arguments != null && arguments.length > 1 ? (String) arguments[1] : EMPTY;
+    }
+
+    private static Locale getLocal(Object[] arguments) {
+        return arguments != null && arguments.length > 2 ? (Locale) arguments[2] : null;
     }
 
     public static void cleanContext() {

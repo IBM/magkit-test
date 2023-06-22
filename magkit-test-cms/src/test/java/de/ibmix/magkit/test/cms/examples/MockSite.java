@@ -40,8 +40,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Compare Magnolia JCR Mock-Objects with this API.
  * Demonstrate how to mock a Magnolia Site for testing code that uses Site and SiteManager.
  *
- * @author wolf.bubenik
- * @since 07.03.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 07.03.2016
  */
 public class MockSite {
 
@@ -52,25 +52,25 @@ public class MockSite {
 
     @Test
     public void mockPlainSiteWithMagkit() throws RepositoryException {
-        // 1) Eine beliebige Site mocken:
+        // 1) Mock a Site:
         Site site = SiteMockUtils.mockSite("mySite");
         assertThat(site.getName(), is("mySite"));
         assertThat(Components.getComponent(SiteManager.class).getSite("mySite"), is(site));
         assertThat(site.getI18n(), notNullValue());
 
-        // 2) Die Default-Site mocken:
+        // 2) Mock the default Site:
         Site defaultSite = SiteMockUtils.mockDefaultSite();
         assertThat(defaultSite.getName(), is("default"));
         assertThat(Components.getComponent(SiteManager.class).getDefaultSite(), is(defaultSite));
         assertThat(Components.getComponent(SiteManager.class).getSite("default"), is(defaultSite));
 
-        // 3) Die CurrentSite mocken:
+        // 3) Mock the current Site:
         Site currentSite = SiteMockUtils.mockCurrentSite("currentSite");
         assertThat(currentSite.getName(), is("currentSite"));
         assertThat(Components.getComponent(SiteManager.class).getCurrentSite(), is(currentSite));
         assertThat(Components.getComponent(SiteManager.class).getSite("currentSite"), is(currentSite));
 
-        // 4) Die assigned Site für einen Knoten mocken:
+        // 4) Mock the assigned Site of a Node:
         Node node = mockNode("any/node");
         Site assignedSite = SiteMockUtils.mockAssignedSite(node, "assignedSite");
         assertThat(assignedSite.getName(), is("assignedSite"));
@@ -80,6 +80,6 @@ public class MockSite {
 
     @Test
     public void mockPlainSiteWithMagnolia() {
-        // Magnolia bietet keinerlei Unterstützung für das Testen von Code, der Sites und SiteManager verwendet.
+        // The Magnolia TestUtils do not support mocking Site and SiteManager.
     }
 }

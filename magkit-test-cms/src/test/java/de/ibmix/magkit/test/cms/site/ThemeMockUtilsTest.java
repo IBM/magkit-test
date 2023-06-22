@@ -1,4 +1,4 @@
-package de.ibmix.magkit.test.cms.templating;
+package de.ibmix.magkit.test.cms.site;
 
 /*-
  * #%L
@@ -30,7 +30,7 @@ import info.magnolia.module.site.theme.registry.ThemeRegistry;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.ibmix.magkit.test.cms.templating.ThemeMockUtils.mockThemeReference;
+import static de.ibmix.magkit.test.cms.site.ThemeMockUtils.mockThemeReference;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.verify;
 /**
  * Testing ThemeMockUtils.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
  * @since 05.12.14
  */
 public class ThemeMockUtilsTest {

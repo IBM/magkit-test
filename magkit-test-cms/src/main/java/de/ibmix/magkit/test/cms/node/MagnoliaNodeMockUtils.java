@@ -29,8 +29,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
-import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubJcrSession;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubType;
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
@@ -39,8 +37,8 @@ import static info.magnolia.repository.RepositoryConstants.WEBSITE;
  * Utility class for mocking jcr nodes with magnolia node types.
  * MgnlContext.getJcrSession("name") will be stubbed as well.
  *
- * @author wolf.bubenik
- * @since 26.08.14
+ * @author wolf.bubenik@ibmix.de
+ * @since 26.08.2014
  */
 public final class MagnoliaNodeMockUtils {
 
@@ -90,7 +88,7 @@ public final class MagnoliaNodeMockUtils {
      */
     public static Node mockMgnlNode(String name, String repository, String nodeType, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         ContextMockUtils.mockWebContext(WebContextStubbingOperation.stubJcrSession(repository));
-        return mockNode(repository, name, (NodeStubbingOperation[]) ArrayUtils.add(nodeStubbings, stubType(nodeType)));
+        return mockNode(repository, name, ArrayUtils.add(nodeStubbings, stubType(nodeType)));
     }
 
     private MagnoliaNodeMockUtils() {
