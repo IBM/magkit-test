@@ -36,6 +36,7 @@ import static org.apache.commons.collections4.IteratorUtils.toList;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 /**
@@ -76,6 +77,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
+                doReturn(value).when(request).getMethod();
                 when(request.getMethod()).thenReturn(value);
             }
         };
