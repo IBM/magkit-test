@@ -51,7 +51,6 @@ import info.magnolia.rendering.engine.RenderExceptionHandler;
 import info.magnolia.rendering.renderer.FreemarkerRenderer;
 import info.magnolia.templating.functions.TemplatingFunctions;
 import org.junit.Before;
-import org.mockito.Matchers;
 
 import javax.inject.Provider;
 import javax.jcr.Node;
@@ -62,7 +61,8 @@ import java.util.Map;
 
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
 import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAggregationState;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -134,7 +134,7 @@ public abstract class FreemarkerTest {
 
         _messagesManager = mock(DefaultMessagesManager.class);
         Messages messages = mock(Messages.class);
-        when(_messagesManager.getMessagesInternal(anyString(), Matchers.<Locale>any())).thenReturn(messages);
+        when(_messagesManager.getMessagesInternal(anyString(), any())).thenReturn(messages);
         ComponentsMockUtils.getComponentProvider().setInstance(MessagesManager.class, _messagesManager);
 //        when(_componentProvider.getComponent(MessagesManager.class)).thenReturn(_messagesManager);
 

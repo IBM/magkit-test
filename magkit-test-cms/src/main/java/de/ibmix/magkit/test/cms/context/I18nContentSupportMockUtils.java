@@ -21,7 +21,6 @@ package de.ibmix.magkit.test.cms.context;
  */
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -33,7 +32,8 @@ import java.util.Locale;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -108,9 +108,9 @@ public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
     public static I18nContentSupport mockI18nContentSupport() throws RepositoryException {
         I18nContentSupport result = mock(I18nContentSupport.class);
         when(result.toI18NURI(anyString())).thenAnswer(FIRST_ARGUMENT_AS_STRING);
-        when(result.getProperty(Matchers.any(), anyString())).thenAnswer(PROPERTY_FOR_NAME);
-        when(result.getProperty(Matchers.any(), anyString(), Matchers.any())).thenAnswer(PROPERTY_FOR_NAME_LOCALE);
-        when(result.hasProperty(Matchers.any(), anyString())).thenAnswer(HAS_PROPERTY_ANSWER);
+        when(result.getProperty(any(), anyString())).thenAnswer(PROPERTY_FOR_NAME);
+        when(result.getProperty(any(), anyString(), any())).thenAnswer(PROPERTY_FOR_NAME_LOCALE);
+        when(result.hasProperty(any(), anyString())).thenAnswer(HAS_PROPERTY_ANSWER);
 
         mockComponentFactory(I18nContentSupport.class, result);
         return result;

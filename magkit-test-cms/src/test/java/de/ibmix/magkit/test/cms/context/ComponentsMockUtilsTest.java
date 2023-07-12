@@ -35,6 +35,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.internal.util.MockUtil.isMock;
 
 /**
  * Testing ComponentsMockUtils.
@@ -59,7 +61,7 @@ public class ComponentsMockUtilsTest {
         // test for concrete class
         Object instance = mockComponentInstance(Object.class);
         assertThat(instance, notNullValue());
-        assertThat(instance.getClass().getName().contains("EnhancerByMockito"), is(true));
+        assertTrue(isMock(instance));
         Object instance2 = mockComponentInstance(Object.class);
         assertThat(instance.equals(instance2), is(true));
 
@@ -67,7 +69,7 @@ public class ComponentsMockUtilsTest {
         assertThat(getComponentSingleton(CharSequence.class), nullValue());
         CharSequence interfaceMock = mockComponentInstance(CharSequence.class);
         assertThat(interfaceMock, notNullValue());
-        assertThat(interfaceMock.getClass().getName().contains("EnhancerByMockito"), is(true));
+        assertTrue(isMock(interfaceMock));
         CharSequence interfaceMock2 = mockComponentInstance(CharSequence.class);
         assertThat(interfaceMock.equals(interfaceMock2), is(true));
     }
