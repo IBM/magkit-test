@@ -30,7 +30,7 @@ import javax.jcr.Session;
 
 import static de.ibmix.magkit.test.jcr.RepositoryStubbingOperation.stubLogin;
 import static de.ibmix.magkit.test.jcr.SessionStubbingOperation.stubRootNode;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

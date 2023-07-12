@@ -28,6 +28,7 @@ import info.magnolia.test.mock.MockComponentProvider;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.util.MockUtil.isMock;
 
 /**
  * TODO: comment.
@@ -74,7 +75,7 @@ public abstract class ComponentsMockUtils {
             // we get an ordinary instance of <T> that cannot be used for mocking and stubbing.
             // Return null in this case.
             // Note that somehow the class name of Mockito mocks changed with java version (oracle8 -> openJDK11) and identical mockito version (1.10.19)
-            if (result != null && !(result.getClass().getName().contains("EnhancerByMockito") || result.getClass().getName().contains("$MockitoMock"))) {
+            if (result != null && !isMock(result)) {
                 result = null;
             }
         } catch (MgnlInstantiationException e) {

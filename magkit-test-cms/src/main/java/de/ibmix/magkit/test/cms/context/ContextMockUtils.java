@@ -53,8 +53,8 @@ import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI
 import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAggregationState;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
