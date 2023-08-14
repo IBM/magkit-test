@@ -39,9 +39,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubbLanguage;
-import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubbResult;
-import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubbStatement;
+import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubLanguage;
+import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubResult;
+import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubStatement;
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
 import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
 import static java.util.Arrays.asList;
@@ -69,8 +69,8 @@ public final class QueryMockUtils {
      * Mocks the QueryManager and registers it at the Workspace for "website" repository.
      * If Session and Workspace does not exist new mocks will be created.
      * If Workspace already has a QueryManager registered, the existing QueryManager will be returned.
-     * Otherwise a new QueryManager mock will be created.
-     * Finally all passed QueryManagerStubbingOperation will be executed on the QueryManager mock.
+     * Otherwise, a new QueryManager mock will be created.
+     * Finally, all passed QueryManagerStubbingOperation will be executed on the QueryManager mock.
      *
      * @param stubbings the QueryManagerStubbingOperations to be executed
      * @return a QueryManager Mockito mock
@@ -83,9 +83,9 @@ public final class QueryMockUtils {
      * Mocks the QueryManager and registers it at the Workspace for the repository with the given id.
      * If Session and Workspace does not exist new mocks will be created.
      * If Workspace already has a QueryManager registered, the existing QueryManager will be returned.
-     * Otherwise a new QueryManager mock will be created.
+     * Otherwise, a new QueryManager mock will be created.
      * If the repositoryId is null, empty or blank the QueryManager will be registered for workspace with name "website".
-     * Finally all passed QueryManagerStubbingOperation will be executed on the QueryManager mock.
+     * Finally, all passed QueryManagerStubbingOperation will be executed on the QueryManager mock.
      *
      * @param workspace the repository id as String.
      * @param stubbings the QueryManagerStubbingOperations to be executed
@@ -98,7 +98,7 @@ public final class QueryMockUtils {
         if (qm == null) {
             qm = mock(QueryManager.class);
             // mock default query: empty result for all languages, ItemTypes and statements:
-            Query q = mockQuery(EMPTY, EMPTY, stubbResult());
+            Query q = mockQuery(EMPTY, EMPTY, QueryStubbingOperation.stubResult());
             QueryManagerStubbingOperation.stubQuery(q).of(qm);
             stubQueryManager(qm).of(session.getWorkspace());
         }
@@ -111,7 +111,7 @@ public final class QueryMockUtils {
     /**
      * Create a Query mock that is not connected to any QueryManager of any Session.
      *
-     * @param language the query language, e.g. "SQL-2", "SQL" or "XPATH"
+     * @param language  the query language, e.g. "SQL-2", "SQL" or "XPATH"
      * @param statement the query statement
      * @param stubbings any further stubbing operations defining the behaviour of this Query instance
      * @return a Mockito mock of the javax.jcr.query.Query interface
@@ -120,8 +120,8 @@ public final class QueryMockUtils {
     public static Query mockQuery(final String language, final String statement, QueryStubbingOperation... stubbings) throws RepositoryException {
         assertThat("stubbings should not be null.", stubbings, notNullValue());
         Query q = mock(Query.class);
-        stubbLanguage(language).of(q);
-        stubbStatement(statement).of(q);
+        stubLanguage(language).of(q);
+        stubStatement(statement).of(q);
         for (QueryStubbingOperation stubbing : stubbings) {
             stubbing.of(q);
         }
@@ -132,7 +132,7 @@ public final class QueryMockUtils {
      * Create a Query mock that is connected to QueryManager for the Session in given workspace.
      *
      * @param workspace the workspace of the session to mock a QueryManager for
-     * @param language the query language, e.g. "SQL-2", "SQL" or "XPATH"
+     * @param language  the query language, e.g. "SQL-2", "SQL" or "XPATH"
      * @param statement the query statement
      * @param stubbings any further stubbing operations defining the behaviour of this Query instance
      * @return a Mockito mock of the javax.jcr.query.Query interface
@@ -191,47 +191,47 @@ public final class QueryMockUtils {
     /**
      * Creates a JackrabbitQueryResult mock that is connected to a Query instance but not to a QueryManager.
      *
-     * @param language the query language, e.g. "SQL-2", "SQL" or "XPATH"
+     * @param language  the query language, e.g. "SQL-2", "SQL" or "XPATH"
      * @param statement the statement of the Query that returns this result
-     * @param results the Nodes to be returned as query result
+     * @param results   the Nodes to be returned as query result
      * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static JackrabbitQueryResult mockQueryResult(final String language, final String statement, final Node... results) throws RepositoryException {
         JackrabbitQueryResult result = mockQueryResult(results);
-        mockQuery(language, statement, stubbResult(result));
+        mockQuery(language, statement, stubResult(result));
         return result;
     }
 
     /**
      * Creates a JackrabbitQueryResult mock for Nodes that is connected to a Query instance of a QueryManager for the defined workspace.
      *
-     * @param workspace the workspace of the session to mock a QueryManager for
-     * @param queryLang the query language, e.g. "SQL-2", "SQL" or "XPATH"
+     * @param workspace      the workspace of the session to mock a QueryManager for
+     * @param queryLang      the query language, e.g. "SQL-2", "SQL" or "XPATH"
      * @param queryStatement the statement of the Query that returns this result
-     * @param results the Nodes to be returned as query result
+     * @param results        the Nodes to be returned as query result
      * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static JackrabbitQueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Node... results) throws RepositoryException {
         JackrabbitQueryResult result = mockQueryResult(results);
-        mockQueryWithManager(workspace, queryLang, queryStatement, stubbResult(result));
+        mockQueryWithManager(workspace, queryLang, queryStatement, stubResult(result));
         return result;
     }
 
     /**
      * Creates a JackrabbitQueryResult mock for Rows that is connected to a Query instance of a QueryManager for the defined workspace.
      *
-     * @param workspace the workspace of the session to mock a QueryManager for
-     * @param queryLang the query language, e.g. "SQL-2", "SQL" or "XPATH"
+     * @param workspace      the workspace of the session to mock a QueryManager for
+     * @param queryLang      the query language, e.g. "SQL-2", "SQL" or "XPATH"
      * @param queryStatement the statement of the Query that returns this result
-     * @param results the Rows to be returned as query result
+     * @param results        the Rows to be returned as query result
      * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static JackrabbitQueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Row... results) throws RepositoryException {
         JackrabbitQueryResult result = mockQueryResult(results);
-        mockQueryWithManager(workspace, queryLang, queryStatement, stubbResult(result));
+        mockQueryWithManager(workspace, queryLang, queryStatement, stubResult(result));
         return result;
     }
 
@@ -247,7 +247,7 @@ public final class QueryMockUtils {
     static Row toRow(final Node node) {
         return new Row() {
             @Override
-            public Value[] getValues() throws RepositoryException {
+            public Value[] getValues() {
                 return new Value[0];
             }
 
@@ -257,7 +257,7 @@ public final class QueryMockUtils {
             }
 
             @Override
-            public Node getNode() throws RepositoryException {
+            public Node getNode() {
                 return node;
             }
 
@@ -277,12 +277,12 @@ public final class QueryMockUtils {
             }
 
             @Override
-            public double getScore() throws RepositoryException {
+            public double getScore() {
                 return 0;
             }
 
             @Override
-            public double getScore(String selectorName) throws RepositoryException {
+            public double getScore(String selectorName) {
                 return 0;
             }
         };

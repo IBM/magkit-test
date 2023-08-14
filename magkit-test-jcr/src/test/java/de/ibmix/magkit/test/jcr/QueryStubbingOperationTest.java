@@ -47,7 +47,7 @@ public class QueryStubbingOperationTest {
     @Test
     public void testStubbLanguage() throws RepositoryException {
         Query q = mock(Query.class);
-        QueryStubbingOperation op = QueryStubbingOperation.stubbLanguage("sql");
+        QueryStubbingOperation op = QueryStubbingOperation.stubLanguage("sql");
         assertThat(op, notNullValue());
         op.of(q);
         assertThat(q.getLanguage(), is("sql"));
@@ -56,7 +56,7 @@ public class QueryStubbingOperationTest {
     @Test
     public void testStubbStatement() throws RepositoryException {
         Query q = mock(Query.class);
-        QueryStubbingOperation op = QueryStubbingOperation.stubbStatement("statement");
+        QueryStubbingOperation op = QueryStubbingOperation.stubStatement("statement");
         assertThat(op, notNullValue());
         op.of(q);
         assertThat(q.getStatement(), is("statement"));
@@ -65,7 +65,7 @@ public class QueryStubbingOperationTest {
     @Test
     public void testStubbResult() throws RepositoryException {
         Query q = mock(Query.class);
-        QueryStubbingOperation op = QueryStubbingOperation.stubbResult();
+        QueryStubbingOperation op = QueryStubbingOperation.stubResult();
         assertThat(op, notNullValue());
         op.of(q);
         assertThat(q.execute(), notNullValue());
@@ -75,7 +75,7 @@ public class QueryStubbingOperationTest {
     public void testStubbResultWithQuery() throws RepositoryException {
         Query q = mock(Query.class);
         QueryResult qr = mock(QueryResult.class);
-        QueryStubbingOperation op = QueryStubbingOperation.stubbResult(qr);
+        QueryStubbingOperation op = QueryStubbingOperation.stubResult(qr);
         assertThat(op, notNullValue());
         op.of(q);
         assertThat(q.execute(), notNullValue());
@@ -84,7 +84,7 @@ public class QueryStubbingOperationTest {
     @Test
     public void testStubbStoredQueryPath() throws RepositoryException {
         Query q = mock(Query.class);
-        QueryStubbingOperation op = QueryStubbingOperation.stubbStoredQueryPath("path");
+        QueryStubbingOperation op = QueryStubbingOperation.stubStoredQueryPath("path");
         assertThat(op, notNullValue());
         op.of(q);
         assertThat(q.getStoredQueryPath(), is("path"));

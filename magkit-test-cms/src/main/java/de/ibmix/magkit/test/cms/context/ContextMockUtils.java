@@ -164,7 +164,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
 
     public static QueryResult mockEmptyQueryResult(final String workspace, final String queryLang, final String queryStatement) throws RepositoryException {
         QueryResult result = QueryMockUtils.mockEmptyQueryResult();
-        mockQuery(workspace, queryLang, queryStatement, QueryStubbingOperation.stubbResult(result));
+        mockQuery(workspace, queryLang, queryStatement, QueryStubbingOperation.stubResult(result));
         return result;
     }
 

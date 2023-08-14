@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
  */
 public abstract class QueryStubbingOperation implements ExceptionStubbingOperation<Query, RepositoryException> {
 
-    public static QueryStubbingOperation stubbLanguage(final String value) {
+    public static QueryStubbingOperation stubLanguage(final String value) {
         return new QueryStubbingOperation() {
 
             public void of(Query query) {
@@ -49,7 +49,7 @@ public abstract class QueryStubbingOperation implements ExceptionStubbingOperati
         };
     }
 
-    public static QueryStubbingOperation stubbStatement(final String value) {
+    public static QueryStubbingOperation stubStatement(final String value) {
         return new QueryStubbingOperation() {
 
             public void of(Query query) {
@@ -59,16 +59,16 @@ public abstract class QueryStubbingOperation implements ExceptionStubbingOperati
         };
     }
 
-    public static QueryStubbingOperation stubbResult(final Node... results) {
+    public static QueryStubbingOperation stubResult(final Node... results) {
         return new QueryStubbingOperation() {
 
             public void of(Query query) throws RepositoryException {
-                stubbResult(QueryMockUtils.mockQueryResult(results)).of(query);
+                stubResult(QueryMockUtils.mockQueryResult(results)).of(query);
             }
         };
     }
 
-    public static QueryStubbingOperation stubbResult(final QueryResult result) {
+    public static QueryStubbingOperation stubResult(final QueryResult result) {
         return new QueryStubbingOperation() {
 
             public void of(Query query) throws RepositoryException {
@@ -78,7 +78,7 @@ public abstract class QueryStubbingOperation implements ExceptionStubbingOperati
         };
     }
 
-    public static QueryStubbingOperation stubbStoredQueryPath(final String value) {
+    public static QueryStubbingOperation stubStoredQueryPath(final String value) {
         return new QueryStubbingOperation() {
 
             public void of(Query query) throws RepositoryException {
