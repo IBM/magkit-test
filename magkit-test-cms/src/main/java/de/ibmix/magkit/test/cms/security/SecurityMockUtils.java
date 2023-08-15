@@ -110,7 +110,7 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
 
     public Group mockGroup(final String name, GroupStubbingOperation... stubbings) {
         Group group = mock(Group.class);
-        GroupStubbingOperation.stubbName(name).of(group);
+        GroupStubbingOperation.stubName(name).of(group);
         if (ArrayUtils.isNotEmpty(stubbings)) {
             Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(group));
         }
