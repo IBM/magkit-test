@@ -40,7 +40,7 @@ import static org.mockito.Mockito.doReturn;
  */
 public abstract class UserStubbingOperation implements StubbingOperation<User> {
 
-    public static UserStubbingOperation stubbName(final String name) {
+    public static UserStubbingOperation stubName(final String name) {
         return new UserStubbingOperation() {
             @Override
             public void of(User user) {
@@ -50,7 +50,7 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
         };
     }
 
-    public static UserStubbingOperation stubbIdentifier(final String uuid) {
+    public static UserStubbingOperation stubIdentifier(final String uuid) {
         return new UserStubbingOperation() {
             @Override
             public void of(User user) {
@@ -60,7 +60,7 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
         };
     }
 
-    public static UserStubbingOperation stubbPassword(final String password) {
+    public static UserStubbingOperation stubPassword(final String password) {
         return new UserStubbingOperation() {
             @Override
             public void of(User user) {
@@ -70,7 +70,7 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
         };
     }
 
-    public static UserStubbingOperation stubbLanguage(final String language) {
+    public static UserStubbingOperation stubLanguage(final String language) {
         return new UserStubbingOperation() {
             @Override
             public void of(User user) {
@@ -80,7 +80,7 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
         };
     }
 
-    public static UserStubbingOperation stubbEnabled(final boolean enabled) {
+    public static UserStubbingOperation stubEnabled(final boolean enabled) {
         return new UserStubbingOperation() {
             @Override
             public void of(User user) {
@@ -90,7 +90,7 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
         };
     }
 
-    public static UserStubbingOperation stubbProperty(final String name, final String value) {
+    public static UserStubbingOperation stubProperty(final String name, final String value) {
         return new UserStubbingOperation() {
             @Override
             public void of(User user) {
@@ -101,7 +101,7 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
         };
     }
 
-    public static UserStubbingOperation stubbGroups(final String... groupNames) {
+    public static UserStubbingOperation stubGroups(final String... groupNames) {
         return new UserStubbingOperation() {
             @Override
             public void of(User user) {
@@ -113,7 +113,7 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
         };
     }
 
-    public static UserStubbingOperation stubbRoles(final String... roleNames) {
+    public static UserStubbingOperation stubRoles(final String... roleNames) {
         return new UserStubbingOperation() {
             @Override
             public void of(User user) {

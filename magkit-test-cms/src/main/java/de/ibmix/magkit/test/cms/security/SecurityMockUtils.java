@@ -100,8 +100,8 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
 
     public static User mockUser(final String name, final String uuid, UserStubbingOperation... stubbings) {
         User user = mock(User.class);
-        UserStubbingOperation.stubbName(name).of(user);
-        UserStubbingOperation.stubbIdentifier(uuid).of(user);
+        UserStubbingOperation.stubName(name).of(user);
+        UserStubbingOperation.stubIdentifier(uuid).of(user);
         if (ArrayUtils.isNotEmpty(stubbings)) {
             Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(user));
         }

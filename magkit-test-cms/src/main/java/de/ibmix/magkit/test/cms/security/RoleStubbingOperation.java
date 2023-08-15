@@ -36,7 +36,7 @@ import static org.mockito.Mockito.doReturn;
  */
 public abstract class RoleStubbingOperation implements StubbingOperation<Role> {
 
-    public static RoleStubbingOperation stubbName(final String name) {
+    public static RoleStubbingOperation stubName(final String name) {
         return new RoleStubbingOperation() {
             @Override
             public void of(Role role) {
@@ -46,7 +46,7 @@ public abstract class RoleStubbingOperation implements StubbingOperation<Role> {
         };
     }
 
-    public static RoleStubbingOperation stubbId(final String uuid) {
+    public static RoleStubbingOperation stubId(final String uuid) {
         return new RoleStubbingOperation() {
             @Override
             public void of(Role role) {

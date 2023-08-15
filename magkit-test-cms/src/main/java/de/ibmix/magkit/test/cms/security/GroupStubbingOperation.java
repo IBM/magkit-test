@@ -36,7 +36,7 @@ import static org.mockito.Mockito.doReturn;
  */
 public abstract class GroupStubbingOperation implements StubbingOperation<Group> {
 
-    public static GroupStubbingOperation stubbName(final String name) {
+    public static GroupStubbingOperation stubName(final String name) {
         return new GroupStubbingOperation() {
             @Override
             public void of(Group user) {
@@ -46,7 +46,7 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
         };
     }
 
-    public static GroupStubbingOperation stubbId(final String uuid) {
+    public static GroupStubbingOperation stubId(final String uuid) {
         return new GroupStubbingOperation() {
             @Override
             public void of(Group user) {
