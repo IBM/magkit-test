@@ -41,7 +41,7 @@ assertThat(request.getParameterValues("any"), nullValue());
 // Each request mock has a session mock with the id "test"...
 assertThat(request.getSession().getId(), is("test"));
 
-// ane each session mock has a servlet context mock:
+// ...and each session mock has a servlet context mock:
 assertThat(request.getSession().getServletContext(), notNullValue());
 ```
 
@@ -53,19 +53,25 @@ Changing the behaviour of the mocks can be done in three ways:
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletRequest;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubHeader;
 HttpServletRequest request = mockHttpServletRequest(stubHeader("name", "value"));
+assertThat(request.getHeader("name"), is("value"));
 
 // Invoke the XxxStubbingOperation for an existing mock:
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCookie;
 import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubMaxAge;
 stubCookie("name", "value", stubMaxAge(42)).of(request);
+assertThat(request.getCookies()[0].getName(), is("value"));
+assertThat(request.getCookies()[0].getMaxAge(), is(42));
 
-// Use the standard Mockito way of stubbing:
+// (!) Do NOT use the standard Mockito way of stubbing, because this may result in inconsistent behaviour:
+// This works...
 doReturn("POST").when(request).getMethod();
+assertThat(request.getMethod(), is("POST"));
+// ...but other stubbings may result in inconsistent behaviour.
 
 // Care has been taken that stubbing of related mocks is consistent:
 stubContextPath("path").of(_request);
-assertThat(_request.getContextPath(), is("path"));
-assertThat(_request.getSession().getServletContext().getContextPath(), is("path"));
+assertThat(request.getContextPath(), is("path"));
+assertThat(request.getSession().getServletContext().getContextPath(), is("path"));
 ```
 
 For more examples and details please consult the test cases.
