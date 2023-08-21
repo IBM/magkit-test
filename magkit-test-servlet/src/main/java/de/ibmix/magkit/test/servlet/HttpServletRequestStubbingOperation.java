@@ -37,6 +37,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doReturn;
 
 /**
  * Utility class that provides factory methods for HttpServletRequestStubbingOperation.
