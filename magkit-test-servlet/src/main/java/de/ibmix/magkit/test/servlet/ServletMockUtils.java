@@ -151,10 +151,6 @@ public final class ServletMockUtils {
         return session;
     }
 
-    public static FilterChain mockFilterChain() {
-        return mock(FilterChain.class);
-    }
-
     public static Cookie mockCookie(String name, String value, CookieStubbingOperation... stubbings) {
         Cookie result = mock(Cookie.class);
         when(result.getName()).thenReturn(name);

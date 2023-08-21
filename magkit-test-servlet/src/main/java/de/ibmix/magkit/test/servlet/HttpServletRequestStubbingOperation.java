@@ -37,7 +37,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
 /**
  * Utility class that provides factory methods for HttpServletRequestStubbingOperation.
@@ -78,7 +77,6 @@ public abstract class HttpServletRequestStubbingOperation {
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
                 doReturn(value).when(request).getMethod();
-                when(request.getMethod()).thenReturn(value);
             }
         };
     }
@@ -90,7 +88,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getHeader(name)).thenReturn(value);
+                doReturn(value).when(request).getHeader(name);
             }
         };
     }
@@ -101,7 +99,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getQueryString()).thenReturn(value);
+                doReturn(value).when(request).getQueryString();
             }
         };
     }
@@ -112,8 +110,8 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getSession()).thenReturn(value);
-                when(request.getSession(anyBoolean())).thenReturn(value);
+                doReturn(value).when(request).getSession();
+                doReturn(value).when(request).getSession(anyBoolean());
             }
         };
     }
@@ -159,7 +157,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getServerName()).thenReturn(value);
+                doReturn(value).when(request).getServerName();
             }
         };
     }
@@ -170,7 +168,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getServerPort()).thenReturn(value);
+                doReturn(value).when(request).getServerPort();
             }
         };
     }
@@ -181,7 +179,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getProtocol()).thenReturn(value);
+                doReturn(value).when(request).getProtocol();
             }
         };
     }
@@ -192,7 +190,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getRequestURI()).thenReturn(value);
+                doReturn(value).when(request).getRequestURI();
             }
         };
     }
@@ -203,7 +201,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getRequestURL()).thenReturn(new StringBuffer(value));
+                doReturn(new StringBuffer(value)).when(request).getRequestURL();
             }
         };
     }
@@ -214,7 +212,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.isSecure()).thenReturn(value);
+                doReturn(value).when(request).isSecure();
             }
         };
     }
@@ -225,16 +223,16 @@ public abstract class HttpServletRequestStubbingOperation {
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
                 assertThat(name, notNullValue());
-                when(request.getAttribute(name)).thenReturn(value);
-                IteratorEnumeration nameEnum = (IteratorEnumeration) request.getAttributeNames();
-                ((ResettableIterator) nameEnum.getIterator()).reset();
+                doReturn(value).when(request).getAttribute(name);
+                IteratorEnumeration<String> nameEnum = (IteratorEnumeration<String>) request.getAttributeNames();
+                ((ResettableIterator<String>) nameEnum.getIterator()).reset();
                 List<String> names = toList(nameEnum.getIterator());
                 if (names.contains(name) && value == null) {
                     names.remove(name);
                 } else if (value != null) {
                     names.add(name);
                 }
-                nameEnum.setIterator(arrayIterator(names.toArray()));
+                nameEnum.setIterator(arrayIterator((Object) names.toArray()));
             }
         };
     }
@@ -245,7 +243,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(final HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getLocalName()).thenReturn(value);
+                doReturn(value).when(request).getLocalName();
             }
         };
     }
@@ -256,7 +254,7 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(final HttpServletRequest request) {
                 assertThat(request, notNullValue());
-                when(request.getLocalPort()).thenReturn(value);
+                doReturn(value).when(request).getLocalPort();
             }
         };
     }
@@ -277,7 +275,7 @@ public abstract class HttpServletRequestStubbingOperation {
                 if (oldCookies != null && cookies != null) {
                     newCookies = ArrayUtils.addAll(oldCookies, cookies);
                 }
-                when(request.getCookies()).thenReturn(newCookies);
+                doReturn(newCookies).when(request).getCookies();
             }
         };
     }
