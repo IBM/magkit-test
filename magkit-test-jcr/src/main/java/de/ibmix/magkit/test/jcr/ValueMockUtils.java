@@ -22,7 +22,6 @@ package de.ibmix.magkit.test.jcr;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.jackrabbit.util.ISO8601;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Binary;
@@ -33,14 +32,13 @@ import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 
 /**
  * Utility class for mocking javax.jcr.Value.
@@ -71,7 +69,7 @@ public final class ValueMockUtils {
             if (date != null) {
                 when(result.getDate()).thenReturn(date);
             }
-            if (NumberUtils.isNumber(value)) {
+            if (NumberUtils.isCreatable(value)) {
                 double doubleNumber = Double.parseDouble(value);
                 long longValue = Math.round(doubleNumber);
                 when(result.getLong()).thenReturn(longValue);
@@ -144,13 +142,9 @@ public final class ValueMockUtils {
         Binary result = mock(Binary.class);
         if (value != null) {
             when(result.toString()).thenReturn(value);
-            try {
-                byte[] bytes = value.getBytes("UTF-8");
-                when(result.getStream()).thenReturn(new ByteArrayInputStream(bytes));
-                when(result.getSize()).thenReturn((long) bytes.length);
-            } catch (UnsupportedEncodingException e) {
-                // ignore
-            }
+            byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+            when(result.getStream()).thenReturn(new ByteArrayInputStream(bytes));
+            when(result.getSize()).thenReturn((long) bytes.length);
         }
         return result;
     }
