@@ -23,7 +23,6 @@ package de.ibmix.magkit.test.servlet;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 import org.mockito.stubbing.Answer;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -46,10 +45,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Servlet mock utils.
+ * Servlet mock utils clas that provides methods for creation of mocks of
+ * HttpServletRequest, HttpServletResponse, ServletContext, PageContext, HttpSession and Cookie.
  *
- * @author wolf.bubenik
- * @since 04.03.11
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-03-04
  */
 public final class ServletMockUtils {
 
@@ -80,6 +80,14 @@ public final class ServletMockUtils {
         return values != null && values.length > 0 ? values[0] : null;
     };
 
+    /**
+     * Method for creating a Mockito mock of a HttpServletRequest with defaults:
+     * An empty attribute name iterator, an empty parameter map and a default session with ID "test".
+     *
+     * @param stubbings an array of HttpServletRequestStubbingOperation
+     * @return a HttpServletRequest mock with stubbed behaviour
+     * @throws AssertionError when stubbings are null
+     */
     public static HttpServletRequest mockHttpServletRequest(HttpServletRequestStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -96,6 +104,14 @@ public final class ServletMockUtils {
         return request;
     }
 
+    /**
+     * Method for creating a Mockito mock of a HttpServletResponse with defaults:
+     * A PrintWriter mock, ServletOutputStream mock and default (do nothing) behaviour for URL encoding methods.
+     *
+     * @param stubbings an array of HttpServletResponseStubbingOperation
+     * @return a HttpServletResponse mock with stubbed behaviour
+     * @throws AssertionError when stubbings are null
+     */
     public static HttpServletResponse mockHttpServletResponse(HttpServletResponseStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -115,6 +131,14 @@ public final class ServletMockUtils {
         return response;
     }
 
+    /**
+     * Method for creating a Mockito mock of a ServletContext with defaults:
+     * A ServletContext mock and empty iterators for attribute names and init parameter names.
+     *
+     * @param stubbings an array of ServletContextStubbingOperation
+     * @return a ServletContext mock with stubbed behaviour
+     * @throws AssertionError when stubbings are null
+     */
     public static ServletContext mockServletContext(ServletContextStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         ServletContext context = mock(ServletContext.class);
@@ -126,6 +150,14 @@ public final class ServletMockUtils {
         return context;
     }
 
+    /**
+     * Method for creating a Mockito mock of a PageContext with defaults:
+     * A HttpServletRequest mock, HttpServletResponse mock and returning Session and ServletContext from request session.
+     *
+     * @param stubbings an array of PageContextStubbingOperation
+     * @return a PageContext mock with stubbed behaviour
+     * @throws AssertionError when stubbings are null
+     */
     public static PageContext mockPageContext(PageContextStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         PageContext context = mock(PageContext.class);
@@ -139,6 +171,15 @@ public final class ServletMockUtils {
         return context;
     }
 
+    /**
+     * Method for creating a Mockito mock of a HttpSession with defaults:
+     * an empty iterator for attribute names and a ServletContext mock.
+     *
+     * @param id  the session ID as String
+     * @param stubbings an array of HttpSessionStubbingOperation
+     * @return a HttpSession mock with stubbed behaviour
+     * @throws AssertionError when stubbings are null
+     */
     public static HttpSession mockHttpSession(String id, HttpSessionStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         HttpSession session = mock(HttpSession.class);
@@ -151,6 +192,15 @@ public final class ServletMockUtils {
         return session;
     }
 
+    /**
+     * Method for creating a Mockito mock of a Cookie with no defaults.
+     *
+     * @param name  the Cookie name as String
+     * @param value  the Cookie value as String
+     * @param stubbings an array of CookieStubbingOperation
+     * @return a Cookie mock with stubbed behaviour
+     * @throws AssertionError when stubbings are null
+     */
     public static Cookie mockCookie(String name, String value, CookieStubbingOperation... stubbings) {
         Cookie result = mock(Cookie.class);
         when(result.getName()).thenReturn(name);

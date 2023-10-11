@@ -37,14 +37,14 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doReturn;
 
 /**
  * Utility class that provides factory methods for HttpServletRequestStubbingOperation.
- * Stubbing operations to be used as parameters in ServletMockUtils.mockHttpServletRequest(...).
+ * Stubbing operations to be used as parameters in ServletMockUtils.mockHttpServletRequest(...)
+ * or for stubbing the behaviour of an existing mock: HttpServletRequestStubbingOperation.stubContextPath("path").of(mock).
  *
- * @author wolf.bubenik
- * @since 10.03.11
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-03-10
  */
 public abstract class HttpServletRequestStubbingOperation {
 

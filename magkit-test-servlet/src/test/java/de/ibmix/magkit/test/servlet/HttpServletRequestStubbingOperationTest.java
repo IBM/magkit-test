@@ -300,6 +300,7 @@ public class HttpServletRequestStubbingOperationTest {
         assertThat(_request.getCookies(), notNullValue());
         assertThat(_request.getCookies().length, is(1));
         assertThat(_request.getCookies()[0].getName(), is("keks 1"));
+        assertThat(_request.getCookies()[0].getValue(), is("value 1"));
 
         stubCookie("keks 2", "value 2").of(_request);
         assertThat(_request.getCookies(), notNullValue());

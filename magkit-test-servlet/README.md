@@ -59,7 +59,8 @@ assertThat(request.getHeader("name"), is("value"));
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCookie;
 import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubMaxAge;
 stubCookie("name", "value", stubMaxAge(42)).of(request);
-assertThat(request.getCookies()[0].getName(), is("value"));
+assertThat(request.getCookies()[0].getName(), is("name"));
+assertThat(request.getCookies()[0].getValue(), is("value"));
 assertThat(request.getCookies()[0].getMaxAge(), is(42));
 
 // (!) Do NOT use the standard Mockito way of stubbing, because this may result in inconsistent behaviour:
@@ -74,7 +75,7 @@ assertThat(request.getContextPath(), is("path"));
 assertThat(request.getSession().getServletContext().getContextPath(), is("path"));
 ```
 
-For more examples and details please consult the test cases.
+For more examples and details please consult the test classes.
 
 ## License
 

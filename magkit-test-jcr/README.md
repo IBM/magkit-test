@@ -36,7 +36,7 @@ For each mocked class there is a XxxStubbingOperation class to stub its behaviou
 
 To keep single test methods independent you must clean up your test context before and / or after each test method:
 ```java
-// Be paranoid and don't reley on others:
+// Be paranoid and don't rely on others:
 @Before
 public void setUp() {
     SessionMockUtils.cleanSession();

@@ -27,10 +27,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Cookie stubbing operations.
+ * Utility class that provides factory methods for CookieStubbingOperation.
+ * Stubbing operations to be used as parameters in ServletMockUtils.mockCookie(...)
+ * or for stubbing the behaviour of an existing mock: CookieStubbingOperation.stubDomain("domain").of(mock).
  *
- * @author wolf.bubenik
- * @since 11.02.2014
+ * @author wolf.bubenik@ibmix.de
+ * @since 2014-02-11
  */
 public abstract class CookieStubbingOperation {
     public abstract void of(Cookie context);
