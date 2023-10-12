@@ -34,12 +34,11 @@ import java.util.Calendar;
 
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubMixinNodeTypes;
 import static org.apache.commons.collections4.IteratorUtils.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
-
 
 /**
  * Testing NodeStubbingOperation.
@@ -214,8 +213,6 @@ public class NodeStubbingOperationTest {
     /**
      * Tests if a certain property or a node is still available under the old path after
      * stubbing a new parent node. It should not.
-     *
-     * @throws RepositoryException
      */
     @Test
     public void testParentOldPath() throws RepositoryException {

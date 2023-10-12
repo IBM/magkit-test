@@ -43,18 +43,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>src/config/checkstyle-rules.xml</configLocation>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <scm>
         <url>https://github.com/IBM/magkit-test.git</url>
         <connection>scm:git:https://github.com/IBM/magkit-test.git</connection>
@@ -64,9 +52,9 @@
 
     <repositories>
         <repository>
-            <id>magnolia.community</id>
-            <name>Magnolia Public Repository</name>
-            <url>https://nexus.magnolia-cms.com/content/groups/public/</url>
+            <id>magnolia.enterprise</id>
+            <name>Magnolia Enterprise Group</name>
+            <url>https://nexus.magnolia-cms.com/content/groups/enterprise/</url>
         </repository>
     </repositories>
 

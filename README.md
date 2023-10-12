@@ -4,7 +4,10 @@
 
 ## Scope
 
-todo
+Multi module project contains Java test libraries to provider test and Mockito mock helpers.
+1. magkit-test-jcr - for JCR mocking
+2. magkit-test-servlet - for servlet container mocking
+3. magkit-test-cms - for Magnolia CMS mocking and testing
 
 ## Usage
 
@@ -40,7 +43,7 @@ You can browse available artifacts through [Magnolia's Nexus](https://nexus.magn
 
 ```xml
     <dependency>
-        <artifactId>magkit-test</artifactId>
+        <artifactId>magkit-test-cms</artifactId>
         <groupId>de.ibmix.magkit</groupId>
         <version>1.0.0</version>
     </dependency>

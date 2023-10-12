@@ -26,7 +26,6 @@ import org.junit.Test;
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
 
-import static de.ibmix.magkit.test.jcr.WorkspaceMockUtils.mockWorkspace;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -20,49 +20,35 @@ package de.ibmix.magkit.test.cms.examples;
  * #L%
  */
 
-import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
-import info.magnolia.cms.core.SystemProperty;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.NodeTestUtil;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.io.IOException;
 
+import static de.ibmix.magkit.test.cms.context.ContextMockUtils.cleanContext;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 29.01.2016.
+ * @since 29.01.2016
  */
-//CHECKSTYLE:OFF
 public class MockNodes {
-
-    @Before
-    public void setUp() {
-        ContextMockUtils.cleanContext();
-    }
 
     @After
     public void cleanUp() {
-        ComponentsTestUtil.clear();
-        SystemProperty.clear();
-        MgnlContext.setInstance(null);
+        cleanContext();
     }
-
 
     /**
      * This test demonstrates, how to create a mock Node hierarchy using the MagnoliaNodeMockUtils of the Magkit.
