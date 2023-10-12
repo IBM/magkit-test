@@ -51,7 +51,7 @@ public final class MagnoliaNodeMockUtils {
     }
 
     /**
-     * Mocks a page node with mgnl page node type.
+     * Mocks a page node with mgnl:page node type.
      *
      * @param nodeStubbings for stub behaviour
      * @return mocked node

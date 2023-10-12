@@ -57,11 +57,7 @@ public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
         @Override
         public String answer(InvocationOnMock invocation) {
             Object[] arguments = invocation.getArguments();
-            return (isNotEmpty(arguments)) ? arguments[0].toString() : null;
-        }
-
-        private boolean isNotEmpty(Object[] array) {
-            return array != null && array.length > 0 && array[0] != null;
+            return (hasObject(arguments, 0)) ? arguments[0].toString() : null;
         }
     };
 
@@ -116,16 +112,20 @@ public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
         return result;
     }
 
-    public static Node getNode(Object[] arguments) {
-        return arguments != null && arguments.length > 0 ? (Node) arguments[0] : null;
+    private static Node getNode(Object[] arguments) {
+        return hasObject(arguments, 0) ? (Node) arguments[0] : null;
     }
 
-    public static String getName(Object[] arguments) {
-        return arguments != null && arguments.length > 1 ? (String) arguments[1] : EMPTY;
+    private static String getName(Object[] arguments) {
+        return hasObject(arguments, 1) ? (String) arguments[1] : EMPTY;
     }
 
     private static Locale getLocal(Object[] arguments) {
-        return arguments != null && arguments.length > 2 ? (Locale) arguments[2] : null;
+        return hasObject(arguments, 2) ? (Locale) arguments[2] : null;
+    }
+
+    private static boolean hasObject(Object[] arguments, int index) {
+        return arguments != null && arguments.length > index && arguments[index] != null;
     }
 
     public static void cleanContext() {

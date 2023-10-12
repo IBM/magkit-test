@@ -1,36 +1,76 @@
-# Magkit Test JCR
+# Magkit Test CMS (Magnolia)
 
-This project contains a builder API to create mockito mocks of javax.jcr classes and stub their behaviour. 
+This project contains a builder API to create mockito mocks of info.magnolia classes and stub their behaviour. 
 The mocks are always created with some basic subbing of a default behaviour.
 
 ## Usage
 ### Maven dependency
 ```xml
     <dependency>
-        <artifactId>magkit-test-jcr</artifactId>
+        <artifactId>magkit-test-cms</artifactId>
         <groupId>de.ibmix.magkit</groupId>
         <version>1.0.0</version>
     </dependency>
 ```
-It requires javax.jcr 2.0. 
+It requires magnolia 6.2.19 or later and uses magkit-test-servlet and magkit-test-jcr. 
 
 ### Mock a class:
 XxxMockUtil classes provide static methods for each class to mock. These mock methods implement a get-or-create pattern: 
 - If no Mock has been created before, a new mock will be created.
 - If a mock has been created before and exists in the hierarchy of mocks, this existing mock will be returned.
 - The complete hierarchy of mocks is stored in a ThreadLocal. This allows tests to be executes in parallel.
-- To delete existing mocks within one thread (test) you have to explicitly call ```RepositoryMockUtils.cleanRepository()```
+- To delete existing mocks within one thread (test) you have to explicitly call ```ContextMockUtils.cleanContext()```
 
-We support mocking of
+Mocks are stored in the Magnolia MockComponentProvider. We support mocking of any Class as component in
+- ComponentsMockUtils: Support injection of mocks by magnolia
 
-- javax.jcr.Repository: Always mocked once per java session
-- javax.jcr.Workspace
-- javax.jcr.Query, QueryManager and QueryResult
-- javax.jcr.Session: When mocked for a workspace, a Workspace and a Repository will be mocked as well
-- javax.jcr.Node: When mocked for a workspace, a Session, Workspace and Repository is mocked as well
-- javax.jcr.Property
-- javax.jcr.Value
+Currently, we support mocking of
+info.magnolia.context classes
+- info.magnolia.context.WebContext
+- info.magnolia.context.SystemContext
 
+info.magnolia.cms.i18n classes:
+- info.magnolia.cms.i18n.I18nContentSupport
+
+info.magnolia.cms.core classes:
+- info.magnolia.cms.core.AggregationState: Always an ExtendedAggregationState
+
+info.magnolia.module classes
+- info.magnolia.module.InstallContext
+- info.magnolia.module.ModuleRegistry
+- info.magnolia.module.model.ModuleDefinition
+
+info.magnolia.cms.beans classes
+- info.magnolia.cms.beans.config.ServerConfiguration
+
+info.magnolia.dam classes
+- info.magnolia.dam.api.Asset
+- info.magnolia.dam.api.AssetProvider
+- info.magnolia.dam.api.AssetProviderRegistry
+- info.magnolia.dam.jcr.JcrAsset
+
+info.magnolia.cms.security classes
+- info.magnolia.cms.security.AccessManager
+- info.magnolia.cms.security.SecuritySupport
+- info.magnolia.cms.security.UserManager
+- info.magnolia.cms.security.User
+- info.magnolia.cms.security.Group
+- info.magnolia.cms.security.Role
+
+info.magnolia.module.site classes
+- info.magnolia.module.site.SiteManager
+- info.magnolia.module.site.Site
+- info.magnolia.module.site.theme.ThemeReference
+- info.magnolia.module.site.theme.Theme
+- info.magnolia.module.site.CssResourceDefinition
+- info.magnolia.module.site.ResourceDefinition
+
+info.magnolia.rendering.template classes
+- info.magnolia.rendering.template.registry.TemplateDefinitionRegistry
+- info.magnolia.rendering.template.TemplateDefinition
+- info.magnolia.rendering.template.AreaDefinition
+
+Finally, we provide convenience methods for mocking jcr nodes with magnolia NodeTypes and register their JcrSession in the magnolia WebContext.
 
 For each mocked class there is a XxxStubbingOperation class to stub its behaviour.
 
@@ -39,14 +79,13 @@ To keep single test methods independent you must clean up your test context befo
 // Be paranoid and don't rely on others:
 @Before
 public void setUp() {
-    SessionMockUtils.cleanSession();
-    // Note, that this is equivalent to calling RepositoryMockUtils.cleanRepository()
+    ContextMockUtils.cleanContext();
 }
 
 // Be polite and cleanup your mess for others:
 @After
 public void setUp() {
-    SessionMockUtils.cleanSession();
+    ContextMockUtils.cleanContext();
 }
 ```
 

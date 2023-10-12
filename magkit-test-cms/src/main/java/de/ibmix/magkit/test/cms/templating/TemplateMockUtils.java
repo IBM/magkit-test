@@ -107,7 +107,7 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
         return result;
     }
 
-    public static TemplateDefinition mockAreaDefinition(String id, AreaDefinitionStubbingOperation... stubbings) {
+    public static AreaDefinition mockAreaDefinition(String id, AreaDefinitionStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
         TemplateDefinition result = null;
@@ -124,7 +124,7 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
         } catch (RegistrationException e) {
             throw new IllegalStateException(e);
         }
-        return result;
+        return (AreaDefinition) result;
     }
 
     /**
