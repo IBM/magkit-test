@@ -44,8 +44,8 @@ import static org.mockito.Mockito.when;
 /**
  * Utility for mocking javax.jcr.Property.
  *
- * @author wolf.bubenik
- * @since 02.11.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-11-02
  */
 public final class PropertyMockUtils {
     private PropertyMockUtils() {

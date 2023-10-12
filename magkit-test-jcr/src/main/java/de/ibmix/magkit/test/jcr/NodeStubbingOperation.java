@@ -51,7 +51,7 @@ import static org.mockito.Mockito.when;
  * Stubbing operations to be used as parameters in NodeMockUtils.mock...(...).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 09.10.2012
+ * @since 2012-10-09
  */
 public abstract class NodeStubbingOperation implements ExceptionStubbingOperation<Node, RepositoryException> {
     public static final String PROPNAME_TITLE = "title";
@@ -260,8 +260,10 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     /**
      * Creates NodeStubbingOperation that stubs node.getUUID() to return the provided value.
      * Following properties will be stubbed:
-     * - hierarchyManager.getNodeByUuid(oldUuid) to return NULL
-     * - hierarchyManager.getNodeByUuid(uuid) to return node
+     * - session.getNodeByUUID(oldUuid) to return NULL
+     * - session.getNodeByIdentifier(oldUuid) to return NULL
+     * - session.getNodeByUUID(uuid) to return node
+     * - session.getNodeByIdentifier(uuid) to return node
      * - node.getIdentifier() to return the provided value
      * - node.getUUID() to return the provided value
      *

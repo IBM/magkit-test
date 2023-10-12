@@ -41,8 +41,8 @@ import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubType;
 /**
  * Sax-Parser that reads jcr-xml files and builds Node mocks.
  *
- * @author wolf.bubenik
- * @since 13.01.15
+ * @author wolf.bubenik@ibmix.de
+ * @since 2015-01-13
  */
 public class JcrXmlHandler extends DefaultHandler {
 

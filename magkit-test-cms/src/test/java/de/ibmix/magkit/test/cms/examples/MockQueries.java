@@ -108,7 +108,7 @@ public class MockQueries {
         // The default primaryNodeType of MockNodes created by Magnolia is "mgnl:contentNode".
         QueryResult result = session.getWorkspace().getQueryManager().createQuery("test query statement from mgnl:contentNode", Query.XPATH).execute();
         assertThat(result, notNullValue());
-        // Achtung: The MockQueryResult of Magnolia contains ALL Nodes of the Session filtered by their PrimaryNodeType:
+        // Note: The MockQueryResult of Magnolia contains ALL Nodes of the Session filtered by their PrimaryNodeType:
 //        assertThat(result.getNodes().nextNode(), not(is(first)));
 //        assertThat(result.getNodes().nextNode(), is(parent));
     }
