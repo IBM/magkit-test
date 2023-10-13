@@ -40,7 +40,6 @@ import java.io.IOException;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
