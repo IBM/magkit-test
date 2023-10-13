@@ -41,8 +41,8 @@ import static org.mockito.Mockito.when;
  * Utility class that provides factory methods for AggregationStateStubbingOperations.
  * Stubbing operations to be used as parameters in ContextMockUtils.mockAggregationState(...).
  *
- * @author wolf.bubenik
- * @since 01.09.2010
+ * @author wolf.bubenik@ibmix.de
+ * @since 2010-09-01
  */
 public abstract class AggregationStateStubbingOperation implements ExceptionStubbingOperation<AggregationState, RepositoryException> {
 

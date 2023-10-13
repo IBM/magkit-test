@@ -70,6 +70,14 @@ public final class AssetMockUtils extends ComponentsMockUtils {
     private AssetMockUtils() {
     }
 
+    /**
+     * Creates an JcrAsset mock with the given path, the default jcr provider id and a random UUID for the asset node.
+     *
+     * @param path the path of the asset jcr node in DAM repository
+     * @param stubbings additional AssetStubbingOperations
+     * @return a JcrAsset mock
+     * @throws RepositoryException usually not thrown, jcr API declares this exception
+     */
     public static JcrAsset mockJcrAsset(String path, AssetStubbingOperation... stubbings) throws RepositoryException {
         return (JcrAsset) mockAsset(path, DamConstants.DEFAULT_JCR_PROVIDER_ID, UUID.randomUUID().toString(), stubbings);
     }

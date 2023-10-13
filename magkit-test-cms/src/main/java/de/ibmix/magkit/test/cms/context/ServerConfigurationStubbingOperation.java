@@ -28,10 +28,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: comment.
+ * Utility class that provides factory methods for ServerConfigurationStubbingOperation.
+ * Stubbing operations to be used as parameters in ServerConfigurationMockUtils.mockServerConfiguration(...).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 11.01.2011
+ * @since 2011-01-11
  */
 public abstract class ServerConfigurationStubbingOperation implements StubbingOperation<ServerConfiguration> {
 

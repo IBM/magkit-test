@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Util class for creating InstallContext mocks.
  *
- * @author wolf.bubenikLibmix.de
+ * @author wolf.bubenik@ibmix.de
  * @since 2012-07-25
  */
 public final class InstallContextMockUtils {

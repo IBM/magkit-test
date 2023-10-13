@@ -61,7 +61,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Collection of utility methods for mocking Mgnl Context with Mockito.
  *
- * @author Wolf Bubenik, Aperto AG
+ * @author wolf.bubenik@ibmix.de
  * @since 2010-08-27
  */
 public final class ContextMockUtils extends ComponentsMockUtils {

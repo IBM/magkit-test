@@ -41,8 +41,8 @@ import static org.mockito.Mockito.when;
  * An utility class to create Mockito mocks of an I18nContentSupport.
  * The Mock is stubbed to echo the input values.
  *
- * @author wolf.bubenik
- * @since 13.12.2010
+ * @author wolf.bubenik@ibmix.de
+ * @since 2010.12.13
  */
 public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
 

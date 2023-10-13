@@ -36,10 +36,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: comment.
+ * Utility class that provides factory methods for SystemContextStubbingOperation.
+ * Stubbing operations to be used as parameters in ContextMockUtils.mockSystemContext(...).
  *
- * @author wolf.bubenik
- * @since 31.05.13
+ * @author wolf.bubenik@ibmix.de
+ * @since 2013-05-31
  */
 public abstract class SystemContextStubbingOperation implements StubbingOperation<SystemContext> {
 
