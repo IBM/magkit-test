@@ -1,7 +1,7 @@
 # Magkit Test CMS (Magnolia)
 
 This project contains a builder API to create mockito mocks of info.magnolia classes and stub their behaviour. 
-The mocks are always created with some basic subbing of a default behaviour.
+The mocks are always created with some basic stubbing of a default behaviour.
 
 ## Usage
 ### Maven dependency
