@@ -25,10 +25,12 @@ import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubAttribute;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubContextPath;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCookie;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCookies;
@@ -238,6 +240,34 @@ public class HttpServletRequestStubbingOperationTest {
         assertThat(_request.getParameter("name2"), is("value2a"));
         assertThat(_request.getParameterValues("name2")[0], is("value2a"));
         assertThat(_request.getParameterValues("name2")[1], is("value2b"));
+    }
+
+    @Test
+    public void testStubAttribute() {
+        assertThat(_request.getAttribute("test"), nullValue());
+        assertThat(_request.getAttributeNames().hasMoreElements(), is(false));
+
+        stubAttribute("test", "test string").of(_request);
+        assertThat(_request.getAttribute("test"), is("test string"));
+        assertThat(_request.getAttributeNames().hasMoreElements(), is(true));
+        assertThat(_request.getAttributeNames().nextElement(), is("test"));
+
+        Calendar now = Calendar.getInstance();
+        stubAttribute("now", now).of(_request);
+        assertThat(_request.getAttribute("test"), is("test string"));
+        assertThat(_request.getAttribute("now"), is(now));
+        Enumeration<String> names = _request.getAttributeNames();
+        assertThat(names.hasMoreElements(), is(true));
+        assertThat(names.nextElement(), is("test"));
+        assertThat(names.nextElement(), is("now"));
+
+        stubAttribute("test", null).of(_request);
+        assertThat(_request.getAttribute("test"), nullValue());
+        assertThat(_request.getAttribute("now"), is(now));
+        names = _request.getAttributeNames();
+        assertThat(names.hasMoreElements(), is(true));
+        assertThat(names.nextElement(), is("now"));
+        assertThat(names.hasMoreElements(), is(false));
     }
 
     @Test
