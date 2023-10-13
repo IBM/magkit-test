@@ -91,50 +91,65 @@ public void setUp() {
 
 Usually you are not much interested in Repositories, Workspaces and Sessions, just in Nodes and their Properties. However, whenever you mock a Node for a workspace you get the complete hierarchy of context mocked as well. This makes your test independent of how your code will access the Node and keeps your mocks consistent.
 
+### Mock a class:
 We recommend using static imports to keep test code short and readable.
+
+To mock any class that should be injected into another object by magnolia it must be registered at the Guice IoC container used by magnolia. This can be achieved by using the ComponentsMockUtils:
 ```java
+import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.mockComponentInstance;
+
+// 1. Create a mock instance of the DamTemplatingFunctions and register it as Magnolia Component:
+DamTemplatingFunctions dtf = mockComponentInstance(DamTemplatingFunctions.class);
+
+// Now we can access this DamTemplatingFunctions-mock directly from magnolia Components ...
+assertThat(Components.getComponent(DamTemplatingFunctions.class), is(dtf));
+
+// 2. ... or have it injected into another class that is managed by the Magnolia Components:
+ServiceWithInjectedDamTemplatingFunctions service = Components.getComponentProvider().newInstance(ServiceWithInjectedDamTemplatingFunctions.class);
+assertThat(service.getDtf(), is(dtf));
+// Note, that injection only works using the class constructor.
+// Field injection is not supported by the Magnolia MockComponentProvider - the common base of both MockUtils.
+```
+
+You may create a mock instance directly by using a XxxMockUtil class. These util classses often provide some stubbed default behaviour that may be changed completed by custom stubbing operations.
+```java
+import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
-    
-Node section = mockNode("root/section", stubProperty("propName", "value"));
-// Note that this is equivalent to:
-section = mockNode("website", "/root/section", stubProperty("propName", "value")); 
 
-// What you get is a hierarchy of nodes...
-assertThat(section.getPath(), is("/root/section"));
-assertThat(section.getDepth(), is(2));
-assertThat(section.parent().getDepth(), is(1));
-assertThat(section.parent().getParent().getDepth(), is(0));
-// ... with default NodeType
-assertThat(section.isNodeType(), is(NodeType.NT_BASE))
-// ... and the stubbed property value
-assertThat(section.hasProperty("propName"), is(true));
-assertThat(section.getProperty("propName").getString(), is("value"));
-assertThat(section.getProperty("propName").getValue().getString(), is("value"));
-assertThat(section.getProperty("propName").isMultiple(), is(false));
-// ...in a session workspace
-assertThat(section.getSession(), notNullValue());
-assertThat(section.getSession().getWorkspace().getName(), is("website"));
-// and that can be accessed via the repository or session:
-assertThat(RepositoryMockUtils.mockRepository().login().getNode("/root/section"), is(section));
+// 1) Create a I18nContentSupport mock:
+I18nContentSupport i18n = mockI18nContentSupport();
+// This mock is registered as component:
+assertThat(Components.getComponent(I18nContentSupport.class), is(i18n));
+// It provides a simple "echo behaviour" ...
+assertThat(i18n.isEnabled(), is(false));
+assertThat(i18n.toI18NURI("test"), is("test"));
+// ... for properties
+Node node = mockNode("Paul", stubProperty("property", "test"), stubProperty("property_zh", "test-zh"));
+assertThat(i18n.hasProperty(node, "property"), is(true));
+assertThat(i18n.getProperty(node, "property"), is(node.getProperty("property")));
+assertThat(i18n.getProperty(node, "property", Locale.CHINESE), is(node.getProperty("property_zh")));
 ```
 
 ### Stub methods of mock:
 Changing the behaviour of the mocks can be done in two ways:
 
 ```java
-// Pass a XxxStubbingOperation to the mockMethod:
-import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
-import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
+import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockPageNode;
+import static de.ibmix.magkit.test.cms.node.MagnoliaNodeStubbingOperation.stubCreated;
+import static de.ibmix.magkit.test.cms.node.MagnoliaNodeStubbingOperation.stubTemplate;
 import static org.apache.commons.collections4.IteratorUtils.toList;
 
-Node node = mockNode("root/section", stubProperty("propName", "value"));
-assertThat(node.getProperty("name").getString(), is("value"));
+// Pass a XxxStubbingOperation to the mockMethod:
+Node node = mockPageNode("root/section", stubTemplate("myTemplage"));
+assertThat(node.getProperty("mgnl:template").getString(), is("myTemplage"));
+assertThat(node.getPrimaryNodeType().getName(), is(NT_PAGE));
 assertThat(toList(node.getProperties()).size(), is(2));
 
 // Invoke the XxxStubbingOperation for an existing mock:
-stubProperty("name-2", "value-2").of(node);
-assertThat(node.getProperty("name-2").getString(), is("value-2"));
+Calendar now = Calendar.getInstance();
+stubCreated(now).of(node);
+assertThat(node.getProperty("mgnl:created").getDate(), is(now));
 assertThat(toList(node.getProperties()).size(), is(3));
 
 // (!) Do NOT use the standard Mockito way of stubbing, because this may result in inconsistent behaviour:
@@ -143,11 +158,11 @@ Property p = mock(Property.class);
 doReturn(p).when(node).getProperty("name-3");
 assertThat(node.getProperty("name-3"), is(p));
 // ...but the last property is missing in the list of node properties:
-assertThat(toList(node.getProperties()).size(), is(3))
-// (should be 4)
+assertThat(toList(node.getProperties()).size(), is(4))
+// fails, property list remains unchanged with only 3 entries.
 ```
 
-For more examples and details please consult the test cases.
+For more examples and details please consult the test cases in the examples package.
 
 ## License
 

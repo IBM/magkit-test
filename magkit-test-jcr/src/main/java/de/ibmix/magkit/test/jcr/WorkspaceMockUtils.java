@@ -30,24 +30,37 @@ import static org.mockito.Mockito.mock;
  * Utility class for mocking javax.jcr.Workspace.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 03.08.2012
+ * @since 2012-08-03
  */
 public final class WorkspaceMockUtils {
 
     private WorkspaceMockUtils() {
     }
 
+    /**
+     * Factory method for a Workspace mock with default name "test".
+     *
+     * @param stubbings the WorkspaceStubbingOperation to be executed on the mock
+     * @return a Workspace mock, never null
+     * @throws RepositoryException by be thrown by one of the stubbing operations
+     */
     public static Workspace mockWorkspace(WorkspaceStubbingOperation... stubbings) throws RepositoryException {
+        return mockWorkspace("test", stubbings);
+    }
+
+    /**
+     * Factory method for a Workspace mock with the given name.
+     *
+     * @param stubbings the WorkspaceStubbingOperation to be executed on the mock
+     * @return a Workspace mock, never null
+     * @throws RepositoryException by be thrown by one of the stubbing operations
+     */
+    public static Workspace mockWorkspace(String name, WorkspaceStubbingOperation... stubbings) throws RepositoryException {
         Workspace result = mock(Workspace.class);
+        stubName(name).of(result);
         for (WorkspaceStubbingOperation stub : stubbings) {
             stub.of(result);
         }
         return result;
-    }
-
-    public static Workspace mockWorkspace(String name, WorkspaceStubbingOperation... stubbings) throws RepositoryException {
-        Workspace ws = mockWorkspace(stubbings);
-        stubName(name).of(ws);
-        return ws;
     }
 }

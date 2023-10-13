@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verify;
  * Testing QueryMockUtils.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 29.05.13
+ * @since 2013-05-29
  */
 public class QueryMockUtilsTest {
 

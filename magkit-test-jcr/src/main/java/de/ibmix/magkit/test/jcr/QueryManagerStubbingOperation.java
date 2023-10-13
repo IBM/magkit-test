@@ -36,15 +36,15 @@ import static org.mockito.Mockito.when;
 /**
  * Utility class for stubbing mocks of javax.jcr.QueryManager.
  *
- * @author wolf.bubenik
- * @since 29.05.13
+ * @author wolf.bubenik@ibmix.de
+ * @since 2013-05-29
  */
 public abstract class QueryManagerStubbingOperation implements ExceptionStubbingOperation<QueryManager, RepositoryException> {
 
     /**
-     * If null or an empty string is passes for query.getStatement(), queryManager.createQuery(..) will be stubbed for any statement and any language.
+     * If null or an empty string is passed for query.getStatement(), queryManager.createQuery(..) will be stubbed for any statement and any language.
      *
-     * @param query the query to be stubbed
+     * @param query the javax.jcr.query to be stubbed
      * @return the QueryManagerStubbingOperation that stubs a QueryManager with the provided Query
      */
     public static QueryManagerStubbingOperation stubQuery(final Query query) {

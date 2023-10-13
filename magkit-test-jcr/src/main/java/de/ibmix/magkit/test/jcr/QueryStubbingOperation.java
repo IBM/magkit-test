@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 /**
  * Utility class for stubbing mocks of javax.jcr.Query.
  *
- * @author wolf.bubenik
- * @since 29.05.13
+ * @author wolf.bubenik@ibmix.de
+ * @since 2013-05-29
  */
 public abstract class QueryStubbingOperation implements ExceptionStubbingOperation<Query, RepositoryException> {
 

@@ -36,6 +36,7 @@ import static org.mockito.Mockito.mock;
  * Testing ValueFactoryStubbingOperation.
  *
  * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public class ValueFactoryStubbingOperationTest {
 

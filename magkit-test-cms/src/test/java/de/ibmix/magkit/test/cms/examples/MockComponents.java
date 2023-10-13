@@ -20,7 +20,6 @@ package de.ibmix.magkit.test.cms.examples;
  * #L%
  */
 
-import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.cms.core.SystemProperty;
 import info.magnolia.context.MgnlContext;
@@ -34,6 +33,7 @@ import org.mockito.Mockito;
 
 import javax.inject.Inject;
 
+import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.mockComponentInstance;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -56,7 +56,7 @@ public class MockComponents {
     @Test
     public void mockMagkitMagnoliaComponent() {
         // 1. Create a mock instance of the DamTemplatingFunctions and register it as Magnolia Component:
-        DamTemplatingFunctions dtf = ComponentsMockUtils.mockComponentInstance(DamTemplatingFunctions.class);
+        DamTemplatingFunctions dtf = mockComponentInstance(DamTemplatingFunctions.class);
 
         // Now we can access this DamTemplatingFunctions-mock directly from magnolia Components ...
         assertThat(Components.getComponent(DamTemplatingFunctions.class), is(dtf));

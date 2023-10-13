@@ -55,7 +55,6 @@ public class NodeMockUtilsTest {
         assertThat(node.getNodes(), notNullValue());
         assertThat(node.getNodes().hasNext(), is(false));
         assertThat(node.getProperties(), notNullValue());
-//        assertThat(node.getProperties().hasNext(), is(false));
         verify(op1, times(1)).of(node);
         verify(op2, times(1)).of(node);
 
