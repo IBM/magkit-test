@@ -36,8 +36,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Testing ServerConfigurationStubbingOperation.
  *
- * @author wolf.bubenik
- * @since 25.07.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-07-25
  */
 public class ServerConfigurationStubbingOperationTest {
 

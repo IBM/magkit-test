@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
  * To be used standalone or as parameter of SecurityMockUtils.mockGroup(...).
  *
  * @author wolf.bubenik@ibmix.de
+ * @since 2020-03-04
  */
 public abstract class ModuleDefinitionStubbingOperation implements StubbingOperation<ModuleDefinition> {
 

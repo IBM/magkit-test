@@ -41,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Compare Magnolia JCR Mock-Objects with ibmix MockUtils.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 18.02.2016.
+ * @since 2016-02-18
  */
 public class MockComponents {
 

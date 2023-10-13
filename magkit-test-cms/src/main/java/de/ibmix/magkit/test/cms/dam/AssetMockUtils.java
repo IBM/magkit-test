@@ -62,8 +62,8 @@ import static org.mockito.Mockito.when;
  * Utility class for mocking jcr assets.
  * MgnlContext.getJcrSession("dam") will be stubbed as well.
  *
- * @author wolf.bubenik
- * @since 25.03.11
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-03-25
  */
 public final class AssetMockUtils extends ComponentsMockUtils {
 

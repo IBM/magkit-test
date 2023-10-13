@@ -32,9 +32,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * TODO: comment.
+ * Test ModuleDefinitionStubbingOperation.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
+ * @since 2020-03-04
  */
 public class ModuleDefinitionStubbingOperationTest {
 

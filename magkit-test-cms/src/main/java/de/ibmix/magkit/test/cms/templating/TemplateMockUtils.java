@@ -41,9 +41,9 @@ import static org.mockito.Mockito.when;
 
 
 /**
- * Collection of utility methods for mocking Mgnl TemplateDefinitions (e.g. STKPage) with Mockito.
+ * Collection of utility methods for mocking Mgnl TemplateDefinitions with Mockito.
  *
- * @author Wolf Bubenik, Aperto AG
+ * @author wolf.bubenik@ibmix.de
  * @since 2010-08-27
  */
 public final class TemplateMockUtils extends ComponentsMockUtils {

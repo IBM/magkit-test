@@ -62,7 +62,7 @@ import static org.junit.Assert.fail;
  * Compare Magnolia JCR Mock-Objects with this API.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 17.02.2016.
+ * @since 2016-02-17
  */
 //CHECKSTYLE:OFF
 public class MockProperties {

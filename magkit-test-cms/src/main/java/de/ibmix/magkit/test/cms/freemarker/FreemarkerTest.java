@@ -118,29 +118,21 @@ public abstract class FreemarkerTest {
         final Provider<SiteModule> stkModuleProvider = () -> _siteModule;
         _siteManager = new DefaultSiteManager(stkModuleProvider, _templatingFunctions);
         ComponentsMockUtils.getComponentProvider().setInstance(SiteManager.class, _siteManager);
-//        when(_componentProvider.getComponent(SiteManager.class)).thenReturn(_siteManager);
 
         _serverConfiguration = new ServerConfiguration();
-//        ComponentsMockUtils.getComponentProvider().setInstance(ServerConfiguration.class, _serverConfiguration);
-//        when(_componentProvider.getComponent(ServerConfiguration.class)).thenReturn(_serverConfiguration);
 
         _i18nContentSupport = new DefaultI18nContentSupport();
         ComponentsMockUtils.getComponentProvider().setInstance(I18nContentSupport.class, _i18nContentSupport);
-//        when(_componentProvider.getComponent(I18nContentSupport.class)).thenReturn(_i18nContentSupport);
 
         _linkTransformerManager = new LinkTransformerManager();
-//        ComponentsMockUtils.getComponentProvider().setInstance(I18nContentSupport.class, _i18nContentSupport);
-//        when(_componentProvider.getComponent(LinkTransformerManager.class)).thenReturn(_linkTransformerManager);
 
         _messagesManager = mock(DefaultMessagesManager.class);
         Messages messages = mock(Messages.class);
         when(_messagesManager.getMessagesInternal(anyString(), any())).thenReturn(messages);
         ComponentsMockUtils.getComponentProvider().setInstance(MessagesManager.class, _messagesManager);
-//        when(_componentProvider.getComponent(MessagesManager.class)).thenReturn(_messagesManager);
 
         TranslationService translationService = mock(TranslationService.class);
         _freemarkerHelper = new FreemarkerHelper(new FreemarkerConfig(), translationService);
-//        when(_componentProvider.getComponent(FreemarkerHelper.class)).thenReturn(_freemarkerHelper);
 
         _aggregationState = new ExtendedAggregationState();
         _aggregationState.setChannel(new Channel());

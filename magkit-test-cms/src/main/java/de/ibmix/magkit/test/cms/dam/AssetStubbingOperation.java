@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
  * To be used standalone or as parameters for AssetMockUtils.mockAsset(...).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 17.11.2010
+ * @since 2010-11-17
  */
 public abstract class AssetStubbingOperation implements ExceptionStubbingOperation<Asset, RepositoryException> {
 

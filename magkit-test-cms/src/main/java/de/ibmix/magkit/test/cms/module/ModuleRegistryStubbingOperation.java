@@ -33,8 +33,8 @@ import static org.mockito.Mockito.doReturn;
 /**
  * Providing operations for stubbing a magnolia ModuleRegistry - registering ModuleDefinition mocks.
  *
- * @author wolf.bubenik
- * @since 22.07.19.
+ * @author wolf.bubenik@ibmix.de
+ * @since 2019-07-22
  */
 public abstract class ModuleRegistryStubbingOperation implements StubbingOperation<ModuleRegistry> {
 

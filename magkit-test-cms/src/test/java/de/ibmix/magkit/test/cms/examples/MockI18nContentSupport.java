@@ -48,7 +48,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Demonstrate how to mock a Magnolia I18nContentSupport.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 09.03.2016
+ * @since 2016-03-09
  */
 public class MockI18nContentSupport {
 

@@ -49,7 +49,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Demonstrate how to mock a JCR Query for testing code that uses jcr queries and QueryManager.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 04.03.2016.
+ * @since 2016-03-04
  */
 public class MockQueries {
 

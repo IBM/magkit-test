@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Renderable definition for Freemarker unit tests.
  *
- * @author lars.gendner
+ * @author lars.gendner@ibmix.de
  */
 public class FreemarkerTestRenderableDefinition implements RenderableDefinition {
 

@@ -47,7 +47,7 @@ import static org.mockito.Mockito.when;
  * An util class to create Mockito mocks of magnolia security classes.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 30.04.2013
+ * @since 2013-04-30
  */
 public final class SecurityMockUtils extends ComponentsMockUtils {
 

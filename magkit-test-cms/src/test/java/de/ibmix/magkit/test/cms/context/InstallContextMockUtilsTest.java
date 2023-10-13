@@ -31,9 +31,10 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * TODO: comment.
+ * Test InstallContextMockUtils.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-07-25
  */
 public class InstallContextMockUtilsTest {
 

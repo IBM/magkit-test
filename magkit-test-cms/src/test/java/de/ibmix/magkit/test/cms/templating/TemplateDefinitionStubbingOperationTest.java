@@ -51,7 +51,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Testing TemplateDefinitionStubbingOperation.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 27.05.2013
+ * @since 2013-05-27
  */
 public class TemplateDefinitionStubbingOperationTest {
 
