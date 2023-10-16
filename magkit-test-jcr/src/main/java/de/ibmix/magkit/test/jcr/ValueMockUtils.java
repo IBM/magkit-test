@@ -128,7 +128,7 @@ public final class ValueMockUtils {
 
     public static Value mockValue(Binary value) throws RepositoryException {
         Value result = mock(Value.class);
-        String stringValue = value != null ? value.toString() : "";
+        String stringValue = value != null ? value.toString() : null;
         when(result.getBinary()).thenReturn(value);
         when(result.getString()).thenReturn(stringValue);
         doAnswer(STREAM_ANSWER).when(result).getStream();

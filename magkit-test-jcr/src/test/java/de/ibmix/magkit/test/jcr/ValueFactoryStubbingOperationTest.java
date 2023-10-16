@@ -22,7 +22,9 @@ package de.ibmix.magkit.test.jcr;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import java.util.Calendar;
@@ -116,14 +118,14 @@ public class ValueFactoryStubbingOperationTest {
     /**
      * Test of stubCreateValue method, of class ValueFactoryStubbingOperation.
      */
-//    @Test
-//    public void testStubCreateValueInputStream() throws FileNotFoundException, RepositoryException {
-//        InputStream value1 = Mockito.mock(InputStream.class);
-//        InputStream value2 = Mockito.mock(InputStream.class);
-//        assertThat(_factory.createValue(value1), nullValue());
-//
-//        ValueFactoryStubbingOperation.stubCreateValue(value1).of(_factory);
-//        assertThat(_factory.createValue(value1), notNullValue());
-//        assertThat(_factory.createValue(value2), nullValue());
-//    }
+    @Test
+    public void testStubCreateValueBinary() throws RepositoryException {
+        Binary value1 = Mockito.mock(Binary.class);
+        Binary value2 = Mockito.mock(Binary.class);
+        assertThat(_factory.createValue(value1), nullValue());
+
+        ValueFactoryStubbingOperation.stubCreateValue(value1).of(_factory);
+        assertThat(_factory.createValue(value1), notNullValue());
+        assertThat(_factory.createValue(value2), nullValue());
+    }
 }

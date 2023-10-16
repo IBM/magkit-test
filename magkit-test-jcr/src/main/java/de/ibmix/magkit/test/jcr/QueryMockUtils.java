@@ -175,8 +175,8 @@ public final class QueryMockUtils {
      */
     public static JackrabbitQueryResult mockQueryResult(final Row... results) throws RepositoryException {
         assertThat(results, notNullValue());
-        JackrabbitQueryResult result = mockQueryResult(emptyList());
-        doReturn(new RowIteratorAdapter(Arrays.asList(results))).when(result).getRows();
+        JackrabbitQueryResult result = mockEmptyQueryResult();
+        doReturn(new RowIteratorAdapter(asList(results))).when(result).getRows();
         return result;
     }
 
@@ -235,57 +235,22 @@ public final class QueryMockUtils {
         return result;
     }
 
-    public static Row mockRow(String selector, String value, double score) throws RepositoryException {
+    public static Row mockRow(double score, RowStubbingOperation... stubbings) throws RepositoryException {
         Row result = Mockito.mock(Row.class);
-        if (value != null) {
-            doReturn(ValueMockUtils.mockValue(value)).when(result).getValue(selector);
+        doReturn(score).when(result).getScore();
+        doReturn(new Value[0]).when(result).getValues();
+        for (RowStubbingOperation stubbing : stubbings) {
+            stubbing.of(result);
         }
-        doReturn(score).when(result).getScore(selector);
         return result;
     }
 
     static Row toRow(final Node node) {
-        return new Row() {
-            @Override
-            public Value[] getValues() {
-                return new Value[0];
-            }
-
-            @Override
-            public Value getValue(String columnName) throws RepositoryException {
-                return node.getProperty(columnName).getValue();
-            }
-
-            @Override
-            public Node getNode() {
-                return node;
-            }
-
-            @Override
-            public Node getNode(String selectorName) throws RepositoryException {
-                return node.getNode(selectorName);
-            }
-
-            @Override
-            public String getPath() throws RepositoryException {
-                return node.getPath();
-            }
-
-            @Override
-            public String getPath(String selectorName) throws RepositoryException {
-                return getNode(selectorName).getPath();
-            }
-
-            @Override
-            public double getScore() {
-                return 0;
-            }
-
-            @Override
-            public double getScore(String selectorName) {
-                return 0;
-            }
-        };
+        try {
+            return mockRow(0.0, RowStubbingOperation.stubNode(node));
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static final Answer<NodeIteratorAdapter> NODES_ANSWER = invocation -> {

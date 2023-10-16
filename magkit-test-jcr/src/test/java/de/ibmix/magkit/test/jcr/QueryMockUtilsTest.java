@@ -28,6 +28,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
 
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
 import static org.hamcrest.CoreMatchers.is;
@@ -97,5 +98,30 @@ public class QueryMockUtilsTest {
         assertThat(queryManager.createQuery("statement", "xpath").execute(), notNullValue());
         assertThat(queryManager.createQuery("statement", "xpath").execute().getNodes(), notNullValue());
         assertThat((Node) queryManager.createQuery("statement", "xpath").execute().getNodes().next(), is(c));
+    }
+
+    @Test
+    public void testToRow() throws RepositoryException {
+        Node root = NodeMockUtils.mockNode("root", NodeStubbingOperation.stubProperty("test", "root-test"));
+        Node node = NodeMockUtils.mockNode("root/node", NodeStubbingOperation.stubProperty("test", "node-test"));
+        Row row = QueryMockUtils.toRow(root);
+        assertThat(row.getNode(), is(root));
+        assertThat(row.getValue("test").getString(), is("root-test"));
+        assertThat(row.getPath(), is("/root"));
+        assertThat(row.getScore(), is(0.0));
+        assertThat(row.getValues(), notNullValue());
+
+        assertThat(row.getNode("node"), is(node));
+        assertThat(row.getValue("node/test").getString(), is("node-test"));
+        assertThat(row.getPath("node"), is("/root/node"));
+        assertThat(row.getScore("node"), is(0.0));
+    }
+
+    @Test
+    public void mockRow() throws RepositoryException {
+        Row row = QueryMockUtils.mockRow(0.0);
+        assertThat(row, notNullValue());
+        assertThat(row.getScore(), is(0.0));
+        assertThat(row.getValues(), notNullValue());
     }
 }
