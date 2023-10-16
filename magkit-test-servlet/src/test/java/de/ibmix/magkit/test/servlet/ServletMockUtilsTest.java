@@ -37,6 +37,7 @@ import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockPageContext;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockServletContext;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -56,6 +57,20 @@ public class ServletMockUtilsTest {
         HttpServletRequestStubbingOperation op2 = mock(HttpServletRequestStubbingOperation.class);
         HttpServletRequest result = mockHttpServletRequest(op1, op2);
         assertThat(result, notNullValue());
+
+        // We do not run into NullPointerException when accessing the attributes and parameters
+        assertThat(result.getAttributeNames().hasMoreElements(), is(false));
+        assertThat(result.getParameterMap().isEmpty(), is(true));
+        assertThat(result.getParameterNames().hasMoreElements(), is(false));
+        assertThat(result.getParameterValues("any"), nullValue());
+
+        // Each request mock has a session mock with the id "test"...
+        assertThat(result.getSession().getId(), is("test"));
+
+        // ane each session mock has a servlet context mock:
+        assertThat(result.getSession().getServletContext(), notNullValue());
+
+        // All passed HttpServletRequestStubbingOperation have been executed:
         verify(op1, times(1)).of(result);
         verify(op2, times(1)).of(result);
     }

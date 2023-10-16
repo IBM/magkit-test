@@ -44,7 +44,7 @@ import static org.mockito.Mockito.mock;
  * Testing NodeStubbingOperation.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 20.11.12
+ * @since 2012-11-20
  */
 public class NodeStubbingOperationTest {
 

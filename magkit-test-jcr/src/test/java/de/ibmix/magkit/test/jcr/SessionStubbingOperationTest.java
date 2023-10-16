@@ -41,7 +41,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
+ * Testing SessionStubbingOperation.
+ *
  * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public class SessionStubbingOperationTest {
 

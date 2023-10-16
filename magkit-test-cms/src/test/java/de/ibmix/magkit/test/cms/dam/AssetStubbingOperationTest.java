@@ -49,7 +49,8 @@ import static org.mockito.Mockito.mock;
 /**
  * Test AssetStubbingOperation.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
+ * @since 2014-04-07
  */
 public class AssetStubbingOperationTest {
 

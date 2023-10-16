@@ -41,9 +41,9 @@ import static org.mockito.Mockito.when;
 
 
 /**
- * Collection of utility methods for mocking Mgnl TemplateDefinitions (e.g. STKPage) with Mockito.
+ * Collection of utility methods for mocking Mgnl TemplateDefinitions with Mockito.
  *
- * @author Wolf Bubenik, Aperto AG
+ * @author wolf.bubenik@ibmix.de
  * @since 2010-08-27
  */
 public final class TemplateMockUtils extends ComponentsMockUtils {
@@ -107,7 +107,7 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
         return result;
     }
 
-    public static TemplateDefinition mockAreaDefinition(String id, AreaDefinitionStubbingOperation... stubbings) {
+    public static AreaDefinition mockAreaDefinition(String id, AreaDefinitionStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
         TemplateDefinition result = null;
@@ -124,7 +124,7 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
         } catch (RegistrationException e) {
             throw new IllegalStateException(e);
         }
-        return result;
+        return (AreaDefinition) result;
     }
 
     /**

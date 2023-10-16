@@ -31,10 +31,10 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.MockUtil.isMock;
 
 /**
- * TODO: comment.
+ * A util class for creating mocks that are registered in the Guice IoC components provider and can be injected into objects.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 06.06.2012
+ * @since 2012-06-06
  */
 public abstract class ComponentsMockUtils {
 

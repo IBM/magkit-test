@@ -41,8 +41,8 @@ import static org.mockito.Mockito.verify;
 /**
  * Tests for ContextMockUtils.
  *
- * @author wolf.bubenik
- * @since 17.09.2010
+ * @author wolf.bubenik@ibmix.de
+ * @since 2010-09-17
  */
 public class ContextMockUtilsTest {
 

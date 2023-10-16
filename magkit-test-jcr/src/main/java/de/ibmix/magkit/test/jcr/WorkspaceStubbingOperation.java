@@ -37,13 +37,19 @@ import static org.mockito.Mockito.when;
  * Utility class for stubbing javax.jcr.Workspace.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 03.08.2012
+ * @since 2012-08-03
  */
 public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOperation<Workspace, RepositoryException> {
 
     private WorkspaceStubbingOperation() {
     }
 
+    /**
+     * Factory method to create a StubbingOperation that sets the name of a Workspace mock.
+     *
+     * @param name the new workspace name as String
+     * @return the WorkspaceStubbingOperation
+     */
     public static WorkspaceStubbingOperation stubName(final String name) {
         return new WorkspaceStubbingOperation() {
             @Override
@@ -54,6 +60,13 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
         };
     }
 
+    /**
+     * Factory method to create a StubbingOperation that sets the Session of a Workspace mock.
+     * The session.getWorkspace() method is stubbed to return the workspace.
+     *
+     * @param session the new jcr Session for the workspace
+     * @return the WorkspaceStubbingOperation
+     */
     public static WorkspaceStubbingOperation stubSession(final Session session) {
         return new WorkspaceStubbingOperation() {
             @Override
@@ -65,6 +78,14 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
         };
     }
 
+    /**
+     * Factory method to create a StubbingOperation that stubbs the behaviour of the Session of a Workspace mock.
+     * If the workspace already has a session, this session wil be mocked.
+     * If the workspace has no session, a new session mock will be created.
+     *
+     * @param stubbings the SessionStubbingOperation to be applied to the session
+     * @return the WorkspaceStubbingOperation
+     */
     public static WorkspaceStubbingOperation stubSession(final SessionStubbingOperation... stubbings) {
         return new WorkspaceStubbingOperation() {
             @Override
@@ -83,6 +104,12 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
         };
     }
 
+    /**
+     * Factory method to create a StubbingOperation that sets the QueryManager of a Workspace mock.
+     *
+     * @param queryManager the new QueryManager
+     * @return the WorkspaceStubbingOperation
+     */
     public static WorkspaceStubbingOperation stubQueryManager(final QueryManager queryManager) {
         return new WorkspaceStubbingOperation() {
             @Override

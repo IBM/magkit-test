@@ -38,7 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * No surprise here. Tests for AggregationStateStubbingOperation.
  *
  * @author wolf.bubenik
- * @since 14.04.11
+ * @since 2011-04-14
  */
 public class AggregationStateStubbingOperationTest {
 

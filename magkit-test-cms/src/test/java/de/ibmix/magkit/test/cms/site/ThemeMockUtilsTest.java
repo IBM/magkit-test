@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verify;
  * Testing ThemeMockUtils.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 05.12.14
+ * @since 2014-12-05
  */
 public class ThemeMockUtilsTest {
 

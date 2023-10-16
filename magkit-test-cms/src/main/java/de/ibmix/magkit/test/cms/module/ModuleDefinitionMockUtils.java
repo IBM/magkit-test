@@ -28,7 +28,8 @@ import static org.mockito.Mockito.mock;
 /**
  * Utility class to create Mockito mocks of a magnolia ModuleDefinition.
  *
- * @author wolf.bubenikLibmix.de
+ * @author wolf.bubenik@ibmix.de
+ * @since 2020-03-04
  */
 public final class ModuleDefinitionMockUtils {
 
@@ -42,7 +43,7 @@ public final class ModuleDefinitionMockUtils {
     }
 
     /**
-     * Creates a ModuleDefinition mock wit provided behaviour that is not registered at an ModuleRegistry.
+     * Creates a ModuleDefinition mock with provided behaviour that is not registered at an ModuleRegistry.
      *
      * @param stubbings the StubbingOperations to stub properties of the module
      * @return a Mockito mock of a ModuleDefinition
@@ -57,7 +58,7 @@ public final class ModuleDefinitionMockUtils {
     }
 
     /**
-     * Creates a ModuleDefinition mock with the given name and a ModuleRegistry mock that returns this module.
+     * Creates a ModuleDefinition mock with the given name.
      *
      * @param name the name of the module
      * @param stubbings the StubbingOperations to stub properties of the module

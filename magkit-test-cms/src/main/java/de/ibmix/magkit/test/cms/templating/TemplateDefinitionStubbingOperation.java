@@ -35,7 +35,7 @@ import static org.mockito.Mockito.doReturn;
  * Operations to stub behaviour of a TemplateDefinition mock.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 14.04.2016
+ * @since 2016-04-14
  */
 public abstract class TemplateDefinitionStubbingOperation implements StubbingOperation<TemplateDefinition> {
 

@@ -25,9 +25,10 @@ import info.magnolia.module.InstallContext;
 import static org.mockito.Mockito.mock;
 
 /**
- * TODO: comment.
+ * Util class for creating InstallContext mocks.
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-07-25
  */
 public final class InstallContextMockUtils {
 

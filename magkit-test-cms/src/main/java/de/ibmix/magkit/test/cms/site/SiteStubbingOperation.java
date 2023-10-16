@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
  * Stubbing operations to be used as parameters in SiteMockUtils.mock...(...).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 17.11.2010
+ * @since 2010-11-17
  */
 public abstract class SiteStubbingOperation implements StubbingOperation<Site> {
 

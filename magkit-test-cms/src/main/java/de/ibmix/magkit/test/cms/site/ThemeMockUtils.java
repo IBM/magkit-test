@@ -37,8 +37,8 @@ import static org.mockito.Mockito.when;
 /**
  * Mock util class for creating Theme and ThemeReference mocks and register them in a ThemeRegistry mock.
  *
- * @author wolf.bubenik
- * @since 05.06.2013
+ * @author wolf.bubenik@ibmix.de
+ * @since 2013-06-05
  */
 public final class ThemeMockUtils {
 

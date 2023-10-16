@@ -49,8 +49,8 @@ import static org.mockito.Mockito.when;
 /**
  * Testing SecurityMockUtils.
  *
- * @author wolf.bubenik
- * @since 03.05.13
+ * @author wolf.bubenik@ibmix.de
+ * @since 2013-05-03
  */
 public class SecurityMockUtilsTest {
 

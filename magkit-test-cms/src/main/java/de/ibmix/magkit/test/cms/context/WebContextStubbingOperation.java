@@ -52,8 +52,8 @@ import static org.mockito.Mockito.when;
  * Utility class that provides factory methods for WebContextStubbingOperation.
  * Stubbing operations to be used as parameters in ContextMockUtils.mockWebContext(...).
  *
- * @author wolf.bubenik
- * @since 02.03.2011
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-03-02
  */
 public abstract class WebContextStubbingOperation implements StubbingOperation<WebContext> {
 

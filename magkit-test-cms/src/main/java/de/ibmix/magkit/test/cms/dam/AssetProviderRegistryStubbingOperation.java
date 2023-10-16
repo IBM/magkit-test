@@ -25,8 +25,8 @@ import info.magnolia.dam.api.AssetProviderRegistry;
 /**
  * TODO: comment.
  *
- * @author wolf.bubenik
- * @since 25.08.14
+ * @author wolf.bubenik@ibmix.de
+ * @since 2014-08-25
  */
 public abstract class AssetProviderRegistryStubbingOperation {
     public abstract void of(AssetProviderRegistry registry);

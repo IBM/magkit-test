@@ -29,9 +29,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: comment.
+ * Utility class that provides factory methods for InstallContextStubbingOperation.
+ * Stubbing operations to be used as parameters in InstallContextMockUtils.mockInstallContext(...).
  *
- * @author wolf.bubenik
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-07-25
  */
 public abstract class InstallContextStubbingOperation implements StubbingOperation<InstallContext> {
 

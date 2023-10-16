@@ -45,8 +45,8 @@ import static org.mockito.Mockito.verify;
 /**
  * Testing SiteMockUtils.
  *
- * @author wolf.bubenik
- * @since 24.05.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-05-24
  */
 public class SiteMockUtilsTest {
     @Before

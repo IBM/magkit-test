@@ -47,7 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Compare Magnolia Test-Utils with this API (Magkit-Mock-Utils).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 14.04.16.
+ * @since 2016-04-14
  */
 public class MockAggregationState {
 

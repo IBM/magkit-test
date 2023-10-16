@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
  * Stubbing operations to be used as parameters in ContextMockUtils.mockAccessManager(...).
  *
  * @author wolf.bubenik@ibmix.de
- * @since : 01.09.2010
+ * @since : 2010-09-01
  */
 public abstract class AccessManagerStubbingOperation implements StubbingOperation<AccessManager> {
 

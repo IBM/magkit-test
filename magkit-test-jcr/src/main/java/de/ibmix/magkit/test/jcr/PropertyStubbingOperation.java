@@ -43,8 +43,8 @@ import static org.mockito.Mockito.when;
 /**
  * Utility class for stubbing mocks of javax.jcr.Property.
  *
- * @author wolf.bubenik
- * @since 05.11.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-11-05
  */
 public abstract class PropertyStubbingOperation implements ExceptionStubbingOperation<Property, RepositoryException> {
 

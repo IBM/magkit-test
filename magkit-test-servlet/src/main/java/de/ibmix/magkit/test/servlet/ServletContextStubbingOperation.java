@@ -34,10 +34,11 @@ import static org.mockito.Mockito.when;
 
 /**
  * Utility class that provides factory methods for ServletContextStubbingOperation.
- * Stubbing operations to be used as parameters in ServletMockUtils.mockServletContext(...).
+ * Stubbing operations to be used as parameters in ServletMockUtils.mockServletContext(...)
+ * or for stubbing the behaviour of an existing mock: ServletContextStubbingOperation.stubContextPath("path").of(mock).
  *
- * @author wolf.bubenik
- * @since 10.03.11
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-03-10
  */
 public abstract class ServletContextStubbingOperation {
     public abstract void of(ServletContext context);

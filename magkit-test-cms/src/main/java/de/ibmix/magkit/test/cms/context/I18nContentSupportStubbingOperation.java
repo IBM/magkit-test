@@ -39,8 +39,8 @@ import static org.mockito.Mockito.when;
 /**
  * Utility class that provides operations for stubbing of an I18nContentSupport mock.
  *
- * @author wolf.bubenik
- * @since 13.12.2010
+ * @author wolf.bubenik@ibmix.de
+ * @since 2010-12-13
  */
 public abstract class I18nContentSupportStubbingOperation implements ExceptionStubbingOperation<I18nContentSupport, RepositoryException> {
 

@@ -32,10 +32,11 @@ import static org.mockito.Mockito.when;
 
 /**
  * Utility class that provides factory methods for HttpServletResponseStubbingOperation.
- * Stubbing operations to be used as parameters in ServletMockUtils.mockHttpServletResponse(...).
+ * Stubbing operations to be used as parameters in ServletMockUtils.mockHttpServletResponse(...)
+ * or for stubbing the behaviour of an existing mock: HttpServletResponseStubbingOperation.stubContentType("type").of(mock).
  *
- * @author wolf.bubenik
- * @since 10.03.11
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-03-10
  */
 public abstract class HttpServletResponseStubbingOperation {
     public abstract void of(HttpServletResponse response);

@@ -23,23 +23,19 @@ package de.ibmix.magkit.test.cms.context;
 import info.magnolia.cms.beans.config.ServerConfiguration;
 
 /**
- * TODO: comment.
+ * Util class for creating ServerConfiguration mocks.
  *
- * @author wolf.bubenik
- * @since 11.01.2011
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-01-11
  */
 public final class ServerConfigurationMockUtils extends ComponentsMockUtils {
 
     public static ServerConfiguration mockServerConfiguration(ServerConfigurationStubbingOperation... stubbings) {
-        ServerConfiguration config = mockServerConfiguration();
+        ServerConfiguration config = mockComponentInstance(ServerConfiguration.class);
         for (ServerConfigurationStubbingOperation stubbing : stubbings) {
             stubbing.of(config);
         }
         return config;
-    }
-
-    private static ServerConfiguration mockServerConfiguration() {
-        return mockComponentInstance(ServerConfiguration.class);
     }
 
     public static void cleanServerConfiguration() {

@@ -205,11 +205,11 @@ public class HttpServletRequestStubbingOperationTest {
         assertThat(_request.getParameterMap().get("name2"), notNullValue());
         assertThat(_request.getParameterMap().get("name2")[0], is("value"));
 
-        Enumeration parameterNames = _request.getParameterNames();
+        Enumeration<String> parameterNames = _request.getParameterNames();
         assertThat(parameterNames, notNullValue());
         assertThat(parameterNames.hasMoreElements(), is(true));
-        assertThat(parameterNames.nextElement().toString(), is("name"));
-        assertThat(parameterNames.nextElement().toString(), is("name2"));
+        assertThat(parameterNames.nextElement(), is("name"));
+        assertThat(parameterNames.nextElement(), is("name2"));
 
         // verify that parameters will be removed if stubbed with null value
         String[] values = null;
@@ -220,7 +220,7 @@ public class HttpServletRequestStubbingOperationTest {
         parameterNames = _request.getParameterNames();
         assertThat(parameterNames, notNullValue());
         assertThat(parameterNames.hasMoreElements(), is(true));
-        assertThat(parameterNames.nextElement().toString(), is("name"));
+        assertThat(parameterNames.nextElement(), is("name"));
         assertThat(parameterNames.hasMoreElements(), is(false));
     }
 
@@ -300,6 +300,7 @@ public class HttpServletRequestStubbingOperationTest {
         assertThat(_request.getCookies(), notNullValue());
         assertThat(_request.getCookies().length, is(1));
         assertThat(_request.getCookies()[0].getName(), is("keks 1"));
+        assertThat(_request.getCookies()[0].getValue(), is("value 1"));
 
         stubCookie("keks 2", "value 2").of(_request);
         assertThat(_request.getCookies(), notNullValue());

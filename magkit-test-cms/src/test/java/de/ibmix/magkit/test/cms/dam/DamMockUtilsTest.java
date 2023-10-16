@@ -40,8 +40,8 @@ import static org.mockito.Mockito.verify;
 /**
  * Testing DamMockUtils.
  *
- * @author wolf.bubenik
- * @since 07.04.14
+ * @author wolf.bubenik@ibmix.de
+ * @since 2014-04-07
  */
 public class DamMockUtilsTest {
     @Before

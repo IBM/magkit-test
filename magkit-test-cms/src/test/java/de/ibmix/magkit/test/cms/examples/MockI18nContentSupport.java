@@ -21,7 +21,6 @@ package de.ibmix.magkit.test.cms.examples;
  */
 
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
-import de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils;
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.Components;
@@ -37,6 +36,7 @@ import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.util.Locale;
 
+import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
 import static org.hamcrest.core.Is.is;
@@ -48,7 +48,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Demonstrate how to mock a Magnolia I18nContentSupport.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 09.03.2016
+ * @since 2016-03-09
  */
 public class MockI18nContentSupport {
 
@@ -63,8 +63,8 @@ public class MockI18nContentSupport {
     @Test
     public void mockI18nContentSupportWithMagkit() throws RepositoryException {
         // 1) Create a I18nContentSupport mock:
-        I18nContentSupport i18n = I18nContentSupportMockUtils.mockI18nContentSupport();
-        // Tis mock is registered as component:
+        I18nContentSupport i18n = mockI18nContentSupport();
+        // This mock is registered as component:
         assertThat(Components.getComponent(I18nContentSupport.class), is(i18n));
         // It provides a simple "echo behaviour" ...
         assertThat(i18n.isEnabled(), is(false));
