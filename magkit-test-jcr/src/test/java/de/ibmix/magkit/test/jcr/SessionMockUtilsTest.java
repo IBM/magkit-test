@@ -36,6 +36,7 @@ import static org.mockito.Mockito.verify;
  * Testing SessionMockUtils.
  *
  * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public class SessionMockUtilsTest {
 

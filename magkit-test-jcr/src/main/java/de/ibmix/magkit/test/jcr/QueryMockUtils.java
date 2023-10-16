@@ -57,8 +57,8 @@ import static org.mockito.Mockito.when;
 /**
  * Utility class for mocking javax.jcr.QueryResult, javax.jcr.Query and javax.jcr.QueryManager.
  *
- * @author wolf.bubenik
- * @since 29.05.13
+ * @author wolf.bubenik@ibmix.de
+ * @since 2013-05-29
  */
 public final class QueryMockUtils {
 

@@ -70,8 +70,8 @@ import static org.mockito.Mockito.when;
 /**
  * Utils for mocking JCR nodes.
  *
- * @author wolf.bubenik@aperto.com
- * @since 09.10.2012
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-10-09
  */
 public final class NodeMockUtils {
 
@@ -248,8 +248,9 @@ public final class NodeMockUtils {
     }
 
     /**
-     * Creates a Node mock with name "untitled" in the "website" workspace.
+     * Creates a Node mock with name "untitled" and default type NodeType.NT_BASE in the "website" workspace.
      *
+     * @param nodeStubbings NodeStubbingOperations to modify the Node properties
      * @return a Mockito mock for a javax.jcr.Node
      * @throws RepositoryException declared exception from jcr api but not thrown if not explicitly mocked
      */
@@ -258,20 +259,25 @@ public final class NodeMockUtils {
     }
 
     /**
-     * Creates a Node mock with given path in the "website" workspace.
+     * Creates a Node mock with given path in the "website" workspace. New nodes will be of type NodeType.NT_BASE by default.
      *
-     * @return a Mockito mock for a javax.jcr.Node
+     * @param path the path of the node as String
+     * @param nodeStubbings NodeStubbingOperations to modify the Node properties
+     * @return the javax.jcr.Node mock for the last path segment
      * @throws RepositoryException declared exception from jcr api but not thrown if not explicitly mocked
      */
-    public static Node mockNode(final String name, final NodeStubbingOperation... nodeStubbings) throws RepositoryException {
-        return mockNode("website", name, nodeStubbings);
+    public static Node mockNode(final String path, final NodeStubbingOperation... nodeStubbings) throws RepositoryException {
+        return mockNode("website", path, nodeStubbings);
     }
 
     /**
-     * Mocks the node hierarchy for the given path in workspace with the given name.
+     * Mocks the node hierarchy for the given path in workspace with the given name. New nodes will be of type NodeType.NT_BASE by default.
      *
-     * @param nodeStubbings for stub behaviour
-     * @return mocked node
+     * @param repository the name of the repository the node should be inserted
+     * @param path the path of the node as String
+     * @param nodeStubbings NodeStubbingOperations to modify the Node properties
+     * @return the Node mock for the last path segment
+     * @throws RepositoryException declared exception from jcr api but not thrown if not explicitly mocked
      */
     public static Node mockNode(final String repository, final String path, final NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         Session session = SessionMockUtils.mockSession(repository);
@@ -285,6 +291,14 @@ public final class NodeMockUtils {
         return node;
     }
 
+    /**
+     * Mocks the Node for a xml file exported from a JCR repository.
+     * .
+     * @param repository the repository name (defaults to "website" if null or empty)
+     * @param xmlUtf8 the file input stream to read the xml from
+     * @return the Node mock unmarshalled from the file
+     * @throws RuntimeException when file could not be read or xml is invalid
+     */
     public static Node mockNodeFromXml(final String repository, InputStream xmlUtf8) {
         try {
             JcrXmlHandler jcrXmlHandler = new JcrXmlHandler(repository);
@@ -298,7 +312,12 @@ public final class NodeMockUtils {
     }
 
     /**
-     * Mocks the node hierarchy for the given node path in the given session.
+     * Mocks the node hierarchy for the given node path in the given session. New nodes will be of type NodeType.NT_BASE by default.
+     *
+     * @param session the JCR session for the node
+     * @param path the path of the node
+     * @return the Node mock for the last path segment
+     * @throws RepositoryException declared exception from jcr api but not thrown if not explicitly mocked
      */
     public static Node mockNewNode(final Session session, final String path) throws RepositoryException {
         String[] pathSegments = StringUtils.split(path, '/');
@@ -306,7 +325,12 @@ public final class NodeMockUtils {
     }
 
     /**
-     * Adds the node hierarchy for the given names to the given root node. New nodes will be of type NodeType.NT_BASE.
+     * Adds the node hierarchy for the given names to the given root node. New nodes will be of type NodeType.NT_BASE by default.
+     *
+     * @param root the root node for the node hierarchy
+     * @param pathSegments the node names as String[]
+     * @return the Node mock for the last path segment
+     * @throws RepositoryException declared exception from jcr api but not thrown if not explicitly mocked
      */
     public static Node mockNodeTree(final Node root, final String... pathSegments) throws RepositoryException {
         String name = pathSegments[0];
@@ -339,7 +363,7 @@ public final class NodeMockUtils {
     }
 
     /**
-     * Creates a Mockito Mock for an javax.jcr.Node of type NodeType.NT_BASE and with the given name.
+     * Creates a Mockito Mock for a javax.jcr.Node of type NodeType.NT_BASE and with the given name.
      *
      * @param name the name for the Node mock.
      * @return a Mockito mock for javax.jcr.Node

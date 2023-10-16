@@ -41,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Demonstrate how to mock a Magnolia Site for testing code that uses Site and SiteManager.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 07.03.2016
+ * @since 2016-03-07
  */
 public class MockSite {
 

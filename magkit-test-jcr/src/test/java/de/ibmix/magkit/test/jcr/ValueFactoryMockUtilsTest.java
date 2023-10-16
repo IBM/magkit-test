@@ -32,7 +32,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
+ * Testing ValueFactoryMockUtils.
+ *
  * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public class ValueFactoryMockUtilsTest {
 

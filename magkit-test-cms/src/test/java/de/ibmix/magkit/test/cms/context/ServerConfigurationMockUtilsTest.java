@@ -38,8 +38,8 @@ import static org.mockito.Mockito.verify;
 /**
  * Testing ServerConfigurationMockUtils.
  *
- * @author wolf.bubenik
- * @since 25.07.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-07-25
  */
 public class ServerConfigurationMockUtilsTest {
     @Before

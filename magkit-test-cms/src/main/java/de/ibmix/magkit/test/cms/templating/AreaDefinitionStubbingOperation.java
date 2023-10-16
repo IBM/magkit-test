@@ -38,8 +38,8 @@ import static org.mockito.Mockito.mock;
 /**
  * Operations to stubb behaviour of a AreaDefinition mock.
  *
- * @author wolf.bubenik
- * @since 14.04.16.
+ * @author wolf.bubenik@ibmix.de
+ * @since 2016-04-14
  */
 public abstract class AreaDefinitionStubbingOperation extends TemplateDefinitionStubbingOperation {
     public abstract void of(AreaDefinition area);

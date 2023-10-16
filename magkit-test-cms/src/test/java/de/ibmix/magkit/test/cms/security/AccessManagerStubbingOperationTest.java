@@ -37,7 +37,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Testing AccessManagerStubbingOperation.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 04.11.2010
+ * @since 2010-11-04
  */
 public class AccessManagerStubbingOperationTest {
 

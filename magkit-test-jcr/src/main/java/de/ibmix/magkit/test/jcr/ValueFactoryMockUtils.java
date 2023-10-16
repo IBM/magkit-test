@@ -28,8 +28,8 @@ import static org.mockito.Mockito.mock;
 /**
  * Util class for mocking javax.jcr.ValueFactory.
  *
- * @author wolf.bubenik
- * @since 03.08.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public final class ValueFactoryMockUtils {
 

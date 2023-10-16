@@ -35,10 +35,11 @@ import static org.mockito.Mockito.when;
 
 /**
  * Utility class that provides factory methods for PageContextStubbingOperation.
- * Stubbing operations to be used as parameters in ServletMockUtils.mockPageContext(...).
+ * Stubbing operations to be used as parameters in ServletMockUtils.mockPageContext(...)
+ * or for stubbing the behaviour of an existing mock: PageContextStubbingOperation.stubHttpServletRequest(request).of(mock).
  *
- * @author wolf.bubenik
- * @since 10.03.11
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-03-10
  */
 public abstract class PageContextStubbingOperation {
     public abstract void of(PageContext context);

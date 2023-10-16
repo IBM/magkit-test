@@ -64,8 +64,8 @@ import static org.mockito.Mockito.mock;
 /**
  * WebContextStubbingOperation.
  *
- * @author wolf.bubenik
- * @since 27.07.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-07-27
  */
 public class WebContextStubbingOperationTest {
 

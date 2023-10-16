@@ -48,7 +48,7 @@ import static org.mockito.Mockito.verify;
  * Testing PropertyStubbingOperation.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 13.11.12
+ * @since 2012-11-13
  */
 public class PropertyStubbingOperationTest {
 

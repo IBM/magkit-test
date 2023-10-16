@@ -37,10 +37,10 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * TODO: comment.
+ * Testing SiteManagerStubbingOperation.
  *
- * @author wolf.bubenik
- * @since 24.07.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-07-24
  */
 public class SiteManagerStubbingOperationTest {
 

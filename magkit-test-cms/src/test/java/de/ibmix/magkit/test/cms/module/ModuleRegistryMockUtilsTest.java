@@ -34,8 +34,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Test ModuleRegistryMockUtils.
  *
- * @author wolf.bubenik@aperto.com
- * @since 04.03.2020
+ * @author wolf.bubenik@ibmix.de
+ * @since 2020-03-04
  */
 public class ModuleRegistryMockUtilsTest {
 

@@ -40,8 +40,8 @@ import static org.mockito.Mockito.when;
 /**
  * Site mocking.
  *
- * @author wolf.bubenik
- * @since 17.11.2010
+ * @author wolf.bubenik@ibmix.de
+ * @since 2010-11-17
  */
 public final class SiteMockUtils extends ComponentsMockUtils {
 

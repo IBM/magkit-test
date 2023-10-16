@@ -43,8 +43,8 @@ import static org.mockito.Mockito.when;
 /**
  * Utility class for stubbing mocks of javax.jcr.Session.
  *
- * @author wolf.bubenik
- * @since 03.08.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public abstract class SessionStubbingOperation implements ExceptionStubbingOperation<Session, RepositoryException> {
 

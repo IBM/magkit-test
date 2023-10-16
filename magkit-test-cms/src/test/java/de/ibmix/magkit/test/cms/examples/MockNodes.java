@@ -41,7 +41,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
  * Compare Magnolia JCR Mock-Objects with this API.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 29.01.2016
+ * @since 2016-01-29
  */
 public class MockNodes {
 

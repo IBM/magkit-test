@@ -45,8 +45,8 @@ import static org.mockito.Mockito.verify;
 /**
  * Testing SiteStubbingOperation.
  *
- * @author wolf.bubenik
- * @since 06.06.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-06-06
  */
 public class SiteStubbingOperationTest {
 
@@ -57,25 +57,6 @@ public class SiteStubbingOperationTest {
         cleanContext();
         _site = mock(Site.class);
     }
-
-//    @Test
-//    public void testStubDamSupport() throws Exception {
-//        assertThat(_site.getDamSupport(), nullValue());
-//
-//        DAMSupport damSupport = mock(DAMSupport.class);
-//        stubDamSupport(damSupport).of(_site);
-//        assertThat(_site.getDamSupport(), is(damSupport));
-//    }
-//
-//    @Test
-//    public void testStubDamSupportWithStubbings() throws Exception {
-//        assertThat(_site.getDamSupport(), nullValue());
-//
-//        DamSupportStubbingOperation op = mock(DamSupportStubbingOperation.class);
-//        stubDamSupport(op).of(_site);
-//        assertThat(_site.getDamSupport(), notNullValue());
-//        verify(op, times(1)).of(_site.getDamSupport());
-//    }
 
     @Test
     public void testStubName() {

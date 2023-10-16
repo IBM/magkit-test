@@ -39,7 +39,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Testing ValueMockUtils.
  *
- * @author wolf
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public class ValueMockUtilsTest {
 
@@ -163,8 +164,6 @@ public class ValueMockUtilsTest {
 
     /**
      * Tests mockValue with node.
-     *
-     * @throws RepositoryException
      */
     @Test
     public void testMockValueNode() throws RepositoryException {

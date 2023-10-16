@@ -44,10 +44,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.internal.util.MockUtil.isMock;
 
 /**
- * TODO: comment.
+ * Testing TemplateMockUtils.
  *
- * @author wolf.bubenik
- * @since 08.04.11
+ * @author wolf.bubenik@ibmix.de
+ * @since 2011-04-08
  */
 public class TemplateMockUtilsTest {
 

@@ -38,7 +38,7 @@ import static info.magnolia.repository.RepositoryConstants.WEBSITE;
  * MgnlContext.getJcrSession("name") will be stubbed as well.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 26.08.2014
+ * @since 2014-08-26
  */
 public final class MagnoliaNodeMockUtils {
 
@@ -51,7 +51,7 @@ public final class MagnoliaNodeMockUtils {
     }
 
     /**
-     * Mocks a page node with mgnl page node type.
+     * Mocks a page node with mgnl:page node type.
      *
      * @param nodeStubbings for stub behaviour
      * @return mocked node

@@ -45,7 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Compare Magnolia JCR Mock-Objects with this API.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 05.04.2016
+ * @since 2016-04-05
  */
 public class MockWebContext {
 

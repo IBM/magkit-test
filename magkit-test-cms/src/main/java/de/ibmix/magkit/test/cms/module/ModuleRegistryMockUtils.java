@@ -26,8 +26,8 @@ import info.magnolia.module.ModuleRegistry;
 /**
  * Utility class to create Mockito mocks of a magnolia ModuleRegistry.
  *
- * @author wolf.bubenik
- * @since 22.07.19.
+ * @author wolf.bubenik@ibmix.de
+ * @since 2019-07-22
  */
 public final class ModuleRegistryMockUtils extends ComponentsMockUtils {
 

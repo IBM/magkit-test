@@ -30,7 +30,7 @@ import java.util.Locale;
 /**
  * Copy from Magnolias message wrapper which we can not use. It has only a package local scope. :-(
  *
- * @author frank.sommer
+ * @author frank.sommer@ibmix.de
  * @see {@link info.magnolia.freemarker.MessagesWrapper}
  */
 public class MessagesWrapper {

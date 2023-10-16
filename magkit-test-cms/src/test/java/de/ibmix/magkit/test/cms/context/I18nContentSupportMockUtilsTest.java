@@ -46,8 +46,8 @@ import static org.mockito.Mockito.when;
 /**
  * Testing I18nContentSupportMockUtils.
  *
- * @author wolf.bubenik
- * @since 16.02.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-02-16
  */
 public class I18nContentSupportMockUtilsTest {
     @Before

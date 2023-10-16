@@ -48,7 +48,7 @@ import static org.mockito.Mockito.verify;
  * Test the NodeMockUtils test class.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 31.10.2012
+ * @since 2012-10-31
  */
 public class NodeMockUtilsTest {
 

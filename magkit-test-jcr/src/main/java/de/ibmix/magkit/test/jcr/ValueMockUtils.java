@@ -43,8 +43,8 @@ import static org.mockito.Mockito.when;
 /**
  * Utility class for mocking javax.jcr.Value.
  *
- * @author wolf.bubenik
- * @since 04.08.2012
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-04
  */
 public final class ValueMockUtils {
     public static final Answer<InputStream> STREAM_ANSWER = invocation -> {
@@ -56,6 +56,13 @@ public final class ValueMockUtils {
     private ValueMockUtils() {
     }
 
+    /**
+     * Factory method for creating a jcr value mock of type string (1).
+     *
+     * @param value the value as String
+     * @return the jcr value mock, never null
+     * @throws RepositoryException
+     */
     public static Value mockValue(String value) throws RepositoryException {
         return mockValue(value, PropertyType.STRING);
     }
@@ -87,9 +94,6 @@ public final class ValueMockUtils {
                 }
             }
             when(result.getBoolean()).thenReturn(Boolean.valueOf(value));
-            Binary binary = mockBinary(value);
-            when(result.getBinary()).thenReturn(binary);
-            doAnswer(STREAM_ANSWER).when(result).getStream();
         }
         return result;
     }
@@ -109,9 +113,7 @@ public final class ValueMockUtils {
             when(result.getDouble()).thenReturn((double) value.getTimeInMillis());
             when(result.getDecimal()).thenReturn(new BigDecimal(value.getTimeInMillis()));
             when(result.getBoolean()).thenThrow(new ValueFormatException());
-            Binary binary = mockBinary(stringValue);
-            when(result.getBinary()).thenReturn(binary);
-            doAnswer(STREAM_ANSWER).when(result).getStream();
+            when(result.getBinary()).thenThrow(new ValueFormatException());
         }
         return result;
     }
@@ -126,16 +128,21 @@ public final class ValueMockUtils {
 
     public static Value mockValue(Binary value) throws RepositoryException {
         Value result = mock(Value.class);
-        String stringValue = value.toString();
+        String stringValue = value != null ? value.toString() : "";
         when(result.getBinary()).thenReturn(value);
         when(result.getString()).thenReturn(stringValue);
         doAnswer(STREAM_ANSWER).when(result).getStream();
         when(result.getType()).thenReturn(PropertyType.BINARY);
+        when(result.getLong()).thenThrow(new ValueFormatException());
+        when(result.getDouble()).thenThrow(new ValueFormatException());
+        when(result.getDecimal()).thenThrow(new ValueFormatException());
+        when(result.getBoolean()).thenThrow(new ValueFormatException());
+        when(result.getDate()).thenThrow(new ValueFormatException());
         return result;
     }
 
     public static Value mockValue(Node value) throws RepositoryException {
-        return mockValue(value.getIdentifier(), PropertyType.REFERENCE);
+        return mockValue(value != null ? value.getIdentifier() : null, PropertyType.REFERENCE);
     }
 
     public static Binary mockBinary(String value) throws RepositoryException {

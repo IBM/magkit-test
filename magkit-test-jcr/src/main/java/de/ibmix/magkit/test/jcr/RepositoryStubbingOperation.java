@@ -33,8 +33,8 @@ import static org.mockito.Mockito.when;
 /**
  * Factory class for RepositoryStubbingOperation instances.
  *
- * @author wolf.bubenik
- * @since 04.02.14
+ * @author wolf.bubenik@ibmix.de
+ * @since 2014-02-04
  */
 public abstract class RepositoryStubbingOperation implements ExceptionStubbingOperation<Repository, RepositoryException> {
 

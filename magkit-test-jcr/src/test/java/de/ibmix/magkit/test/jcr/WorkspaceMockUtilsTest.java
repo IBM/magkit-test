@@ -34,7 +34,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * @author wolf
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public class WorkspaceMockUtilsTest {
 

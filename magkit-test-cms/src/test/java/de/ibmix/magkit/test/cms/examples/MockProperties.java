@@ -62,7 +62,7 @@ import static org.junit.Assert.fail;
  * Compare Magnolia JCR Mock-Objects with this API.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 17.02.2016.
+ * @since 2016-02-17
  */
 //CHECKSTYLE:OFF
 public class MockProperties {
@@ -357,7 +357,7 @@ public class MockProperties {
         config.setDefaultBaseUrl("http://test.aperto.de");
         config.setDefaultExtension("html");
         ComponentsTestUtil.setInstance(ServerConfiguration.class, config);
-        // ... und ggf einen Context-Pfat für absolute Links:
+        // ... und ggf einen Context-Pfad für absolute Links:
         ((MockWebContext) MockUtil.getMockContext(true)).setContextPath("/author");
         // Und wir benötigen noch einen I18nContentSupport:
         ComponentsTestUtil.setInstance(I18nContentSupport.class, new DefaultI18nContentSupport());

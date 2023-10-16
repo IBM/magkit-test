@@ -42,7 +42,7 @@ import static org.mockito.Mockito.doReturn;
  * Stubbing operations to be used as parameters in ThemeMockUtils.mock...(...).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 05.06.13
+ * @since 2013-06-05
  */
 public abstract class ThemeStubbingOperation implements StubbingOperation<Theme> {
 

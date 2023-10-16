@@ -45,8 +45,8 @@ import static org.mockito.Mockito.mock;
 /**
  * Test AssetMockUtils.
  *
- * @author wolf.bubenik@aperto.com
- * @since 05.03.2020
+ * @author wolf.bubenik@ibmix.de
+ * @since 2020-03-05
  */
 public class AssetMockUtilsTest {
 

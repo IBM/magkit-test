@@ -38,7 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Utility class that provides NodeStubbingOperations to stub magnolia related node properties.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 03.06.2016.
+ * @since 2016-06-03
  */
 public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperation {
 

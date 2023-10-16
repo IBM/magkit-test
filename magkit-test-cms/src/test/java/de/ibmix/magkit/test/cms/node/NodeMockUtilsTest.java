@@ -40,8 +40,8 @@ import static org.mockito.Mockito.verify;
 /**
  * Test the NodeMockUtils test class.
  *
- * @author frank.sommer
- * @since 31.10.12
+ * @author frank.sommer@ibmix.de
+ * @since 2012-10-31
  */
 public class NodeMockUtilsTest {
 
@@ -55,7 +55,6 @@ public class NodeMockUtilsTest {
         assertThat(node.getNodes(), notNullValue());
         assertThat(node.getNodes().hasNext(), is(false));
         assertThat(node.getProperties(), notNullValue());
-//        assertThat(node.getProperties().hasNext(), is(false));
         verify(op1, times(1)).of(node);
         verify(op2, times(1)).of(node);
 

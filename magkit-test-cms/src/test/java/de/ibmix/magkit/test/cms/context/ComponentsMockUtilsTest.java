@@ -41,8 +41,8 @@ import static org.mockito.internal.util.MockUtil.isMock;
 /**
  * Testing ComponentsMockUtils.
  *
- * @author wolf.bubenik
- * @since 07.06.12
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-06-07
  */
 public class ComponentsMockUtilsTest {
 
