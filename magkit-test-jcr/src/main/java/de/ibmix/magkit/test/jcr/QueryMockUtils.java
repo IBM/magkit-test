@@ -75,6 +75,7 @@ public final class QueryMockUtils {
      *
      * @param stubbings the QueryManagerStubbingOperations to be executed
      * @return a QueryManager Mockito mock
+     * @throws RepositoryException declared exception from node api but never thrown
      */
     public static QueryManager mockQueryManager(QueryManagerStubbingOperation... stubbings) throws RepositoryException {
         return mockQueryManager("website", stubbings);
@@ -91,6 +92,7 @@ public final class QueryMockUtils {
      * @param workspace the repository id as String.
      * @param stubbings the QueryManagerStubbingOperations to be executed
      * @return a QueryManager Mockito mock
+     * @throws RepositoryException declared exception from node api but never thrown
      */
     public static QueryManager mockQueryManager(final String workspace, QueryManagerStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());

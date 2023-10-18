@@ -42,7 +42,7 @@ public final class WorkspaceMockUtils {
      *
      * @param stubbings the WorkspaceStubbingOperation to be executed on the mock
      * @return a Workspace mock, never null
-     * @throws RepositoryException by be thrown by one of the stubbing operations
+     * @throws RepositoryException may be thrown by one of the stubbing operations
      */
     public static Workspace mockWorkspace(WorkspaceStubbingOperation... stubbings) throws RepositoryException {
         return mockWorkspace("test", stubbings);
@@ -53,7 +53,7 @@ public final class WorkspaceMockUtils {
      *
      * @param stubbings the WorkspaceStubbingOperation to be executed on the mock
      * @return a Workspace mock, never null
-     * @throws RepositoryException by be thrown by one of the stubbing operations
+     * @throws RepositoryException may be thrown by one of the stubbing operations
      */
     public static Workspace mockWorkspace(String name, WorkspaceStubbingOperation... stubbings) throws RepositoryException {
         Workspace result = mock(Workspace.class);

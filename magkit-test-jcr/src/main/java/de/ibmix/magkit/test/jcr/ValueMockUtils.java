@@ -61,7 +61,7 @@ public final class ValueMockUtils {
      *
      * @param value the value as String
      * @return the jcr value mock, never null
-     * @throws RepositoryException
+     * @throws RepositoryException never thrown from mocks but jcr API declares this exception
      */
     public static Value mockValue(String value) throws RepositoryException {
         return mockValue(value, PropertyType.STRING);
