@@ -39,6 +39,8 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Testing NodeStubbingOperation.
@@ -208,6 +210,19 @@ public class NodeStubbingOperationTest {
         assertThat(child.getParent(), is(_node));
         assertThat(_node.hasNode("child"), is(true));
         assertThat(_node.hasNodes(), is(true));
+    }
+
+    @Test
+    public void stubNodeWithName() throws RepositoryException {
+        assertThat(_node.getNode("child"), nullValue());
+
+        NodeStubbingOperation op = mock(NodeStubbingOperation.class);
+        NodeStubbingOperation.stubNode("child", op).of(_node);
+        assertThat(_node.hasNode("child"), is(true));
+        assertThat(_node.hasNodes(), is(true));
+        assertThat(_node.getNode("child"), notNullValue());
+        assertThat(_node.getNode("child").getName(), is("child"));
+        verify(op, times(1)).of(_node.getNode("child"));
     }
 
     /**

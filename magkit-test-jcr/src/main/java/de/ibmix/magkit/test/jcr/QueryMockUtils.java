@@ -47,6 +47,7 @@ import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManag
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -93,7 +94,7 @@ public final class QueryMockUtils {
      */
     public static QueryManager mockQueryManager(final String workspace, QueryManagerStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());
-        Session session = isBlank(workspace) ? mockSession("website") : mockSession(workspace);
+        Session session = mockSession(defaultIfBlank(workspace, "website"));
         QueryManager qm = session.getWorkspace().getQueryManager();
         if (qm == null) {
             qm = mock(QueryManager.class);
@@ -173,7 +174,7 @@ public final class QueryMockUtils {
      * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
      * @throws RepositoryException never, declared only to match interfaces
      */
-    public static JackrabbitQueryResult mockQueryResult(final Row... results) throws RepositoryException {
+    public static JackrabbitQueryResult mockRowQueryResult(final Row... results) throws RepositoryException {
         assertThat(results, notNullValue());
         JackrabbitQueryResult result = mockEmptyQueryResult();
         doReturn(new RowIteratorAdapter(asList(results))).when(result).getRows();
@@ -185,21 +186,6 @@ public final class QueryMockUtils {
         when(result.getNodeCollection()).thenReturn(nodes);
         when(result.getNodes()).then(NODES_ANSWER);
         when(result.getRows()).then(ROWS_ANSWER);
-        return result;
-    }
-
-    /**
-     * Creates a JackrabbitQueryResult mock that is connected to a Query instance but not to a QueryManager.
-     *
-     * @param language  the query language, e.g. "SQL-2", "SQL" or "XPATH"
-     * @param statement the statement of the Query that returns this result
-     * @param results   the Nodes to be returned as query result
-     * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
-     * @throws RepositoryException never, declared only to match interfaces
-     */
-    public static JackrabbitQueryResult mockQueryResult(final String language, final String statement, final Node... results) throws RepositoryException {
-        JackrabbitQueryResult result = mockQueryResult(results);
-        mockQuery(language, statement, stubResult(result));
         return result;
     }
 
@@ -229,8 +215,8 @@ public final class QueryMockUtils {
      * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
      * @throws RepositoryException never, declared only to match interfaces
      */
-    public static JackrabbitQueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Row... results) throws RepositoryException {
-        JackrabbitQueryResult result = mockQueryResult(results);
+    public static JackrabbitQueryResult mockRowQueryResult(final String workspace, final String queryLang, final String queryStatement, final Row... results) throws RepositoryException {
+        JackrabbitQueryResult result = mockRowQueryResult(results);
         mockQueryWithManager(workspace, queryLang, queryStatement, stubResult(result));
         return result;
     }

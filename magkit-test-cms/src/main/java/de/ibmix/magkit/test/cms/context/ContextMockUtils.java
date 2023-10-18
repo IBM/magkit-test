@@ -157,9 +157,9 @@ public final class ContextMockUtils extends ComponentsMockUtils {
         return QueryMockUtils.mockQueryResult(workspace, queryLang, queryStatement, results);
     }
 
-    public static QueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Row... results) throws RepositoryException {
+    public static QueryResult mockRowQueryResult(final String workspace, final String queryLang, final String queryStatement, final Row... results) throws RepositoryException {
         mockWebContext(WebContextStubbingOperation.stubJcrSession(workspace));
-        return QueryMockUtils.mockQueryResult(workspace, queryLang, queryStatement, results);
+        return QueryMockUtils.mockRowQueryResult(workspace, queryLang, queryStatement, results);
     }
 
     public static QueryResult mockEmptyQueryResult(final String workspace, final String queryLang, final String queryStatement) throws RepositoryException {

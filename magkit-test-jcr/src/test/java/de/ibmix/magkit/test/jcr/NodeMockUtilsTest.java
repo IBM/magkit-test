@@ -27,12 +27,14 @@ import org.junit.Test;
 
 import javax.jcr.Binary;
 import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.ItemVisitor;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import java.util.Calendar;
 
@@ -45,7 +47,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * Test the NodeMockUtils test class.
+ * Test the NodeMockUtils.
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-10-31
@@ -348,6 +350,24 @@ public class NodeMockUtilsTest {
     }
 
     @Test
+    public void addNodeWithType() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode("some/node");
+        assertThat(node.hasNodes(), is(false));
+
+        Node grandChild = node.addNode("grand/child", "test:Type");
+        assertThat(grandChild.getPrimaryNodeType().getName(), is("test:Type"));
+        assertThat(node.hasNodes(), is(true));
+        assertThat(node.getNode("grand"), notNullValue());
+        assertThat(node.getNode("grand").hasNodes(), is(true));
+        assertThat(node.getNode("grand").getPath(), is("/some/node/grand"));
+        assertThat(node.getNode("grand").getNode("child"), is(grandChild));
+
+        assertThat(node.getNode("grand/child"), is(grandChild));
+        assertThat(node.getNode("grand/child").getPath(), is("/some/node/grand/child"));
+        assertThat(node.getNode("grand/child").getPrimaryNodeType().getName(), is("test:Type"));
+    }
+
+    @Test
     public void removeTest() throws RepositoryException {
         Node child = NodeMockUtils.mockNode("some/node/child");
         Session session = child.getSession();
@@ -437,5 +457,68 @@ public class NodeMockUtilsTest {
         assertThat(node.getProperty("string").getString(), is("value1"));
         assertThat(node.getProperty("string").getValues().length, is(3));
         assertThat(node.getProperty("string").getValues()[2].getString(), is("value3"));
+    }
+
+    @Test
+    public void setPropertyTestNode() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode();
+        Node child = NodeMockUtils.mockNode("other");
+        assertThat(node.getProperty("link"), nullValue());
+        Property p = node.setProperty("link", child);
+        assertThat(p.getType(), is(PropertyType.REFERENCE));
+        assertThat(node.getProperty("link"), is(p));
+        assertThat(node.getProperty("link").getString(), is(child.getIdentifier()));
+    }
+
+    @Test
+    public void setPropertyTestValue() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode();
+        assertThat(node.getProperty("value"), nullValue());
+
+        Value value = mock(Value.class);
+        Property p = node.setProperty("value", value);
+        assertThat(node.getProperty("value"), is(p));
+        assertThat(node.getProperty("value").getValue(), is(value));
+        assertThat(node.getProperty("value").getType(), is(PropertyType.UNDEFINED));
+    }
+
+    @Test
+    public void setPropertyTestValues() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode();
+        assertThat(node.getProperty("values"), nullValue());
+
+        Value v1 = mock(Value.class);
+        Value v2 = mock(Value.class);
+        Property p = node.setProperty("values", new Value[] {v1, v2});
+        assertThat(node.getProperty("values"), is(p));
+        assertThat(node.getProperty("values").getValues().length, is(2));
+        assertThat(node.getProperty("values").getValues()[0], is(v1));
+        assertThat(node.getProperty("values").getValues()[1], is(v2));
+        assertThat(node.getProperty("values").getType(), is(PropertyType.UNDEFINED));
+    }
+
+    @Test
+    public void sanitizeHandle() {
+        assertThat(NodeMockUtils.sanitizeHandle(null), is("/untitled"));
+        assertThat(NodeMockUtils.sanitizeHandle(""), is("/untitled"));
+        assertThat(NodeMockUtils.sanitizeHandle("  \n \t "), is("/untitled"));
+        assertThat(NodeMockUtils.sanitizeHandle("  \n handle \t "), is("handle"));
+        assertThat(NodeMockUtils.sanitizeHandle("  \\some\\path "), is("/some/path"));
+    }
+
+    @Test(expected = ItemNotFoundException.class)
+    public void getAncestorForNegativeIndex() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode("some/node");
+        node.getAncestor(-1);
+    }
+
+    @Test(expected = ItemNotFoundException.class)
+    public void getAncestorForLargeIndex() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode("some/node");
+        assertThat(node.getAncestor(0).getPath(), is("/"));
+        assertThat(node.getAncestor(1).getPath(), is("/some"));
+        assertThat(node.getAncestor(2).getPath(), is("/some/node"));
+        // expect ItemNotFoundException
+        node.getAncestor(3);
     }
 }
