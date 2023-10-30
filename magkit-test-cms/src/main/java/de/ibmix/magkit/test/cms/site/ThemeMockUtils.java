@@ -28,8 +28,6 @@ import info.magnolia.module.site.theme.Theme;
 import info.magnolia.module.site.theme.ThemeReference;
 import info.magnolia.module.site.theme.registry.ThemeRegistry;
 
-import java.util.ArrayList;
-
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -98,8 +96,6 @@ public final class ThemeMockUtils {
     public static Theme mockPlainTheme(String name) {
         Theme theme = mock(Theme.class);
         doReturn(name).when(theme).getName();
-        doReturn(new ArrayList<CssResourceDefinition>()).when(theme).getCssFiles();
-        doReturn(new ArrayList<ResourceDefinition>()).when(theme).getJsFiles();
         return theme;
     }
 
