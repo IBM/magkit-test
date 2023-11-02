@@ -21,6 +21,7 @@ package de.ibmix.magkit.test.cms.security;
  */
 
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
+import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.GroupManager;
@@ -30,9 +31,7 @@ import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.WebContext;
-import org.apache.commons.lang3.ArrayUtils;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.RepositoryException;
 import java.util.Arrays;
 import java.util.UUID;
@@ -40,7 +39,7 @@ import java.util.UUID;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
 import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAccessManager;
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -68,11 +67,11 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
 
     public static AccessManager mockAccessManager(String repositoryId, AccessManagerStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());
+        assertThat("The repository id must not be empty or blank.", isNotBlank(repositoryId));
         WebContext context = mockWebContext();
-        String repoId = isBlank(repositoryId) ? WEBSITE : repositoryId;
-        AccessManager am = context.getAccessManager(repoId);
+        AccessManager am = context.getAccessManager(repositoryId);
         if (am == null) {
-            am = mock(AccessManager.class);
+            am = mockComponentInstance(AccessManager.class);
             stubAccessManager(repositoryId, am).of(context);
         }
         for (AccessManagerStubbingOperation stubbing : stubbings) {
@@ -101,14 +100,17 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return manager;
     }
 
-    public static RoleManager mockRoleManager() {
+    public static RoleManager mockRoleManager(RoleManagerStubbingOperation... stubbings) {
+        assertThat(stubbings, notNullValue());
         SecuritySupport security = mockSecuritySupport();
         RoleManager manager = security.getRoleManager();
         if (manager == null) {
             manager = mock(RoleManager.class);
             when(security.getRoleManager()).thenReturn(manager);
         }
-        return manager;
+        RoleManager finalManager = manager;
+        Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalManager));
+        return finalManager;
     }
 
     public static void register(String realm, User user) {
@@ -123,36 +125,43 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
     }
 
     public static void register(Role role) {
-        RoleManager manager = mockRoleManager();
-        when(manager.getRole(role.getName())).thenReturn(role);
+        mockRoleManager(RoleManagerStubbingOperation.stubRole(role));
     }
 
     public static User mockUser(final String name, UserStubbingOperation... stubbings) {
-        return mockUser(name, UUID.randomUUID().toString(), stubbings);
+        return mockUser(WEBSITE, name, UUID.randomUUID().toString(), stubbings);
     }
 
-    public static User mockUser(final String name, final String uuid, UserStubbingOperation... stubbings) {
-        User user = mock(User.class);
-        UserStubbingOperation.stubName(name).of(user);
-        UserStubbingOperation.stubIdentifier(uuid).of(user);
-        if (ArrayUtils.isNotEmpty(stubbings)) {
-            Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(user));
+    public static User mockUser(final String realm, final String name, final String uuid, UserStubbingOperation... stubbings) {
+        assertThat(stubbings, notNullValue());
+        User user = mockUserManager(realm).getUser(name);
+        if (user == null) {
+            user = mock(User.class);
+            UserStubbingOperation.stubName(name).of(user);
+            UserStubbingOperation.stubIdentifier(uuid).of(user);
+            register(realm, user);
         }
+        User finalUser = user;
+        Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalUser));
         return user;
     }
 
-    public static Group mockGroup(final String name, GroupStubbingOperation... stubbings) {
+    public static Group mockGroup(final String name, GroupStubbingOperation... stubbings) throws AccessDeniedException {
         return mockGroup(name, UUID.randomUUID().toString(), stubbings);
     }
 
-    public static Group mockGroup(final String name, final String uuid, GroupStubbingOperation... stubbings) {
-        Group group = mock(Group.class);
-        GroupStubbingOperation.stubName(name).of(group);
-        GroupStubbingOperation.stubId(uuid).of(group);
-        if (ArrayUtils.isNotEmpty(stubbings)) {
-            Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(group));
+    public static Group mockGroup(final String name, final String uuid, GroupStubbingOperation... stubbings) throws AccessDeniedException {
+        assertThat(stubbings, notNullValue());
+        Group group = mockGroupManager().getGroup(name);
+        if (group == null) {
+            group = mock(Group.class);
+            GroupStubbingOperation.stubName(name).of(group);
+            GroupStubbingOperation.stubId(uuid).of(group);
+            register(group);
         }
-        return group;
+        Group finalGroup = group;
+        Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalGroup));
+        return finalGroup;
     }
 
     public static Role mockRole(final String name) {
@@ -160,9 +169,13 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
     }
 
     public static Role mockRole(final String name, final String uuid) {
-        Role role = mock(Role.class);
-        RoleStubbingOperation.stubName(name).of(role);
-        RoleStubbingOperation.stubId(uuid).of(role);
+        Role role = mockRoleManager().getRole(name);
+        if (role == null) {
+            role = mock(Role.class);
+            RoleStubbingOperation.stubName(name).of(role);
+            RoleStubbingOperation.stubId(uuid).of(role);
+            register(role);
+        }
         return role;
     }
 
