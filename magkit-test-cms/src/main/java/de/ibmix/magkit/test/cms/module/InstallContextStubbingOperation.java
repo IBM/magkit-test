@@ -1,4 +1,4 @@
-package de.ibmix.magkit.test.cms.context;
+package de.ibmix.magkit.test.cms.module;
 
 /*-
  * #%L
@@ -20,36 +20,32 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import de.ibmix.magkit.test.cms.module.ModuleDefinitionMockUtils;
+import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.model.ModuleDefinition;
-import org.junit.Before;
-import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
- * Test InstallContextMockUtils.
+ * Utility class that provides factory methods for InstallContextStubbingOperation.
+ * Stubbing operations to be used as parameters in InstallContextMockUtils.mockInstallContext(...).
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-07-25
  */
-public class InstallContextMockUtilsTest {
+public abstract class InstallContextStubbingOperation implements StubbingOperation<InstallContext> {
 
-    @Before
-    public void setUp() {
+    public static InstallContextStubbingOperation stubCurrentModuleDefinition(final ModuleDefinition md) {
+        return new InstallContextStubbingOperation() {
 
-    }
-
-    @Test
-    public void testInstallContext() {
-        InstallContext ic = InstallContextMockUtils.mockInstallContext();
-        assertThat(ic, notNullValue());
-        ModuleDefinition md = ModuleDefinitionMockUtils.mockModuleDefinition();
-        ic = InstallContextMockUtils.mockInstallContext(InstallContextStubbingOperation.stubModuleDefinition(md));
-        assertThat(ic.getCurrentModuleDefinition(), is(md));
+            @Override
+            public void of(InstallContext ic) {
+                assertThat(ic, notNullValue());
+                when(ic.getCurrentModuleDefinition()).thenReturn(md);
+            }
+        };
     }
 
 }

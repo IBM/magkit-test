@@ -24,7 +24,7 @@ import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.module.model.Version;
 import org.junit.Test;
 
-import static de.ibmix.magkit.test.cms.module.ModuleDefinitionMockUtils.mockModuleDefinition;
+import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockModuleDefinition;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubDisplayName;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubName;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubVersion;
