@@ -38,6 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -269,5 +270,26 @@ public class NodeStubbingOperationTest {
 
         stubMixinNodeTypes().of(node);
         assertThat(node.getMixinNodeTypes().length, is(0));
+    }
+
+    @Test
+    public void testPropertyStubbingOfPlainNode() throws RepositoryException {
+        Node node  = mock(Node.class);
+        assertThat(node.getProperty("test"), nullValue());
+        NodeStubbingOperation.stubProperty("test", "value").of(node);
+        assertThat(node.getProperty("test"), notNullValue());
+    }
+
+    @Test
+    public void stubChildNodeOfPlainNode() throws RepositoryException {
+        Node child  = mock(Node.class);
+        doReturn("child").when(child).getName();
+        Node parent  = mock(Node.class);
+        assertThat(parent.getNode("child"), nullValue());
+        assertThat(child.getParent(), nullValue());
+
+        NodeStubbingOperation.stubNode(child).of(parent);
+        assertThat(parent.getNode("child"), is(child));
+        assertThat(child.getParent(), is(parent));
     }
 }

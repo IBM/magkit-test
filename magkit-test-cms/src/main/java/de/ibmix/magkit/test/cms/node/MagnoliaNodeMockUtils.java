@@ -42,8 +42,12 @@ import static info.magnolia.repository.RepositoryConstants.WEBSITE;
  */
 public final class MagnoliaNodeMockUtils {
 
-    public static Node mockContentNode(String path, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
+    public static Node mockContentNodeNode(String path, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(path, WEBSITE, NodeTypes.ContentNode.NAME, nodeStubbings);
+    }
+
+    public static Node mockContentNode(String path, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
+        return mockMgnlNode(path, WEBSITE, NodeTypes.Content.NAME, nodeStubbings);
     }
 
     public static Node mockPageNode(NodeStubbingOperation... nodeStubbings) throws RepositoryException {

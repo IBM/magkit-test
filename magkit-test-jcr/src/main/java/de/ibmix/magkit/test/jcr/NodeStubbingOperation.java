@@ -38,6 +38,7 @@ import java.util.Collection;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -199,20 +200,27 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
             @Override
             public void of(final Node node) throws RepositoryException {
                 assertThat(node, notNullValue());
-                NodeMockUtils.TestNode testNode = (NodeMockUtils.TestNode) node;
                 when(property.getParent()).thenReturn(node);
-                Session s = node.getSession();
-                if (s != null) {
-                    SessionStubbingOperation.stubItem(property).of(s);
-                }
-                PropertyIterator properties = testNode.getProperties();
-                while (properties.hasNext()) {
-                    Property p = properties.nextProperty();
-                    if (p.getName().equals(property.getName())) {
-                        properties.remove();
+                // if we have a Node mock created by NodeMockUtils it will have a session that should be in sync with node properties:
+                if (node instanceof NodeMockUtils.TestNode) {
+                    NodeMockUtils.TestNode testNode = (NodeMockUtils.TestNode) node;
+                    Session s = testNode.getSession();
+                    if (s != null) {
+                        SessionStubbingOperation.stubItem(property).of(s);
                     }
+                    PropertyIterator properties = testNode.getProperties();
+                    while (properties.hasNext()) {
+                        Property p = properties.nextProperty();
+                        if (p.getName().equals(property.getName())) {
+                            properties.remove();
+                        }
+                    }
+                    testNode.getPropertyCollection().add(property);
+                } else {
+                    // To support simple mocks as well we just stub the node property.
+                    String propertyName = property.getName();
+                    doReturn(property).when(node).getProperty(propertyName);
                 }
-                testNode.getPropertyCollection().add(property);
 
             }
         };
@@ -228,10 +236,18 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
             @Override
             public void of(final Node parent) throws RepositoryException {
                 assertThat(parent, notNullValue());
-                NodeMockUtils.TestNode testNode = (NodeMockUtils.TestNode) parent;
-                Collection<Node> nodes = testNode.getNodeCollection();
-                nodes.add(child);
-                stubParent(parent).of(child);
+                // If we have a Node mock created by NodeMockUtils...
+                if (parent instanceof NodeMockUtils.TestNode) {
+                    // ... keep all path and parent-child relations of nodes, properties and session consistent.
+                    Collection<Node> nodes = ((NodeMockUtils.TestNode) parent).getNodeCollection();
+                    nodes.add(child);
+                    stubParent(parent).of(child);
+                } else if (isNotEmpty(child.getName())) {
+                    // Otherwise just support simple Node mocks without ensuring consistency.
+                    String childName = child.getName();
+                    doReturn(child).when(parent).getNode(childName);
+                    doReturn(parent).when(child).getParent();
+                }
             }
         };
     }
