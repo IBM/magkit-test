@@ -90,13 +90,15 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return userManager;
     }
 
-    public static GroupManager mockGroupManager() {
+    public static GroupManager mockGroupManager(GroupManagerStubbingOperation... stubbings) {
         SecuritySupport security = mockSecuritySupport();
         GroupManager manager = security.getGroupManager();
         if (manager == null) {
             manager = mock(GroupManager.class);
             when(security.getGroupManager()).thenReturn(manager);
         }
+        GroupManager finalManager = manager;
+        Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalManager));
         return manager;
     }
 
