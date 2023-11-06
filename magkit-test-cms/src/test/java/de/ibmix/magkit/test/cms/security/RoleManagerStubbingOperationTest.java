@@ -81,9 +81,9 @@ public class RoleManagerStubbingOperationTest {
         assertThat(_roleManager.getACLs("test").size(), is(1));
         assertThat(_roleManager.getACLs("test").get("test-acl"), is(acl));
 
-        ACL acl_2 = mock(ACL.class);
-        doReturn("test-acl2").when(acl_2).getName();
-        RoleManagerStubbingOperation.stubAcl("test", acl_2).of(_roleManager);
+        ACL acl2 = mock(ACL.class);
+        doReturn("test-acl2").when(acl2).getName();
+        RoleManagerStubbingOperation.stubAcl("test", acl2).of(_roleManager);
         assertThat(_roleManager.getACLs("test").size(), is(2));
     }
 }

@@ -24,8 +24,6 @@ import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import org.mockito.Mockito;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Arrays;

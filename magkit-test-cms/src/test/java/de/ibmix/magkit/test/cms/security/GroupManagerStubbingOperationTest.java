@@ -141,9 +141,9 @@ public class GroupManagerStubbingOperationTest {
         assertThat(_groupManager.getACLs("test").size(), is(1));
         assertThat(_groupManager.getACLs("test").get("test-acl"), is(acl));
 
-        ACL acl_2 = mock(ACL.class);
-        doReturn("test-acl2").when(acl_2).getName();
-        GroupManagerStubbingOperation.stubAcl("test", acl_2).of(_groupManager);
+        ACL acl2 = mock(ACL.class);
+        doReturn("test-acl2").when(acl2).getName();
+        GroupManagerStubbingOperation.stubAcl("test", acl2).of(_groupManager);
         assertThat(_groupManager.getACLs("test").size(), is(2));
     }
 }
