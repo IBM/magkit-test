@@ -42,6 +42,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
@@ -101,6 +102,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
             doAnswer(REQUEST_PARAMETER_ANSWER).when(context).getParameter(anyString());
             doAnswer(REQUEST_PARAMETER_VALUES_ANSWER).when(context).getParameterValues(anyString());
             doAnswer(REQUEST_PARAMETERS_ANSWER).when(context).getParameters();
+            doAnswer(REQUEST_SERVLET_CONTEXT_ANSWER).when(context).getServletContext();
             doAnswer(REQUEST_CONTEXT_PATH_ANSWER).when(context).getContextPath();
             doAnswer(ATTRIBUTE_ANSWER).when(context).getAttribute(anyString());
             doAnswer(SCOPED_ATTRIBUTE_ANSWER).when(context).getAttribute(anyString(), anyInt());
@@ -199,6 +201,11 @@ public final class ContextMockUtils extends ComponentsMockUtils {
     private static final Answer<String> REQUEST_CONTEXT_PATH_ANSWER = invocation -> {
         WebContext context = (WebContext) invocation.getMock();
         return context.getRequest() != null ? context.getRequest().getContextPath() : null;
+    };
+
+    private static final Answer<ServletContext> REQUEST_SERVLET_CONTEXT_ANSWER = invocation -> {
+        WebContext context = (WebContext) invocation.getMock();
+        return context.getRequest() != null ? context.getRequest().getServletContext() : null;
     };
 
     private static final Answer<Object> ATTRIBUTE_ANSWER = invocation -> {

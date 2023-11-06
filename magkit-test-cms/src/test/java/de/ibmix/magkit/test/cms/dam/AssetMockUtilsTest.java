@@ -31,7 +31,6 @@ import info.magnolia.objectfactory.Components;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import javax.jcr.RepositoryException;
 import java.util.UUID;
@@ -62,10 +61,8 @@ public class AssetMockUtilsTest {
 
     @Test
     public void mockAssetProviderRegistry() {
-        AssetProviderRegistryStubbingOperation stubbingOperation = mock(AssetProviderRegistryStubbingOperation.class);
-        AssetProviderRegistry apr = AssetMockUtils.mockAssetProviderRegistry(stubbingOperation);
+        AssetProviderRegistry apr = AssetMockUtils.mockAssetProviderRegistry();
         assertThat(Components.getComponent(AssetProviderRegistry.class), is(apr));
-        Mockito.verify(stubbingOperation, Mockito.times(1)).of(apr);
 
         // repeated mocking returns same mock instance:
         AssetProviderRegistry apr2 = AssetMockUtils.mockAssetProviderRegistry();

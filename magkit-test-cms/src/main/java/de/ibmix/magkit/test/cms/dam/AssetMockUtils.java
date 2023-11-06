@@ -115,13 +115,8 @@ public final class AssetMockUtils extends ComponentsMockUtils {
         return result;
     }
 
-    public static AssetProviderRegistry mockAssetProviderRegistry(AssetProviderRegistryStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
-        AssetProviderRegistry result = mockComponentInstance(AssetProviderRegistry.class);
-        for (AssetProviderRegistryStubbingOperation stubbing : stubbings) {
-            stubbing.of(result);
-        }
-        return result;
+    public static AssetProviderRegistry mockAssetProviderRegistry() {
+        return mockComponentInstance(AssetProviderRegistry.class);
     }
 
     public static AssetProvider mockAssetProvider(String providerId) {

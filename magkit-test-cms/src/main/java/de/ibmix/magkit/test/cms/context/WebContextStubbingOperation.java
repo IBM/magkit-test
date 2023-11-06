@@ -287,7 +287,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
      * @return a new WebContextStubbingOperation instance
      */
     public static WebContextStubbingOperation stubServletContext(final ServletContext servletContext) {
-        return stubExistingRequest(HttpServletRequestStubbingOperation.stubHttpSession("id",
+        return stubExistingRequest(HttpServletRequestStubbingOperation.stubHttpSession("test",
             HttpSessionStubbingOperation.stubServletContext(servletContext)
             )
         );
