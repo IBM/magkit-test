@@ -21,7 +21,12 @@ package de.ibmix.magkit.test.cms.security;
  */
 
 import de.ibmix.magkit.test.StubbingOperation;
+import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.cms.security.Group;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,9 +44,9 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
     public static GroupStubbingOperation stubName(final String name) {
         return new GroupStubbingOperation() {
             @Override
-            public void of(Group user) {
-                assertThat(user, notNullValue());
-                doReturn(name).when(user).getName();
+            public void of(Group group) {
+                assertThat(group, notNullValue());
+                doReturn(name).when(group).getName();
             }
         };
     }
@@ -49,9 +54,60 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
     public static GroupStubbingOperation stubId(final String uuid) {
         return new GroupStubbingOperation() {
             @Override
-            public void of(Group user) {
-                assertThat(user, notNullValue());
-                doReturn(uuid).when(user).getId();
+            public void of(Group group) {
+                assertThat(group, notNullValue());
+                doReturn(uuid).when(group).getId();
+            }
+        };
+    }
+
+    public static GroupStubbingOperation stubProperty(final String name, final String value) {
+        return new GroupStubbingOperation() {
+            @Override
+            public void of(Group group) {
+                assertThat(group, notNullValue());
+                assertThat(name, notNullValue());
+                doReturn(value).when(group).getProperty(name);
+            }
+        };
+    }
+
+    public static GroupStubbingOperation stubGroups(final String... groupNames) {
+        return new GroupStubbingOperation() {
+            @Override
+            public void of(Group group) {
+                assertThat(group, notNullValue());
+                Collection<String> groupList = groupNames == null ? Collections.emptyList() : Arrays.asList(groupNames);
+                doReturn(groupList).when(group).getGroups();
+            }
+        };
+    }
+
+    public static GroupStubbingOperation stubAllGroups(final String... groupNames) {
+        return new GroupStubbingOperation() {
+            @Override
+            public void of(Group group) {
+                assertThat(group, notNullValue());
+                Collection<String> groupList = groupNames == null ? Collections.emptyList() : Arrays.asList(groupNames);
+                doReturn(groupList).when(group).getAllGroups();
+            }
+        };
+    }
+
+    public static GroupStubbingOperation stubRoles(final String... roleNames) {
+        return new GroupStubbingOperation() {
+            @Override
+            public void of(Group group) {
+                assertThat(group, notNullValue());
+                Collection<String> roleList = roleNames == null ? Collections.emptyList() : Arrays.asList(roleNames);
+                doReturn(roleList).when(group).getRoles();
+                roleList.forEach(role -> {
+                    try {
+                        doReturn(true).when(group).hasRole(role);
+                    } catch (AccessDeniedException e) {
+                        // do nothing, never happen while mocking
+                    }
+                });
             }
         };
     }

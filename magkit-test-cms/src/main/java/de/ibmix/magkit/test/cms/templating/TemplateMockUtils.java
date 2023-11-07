@@ -65,24 +65,20 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
     }
 
     @Deprecated
-    public static ConfiguredTemplateDefinition mockTemplate(String id, TemplateDefinitionStubbingOperation... stubbings) {
+    public static ConfiguredTemplateDefinition mockConfiguredTemplateDefinition(String id, TemplateDefinitionStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
         ConfiguredTemplateDefinition result = null;
-        try {
-            TemplateDefinition existing = registry.getTemplateDefinition(id);
-            if (existing instanceof ConfiguredTemplateDefinition) {
-                result = (ConfiguredTemplateDefinition) existing;
-            } else {
-                result = mock(ConfiguredTemplateDefinition.class);
-                stubId(id).of(result);
-                register(id, result);
-            }
-            for (TemplateDefinitionStubbingOperation stubbing : stubbings) {
-                stubbing.of(result);
-            }
-        } catch (RegistrationException e) {
-            throw new IllegalStateException(e);
+        DefinitionProvider<TemplateDefinition> existingProvider = registry.getProvider(id);
+        if (existingProvider != null && existingProvider.get() instanceof ConfiguredTemplateDefinition) {
+            result = (ConfiguredTemplateDefinition) existingProvider.get();
+        } else {
+            result = mock(ConfiguredTemplateDefinition.class);
+            stubId(id).of(result);
+            register(id, result);
+        }
+        for (TemplateDefinitionStubbingOperation stubbing : stubbings) {
+            stubbing.of(result);
         }
         return result;
     }
@@ -91,18 +87,16 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
         assertThat(stubbings, notNullValue());
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
         TemplateDefinition result = null;
-        try {
-            result = registry.getTemplateDefinition(id);
-            if (result == null) {
-                result = mock(TemplateDefinition.class);
-                stubId(id).of(result);
-                register(id, result);
-            }
-            for (TemplateDefinitionStubbingOperation stubbing : stubbings) {
-                stubbing.of(result);
-            }
-        } catch (RegistrationException e) {
-            throw new IllegalStateException(e);
+        DefinitionProvider<TemplateDefinition> provider = registry.getProvider(id);
+        if (provider == null) {
+            result = mock(TemplateDefinition.class);
+            stubId(id).of(result);
+            register(id, result);
+        } else {
+            result = provider.get();
+        }
+        for (TemplateDefinitionStubbingOperation stubbing : stubbings) {
+            stubbing.of(result);
         }
         return result;
     }
@@ -110,21 +104,19 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
     public static AreaDefinition mockAreaDefinition(String id, AreaDefinitionStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
-        TemplateDefinition result = null;
-        try {
-            result = registry.getTemplateDefinition(id);
-            if (result == null) {
-                result = mock(AreaDefinition.class);
-                stubId(id).of(result);
-                register(id, result);
-            }
-            for (AreaDefinitionStubbingOperation stubbing : stubbings) {
-                stubbing.of(result);
-            }
-        } catch (RegistrationException e) {
-            throw new IllegalStateException(e);
+        AreaDefinition result = null;
+        DefinitionProvider<TemplateDefinition> provider = registry.getProvider(id);
+        if (provider != null && provider.get() instanceof AreaDefinition) {
+            result = (AreaDefinition) provider.get();
+        } else {
+            result = mock(AreaDefinition.class);
+            stubId(id).of(result);
+            register(id, result);
         }
-        return (AreaDefinition) result;
+        for (AreaDefinitionStubbingOperation stubbing : stubbings) {
+            stubbing.of(result);
+        }
+        return result;
     }
 
     /**
@@ -144,12 +136,12 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
                 doReturn(definitionProvider).when(registry).getProvider(id);
                 when(registry.getTemplateDefinition(id)).thenReturn(template);
                 // update mocking of getAvailableTemplates():
-                List<TemplateDefinition> newDefinitions = new ArrayList<TemplateDefinition>();
-                newDefinitions.addAll(registry.getAllDefinitions());
+                List<TemplateDefinition> newDefinitions = new ArrayList<TemplateDefinition>(registry.getAllDefinitions());
                 newDefinitions.add(template);
                 when(registry.getTemplateDefinitions()).thenReturn(newDefinitions);
                 when(registry.getAllDefinitions()).thenReturn(newDefinitions);
             } catch (RegistrationException e) {
+                // will not happen while mocking, just to keep method signature free of exceptions
                 throw new IllegalStateException(e);
             }
         }

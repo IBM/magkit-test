@@ -24,6 +24,7 @@ import de.ibmix.magkit.test.jcr.SessionStubbingOperation;
 import de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation;
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.cms.security.AccessManager;
+import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
 import info.magnolia.context.WebContext;
 import org.junit.After;
@@ -32,6 +33,7 @@ import org.junit.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -73,6 +75,7 @@ public class WebContextStubbingOperationTest {
 
     @Before
     public void setUp() throws Exception {
+        ContextMockUtils.cleanContext();
         _context = mockWebContext();
     }
 
@@ -287,6 +290,15 @@ public class WebContextStubbingOperationTest {
     }
 
     @Test
+    public void testStubNewJcrSession() throws RepositoryException {
+        assertThat(_context.getJCRSession("repository"), nullValue());
+
+        Session session = mock(Session.class);
+        WebContextStubbingOperation.stubJcrSession("repository", session).of(_context);
+        assertThat(_context.getJCRSession("repository"), is(session));
+    }
+
+    @Test
     public void stubExistingJcrSession() throws RepositoryException {
         Session session = _context.getJCRSession("test");
         assertThat(session, nullValue());
@@ -299,6 +311,24 @@ public class WebContextStubbingOperationTest {
         stubJcrSession("test", SessionStubbingOperation.stubAttribute("name", "value")).of(_context);
         assertThat(_context.getJCRSession("test"), is(session));
         assertThat(_context.getJCRSession("test").getAttribute("name"), is("value"));
+    }
+
+    @Test
+    public void testStubServletContext() {
+        ServletContext servletContext = mock(ServletContext.class);
+        WebContextStubbingOperation.stubServletContext(servletContext).of(_context);
+        assertThat(_context.getServletContext(), is(servletContext));
+        assertThat(_context.getRequest().getServletContext(), is(servletContext));
+        assertThat(_context.getRequest().getSession().getServletContext(), is(servletContext));
+    }
+
+    @Test
+    public void testStubUser() {
+        assertThat(_context.getUser(), nullValue());
+
+        User user = mock(User.class);
+        WebContextStubbingOperation.stubUser(user).of(_context);
+        assertThat(_context.getUser(), is(user));
     }
 
     @After

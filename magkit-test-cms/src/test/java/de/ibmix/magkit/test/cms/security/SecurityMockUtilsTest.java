@@ -21,7 +21,10 @@ package de.ibmix.magkit.test.cms.security;
  */
 
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
+import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.cms.security.AccessManager;
+import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
@@ -33,7 +36,12 @@ import javax.jcr.RepositoryException;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.getComponentSingleton;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockAccessManager;
+import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockGroup;
+import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockGroupManager;
+import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockRole;
+import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockRoleManager;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockSecuritySupport;
+import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockUser;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockUserManager;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.register;
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
@@ -80,7 +88,7 @@ public class SecurityMockUtilsTest {
     }
 
     @Test
-    public void testMockSecuritySupport() throws Exception {
+    public void testMockSecuritySupport() {
         SecuritySupport support = mockSecuritySupport();
         assertThat(support, notNullValue());
 
@@ -92,7 +100,7 @@ public class SecurityMockUtilsTest {
     }
 
     @Test
-    public void testMockUserManager() throws Exception {
+    public void testMockUserManager() {
         SecuritySupport support = getComponentSingleton(SecuritySupport.class);
         assertThat(support, nullValue());
 
@@ -106,7 +114,7 @@ public class SecurityMockUtilsTest {
     }
 
     @Test
-    public void testRegister() throws Exception {
+    public void testRegister() {
         UserManager manager = mockUserManager("test");
         User fritz = mock(User.class);
         when(fritz.getName()).thenReturn("Fritz");
@@ -115,5 +123,56 @@ public class SecurityMockUtilsTest {
 
         register("test", fritz);
         assertThat(manager.getUser("Fritz"), is(fritz));
+    }
+
+    @Test
+    public void testMockUser() {
+        UserStubbingOperation op = mock(UserStubbingOperation.class);
+        User user = mockUser("test", op);
+        assertThat(user, notNullValue());
+        verify(op, times(1)).of(user);
+        assertThat(user.getName(), is("test"));
+        assertThat(user.getIdentifier().length(), is(36));
+
+        // Repeated mocking of same user results in same user object:
+        User user2 = mockUser("test");
+        assertThat(user2, is(user));
+
+        // text implicit mocking of GroupManager:
+        assertThat(mockUserManager(WEBSITE).getUser("test"), is(user));
+        assertThat(mockUserManager(WEBSITE).getUserById(user.getIdentifier()), is(user));
+    }
+
+    @Test
+    public void testMockGroup() throws AccessDeniedException {
+        GroupStubbingOperation op = mock(GroupStubbingOperation.class);
+        Group group = mockGroup("test", op);
+        assertThat(group, notNullValue());
+        verify(op, times(1)).of(group);
+        assertThat(group.getName(), is("test"));
+        assertThat(group.getId().length(), is(36));
+
+        // Repeated mocking of same group results in same group object:
+        Group group2 = mockGroup("test");
+        assertThat(group2, is(group));
+
+        // text implicit mocking of GroupManager:
+        assertThat(mockGroupManager().getGroup("test"), is(group));
+    }
+
+    @Test
+    public void testMockRole() {
+        Role role = mockRole("test");
+        assertThat(role, notNullValue());
+        assertThat(role.getName(), is("test"));
+        assertThat(role.getId().length(), is(36));
+
+        // Repeated mocking of same role results in same role object:
+        Role role2 = mockRole("test");
+        assertThat(role2, is(role));
+
+        // text implicit mocking of RoleManager:
+        assertThat(mockRoleManager().getRole("test"), is(role));
+        assertThat(mockRoleManager().getRoleNameById(role.getId()), is("test"));
     }
 }

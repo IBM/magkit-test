@@ -34,7 +34,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManag
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -74,6 +73,7 @@ public final class QueryMockUtils {
      *
      * @param stubbings the QueryManagerStubbingOperations to be executed
      * @return a QueryManager Mockito mock
+     * @throws RepositoryException declared exception from node api but never thrown
      */
     public static QueryManager mockQueryManager(QueryManagerStubbingOperation... stubbings) throws RepositoryException {
         return mockQueryManager("website", stubbings);
@@ -90,10 +90,11 @@ public final class QueryMockUtils {
      * @param workspace the repository id as String.
      * @param stubbings the QueryManagerStubbingOperations to be executed
      * @return a QueryManager Mockito mock
+     * @throws RepositoryException declared exception from node api but never thrown
      */
     public static QueryManager mockQueryManager(final String workspace, QueryManagerStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());
-        Session session = isBlank(workspace) ? mockSession("website") : mockSession(workspace);
+        Session session = mockSession(defaultIfBlank(workspace, "website"));
         QueryManager qm = session.getWorkspace().getQueryManager();
         if (qm == null) {
             qm = mock(QueryManager.class);
@@ -173,10 +174,10 @@ public final class QueryMockUtils {
      * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
      * @throws RepositoryException never, declared only to match interfaces
      */
-    public static JackrabbitQueryResult mockQueryResult(final Row... results) throws RepositoryException {
+    public static JackrabbitQueryResult mockRowQueryResult(final Row... results) throws RepositoryException {
         assertThat(results, notNullValue());
-        JackrabbitQueryResult result = mockQueryResult(emptyList());
-        doReturn(new RowIteratorAdapter(Arrays.asList(results))).when(result).getRows();
+        JackrabbitQueryResult result = mockEmptyQueryResult();
+        doReturn(new RowIteratorAdapter(asList(results))).when(result).getRows();
         return result;
     }
 
@@ -185,21 +186,6 @@ public final class QueryMockUtils {
         when(result.getNodeCollection()).thenReturn(nodes);
         when(result.getNodes()).then(NODES_ANSWER);
         when(result.getRows()).then(ROWS_ANSWER);
-        return result;
-    }
-
-    /**
-     * Creates a JackrabbitQueryResult mock that is connected to a Query instance but not to a QueryManager.
-     *
-     * @param language  the query language, e.g. "SQL-2", "SQL" or "XPATH"
-     * @param statement the statement of the Query that returns this result
-     * @param results   the Nodes to be returned as query result
-     * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
-     * @throws RepositoryException never, declared only to match interfaces
-     */
-    public static JackrabbitQueryResult mockQueryResult(final String language, final String statement, final Node... results) throws RepositoryException {
-        JackrabbitQueryResult result = mockQueryResult(results);
-        mockQuery(language, statement, stubResult(result));
         return result;
     }
 
@@ -229,63 +215,28 @@ public final class QueryMockUtils {
      * @return a Mockito mock of the org.apache.jackrabbit.api.query.JackrabbitQueryResult interface
      * @throws RepositoryException never, declared only to match interfaces
      */
-    public static JackrabbitQueryResult mockQueryResult(final String workspace, final String queryLang, final String queryStatement, final Row... results) throws RepositoryException {
-        JackrabbitQueryResult result = mockQueryResult(results);
+    public static JackrabbitQueryResult mockRowQueryResult(final String workspace, final String queryLang, final String queryStatement, final Row... results) throws RepositoryException {
+        JackrabbitQueryResult result = mockRowQueryResult(results);
         mockQueryWithManager(workspace, queryLang, queryStatement, stubResult(result));
         return result;
     }
 
-    public static Row mockRow(String selector, String value, double score) throws RepositoryException {
+    public static Row mockRow(double score, RowStubbingOperation... stubbings) throws RepositoryException {
         Row result = Mockito.mock(Row.class);
-        if (value != null) {
-            doReturn(ValueMockUtils.mockValue(value)).when(result).getValue(selector);
+        doReturn(score).when(result).getScore();
+        doReturn(new Value[0]).when(result).getValues();
+        for (RowStubbingOperation stubbing : stubbings) {
+            stubbing.of(result);
         }
-        doReturn(score).when(result).getScore(selector);
         return result;
     }
 
     static Row toRow(final Node node) {
-        return new Row() {
-            @Override
-            public Value[] getValues() {
-                return new Value[0];
-            }
-
-            @Override
-            public Value getValue(String columnName) throws RepositoryException {
-                return node.getProperty(columnName).getValue();
-            }
-
-            @Override
-            public Node getNode() {
-                return node;
-            }
-
-            @Override
-            public Node getNode(String selectorName) throws RepositoryException {
-                return node.getNode(selectorName);
-            }
-
-            @Override
-            public String getPath() throws RepositoryException {
-                return node.getPath();
-            }
-
-            @Override
-            public String getPath(String selectorName) throws RepositoryException {
-                return getNode(selectorName).getPath();
-            }
-
-            @Override
-            public double getScore() {
-                return 0;
-            }
-
-            @Override
-            public double getScore(String selectorName) {
-                return 0;
-            }
-        };
+        try {
+            return mockRow(0.0, RowStubbingOperation.stubNode(node));
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static final Answer<NodeIteratorAdapter> NODES_ANSWER = invocation -> {

@@ -71,6 +71,9 @@ public abstract class ThemeStubbingOperation implements StubbingOperation<Theme>
                 assertThat(theme, notNullValue());
                 List<CssResourceDefinition> files = theme.getCssFiles();
                 files.addAll(asList(values));
+                // Simple mockito mocks return a new empty LinkedList per default.
+                // We have to stub it again to not lose the values.
+                doReturn(files).when(theme).getCssFiles();
             }
         };
     }
@@ -83,6 +86,9 @@ public abstract class ThemeStubbingOperation implements StubbingOperation<Theme>
                 assertThat(theme, notNullValue());
                 List<ResourceDefinition> files = theme.getJsFiles();
                 files.addAll(asList(values));
+                // Simple mockito mocks return a new empty LinkedList per default.
+                // We have to stub it again to not lose the values.
+                doReturn(files).when(theme).getJsFiles();
             }
         };
     }
@@ -113,6 +119,4 @@ public abstract class ThemeStubbingOperation implements StubbingOperation<Theme>
             }
         };
     }
-
-    public abstract void of(Theme theme);
 }

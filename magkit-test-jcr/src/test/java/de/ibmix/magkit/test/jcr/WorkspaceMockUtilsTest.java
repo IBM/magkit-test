@@ -34,6 +34,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
+ * Testing WorkspaceMockUtils.
+ *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-08-03
  */
@@ -48,12 +50,22 @@ public class WorkspaceMockUtilsTest {
      * Test of mockWorkspace method, of class WorkspaceMockUtils.
      */
     @Test
-    public void testMockWorkspace() throws RepositoryException {
+    public void testMockWorkspaceWithName() throws RepositoryException {
         WorkspaceStubbingOperation op1 = mock(WorkspaceStubbingOperation.class);
         WorkspaceStubbingOperation op2 = mock(WorkspaceStubbingOperation.class);
         Workspace ws = WorkspaceMockUtils.mockWorkspace("ws", op1, op2);
         assertThat(ws, notNullValue());
         assertThat(ws.getName(), is("ws"));
+        verify(op1, times(1)).of(ws);
+        verify(op2, times(1)).of(ws);
+    }
+    @Test
+    public void mockWorkspaceWithDefaultName() throws RepositoryException {
+        WorkspaceStubbingOperation op1 = mock(WorkspaceStubbingOperation.class);
+        WorkspaceStubbingOperation op2 = mock(WorkspaceStubbingOperation.class);
+        Workspace ws = WorkspaceMockUtils.mockWorkspace(op1, op2);
+        assertThat(ws, notNullValue());
+        assertThat(ws.getName(), is("test"));
         verify(op1, times(1)).of(ws);
         verify(op2, times(1)).of(ws);
     }

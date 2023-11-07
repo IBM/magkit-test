@@ -24,7 +24,7 @@ import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 
-import static de.ibmix.magkit.test.cms.module.ModuleDefinitionMockUtils.mockModuleDefinition;
+import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockModuleDefinition;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubVersion;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -56,6 +56,4 @@ public abstract class ModuleRegistryStubbingOperation implements StubbingOperati
         ModuleDefinition md = mockModuleDefinition(name, stubbings);
         return stubModuleDefinition(name, md);
     }
-
-    private ModuleRegistryStubbingOperation() {}
 }

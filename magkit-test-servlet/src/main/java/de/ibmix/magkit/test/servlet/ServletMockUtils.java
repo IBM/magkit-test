@@ -57,9 +57,14 @@ public final class ServletMockUtils {
 
     private static final Answer<String> REQUEST_CONTEXT_PATH_ANSWER = invocationOnMock -> {
         HttpServletRequest request = (HttpServletRequest) invocationOnMock.getMock();
-        HttpSession session = request != null ? request.getSession() : null;
-        ServletContext context = session != null ? session.getServletContext() : null;
+        ServletContext context = request != null ? request.getServletContext() : null;
         return context != null ? context.getContextPath() : null;
+    };
+
+    private static final Answer<ServletContext> REQUEST_SERVLET_CONTEXT_ANSWER = invocationOnMock -> {
+        HttpServletRequest request = (HttpServletRequest) invocationOnMock.getMock();
+        HttpSession session = request != null ? request.getSession() : null;
+        return session != null ? session.getServletContext() : null;
     };
 
     private static final Answer<Enumeration<String>> REQUEST_PARAMETER_NAMES_ANSWER = invocation -> {
@@ -97,6 +102,7 @@ public final class ServletMockUtils {
         doAnswer(REQUEST_PARAMETER_VALUES_ANSWER).when(request).getParameterValues(anyString());
         doAnswer(REQUEST_PARAMETER_ANSWER).when(request).getParameter(anyString());
         HttpServletRequestStubbingOperation.stubHttpSession("test").of(request);
+        doAnswer(REQUEST_SERVLET_CONTEXT_ANSWER).when(request).getServletContext();
         doAnswer(REQUEST_CONTEXT_PATH_ANSWER).when(request).getContextPath();
         for (HttpServletRequestStubbingOperation stubbing : stubbings) {
             stubbing.of(request);

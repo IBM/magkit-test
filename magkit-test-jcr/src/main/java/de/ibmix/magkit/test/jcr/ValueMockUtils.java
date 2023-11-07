@@ -61,7 +61,7 @@ public final class ValueMockUtils {
      *
      * @param value the value as String
      * @return the jcr value mock, never null
-     * @throws RepositoryException
+     * @throws RepositoryException never thrown from mocks but jcr API declares this exception
      */
     public static Value mockValue(String value) throws RepositoryException {
         return mockValue(value, PropertyType.STRING);
@@ -128,7 +128,7 @@ public final class ValueMockUtils {
 
     public static Value mockValue(Binary value) throws RepositoryException {
         Value result = mock(Value.class);
-        String stringValue = value != null ? value.toString() : "";
+        String stringValue = value != null ? value.toString() : null;
         when(result.getBinary()).thenReturn(value);
         when(result.getString()).thenReturn(stringValue);
         doAnswer(STREAM_ANSWER).when(result).getStream();

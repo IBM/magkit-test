@@ -24,12 +24,14 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.jcr.RepositoryException;
 import java.util.Locale;
 
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubDefaultLocale;
+import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubDetermineLocale;
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubFallbackLocale;
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubLocale;
-import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubbToI18nUri;
+import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubToI18nUri;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -103,8 +105,18 @@ public class I18nContentSupportStubbingOperationTest {
         assertThat(_i18nContentSupport.toI18NURI("test.aperto.de"), is("test.aperto.de"));
         assertThat(_i18nContentSupport.toI18NURI("any string"), is("any string"));
 
-        stubbToI18nUri("test.aperto.jp").of(_i18nContentSupport);
+        stubToI18nUri("test.aperto.jp").of(_i18nContentSupport);
         assertThat(_i18nContentSupport.toI18NURI("test.aperto.de"), is("test.aperto.jp"));
         assertThat(_i18nContentSupport.toI18NURI("any string"), is("test.aperto.jp"));
+    }
+
+    @Test
+    public void testStubDetermineLocale() throws RepositoryException {
+        assertThat(_i18nContentSupport.determineLocale(), nullValue());
+        assertThat(_i18nContentSupport.getLocales().size(), is(0));
+
+        stubDetermineLocale(Locale.ITALIAN).of(_i18nContentSupport);
+        assertThat(_i18nContentSupport.determineLocale(), is(Locale.ITALIAN));
+        assertThat(_i18nContentSupport.getLocales().size(), is(1));
     }
 }

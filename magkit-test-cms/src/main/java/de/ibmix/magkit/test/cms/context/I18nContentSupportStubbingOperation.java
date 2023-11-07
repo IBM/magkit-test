@@ -24,8 +24,6 @@ import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import org.mockito.Mockito;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,26 +41,6 @@ import static org.mockito.Mockito.when;
  * @since 2010-12-13
  */
 public abstract class I18nContentSupportStubbingOperation implements ExceptionStubbingOperation<I18nContentSupport, RepositoryException> {
-
-    public static I18nContentSupportStubbingOperation stubProperty(final Node node, final String propertyName, final Property value) {
-        return new I18nContentSupportStubbingOperation() {
-
-            public void of(I18nContentSupport contentSupport) throws RepositoryException {
-                assertThat(contentSupport, notNullValue());
-                when(contentSupport.getProperty(node, propertyName)).thenReturn(value);
-            }
-        };
-    }
-
-    public static I18nContentSupportStubbingOperation stubProperty(final Node node, final String propertyName, final Locale locale, final Property value) {
-        return new I18nContentSupportStubbingOperation() {
-
-            public void of(I18nContentSupport contentSupport) throws RepositoryException {
-                assertThat(contentSupport, notNullValue());
-                when(contentSupport.getProperty(node, propertyName, locale)).thenReturn(value);
-            }
-        };
-    }
 
     public static I18nContentSupportStubbingOperation stubLocale(final Locale locale) {
         return new I18nContentSupportStubbingOperation() {
@@ -100,14 +78,15 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
     public static I18nContentSupportStubbingOperation stubDetermineLocale(final Locale locale) {
         return new I18nContentSupportStubbingOperation() {
 
-            public void of(I18nContentSupport contentSupport) {
+            public void of(I18nContentSupport contentSupport) throws RepositoryException {
                 assertThat(contentSupport, notNullValue());
                 when(contentSupport.determineLocale()).thenReturn(locale);
+                addToLocales(contentSupport, locale);
             }
         };
     }
 
-    public static I18nContentSupportStubbingOperation stubbLocales(final Locale... locales) {
+    public static I18nContentSupportStubbingOperation stubLocales(final Locale... locales) {
         return new I18nContentSupportStubbingOperation() {
 
             public void of(I18nContentSupport contentSupport) {
@@ -117,7 +96,7 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
         };
     }
 
-    public static I18nContentSupportStubbingOperation stubbToI18nUri(final String value) {
+    public static I18nContentSupportStubbingOperation stubToI18nUri(final String value) {
         return new I18nContentSupportStubbingOperation() {
 
             public void of(I18nContentSupport contentSupport) {
@@ -130,10 +109,10 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
     private static void addToLocales(final I18nContentSupport contentSupport, final Locale locale) throws RepositoryException {
         Collection<Locale> locales = contentSupport.getLocales();
         if (locales == null) {
-            stubbLocales(locale).of(contentSupport);
+            stubLocales(locale).of(contentSupport);
         } else if (!locales.contains(locale)) {
             locales.add(locale);
-            stubbLocales(locales.toArray(new Locale[0])).of(contentSupport);
+            stubLocales(locales.toArray(new Locale[0])).of(contentSupport);
         }
     }
 }

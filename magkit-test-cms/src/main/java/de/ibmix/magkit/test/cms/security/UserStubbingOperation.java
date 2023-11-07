@@ -108,6 +108,16 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
                 assertThat(user, notNullValue());
                 Collection<String> groupList = groupNames == null ? Collections.emptyList() : Arrays.asList(groupNames);
                 doReturn(groupList).when(user).getGroups();
+            }
+        };
+    }
+
+    public static UserStubbingOperation stubAllGroups(final String... groupNames) {
+        return new UserStubbingOperation() {
+            @Override
+            public void of(User user) {
+                assertThat(user, notNullValue());
+                Collection<String> groupList = groupNames == null ? Collections.emptyList() : Arrays.asList(groupNames);
                 doReturn(groupList).when(user).getAllGroups();
             }
         };
@@ -120,7 +130,19 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
                 assertThat(user, notNullValue());
                 Collection<String> roleList = roleNames == null ? Collections.emptyList() : Arrays.asList(roleNames);
                 doReturn(roleList).when(user).getRoles();
+                roleList.forEach(role -> doReturn(true).when(user).hasRole(role));
+            }
+        };
+    }
+
+    public static UserStubbingOperation stubAllRoles(final String... roleNames) {
+        return new UserStubbingOperation() {
+            @Override
+            public void of(User user) {
+                assertThat(user, notNullValue());
+                Collection<String> roleList = roleNames == null ? Collections.emptyList() : Arrays.asList(roleNames);
                 doReturn(roleList).when(user).getAllRoles();
+                roleList.forEach(role -> doReturn(true).when(user).hasRole(role));
             }
         };
     }
