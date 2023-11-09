@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import org.apache.jackrabbit.JcrConstants;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,6 +75,7 @@ public class SessionMockUtilsTest {
         assertThat(root.getIdentifier(), is("cafebabe-cafe-babe-cafe-babecafebabe"));
         assertThat(root.getPrimaryNodeType(), notNullValue());
         assertThat(root.getPrimaryNodeType().getName(), is("rep:root"));
+        assertThat(root.getProperty(JcrConstants.JCR_PRIMARYTYPE).getString(), is("rep:root"));
         assertThat(session.getNode("/"), is(root));
         assertThat(session.getItem("/"), is(root));
         assertThat(session.getNodeByIdentifier("cafebabe-cafe-babe-cafe-babecafebabe"), is(root));

@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import org.apache.jackrabbit.JcrConstants;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,6 +65,7 @@ public class NodeStubbingOperationTest {
         Session session = mock(Session.class);
         NodeStubbingOperation.stubJcrSession(session).of(_node);
         assertThat(_node.getSession(), is(session));
+        assertThat(session.getNode("/untitled"), is(_node));
     }
 
     @Test
@@ -73,6 +75,8 @@ public class NodeStubbingOperationTest {
         assertThat(_node.getPrimaryNodeType().getName(), is("testType"));
         assertThat(_node.getPrimaryNodeType().isNodeType("testType"), is(true));
         assertThat(_node.getPrimaryNodeType().isNodeType("other"), is(false));
+        assertThat(_node.getProperty(JcrConstants.JCR_PRIMARYTYPE), notNullValue());
+        assertThat(_node.getProperty(JcrConstants.JCR_PRIMARYTYPE).getString(), is("testType"));
     }
 
     @Test

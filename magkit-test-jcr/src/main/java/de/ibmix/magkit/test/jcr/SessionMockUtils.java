@@ -71,10 +71,10 @@ public final class SessionMockUtils {
     public static Session mockPlainSession() throws RepositoryException {
         Session result = mock(Session.class);
         Node root = NodeMockUtils.mockPlainNode("/");
-        stubType("rep:root").of(root);
         stubIdentifier("cafebabe-cafe-babe-cafe-babecafebabe").of(root);
         when(root.getName()).thenReturn("");
         stubRootNode(root).of(result);
+        stubType("rep:root").of(root);
         doAnswer(PROPERTY_ANSWER).when(result).getProperty(anyString());
         return result;
     }
