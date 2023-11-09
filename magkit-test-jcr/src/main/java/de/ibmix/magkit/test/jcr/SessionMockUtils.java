@@ -28,6 +28,8 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
+import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubType;
 import static de.ibmix.magkit.test.jcr.RepositoryStubbingOperation.stubLogin;
 import static de.ibmix.magkit.test.jcr.SessionStubbingOperation.stubRootNode;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -59,7 +61,6 @@ public final class SessionMockUtils {
             result = mockPlainSession();
             WorkspaceMockUtils.mockWorkspace(workspace, WorkspaceStubbingOperation.stubSession(result));
             stubLogin(result).of(repository);
-            doAnswer(PROPERTY_ANSWER).when(result).getProperty(anyString());
         }
         for (SessionStubbingOperation stubbing : stubbings) {
             stubbing.of(result);
@@ -70,8 +71,11 @@ public final class SessionMockUtils {
     public static Session mockPlainSession() throws RepositoryException {
         Session result = mock(Session.class);
         Node root = NodeMockUtils.mockPlainNode("/");
+        stubType("rep:root").of(root);
+        stubIdentifier("cafebabe-cafe-babe-cafe-babecafebabe").of(root);
         when(root.getName()).thenReturn("");
         stubRootNode(root).of(result);
+        doAnswer(PROPERTY_ANSWER).when(result).getProperty(anyString());
         return result;
     }
 
