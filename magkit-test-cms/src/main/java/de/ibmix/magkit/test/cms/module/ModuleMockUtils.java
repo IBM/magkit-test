@@ -24,6 +24,7 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 
+import javax.jcr.RepositoryException;
 import java.util.Arrays;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.clearComponentProvider;
@@ -49,7 +50,13 @@ public abstract class ModuleMockUtils {
     public static InstallContext mockInstallContext(InstallContextStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         InstallContext result = mockComponentInstance(InstallContext.class);
-        Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(result));
+        Arrays.stream(stubbings).forEach(stubbing -> {
+            try {
+                stubbing.of(result);
+            } catch (RepositoryException e) {
+                // ignore, not relevant while stubbing
+            }
+        });
         return result;
     }
 
