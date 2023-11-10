@@ -33,6 +33,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +148,7 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
             @Override
             public void of(InstallContext mock) throws RepositoryException {
                 Map<String, List<InstallContext.Message>> messages = mock.getMessages();
-                List<InstallContext.Message> moduleMessages = messages.get(moduleName);
+                List<InstallContext.Message> moduleMessages = messages.getOrDefault(moduleName, new ArrayList<>());
                 InstallContext.Message newMessage = mock(InstallContext.Message.class);
                 doReturn(message).when(newMessage).getMessage();
                 doReturn(details).when(newMessage).getDetails();

@@ -35,6 +35,9 @@ import org.junit.Test;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -142,5 +145,24 @@ public class InstallContextStubbingOperationTest {
         assertThat(_installContext.getOrCreateCurrentModuleConfigNode(), is(NodeMockUtils.mockNode("config", "/modules/test/config")));
         assertThat(_installContext.getOrCreateCurrentModuleConfigNode().getPrimaryNodeType().getName(), is(NodeTypes.Content.NAME));
         assertTrue(_installContext.isModuleRegistered("test"));
+    }
+
+    @Test
+    public void stubMessage() throws RepositoryException {
+        assertTrue(_installContext.getMessages().isEmpty());
+        assertThat(_installContext.getMessages().get("test"), nullValue());
+
+        Date now = Calendar.getInstance().getTime();
+        InstallContextStubbingOperation.stubMessage("test", "message-1", "detail", now, InstallContext.MessagePriority.info).of(_installContext);
+        InstallContextStubbingOperation.stubMessage("test", "message-2", null, null, InstallContext.MessagePriority.info).of(_installContext);
+        InstallContextStubbingOperation.stubMessage("other", "other message", null, null, InstallContext.MessagePriority.info).of(_installContext);
+        assertThat(_installContext.getMessages().size(), is(2));
+        assertThat(_installContext.getMessages().get("test").size(), is(2));
+        assertThat(_installContext.getMessages().get("test").get(0).getMessage(), is("message-1"));
+        assertThat(_installContext.getMessages().get("test").get(0).getDetails(), is("detail"));
+        assertThat(_installContext.getMessages().get("test").get(0).getTimestamp(), is(now));
+        assertThat(_installContext.getMessages().get("test").get(0).getPriority(), is(InstallContext.MessagePriority.info));
+        assertThat(_installContext.getMessages().get("test").get(1).getMessage(), is("message-2"));
+        assertThat(_installContext.getMessages().get("other").get(0).getMessage(), is("other message"));
     }
 }
