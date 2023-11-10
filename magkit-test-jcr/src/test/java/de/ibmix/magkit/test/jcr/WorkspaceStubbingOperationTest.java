@@ -35,6 +35,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -53,6 +54,7 @@ public class WorkspaceStubbingOperationTest {
     public void setUp() {
         RepositoryMockUtils.cleanRepository();
         _ws = mock(Workspace.class);
+        doReturn("test").when(_ws).getName();
     }
 
     /**

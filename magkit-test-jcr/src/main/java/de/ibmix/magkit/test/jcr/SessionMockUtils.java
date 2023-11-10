@@ -32,6 +32,10 @@ import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubType;
 import static de.ibmix.magkit.test.jcr.RepositoryStubbingOperation.stubLogin;
 import static de.ibmix.magkit.test.jcr.SessionStubbingOperation.stubRootNode;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -55,6 +59,8 @@ public final class SessionMockUtils {
     };
 
     public static Session mockSession(String workspace, SessionStubbingOperation... stubbings) throws RepositoryException {
+        assertTrue(isNotBlank(workspace));
+        assertThat(stubbings, notNullValue());
         Repository repository = RepositoryMockUtils.mockRepository();
         Session result = repository.login(workspace);
         if (result == null) {
