@@ -21,15 +21,26 @@ package de.ibmix.magkit.test.cms.module;
  */
 
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.module.model.ServletDefinition;
 import info.magnolia.module.model.Version;
+import org.junit.Before;
 import org.junit.Test;
 
-import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockModuleDefinition;
+import java.util.Arrays;
+
+import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubClassName;
+import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubDescription;
+import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubServlet;
+import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubServlets;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubDisplayName;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubName;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubVersion;
+import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockServletDefinition;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 /**
  * Test ModuleDefinitionStubbingOperation.
@@ -39,22 +50,82 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class ModuleDefinitionStubbingOperationTest {
 
+    private ModuleDefinition _moduleDefinition;
+
+    @Before
+    public void setUp() throws Exception {
+        _moduleDefinition = mock(ModuleDefinition.class);
+    }
+
     @Test
     public void testDisplayName() {
-        ModuleDefinition md = mockModuleDefinition(stubDisplayName("DISPLAY_NAME"));
-        assertThat(md.getDisplayName(), is("DISPLAY_NAME"));
+        assertThat(_moduleDefinition.getDisplayName(), nullValue());
+
+        stubDisplayName("DISPLAY_NAME").of(_moduleDefinition);
+        assertThat(_moduleDefinition.getDisplayName(), is("DISPLAY_NAME"));
     }
 
     @Test
     public void testName() {
-        ModuleDefinition md = mockModuleDefinition(stubName("NAME"));
-        assertThat(md.getName(), is("NAME"));
+        assertThat(_moduleDefinition.getName(), nullValue());
+
+        stubName("NAME").of(_moduleDefinition);
+        assertThat(_moduleDefinition.getName(), is("NAME"));
     }
 
     @Test
     public void testVersion() {
+        assertThat(_moduleDefinition.getVersion(), nullValue());
+
         Version v = Version.parseVersion("1.1.3");
-        ModuleDefinition md = mockModuleDefinition(stubVersion("1.1.3"));
-        assertThat(md.getVersion(), is(v));
+        stubVersion("1.1.3").of(_moduleDefinition);
+        assertThat(_moduleDefinition.getVersion(), is(v));
+    }
+
+    @Test
+    public void testDescription() {
+        assertThat(_moduleDefinition.getDescription(), nullValue());
+
+        stubDescription("test").of(_moduleDefinition);
+        assertThat(_moduleDefinition.getDescription(), is("test"));
+    }
+
+    @Test
+    public void testStubClassName() {
+        assertThat(_moduleDefinition.getClassName(), nullValue());
+
+        stubClassName("test").of(_moduleDefinition);
+        assertThat(_moduleDefinition.getClassName(), is("test"));
+    }
+
+    @Test
+    public void testStubServlet() {
+        assertTrue(_moduleDefinition.getServlets().isEmpty());
+
+        ServletDefinition sd = mockServletDefinition("one");
+        stubServlet(sd).of(_moduleDefinition);
+        assertThat(_moduleDefinition.getServlets().size(), is(1));
+        assertTrue(_moduleDefinition.getServlets().contains(sd));
+
+        ServletDefinition sd2 = mockServletDefinition("two");
+        stubServlet(sd2).of(_moduleDefinition);
+        assertThat(_moduleDefinition.getServlets().size(), is(2));
+        assertTrue(_moduleDefinition.getServlets().contains(sd));
+        assertTrue(_moduleDefinition.getServlets().contains(sd2));
+    }
+
+    @Test
+    public void testStubServlets() {
+        assertTrue(_moduleDefinition.getServlets().isEmpty());
+
+        ServletDefinition sd = mockServletDefinition("one");
+        stubServlet(sd).of(_moduleDefinition);
+        assertThat(_moduleDefinition.getServlets().size(), is(1));
+        assertTrue(_moduleDefinition.getServlets().contains(sd));
+
+        ServletDefinition sd2 = mockServletDefinition("two");
+        stubServlets(Arrays.asList(sd2)).of(_moduleDefinition);
+        assertThat(_moduleDefinition.getServlets().size(), is(1));
+        assertTrue(_moduleDefinition.getServlets().contains(sd2));
     }
 }
