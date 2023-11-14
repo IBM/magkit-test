@@ -56,8 +56,8 @@ public class MockNodes {
     @Test
     public void mockMockitoNodeWithPath() throws RepositoryException {
         // What you do: Just mock the node for the desired workspace
-        Node child = MagnoliaNodeMockUtils.mockMgnlNode("root/parent/child", "testWorkspace", NodeTypes.ContentNode.NAME);
-        Node child2 = MagnoliaNodeMockUtils.mockMgnlNode("root/parent/child", "testWorkspace", NodeTypes.ContentNode.NAME);
+        Node child = MagnoliaNodeMockUtils.mockMgnlNode("testWorkspace", "root/parent/child", NodeTypes.ContentNode.NAME);
+        Node child2 = MagnoliaNodeMockUtils.mockMgnlNode("testWorkspace", "root/parent/child", NodeTypes.ContentNode.NAME);
         assertThat(child2, is(child));
         assertThat(child2.getSession(), is(child.getSession()));
 

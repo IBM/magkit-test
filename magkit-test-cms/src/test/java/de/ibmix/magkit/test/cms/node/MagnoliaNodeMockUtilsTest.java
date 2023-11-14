@@ -121,7 +121,7 @@ public class MagnoliaNodeMockUtilsTest {
     @Test
     public void mockMgnlNodeTest() throws RepositoryException {
         NodeStubbingOperation op1 = Mockito.mock(NodeStubbingOperation.class);
-        Node node = mockMgnlNode("test/node", "test-repository", "test:nodeType", op1);
+        Node node = mockMgnlNode("test-repository", "test/node", "test:nodeType", op1);
         verify(op1, times(1)).of(node);
         assertThat(node.getPrimaryNodeType().getName(), is("test:nodeType"));
         // Verify that WebContext and Session have been mocked...

@@ -43,15 +43,23 @@ import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 public final class MagnoliaNodeMockUtils {
 
     public static Node mockContentNodeNode(String path, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
-        return mockMgnlNode(path, WEBSITE, NodeTypes.ContentNode.NAME, nodeStubbings);
+        return mockMgnlNode(WEBSITE, path, NodeTypes.ContentNode.NAME, nodeStubbings);
+    }
+
+    public static Node mockContentNodeNode(String repository, String path, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
+        return mockMgnlNode(repository, path, NodeTypes.ContentNode.NAME, nodeStubbings);
     }
 
     public static Node mockContentNode(String path, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
-        return mockMgnlNode(path, WEBSITE, NodeTypes.Content.NAME, nodeStubbings);
+        return mockMgnlNode(WEBSITE, path, NodeTypes.Content.NAME, nodeStubbings);
+    }
+
+    public static Node mockContentNode(String repository, String path, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
+        return mockMgnlNode(repository, path, NodeTypes.Content.NAME, nodeStubbings);
     }
 
     public static Node mockPageNode(NodeStubbingOperation... nodeStubbings) throws RepositoryException {
-        return mockMgnlNode(NodeStubbingOperation.UNTITLED, WEBSITE, NodeTypes.Page.NAME, nodeStubbings);
+        return mockMgnlNode(WEBSITE, NodeStubbingOperation.UNTITLED, NodeTypes.Page.NAME, nodeStubbings);
     }
 
     /**
@@ -61,7 +69,7 @@ public final class MagnoliaNodeMockUtils {
      * @return mocked node
      */
     public static Node mockPageNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
-        return mockMgnlNode(name, WEBSITE, NodeTypes.Page.NAME, nodeStubbings);
+        return mockMgnlNode(WEBSITE, name, NodeTypes.Page.NAME, nodeStubbings);
     }
 
     /**
@@ -71,7 +79,7 @@ public final class MagnoliaNodeMockUtils {
      * @return mocked node
      */
     public static Node mockAreaNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
-        return mockMgnlNode(name, WEBSITE, NodeTypes.Area.NAME, nodeStubbings);
+        return mockMgnlNode(WEBSITE, name, NodeTypes.Area.NAME, nodeStubbings);
     }
 
     /**
@@ -81,7 +89,7 @@ public final class MagnoliaNodeMockUtils {
      * @return mocked node
      */
     public static Node mockComponentNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
-        return mockMgnlNode(name, WEBSITE, NodeTypes.Component.NAME, nodeStubbings);
+        return mockMgnlNode(WEBSITE, name, NodeTypes.Component.NAME, nodeStubbings);
     }
 
     /**
@@ -90,7 +98,7 @@ public final class MagnoliaNodeMockUtils {
      * @param nodeStubbings for stub behaviour
      * @return mocked node
      */
-    public static Node mockMgnlNode(String name, String repository, String nodeType, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
+    public static Node mockMgnlNode(String repository, String name, String nodeType, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         ContextMockUtils.mockWebContext(WebContextStubbingOperation.stubJcrSession(repository));
         return mockNode(repository, name, ArrayUtils.add(nodeStubbings, stubType(nodeType)));
     }

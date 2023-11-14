@@ -24,6 +24,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
 
 import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubName;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -56,6 +58,7 @@ public final class WorkspaceMockUtils {
      * @throws RepositoryException may be thrown by one of the stubbing operations
      */
     public static Workspace mockWorkspace(String name, WorkspaceStubbingOperation... stubbings) throws RepositoryException {
+        assertTrue(isNotBlank(name));
         Workspace result = mock(Workspace.class);
         stubName(name).of(result);
         for (WorkspaceStubbingOperation stub : stubbings) {

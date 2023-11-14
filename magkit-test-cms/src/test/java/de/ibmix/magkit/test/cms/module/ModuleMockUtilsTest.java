@@ -23,18 +23,19 @@ package de.ibmix.magkit.test.cms.module;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.module.model.ServletDefinition;
 import info.magnolia.objectfactory.Components;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.clearComponentProvider;
-import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockInstallContext;
-import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockModuleDefinition;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test ModuleMockUtils.
@@ -67,6 +68,16 @@ public class ModuleMockUtilsTest {
     }
 
     @Test
+    public void mockModuleDefinition() {
+        ModuleDefinitionStubbingOperation op = mock(ModuleDefinitionStubbingOperation.class);
+        ModuleDefinition definition = ModuleMockUtils.mockModuleDefinition(op);
+        assertThat(definition, notNullValue());
+        assertThat(definition.getName(), is("test"));
+        verify(op, times(1)).of(definition);
+        assertThat(Components.getComponent(ModuleRegistry.class).getDefinition("test"), is(definition));
+    }
+
+    @Test
     public void cleanModuleRegistry() {
         ModuleRegistry mr = ModuleMockUtils.mockModuleRegistry();
         assertThat(Components.getComponent(ModuleRegistry.class), is(mr));
@@ -77,11 +88,20 @@ public class ModuleMockUtilsTest {
     }
 
     @Test
-    public void testInstallContext() {
-        InstallContext ic = mockInstallContext();
-        assertThat(ic, CoreMatchers.notNullValue());
-        ModuleDefinition md = mockModuleDefinition();
-        ic = mockInstallContext(InstallContextStubbingOperation.stubCurrentModuleDefinition(md));
+    public void mockInstallContext() {
+        InstallContext ic = ModuleMockUtils.mockInstallContext();
+        assertThat(ic, notNullValue());
+        ModuleDefinition md = ModuleMockUtils.mockModuleDefinition();
+        ic = ModuleMockUtils.mockInstallContext(InstallContextStubbingOperation.stubCurrentModuleDefinition(md));
         assertThat(ic.getCurrentModuleDefinition(), is(md));
+    }
+
+    @Test
+    public void mockServletDefinition() {
+        ServletDefinitionStubbingOperation op = mock(ServletDefinitionStubbingOperation.class);
+        ServletDefinition servletDefinition = ModuleMockUtils.mockServletDefinition("test", op);
+        assertThat(servletDefinition, notNullValue());
+        assertThat(servletDefinition.getName(), is("test"));
+        verify(op, times(1)).of(servletDefinition);
     }
 }

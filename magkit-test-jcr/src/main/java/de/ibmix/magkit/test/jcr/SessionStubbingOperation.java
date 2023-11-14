@@ -127,6 +127,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
                 assertThat(session, notNullValue());
                 doReturn(node).when(session).getRootNode();
                 doReturn(session).when(node).getSession();
+                stubItem(node).of(session);
             }
         };
     }

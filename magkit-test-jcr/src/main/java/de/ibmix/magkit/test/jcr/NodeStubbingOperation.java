@@ -36,6 +36,7 @@ import javax.jcr.nodetype.NodeType;
 import java.util.Calendar;
 import java.util.Collection;
 
+import static de.ibmix.magkit.test.jcr.SessionStubbingOperation.stubItem;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -70,6 +71,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
             public void of(Node node) throws RepositoryException {
                 assertThat(node, notNullValue());
                 doReturn(session).when(node).getSession();
+                stubItem(node).of(session);
             }
         };
     }
@@ -206,7 +208,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
                     NodeMockUtils.TestNode testNode = (NodeMockUtils.TestNode) node;
                     Session s = testNode.getSession();
                     if (s != null) {
-                        SessionStubbingOperation.stubItem(property).of(s);
+                        stubItem(property).of(s);
                     }
                     PropertyIterator properties = testNode.getProperties();
                     while (properties.hasNext()) {
@@ -345,7 +347,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     private static void register(final Node child) throws RepositoryException {
         Session s = child.getSession();
         if (s != null) {
-            SessionStubbingOperation.stubItem(child).of(s);
+            stubItem(child).of(s);
             NodeIterator nodes = child.getNodes();
             while (nodes.hasNext()) {
                 register(nodes.nextNode());
@@ -353,7 +355,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
             PropertyIterator properties = child.getProperties();
             while (properties.hasNext()) {
                 Property p = properties.nextProperty();
-                SessionStubbingOperation.stubItem(p).of(s);
+                stubItem(p).of(s);
             }
         }
     }

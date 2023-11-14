@@ -86,7 +86,7 @@ public final class AssetMockUtils extends ComponentsMockUtils {
         assertThat(stubbings, notNullValue());
         String uuid = defaultIfBlank(itemId, UUID.randomUUID().toString());
         String provider = defaultIfBlank(providerId, DamConstants.DEFAULT_JCR_PROVIDER_ID);
-        Node assetNode = MagnoliaNodeMockUtils.mockMgnlNode(path, DamConstants.WORKSPACE, AssetNodeTypes.Asset.NAME, stubIdentifier(uuid), stubNode(AssetNodeTypes.AssetResource.RESOURCE_NAME));
+        Node assetNode = MagnoliaNodeMockUtils.mockMgnlNode(DamConstants.WORKSPACE, path, AssetNodeTypes.Asset.NAME, stubIdentifier(uuid), stubNode(AssetNodeTypes.AssetResource.RESOURCE_NAME));
         JcrAsset result = mock(JcrAsset.class);
         when(result.getNode()).thenReturn(assetNode);
         when(result.isAsset()).thenReturn(true);

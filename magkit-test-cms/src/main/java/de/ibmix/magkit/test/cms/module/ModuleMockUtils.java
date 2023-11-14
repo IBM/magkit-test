@@ -23,13 +23,16 @@ package de.ibmix.magkit.test.cms.module;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.module.model.ServletDefinition;
 
+import javax.jcr.RepositoryException;
 import java.util.Arrays;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.clearComponentProvider;
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.mockComponentInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -46,14 +49,20 @@ public abstract class ModuleMockUtils {
      * @author wolf.bubenik@ibmix.de
      * @since 2012-07-25
      */
-    public static InstallContext mockInstallContext(InstallContextStubbingOperation... stubbings) {
+    public static InstallContext mockInstallContext(final InstallContextStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         InstallContext result = mockComponentInstance(InstallContext.class);
-        Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(result));
+        Arrays.stream(stubbings).forEach(stubbing -> {
+            try {
+                stubbing.of(result);
+            } catch (RepositoryException e) {
+                // ignore, not relevant while stubbing
+            }
+        });
         return result;
     }
 
-    public static ModuleRegistry mockModuleRegistry(ModuleRegistryStubbingOperation... stubbings) {
+    public static ModuleRegistry mockModuleRegistry(final ModuleRegistryStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         ModuleRegistry registry = mockComponentInstance(ModuleRegistry.class);
         Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(registry));
@@ -66,7 +75,7 @@ public abstract class ModuleMockUtils {
      * @param stubbings the StubbingOperations to stub properties of the module
      * @return a Mockito mock of a ModuleDefinition
      */
-    public static ModuleDefinition mockModuleDefinition(ModuleDefinitionStubbingOperation... stubbings) {
+    public static ModuleDefinition mockModuleDefinition(final ModuleDefinitionStubbingOperation... stubbings) {
         return mockModuleDefinition("test", stubbings);
 
     }
@@ -78,7 +87,7 @@ public abstract class ModuleMockUtils {
      * @param stubbings the StubbingOperations to stub properties of the module
      * @return a Mockito mock of a ModuleDefinition
      */
-    public static ModuleDefinition mockModuleDefinition(String name, ModuleDefinitionStubbingOperation... stubbings) {
+    public static ModuleDefinition mockModuleDefinition(final String name, final ModuleDefinitionStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         ModuleDefinition result = mockModuleRegistry().getDefinition(name);
         if (result == null) {
@@ -88,6 +97,14 @@ public abstract class ModuleMockUtils {
         }
         ModuleDefinition finalResult = result;
         Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalResult));
+        return result;
+    }
+
+    public static ServletDefinition mockServletDefinition(final String name, final ServletDefinitionStubbingOperation... stubbings) {
+        assertThat(stubbings, notNullValue());
+        ServletDefinition result = mock(ServletDefinition.class);
+        doReturn(name).when(result).getName();
+        Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(result));
         return result;
     }
 

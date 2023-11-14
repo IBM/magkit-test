@@ -83,8 +83,8 @@ public void setUp() {
 }
 
 // Be polite and cleanup your mess for others:
-@After
-public void setUp() {
+@AfterClass
+public static void setUp() {
     ContextMockUtils.cleanContext();
 }
 ```
