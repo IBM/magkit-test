@@ -150,7 +150,7 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
                 doReturn(Arrays.asList(workspaces)).when(result).getWorkspaces();
                 Collection<RepositoryDefinition> repositories = mock.getRepositories();
                 repositories.add(result);
-                doReturn(repositories).when(mock).getDependencies();
+                doReturn(repositories).when(mock).getRepositories();
             }
         };
     }
@@ -165,8 +165,8 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
                 doReturn(value).when(result).getValue();
                 Collection<PropertyDefinition> properties = mock.getProperties();
                 properties.add(result);
-                doReturn(properties).when(mock).getDependencies();
-                doReturn(result).when(mock).getProperty(name);
+                doReturn(properties).when(mock).getProperties();
+                doReturn(value).when(mock).getProperty(name);
             }
         };
     }

@@ -20,16 +20,23 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
+import info.magnolia.module.model.DependencyDefinition;
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.module.model.PropertyDefinition;
+import info.magnolia.module.model.RepositoryDefinition;
 import info.magnolia.module.model.ServletDefinition;
 import info.magnolia.module.model.Version;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubClassName;
+import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubDependency;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubDescription;
+import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubProperty;
+import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubRepository;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubServlet;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubServlets;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubDisplayName;
@@ -127,5 +134,57 @@ public class ModuleDefinitionStubbingOperationTest {
         stubServlets(Arrays.asList(sd2)).of(_moduleDefinition);
         assertThat(_moduleDefinition.getServlets().size(), is(1));
         assertTrue(_moduleDefinition.getServlets().contains(sd2));
+    }
+
+    @Test
+    public void testStubDependency() {
+        assertTrue(_moduleDefinition.getDependencies().isEmpty());
+
+        ServletDefinition sd = mockServletDefinition("one");
+        stubDependency("dep1", "1.0", true).of(_moduleDefinition);
+        List<DependencyDefinition> dependencies = (List<DependencyDefinition>) _moduleDefinition.getDependencies();
+        assertThat(dependencies.size(), is(1));
+        assertThat(dependencies.get(0).getName(), is("dep1"));
+        assertThat(dependencies.get(0).getVersion(), is("1.0"));
+        assertThat(dependencies.get(0).getVersionRange().toString(), is("[1.0.0,1.0.0]"));
+        assertThat(dependencies.get(0).isOptional(), is(true));
+
+        stubDependency("dep2", "1.1", false).of(_moduleDefinition);
+        assertThat(_moduleDefinition.getDependencies().size(), is(2));
+    }
+
+    @Test
+    public void testStubRepository() {
+        assertTrue(_moduleDefinition.getRepositories().isEmpty());
+
+        ServletDefinition sd = mockServletDefinition("one");
+        stubRepository("rep1", "nodetypes/my-nodetype.yaml", "ws-1", "ws-2").of(_moduleDefinition);
+        List<RepositoryDefinition> repositories = (List<RepositoryDefinition>) _moduleDefinition.getRepositories();
+        assertThat(repositories.size(), is(1));
+        assertThat(repositories.get(0).getName(), is("rep1"));
+        assertThat(repositories.get(0).getNodeTypeFile(), is("nodetypes/my-nodetype.yaml"));
+        assertThat(repositories.get(0).getWorkspaces().size(), is(2));
+
+        stubRepository("rep1", null, "ws-3").of(_moduleDefinition);
+        assertThat(_moduleDefinition.getRepositories().size(), is(2));
+    }
+
+    @Test
+    public void testStubProperty() {
+        assertTrue(_moduleDefinition.getProperties().isEmpty());
+
+        ServletDefinition sd = mockServletDefinition("one");
+        stubProperty("prop1", "value1").of(_moduleDefinition);
+        List<PropertyDefinition> properties = (List<PropertyDefinition>) _moduleDefinition.getProperties();
+        assertThat(properties.size(), is(1));
+        assertThat(properties.get(0).getName(), is("prop1"));
+        assertThat(properties.get(0).getValue(), is("value1"));
+        assertThat(_moduleDefinition.getProperty("prop1"), is("value1"));
+
+        stubProperty("prop2", "value2").of(_moduleDefinition);
+        properties = (List<PropertyDefinition>) _moduleDefinition.getProperties();
+        assertThat(properties.size(), is(2));
+        assertThat(_moduleDefinition.getProperty("prop1"), is("value1"));
+        assertThat(_moduleDefinition.getProperty("prop2"), is("value2"));
     }
 }
