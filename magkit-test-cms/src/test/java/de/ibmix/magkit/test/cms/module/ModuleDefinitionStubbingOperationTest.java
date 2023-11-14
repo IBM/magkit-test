@@ -29,7 +29,7 @@ import info.magnolia.module.model.Version;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubClassName;
@@ -131,7 +131,7 @@ public class ModuleDefinitionStubbingOperationTest {
         assertTrue(_moduleDefinition.getServlets().contains(sd));
 
         ServletDefinition sd2 = mockServletDefinition("two");
-        stubServlets(Arrays.asList(sd2)).of(_moduleDefinition);
+        stubServlets(Collections.singletonList(sd2)).of(_moduleDefinition);
         assertThat(_moduleDefinition.getServlets().size(), is(1));
         assertTrue(_moduleDefinition.getServlets().contains(sd2));
     }
@@ -140,7 +140,6 @@ public class ModuleDefinitionStubbingOperationTest {
     public void testStubDependency() {
         assertTrue(_moduleDefinition.getDependencies().isEmpty());
 
-        ServletDefinition sd = mockServletDefinition("one");
         stubDependency("dep1", "1.0", true).of(_moduleDefinition);
         List<DependencyDefinition> dependencies = (List<DependencyDefinition>) _moduleDefinition.getDependencies();
         assertThat(dependencies.size(), is(1));
@@ -157,7 +156,6 @@ public class ModuleDefinitionStubbingOperationTest {
     public void testStubRepository() {
         assertTrue(_moduleDefinition.getRepositories().isEmpty());
 
-        ServletDefinition sd = mockServletDefinition("one");
         stubRepository("rep1", "nodetypes/my-nodetype.yaml", "ws-1", "ws-2").of(_moduleDefinition);
         List<RepositoryDefinition> repositories = (List<RepositoryDefinition>) _moduleDefinition.getRepositories();
         assertThat(repositories.size(), is(1));
@@ -173,7 +171,6 @@ public class ModuleDefinitionStubbingOperationTest {
     public void testStubProperty() {
         assertTrue(_moduleDefinition.getProperties().isEmpty());
 
-        ServletDefinition sd = mockServletDefinition("one");
         stubProperty("prop1", "value1").of(_moduleDefinition);
         List<PropertyDefinition> properties = (List<PropertyDefinition>) _moduleDefinition.getProperties();
         assertThat(properties.size(), is(1));
