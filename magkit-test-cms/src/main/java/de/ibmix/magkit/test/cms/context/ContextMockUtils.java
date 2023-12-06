@@ -20,9 +20,9 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import de.ibmix.magkit.test.jcr.QueryManagerStubbingOperation;
-import de.ibmix.magkit.test.jcr.QueryMockUtils;
-import de.ibmix.magkit.test.jcr.QueryStubbingOperation;
+import de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation;
+import de.ibmix.magkit.test.jcr.query.QueryMockUtils;
+import de.ibmix.magkit.test.jcr.query.QueryStubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.cms.util.ServletUtil;

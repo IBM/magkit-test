@@ -1,4 +1,4 @@
-package de.ibmix.magkit.test.jcr;
+package de.ibmix.magkit.test.jcr.query;
 
 /*-
  * #%L
@@ -20,6 +20,8 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.test.jcr.SessionMockUtils;
+import de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,8 +30,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
-import static de.ibmix.magkit.test.jcr.QueryManagerStubbingOperation.stubQuery;
-import static de.ibmix.magkit.test.jcr.QueryManagerStubbingOperation.stubSupportedQueryLanguages;
+import static de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation.stubQuery;
+import static de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation.stubSupportedQueryLanguages;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;

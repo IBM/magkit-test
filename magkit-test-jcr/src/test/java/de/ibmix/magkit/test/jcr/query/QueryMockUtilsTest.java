@@ -1,4 +1,4 @@
-package de.ibmix.magkit.test.jcr;
+package de.ibmix.magkit.test.jcr.query;
 
 /*-
  * #%L
@@ -20,6 +20,10 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.test.jcr.RowStubbingOperation;
+import de.ibmix.magkit.test.jcr.SessionMockUtils;
+import de.ibmix.magkit.test.jcr.query.QueryMockUtils;
+import de.ibmix.magkit.test.jcr.query.QueryStubbingOperation;
 import org.junit.Before;
 import org.junit.Test;
 
