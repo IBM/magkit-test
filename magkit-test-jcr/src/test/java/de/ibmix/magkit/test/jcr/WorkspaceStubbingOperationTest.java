@@ -30,7 +30,11 @@ import org.junit.Test;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
+import javax.jcr.observation.ObservationManager;
+import javax.jcr.query.QueryManager;
 
+import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubObservationManager;
+import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -88,5 +92,23 @@ public class WorkspaceStubbingOperationTest {
         assertThat(s.getWorkspace(), is(_ws));
         verify(op3, times(1)).of(s);
         verify(op4, times(1)).of(s);
+    }
+
+    @Test
+    public void testStubQueryManager() throws RepositoryException {
+        assertThat(_ws.getQueryManager(), nullValue());
+
+        QueryManager qm = mock(QueryManager.class);
+        stubQueryManager(qm).of(_ws);
+        assertThat(_ws.getQueryManager(), is(qm));
+    }
+
+    @Test
+    public void testStubObservationManager() throws RepositoryException {
+        assertThat(_ws.getObservationManager(), nullValue());
+
+        ObservationManager om = mock(ObservationManager.class);
+        stubObservationManager(om).of(_ws);
+        assertThat(_ws.getObservationManager(), is(om));
     }
 }
