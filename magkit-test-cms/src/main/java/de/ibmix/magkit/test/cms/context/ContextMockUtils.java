@@ -31,7 +31,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.context.WebContext;
 import info.magnolia.module.site.ExtendedAggregationState;
-import info.magnolia.objectfactory.Components;
 import org.apache.commons.collections4.ResettableIterator;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 import org.mockito.stubbing.Answer;
@@ -87,16 +86,15 @@ public final class ContextMockUtils extends ComponentsMockUtils {
     public static WebContext mockWebContext(WebContextStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());
         WebContext context;
-        if (MgnlContext.hasInstance()) {
-            // while mocking it is assumed that getInstance() will always return a mock
-            context = (WebContext) MgnlContext.getInstance();
+        if (MgnlContext.hasInstance() && MgnlContext.isWebContext()) {
+            // while mocking, it is assumed that getInstance() will always return a mock
+            context = MgnlContext.getWebContext();
         } else {
             // support injection of WebContext mock - mock as component:
             context = mockComponentInstance(WebContext.class);
             MgnlContext.setInstance(context);
             // always provide a I18ContentSupport mock
             mockI18nContentSupport();
-            mockSystemContext();
             WebContextStubbingOperation.stubExistingRequest().of(context);
             WebContextStubbingOperation.stubExistingResponse().of(context);
             doAnswer(REQUEST_PARAMETER_ANSWER).when(context).getParameter(anyString());
@@ -116,7 +114,8 @@ public final class ContextMockUtils extends ComponentsMockUtils {
     }
 
     public static SystemContext mockSystemContext(SystemContextStubbingOperation... stubbings) {
-        SystemContext result = mockComponentInstance(SystemContext.class);
+        SystemContext result = MgnlContext.isSystemInstance() ? (SystemContext) MgnlContext.getInstance() : mockComponentInstance(SystemContext.class);
+        MgnlContext.setInstance(result);
         for (SystemContextStubbingOperation stubbing : stubbings) {
             stubbing.of(result);
         }
@@ -345,7 +344,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
     }
 
     private static void addSystemContextAttributes(Map<String, Object> attributes) {
-        SystemContext systemContext = Components.getComponent(SystemContext.class);
+        SystemContext systemContext = mockComponentInstance(SystemContext.class);
         if (systemContext != null) {
             attributes.putAll(systemContext.getAttributes(Context.APPLICATION_SCOPE));
         }
