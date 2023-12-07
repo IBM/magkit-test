@@ -21,7 +21,6 @@ package de.ibmix.magkit.test.jcr.query;
  */
 
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
-import de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -20,7 +20,6 @@ package de.ibmix.magkit.test.jcr.query;
  * #L%
  */
 
-import de.ibmix.magkit.test.jcr.query.QueryStubbingOperation;
 import org.junit.Before;
 import org.junit.Test;
 

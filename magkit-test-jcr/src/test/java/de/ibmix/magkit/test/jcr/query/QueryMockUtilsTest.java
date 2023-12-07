@@ -22,8 +22,6 @@ package de.ibmix.magkit.test.jcr.query;
 
 import de.ibmix.magkit.test.jcr.RowStubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
-import de.ibmix.magkit.test.jcr.query.QueryMockUtils;
-import de.ibmix.magkit.test.jcr.query.QueryStubbingOperation;
 import org.junit.Before;
 import org.junit.Test;
 
