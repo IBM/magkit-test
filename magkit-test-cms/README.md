@@ -84,7 +84,7 @@ public void setUp() {
 
 // Be polite and cleanup your mess for others:
 @AfterClass
-public static void setUp() {
+public static void tearDown() {
     ContextMockUtils.cleanContext();
 }
 ```
