@@ -22,6 +22,7 @@ package de.ibmix.magkit.test.cms.context;
 
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.context.WebContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,9 +32,13 @@ import javax.jcr.RepositoryException;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.cleanContext;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockAggregationState;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertSame;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -124,5 +129,29 @@ public class ContextMockUtilsTest {
     @Test(expected = AssertionError.class)
     public void mockAggregationStateTestNull() throws RepositoryException {
         mockAggregationState(null);
+    }
+
+    @Test
+    public void mockSystemContext() throws RepositoryException {
+        assertFalse(MgnlContext.hasInstance());
+
+        SystemContextStubbingOperation op1 = mock(SystemContextStubbingOperation.class);
+        SystemContextStubbingOperation op2 = mock(SystemContextStubbingOperation.class);
+        SystemContext ctx = ContextMockUtils.mockSystemContext(op1, op2);
+        assertThat(MgnlContext.getInstance(), is(ctx));
+        assertTrue(MgnlContext.isSystemInstance());
+        verify(op1, atLeastOnce()).of(ctx);
+        verify(op2, atLeastOnce()).of(ctx);
+
+        ContextMockUtils.mockSystemContext();
+        assertThat(MgnlContext.getInstance(), is(ctx));
+
+        mockWebContext();
+        assertTrue(MgnlContext.isWebContext());
+
+        SystemContext newCtx = ContextMockUtils.mockSystemContext();
+        assertTrue(MgnlContext.isSystemInstance());
+        // We get a new instance from MgnlContext but the SystemContext instance is still the same because we mock it using mockComponentInstance(SystemContext.class)
+        assertSame(newCtx, ctx);
     }
 }

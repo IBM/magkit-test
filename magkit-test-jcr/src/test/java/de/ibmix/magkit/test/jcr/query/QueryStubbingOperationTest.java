@@ -1,4 +1,4 @@
-package de.ibmix.magkit.test.jcr;
+package de.ibmix.magkit.test.jcr.query;
 
 /*-
  * #%L

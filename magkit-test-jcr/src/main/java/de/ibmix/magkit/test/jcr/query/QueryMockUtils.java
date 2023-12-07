@@ -1,4 +1,4 @@
-package de.ibmix.magkit.test.jcr;
+package de.ibmix.magkit.test.jcr.query;
 
 /*-
  * #%L
@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.test.jcr.RowStubbingOperation;
 import org.apache.jackrabbit.api.query.JackrabbitQueryResult;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
@@ -38,9 +39,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubLanguage;
-import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubResult;
-import static de.ibmix.magkit.test.jcr.QueryStubbingOperation.stubStatement;
+import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubLanguage;
+import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubResult;
+import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubStatement;
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
 import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
 import static java.util.Arrays.asList;

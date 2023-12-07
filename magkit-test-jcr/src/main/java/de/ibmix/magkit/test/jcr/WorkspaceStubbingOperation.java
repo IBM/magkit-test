@@ -26,11 +26,13 @@ import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
+import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.QueryManager;
 
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 /**
@@ -116,6 +118,16 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
             public void of(final Workspace ws) throws RepositoryException {
                 assertThat(ws, notNullValue());
                 when(ws.getQueryManager()).thenReturn(queryManager);
+            }
+        };
+    }
+
+    public static WorkspaceStubbingOperation stubObservationManager(final ObservationManager observationManager) {
+        return new WorkspaceStubbingOperation() {
+            @Override
+            public void of(Workspace ws) throws RepositoryException {
+                assertThat(ws, notNullValue());
+                doReturn(observationManager).when(ws).getObservationManager();
             }
         };
     }

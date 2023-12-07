@@ -60,7 +60,7 @@ public class MockWebContext {
     public void mockWebContextWithMagkit() throws RepositoryException {
         // So mockt man einen Magnolia WebContext mit einer bestimmten Sprache (die Sprache ist optional):
         WebContext ctx = ContextMockUtils.mockWebContext(Locale.GERMAN);
-        // Der Webcontext hat die gewünschte Sprache...
+        // Der Webcontext hat die gewünschte Sprache ...
         assertThat(ctx.getLocale(), is(Locale.GERMAN));
         // ... und die Mock-Instanz ist im MagnoliaContext hinterlegt:
         assertThat(MgnlContext.getWebContext(), is(ctx));
@@ -71,22 +71,20 @@ public class MockWebContext {
         assertThat(ctx, is(ctx2));
         // ... mit geänderter Sprache:
         assertThat(ctx.getLocale(), is(Locale.FRENCH));
-        // Beim mocken eines WebContext wird immer auch ein SystemContext-Mock erzeugt...
-        assertThat(Components.getComponent(SystemContext.class), notNullValue());
-        // ... und ein I18nContentSupport-Mock:
+        // Beim mocken eines WebContext wird immer auch ein I18nContentSupport-Mock erzeugt:
         assertThat(Components.getComponent(I18nContentSupport.class), notNullValue());
         // ... einen Request-Mock ...
         assertThat(ctx.getRequest(), notNullValue());
         // ... einen Response-Mock ...
         assertThat(ctx.getResponse(), notNullValue());
         // Egal wo Attribute, Parameter oder der ContextPath gestubbt werden, bleibt die Konsistenz zwischen den Mocks gewahrt:
-        // Attribute des WebContext passen zu denen des Request..
+        // Attribute des WebContext passen zu denen des Request ...
         WebContextStubbingOperation.stubAttribute("attribute_1", "attributeValue_1").of(ctx);
         assertThat((String) ctx.getRequest().getAttribute("attribute_1"), is("attributeValue_1"));
         // ... und Request-Attribute zu denen des WebContext:
         HttpServletRequestStubbingOperation.stubAttribute("attribute_2", "attributeValue_2").of(ctx.getRequest());
         assertThat((String) ctx.getAttribute("attribute_2"), is("attributeValue_2"));
-        // Parameter des WebContext passen zu denen des Request..
+        // Parameter des WebContext passen zu denen des Request ...
         WebContextStubbingOperation.stubParameter("parameter_1", "parameterValue_1").of(ctx);
         assertThat(ctx.getRequest().getParameter("parameter_1"), is("parameterValue_1"));
         // ... und Request-Parameter zu denen des WebContext:
