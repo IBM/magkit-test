@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.ibmix.magkit</groupId>
         <artifactId>magkit-pom</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
     <artifactId>magkit-test</artifactId>
     <version>1.0.3-SNAPSHOT</version>
