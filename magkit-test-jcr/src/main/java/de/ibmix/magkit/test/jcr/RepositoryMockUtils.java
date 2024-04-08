@@ -28,7 +28,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Utility class for mocking a javax.jcr.Repository.
  * Repository mock is stored in a ThreadLocale instance and holds complete jcr context (mocked session, workspace...).
- * <p/>
+ * <br>
  * !! Note that you have to call RepositoryMockUtils.cleanRepository() to get new mock instances of Repository, Session, Workspace, Node... . !!
  *
  * @author wolf.bubenik@ibmix.de

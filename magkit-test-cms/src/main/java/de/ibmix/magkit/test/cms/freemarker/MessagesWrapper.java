@@ -29,9 +29,8 @@ import java.util.Locale;
 
 /**
  * Copy from Magnolias message wrapper which we can not use. It has only a package local scope. :-(
- *
+ * {@link info.magnolia.freemarker.MessagesWrapper}
  * @author frank.sommer@ibmix.de
- * @see {@link info.magnolia.freemarker.MessagesWrapper}
  */
 public class MessagesWrapper {
     private final Messages _messages;

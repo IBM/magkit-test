@@ -110,8 +110,8 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     /**
      * Creates a WebContextStubbingOperation that stubs getRequest() to return the provided value.
      * if the provided request is not null,
-     * - getContextPath() will be stubbed to return request.getContextPath() (@see WebContextStubbingOperation.stubContextPath(String contextPath))
-     * - getParameters() will be stubbed using request.getParameterMap() (@see WebContextStubbingOperation.stubParameters(Map<String, String[]> parameters))
+     * - getContextPath() will be stubbed to return request.getContextPath() (@see WebContextStubbingOperation#stubContextPath(String))
+     * - getParameters() will be stubbed using request.getParameterMap() (@see WebContextStubbingOperation#stubParameters(java.util.Map))
      * will be stubbed as well.
      *
      * @param request the javax.servlet.http.HttpServletRequest to be returned
@@ -145,7 +145,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getParameters() to return a Map<String,String> containing the first value for each key.
+     * Creates a WebContextStubbingOperation that stubs getParameters() to return a String Map containing the first value for each key.
      * If the provided parameters map is not null or empty,
      * - getParameterValues(String name)
      * - getParameter(String name)
@@ -280,7 +280,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
 
     /**
      * Creates a WebContextStubbingOperation that stubs getServletContext() to return the provided value.
-     * <p/>
+     * <br>
      * If the provided ServletContext is not null getContextPath() will be stubbed to return servletContext.getContextPath().
      *
      * @param servletContext the ServletContext to be returned
@@ -328,6 +328,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     /**
      * Creates a WebContextStubbingOperation that stubs getJcrSession(String name) to return the provided value.
      *
+     * @param workspace workspace name
      * @param session the javax.jcr.Session to be returned
      * @return a new WebContextStubbingOperation instance
      */
@@ -349,6 +350,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
      * Creates a WebContextStubbingOperation that stubs getJcrSession(String name) to return the provided value.
      *
      * @param workspace the Workspace of the session to be mocked
+     * @param sessionStubbings session stubbing operations
      * @return a new WebContextStubbingOperation instance
      */
     public static WebContextStubbingOperation stubJcrSession(final String workspace, final SessionStubbingOperation... sessionStubbings) {

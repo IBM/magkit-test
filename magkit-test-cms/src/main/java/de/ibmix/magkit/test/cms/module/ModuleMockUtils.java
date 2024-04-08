@@ -48,6 +48,8 @@ public abstract class ModuleMockUtils {
      *
      * @author wolf.bubenik@ibmix.de
      * @since 2012-07-25
+     * @param stubbings operations
+     * @return install context
      */
     public static InstallContext mockInstallContext(final InstallContextStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());

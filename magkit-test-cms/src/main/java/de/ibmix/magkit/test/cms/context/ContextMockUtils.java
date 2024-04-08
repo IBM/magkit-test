@@ -20,10 +20,10 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.test.jcr.SessionMockUtils;
 import de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation;
 import de.ibmix.magkit.test.jcr.query.QueryMockUtils;
 import de.ibmix.magkit.test.jcr.query.QueryStubbingOperation;
-import de.ibmix.magkit.test.jcr.SessionMockUtils;
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.cms.util.ServletUtil;
 import info.magnolia.context.Context;
@@ -71,7 +71,9 @@ public final class ContextMockUtils extends ComponentsMockUtils {
      * If MgnlContext already contains an WebContext instance, this instance will be returned.
      * getLocale() will be stubbed to return the provided locale.
      *
+     * @param locale locale
      * @return the WebContext Mockito mock
+     * @throws RepositoryException repository exception
      */
     public static WebContext mockWebContext(Locale locale) throws RepositoryException {
         return mockWebContext(WebContextStubbingOperation.stubLocale(locale));
@@ -81,7 +83,9 @@ public final class ContextMockUtils extends ComponentsMockUtils {
      * Creates a WebContext mock and registers this instance at MgnlContext.
      * If MgnlContext already contains an WebContext instance, this instance will be returned.
      *
+     * @param stubbings web context stubbing operations
      * @return the WebContext Mockito mock
+     * @throws RepositoryException repository exception
      */
     public static WebContext mockWebContext(WebContextStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());
@@ -128,6 +132,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
      *
      * @param stubbings an array of AggregationStateStubbingOperation
      * @return the AggregationState Mockito mock
+     * @throws RepositoryException repository exception
      */
     public static AggregationState mockAggregationState(AggregationStateStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());

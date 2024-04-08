@@ -65,8 +65,10 @@ public final class MagnoliaNodeMockUtils {
     /**
      * Mocks a page node with mgnl:page node type.
      *
+     * @param name node name
      * @param nodeStubbings for stub behaviour
      * @return mocked node
+     * @throws RepositoryException repository exception
      */
     public static Node mockPageNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(WEBSITE, name, NodeTypes.Page.NAME, nodeStubbings);
@@ -75,8 +77,10 @@ public final class MagnoliaNodeMockUtils {
     /**
      * Mocks a page node with mgnl area node type.
      *
+     * @param name node name
      * @param nodeStubbings for stub behaviour
      * @return mocked node
+     * @throws RepositoryException repository exception
      */
     public static Node mockAreaNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(WEBSITE, name, NodeTypes.Area.NAME, nodeStubbings);
@@ -85,8 +89,10 @@ public final class MagnoliaNodeMockUtils {
     /**
      * Mocks a page node with mgnl component node type.
      *
+     * @param name node name
      * @param nodeStubbings for stub behaviour
      * @return mocked node
+     * @throws RepositoryException repository exception
      */
     public static Node mockComponentNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(WEBSITE, name, NodeTypes.Component.NAME, nodeStubbings);
@@ -95,8 +101,12 @@ public final class MagnoliaNodeMockUtils {
     /**
      * Mocks a page node with mgnl component node type.
      *
+     * @param repository workspace name
+     * @param name node name
+     * @param nodeType node type name
      * @param nodeStubbings for stub behaviour
      * @return mocked node
+     * @throws RepositoryException repository exception
      */
     public static Node mockMgnlNode(String repository, String name, String nodeType, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         ContextMockUtils.mockWebContext(WebContextStubbingOperation.stubJcrSession(repository));

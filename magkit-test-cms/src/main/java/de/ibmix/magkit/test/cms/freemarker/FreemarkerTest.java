@@ -61,8 +61,8 @@ import java.util.Map;
 
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
 import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAggregationState;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -106,6 +106,8 @@ public abstract class FreemarkerTest {
      * Set up the environment for a single test.
      * This can be overridden in sub-classes to extend and change behavior.
      * There is no need to tag the overridden method again with {@link Before}.
+     *
+     * @throws RepositoryException repository exception
      */
     @Before
     public void setupEnvironment() throws RepositoryException {
@@ -160,6 +162,12 @@ public abstract class FreemarkerTest {
 
     /**
      * Delivers the rendered output as string.
+     *
+     * @param node jcr node
+     * @param freemarkerScriptName script name
+     * @param additionalContextObjects additional context objects
+     * @return rendering result
+     * @throws RenderException render exception
      */
     public String getRenderingResult(Node node, final String freemarkerScriptName, Map<String, Object> additionalContextObjects) throws RenderException {
         final FreemarkerTestRenderableDefinition definition = new FreemarkerTestRenderableDefinition(freemarkerScriptName);
