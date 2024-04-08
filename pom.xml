@@ -7,7 +7,7 @@
         <version>1.0.4</version>
     </parent>
     <artifactId>magkit-test</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>pom</packaging>
     <name>magkit-test Magnolia Module</name>
 
@@ -47,7 +47,7 @@
         <url>https://github.com/IBM/magkit-test.git</url>
         <connection>scm:git:https://github.com/IBM/magkit-test.git</connection>
         <developerConnection>scm:git:https://github.com/IBM/magkit-test.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>magkit-test-1.0.2</tag>
     </scm>
 
     <repositories>
