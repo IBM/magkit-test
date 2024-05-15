@@ -52,6 +52,11 @@ public final class ValueMockUtils {
         Binary binary = value.getBinary();
         return binary == null ? null : binary.getStream();
     };
+    public static final Answer<String> TO_STRING_ANSWER = invocation -> {
+        Value value = (Value) invocation.getMock();
+        String result = value.getString();
+        return result != null ? result : "NULL";
+    };
 
     private ValueMockUtils() {
     }
@@ -95,6 +100,7 @@ public final class ValueMockUtils {
             }
             when(result.getBoolean()).thenReturn(Boolean.valueOf(value));
         }
+        doAnswer(TO_STRING_ANSWER).when(result).toString();
         return result;
     }
 
@@ -115,6 +121,7 @@ public final class ValueMockUtils {
             when(result.getBoolean()).thenThrow(new ValueFormatException());
             when(result.getBinary()).thenThrow(new ValueFormatException());
         }
+        doAnswer(TO_STRING_ANSWER).when(result).toString();
         return result;
     }
 
@@ -138,6 +145,7 @@ public final class ValueMockUtils {
         when(result.getDecimal()).thenThrow(new ValueFormatException());
         when(result.getBoolean()).thenThrow(new ValueFormatException());
         when(result.getDate()).thenThrow(new ValueFormatException());
+        doAnswer(TO_STRING_ANSWER).when(result).toString();
         return result;
     }
 

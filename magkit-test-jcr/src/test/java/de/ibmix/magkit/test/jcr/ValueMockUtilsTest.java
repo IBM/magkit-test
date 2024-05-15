@@ -54,6 +54,7 @@ public class ValueMockUtilsTest {
         assertThat(v, notNullValue());
         assertThat(v.getString(), is(value));
         assertThat(v.getType(), is(PropertyType.STRING));
+        assertThat(v.toString(), is("test"));
 
         v = ValueMockUtils.mockValue("5.9");
         assertThat(v, notNullValue());
@@ -61,6 +62,7 @@ public class ValueMockUtilsTest {
         assertThat(v.getLong(), is(6L));
         assertThat(v.getDouble(), is(5.9D));
         assertThat(v.getType(), is(PropertyType.STRING));
+        assertThat(v.toString(), is("5.9"));
 
         value = null;
         v = ValueMockUtils.mockValue(value);
@@ -82,6 +84,7 @@ public class ValueMockUtilsTest {
         assertThat(v.getType(), is(PropertyType.BOOLEAN));
         assertThat(v.getBoolean(), is(value));
         assertThat(v.getString(), is(Boolean.toString(value)));
+        assertThat(v.toString(), is("true"));
     }
 
     /**
@@ -97,6 +100,7 @@ public class ValueMockUtilsTest {
         assertThat(v.getDouble(), is((double) value.getTimeInMillis()));
         assertThat(v.getString(), is(ISO8601.format(value)));
         assertThat(v.getType(), is(PropertyType.DATE));
+        assertThat(v.toString(), is(ISO8601.format(value)));
 
         value = null;
         v = ValueMockUtils.mockValue(value);
@@ -106,6 +110,7 @@ public class ValueMockUtilsTest {
         assertThat(v.getDouble(), is(0.0D));
         assertThat(v.getDate(), nullValue());
         assertThat(v.getType(), is(PropertyType.DATE));
+        assertThat(v.toString(), is("NULL"));
     }
 
     /**
@@ -121,6 +126,7 @@ public class ValueMockUtilsTest {
         assertThat(v.getLong(), is(1L));
         assertThat(v.getDate().getTimeInMillis(), is(1L));
         assertThat(v.getType(), is(PropertyType.DOUBLE));
+        assertThat(v.toString(), is("1.0"));
     }
 
     /**
@@ -136,6 +142,7 @@ public class ValueMockUtilsTest {
         assertThat(v.getString(), is(Long.toString(value)));
         assertThat(v.getDate().getTimeInMillis(), is(1L));
         assertThat(v.getType(), is(PropertyType.LONG));
+        assertThat(v.toString(), is("1"));
     }
 
     /**
@@ -160,6 +167,7 @@ public class ValueMockUtilsTest {
         assertThat(v.getBinary().getStream(), notNullValue());
         assertThat(v.getBinary().getSize(), is(10L));
         assertThat(v.getString(), is("Hallo Wolf"));
+        assertThat(v.toString(), is("Hallo Wolf"));
     }
 
     /**
@@ -173,5 +181,6 @@ public class ValueMockUtilsTest {
         assertThat(v, notNullValue());
         assertThat(v.getString(), is("uuid-1"));
         assertThat(v.getType(), is(PropertyType.REFERENCE));
+        assertThat(v.toString(), is("uuid-1"));
     }
 }

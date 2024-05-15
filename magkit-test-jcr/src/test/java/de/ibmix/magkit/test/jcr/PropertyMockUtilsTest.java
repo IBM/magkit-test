@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import org.apache.jackrabbit.util.ISO8601;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -63,6 +64,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getString(), is("v1"));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(2));
+        assertThat(p.toString(), is("name:v1;v2"));
     }
 
     @Test
@@ -80,6 +82,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getBinary(), is(bin1));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(2));
+        assertThat(p.toString(), is("name:Mock for Binary, hashCode: " + bin1.hashCode() + ";Mock for Binary, hashCode: " + bin2.hashCode()));
     }
 
     @Test
@@ -92,11 +95,13 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getBoolean(), is(true));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(3));
+        assertThat(p.toString(), is("name:true;false;false"));
     }
 
     @Test
     public void testMockPropertyCalendar() throws Exception {
         Calendar cal1 = Calendar.getInstance();
+        cal1.setTimeInMillis(0L);
         Calendar cal2 = Calendar.getInstance();
         cal2.add(Calendar.DAY_OF_YEAR, 1);
         Property p = PropertyMockUtils.mockProperty("name", cal1, cal2);
@@ -107,6 +112,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getDate(), is(cal1));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(2));
+        assertThat(p.toString(), is("name:" + ISO8601.format(cal1) + ";" + ISO8601.format(cal2)));
     }
 
     @Test
@@ -119,6 +125,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getDouble(), is(2D));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(2));
+        assertThat(p.toString(), is("name:2.0;3.0"));
     }
 
     @Test
@@ -131,6 +138,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getLong(), is(2L));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(2));
+        assertThat(p.toString(), is("name:2;3"));
     }
 
     @Test
@@ -146,6 +154,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValues().length, is(2));
         assertThat(p.getValues()[0], is(v1));
         assertThat(p.getValues()[1], is(v2));
+        assertThat(p.toString(), is("name:value1;value2"));
     }
 
 
@@ -160,6 +169,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getString(), is("/testNode"));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(1));
+        assertThat(p.toString(), is("name:/testNode"));
     }
 
     @Test
@@ -174,6 +184,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getString(), is("uuid-1"));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(1));
+        assertThat(p.toString(), is("reference:uuid-1"));
     }
 
     @Test
@@ -271,7 +282,7 @@ public class PropertyMockUtilsTest {
         assertThat(node3.getProperty("prop2"), is(prop2));
         assertThat(node3.hasProperty("prop1"), is(false));
         assertThat(node3.hasProperty("prop2"), is(true));
-        // we always have an primary type property
+        // we always have a primary type property
         assertThat(node3.getProperties().getSize(), is(2L));
 
         assertThat(session.getProperty("/root/level1/level2/level3/prop1"), nullValue());
