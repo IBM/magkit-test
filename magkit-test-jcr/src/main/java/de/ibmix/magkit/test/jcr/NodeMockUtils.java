@@ -251,7 +251,7 @@ public final class NodeMockUtils {
         } catch (RepositoryException e) {
             // ignore
         }
-        return result.toString();
+        return result;
     };
 
     private NodeMockUtils() {
