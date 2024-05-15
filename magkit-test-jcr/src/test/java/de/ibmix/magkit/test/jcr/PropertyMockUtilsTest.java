@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import org.apache.jackrabbit.util.ISO8601;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -102,7 +103,6 @@ public class PropertyMockUtilsTest {
         Calendar cal1 = Calendar.getInstance();
         cal1.setTimeInMillis(0L);
         Calendar cal2 = Calendar.getInstance();
-        cal2.setTimeInMillis(60000L);
         cal2.add(Calendar.DAY_OF_YEAR, 1);
         Property p = PropertyMockUtils.mockProperty("name", cal1, cal2);
         assertThat(p, notNullValue());
@@ -112,7 +112,7 @@ public class PropertyMockUtilsTest {
         assertThat(p.getValue().getDate(), is(cal1));
         assertThat(p.getValues(), notNullValue());
         assertThat(p.getValues().length, is(2));
-        assertThat(p.toString(), is("name:1970-01-01T01:00:00.000+01:00;1970-01-02T01:01:00.000+01:00"));
+        assertThat(p.toString(), is("name:" + ISO8601.format(cal1) + ";" + ISO8601.format(cal2)));
     }
 
     @Test
