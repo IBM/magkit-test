@@ -31,8 +31,10 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubNode;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubValues;
@@ -121,6 +123,7 @@ public final class PropertyMockUtils {
         when(property.getValues()).thenReturn(new Value[0]);
         when(property.isMultiple()).then(IS_MULTIPLE_ANSWER);
         doAnswer(Answers.CALLS_REAL_METHODS.get()).when(property).remove();
+        doAnswer(TO_STRING_ANSWER).when(property).toString();
         PropertyStubbingOperation.stubAccept().of(property);
         return property;
     }
@@ -165,6 +168,10 @@ public final class PropertyMockUtils {
     public static final Answer<Boolean> IS_MULTIPLE_ANSWER = invocation -> {
         Value[] v = ((Property) invocation.getMock()).getValues();
         return v != null && v.length > 1;
+    };
+    public static final Answer<String> TO_STRING_ANSWER = invocation -> {
+        Property property = (Property) invocation.getMock();
+        return property != null ? property.getName() + ':' + (property.isMultiple() ? Arrays.stream(property.getValues()).map(Value::toString).collect(Collectors.joining(";")) : property.getString()) : "NULL";
     };
 
     /**
