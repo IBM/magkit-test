@@ -120,7 +120,7 @@ public final class PropertyMockUtils {
         when(property.getSession()).then(NodeMockUtils.SESSION_ANSWER);
         when(property.getValues()).thenReturn(new Value[0]);
         when(property.isMultiple()).then(IS_MULTIPLE_ANSWER);
-        doAnswer(Answers.CALLS_REAL_METHODS.get()).when(property).remove();
+        doAnswer(Answers.CALLS_REAL_METHODS).when(property).remove();
         PropertyStubbingOperation.stubAccept().of(property);
         return property;
     }
