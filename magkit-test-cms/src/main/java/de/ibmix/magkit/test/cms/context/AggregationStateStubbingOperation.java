@@ -1,5 +1,17 @@
 package de.ibmix.magkit.test.cms.context;
 
+import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Locale;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 /*-
  * #%L
  * magkit-test-cms Magnolia Module
@@ -21,21 +33,10 @@ package de.ibmix.magkit.test.cms.context;
  */
 
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
-import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
+import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.cms.core.Channel;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.util.Locale;
-
-import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Utility class that provides factory methods for AggregationStateStubbingOperations.
