@@ -19,6 +19,8 @@
         <module>magkit-test-jcr</module>
         <module>magkit-test-servlet</module>
         <module>magkit-test-cms</module>
+        <module>magkit-test-server</module>
+        <module>magkit-test-webapp</module>
     </modules>
 
     <properties>
@@ -32,6 +34,9 @@
         <restAssuredVersion>5.4.0</restAssuredVersion>
         <!-- override magnolia version from magkit-pom -->
         <version.magnolia>6.2.45</version.magnolia>
+        <jacocoVersion>0.8.12</jacocoVersion>
+        <!-- we need current surefire plugin to run TomcatTest -->
+        <maven.surefire.version>3.3.0</maven.surefire.version>
     </properties>
 
     <dependencyManagement>
@@ -90,6 +95,69 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.version}</version>
+            </plugin>
+            <plugin>
+                <!--
+              See
+                https://github.com/SonarSource/sonar-scanning-examples/tree/master/sonarqube-scanner-maven/maven-multimodule
+              Code coverage is aggregated in webapp module, see pom.xml there
+            -->
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacocoVersion}</version>
+                <executions>
+                    <execution>
+                        <id>agent-for-ut</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>before-integration-test-execution</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <formats>
+                                <format>XML</format>
+                            </formats>
+                        </configuration>
+                        <phase>package</phase>
+                    </execution>
+                    <execution>
+                        <id>report-it</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
+                            <outputDirectory>
+                                ${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                            <formats>
+                                <format>XML</format>
+                            </formats>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
     <scm>
         <url>https://github.com/IBM/magkit-test.git</url>
         <connection>scm:git:https://github.com/IBM/magkit-test.git</connection>
@@ -110,11 +178,13 @@
         <!-- required to find our own super POM-->
         <repository>
             <id>magnolia.forge.releases</id>
-            <url>https://nexus.magnolia-cms.com/content/groups/magnolia.forge.releases/</url>
+            <url>
+                https://nexus.magnolia-cms.com/content/groups/magnolia.forge.releases/</url>
         </repository>
         <repository>
             <id>magnolia.forge.snapshots</id>
-            <url>https://nexus.magnolia-cms.com/content/groups/magnolia.forge.snapshots/</url>
+            <url>
+                https://nexus.magnolia-cms.com/content/groups/magnolia.forge.snapshots/</url>
         </repository>
     </repositories>
 </project>
