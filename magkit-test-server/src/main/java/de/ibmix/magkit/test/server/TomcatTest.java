@@ -51,29 +51,32 @@ import io.restassured.specification.RequestSpecification;
 
 /**
  * Starts up Tomcat and executes tests that can both verify requests using
- * RestAssured and inspect Magnolia configuration in the running Tomcat. Expects
- * the environment variables MAGNOLIA_LICENSE_KEY and MAGNOLIA_LICENSE_OWNER to
- * contain a valid Magnolia license. The webapp POM allows to run it using "mvn
- * clean integration-test -DtomcatTest".
+ * RestAssured and inspect Magnolia configuration inside the running Tomcat. 
+ * The webapp POM allows to run it using "mvn integration-test -DtomcatTest".
+ * Test must be run using special maven-surefire-plugin configuration, please
+ * see pom.xml of the example magkit-test-webapp.
  * @author Jörg von Frantzius
  */
 public class TomcatTest {
 
     private static final String MAGNOLIA_AUTOUPDATE_CONFIG_PROP = "magnolia.update.auto";
     private static final String MAGNOLIA_JACKRABBIT_CONFIG_PROP = "magnolia.repositories.jackrabbit.config";
-    private static final String MAGNOLIA_RESOURCES_DIR_CONFIG_PROP = "magnolia.resources.dir";
     private static final String MAGNOLIA_LOGS_DIR_CONFIG_PROP = "magnolia.logs.dir";
     private static final String MAGNOLIA_REPOSITORIES_HOME_CONFIG_PROP = "magnolia.repositories.home";
 
     private static final String LOCAL_AUTHOR_URL = "http://127.0.0.1:8080";
 
-    // system property that tells us to set request timeouts to unlimited,
+    // system property that tells us to set RestAssured request timeouts to unlimited,
     // so tests can be debugged
     private static final String NO_TEST_REQUEST_TIMEOUT = "de.ibmix.magkit.test.server.noTestRequestTimeout";
 
     private static final Tomcat TOMCAT = new Tomcat();
     private static StandardContext c_webAppContext;
 
+    /**
+     * Use this instead of RestAssured.given() in order to be able to debug RestAssured tests without timeout,
+     * by setting system property {@link #NO_TEST_REQUEST_TIMEOUT}.
+     */
     public static RequestSpecification given() {
         RequestSpecification given = io.restassured.RestAssured.given();
         // conditionally set request timeout to unlimited to allow for debugging
@@ -87,8 +90,7 @@ public class TomcatTest {
     }
 
     /**
-     * Configure Magnolia as OCP public instance with in-memory H2 DB, log dir in
-     * target/magnolia_logs, and make the Atos Lightmodules available.
+     * Configure Magnolia for proper logging and with H2 in-memory DB.
      *
      * @throws IOException
      */
