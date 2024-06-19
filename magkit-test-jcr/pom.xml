@@ -13,6 +13,11 @@
     <description>Utility classes to easily mock javax.jcr classes (version 2.0).</description>
     <packaging>jar</packaging>
 
+	<properties>
+		<!-- see https://community.sonarsource.com/t/coverage-test-data-importing-jacoco-coverage-report-in-xml-format/12151#multi-module-builds-3 -->
+		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../magkit-test-webapp/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
