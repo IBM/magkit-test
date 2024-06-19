@@ -9,3 +9,14 @@
 # build files
 target
 .DS_Store
+magkit-test-cms/.checkstyle
+magkit-test-jcr/.checkstyle
+magkit-test-server/.checkstyle
+magkit-test-servlet/.checkstyle
+magkit-test-webapp/.checkstyle
+magkit-test-webapp/.classpath
+.vscode/settings.json
+magkit-test-cms/.classpath
+magkit-test-jcr/.classpath
+magkit-test-server/.classpath
+magkit-test-servlet/.classpath
