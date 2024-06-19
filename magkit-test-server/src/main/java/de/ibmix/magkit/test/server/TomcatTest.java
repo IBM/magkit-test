@@ -53,8 +53,8 @@ import io.restassured.specification.RequestSpecification;
  * Starts up Tomcat and executes tests that can both verify requests using
  * RestAssured and inspect Magnolia configuration in the running Tomcat. Expects
  * the environment variables MAGNOLIA_LICENSE_KEY and MAGNOLIA_LICENSE_OWNER to
- * contain a valid Magnolia license. EU-Lisa POM allows to run it using "mvn
- * clean integration-test -DtomcatTest=local" and "-DtomcatTest=jenkins".
+ * contain a valid Magnolia license. The webapp POM allows to run it using "mvn
+ * clean integration-test -DtomcatTest".
  * @author Jörg von Frantzius
  */
 public class TomcatTest {
