@@ -1,6 +1,7 @@
 name: build
 run-name: ${{ github.actor }} triggered module build
 on:
+  workflow_dispatch: # allow to run from Github web UI
   push:
     branches:
       - 'main'
@@ -27,9 +28,9 @@ jobs:
         run: |
           mkdir -p ~/.m2
           echo "<settings><servers><server><id>magnolia.enterprise</id><username>${{secrets.MGNL_USERNAME}}</username><password>${{secrets.MGNL_PASSWORD}}</password></server><server><id>magnolia.forge.snapshots</id><username>${{secrets.MGNL_USERNAME}}</username><password>${{secrets.MGNL_PASSWORD}}</password></server></servers></settings>" > ~/.m2/settings.xml
-      - name: Build PR with Maven
-        if: ${{ github.base_ref == 'main' }}
+      - name: Build PR or branch with Maven
+        # if: ${{ github.base_ref == 'main' }}
         run: mvn -B clean verify
-      - name: Build and Deploy main branch with Maven
+      - name: Build and Deploy main (?) branch with Maven
         if: ${{ github.base_ref == null }}
         run: mvn -B clean deploy
