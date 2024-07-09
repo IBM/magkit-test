@@ -410,7 +410,7 @@ public final class NodeMockUtils {
         when(result.setProperty(anyString(), any(Value.class), anyInt())).thenAnswer(SET_VALUE_PROPERTY_ANSWER);
         when(result.setProperty(anyString(), any(Value[].class))).thenAnswer(SET_VALUES_PROPERTY_ANSWER);
         when(result.setProperty(anyString(), any(Value[].class), anyInt())).thenAnswer(SET_VALUES_PROPERTY_ANSWER);
-        doAnswer(Answers.CALLS_REAL_METHODS.get()).when(result).remove();
+        doAnswer(Answers.CALLS_REAL_METHODS).when(result).remove();
         // check if this is the correct default value
         stubType(NodeType.NT_BASE).of(result);
         when(result.isNodeType(anyString())).then(IS_NODE_TYPE_ANSWER);

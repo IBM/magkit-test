@@ -66,7 +66,7 @@ public final class MockNodeFromXml {
         }
     }
 
-    private static class JcrXmlHandler extends DefaultHandler {
+    private static final class JcrXmlHandler extends DefaultHandler {
         private MockNode _result;
         private Stack<MockNode> _currentPath = new Stack<MockNode>();
         private String _currentPropertyName = null;

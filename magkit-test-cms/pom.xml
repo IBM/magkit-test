@@ -5,13 +5,18 @@
     <parent>
         <groupId>de.ibmix.magkit</groupId>
         <artifactId>magkit-test</artifactId>
-        <version>1.0.6-SNAPSHOT</version>
+        <version>1.0.7-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>magkit-test-cms</artifactId>
     <name>magkit-test-cms Magnolia Module</name>
     <packaging>jar</packaging>
+
+	<properties>
+		<!-- see https://community.sonarsource.com/t/coverage-test-data-importing-jacoco-coverage-report-in-xml-format/12151#multi-module-builds-3 -->
+		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../magkit-test-webapp/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
 
     <dependencies>
         <dependency>
@@ -105,7 +110,7 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
+            <artifactId>hamcrest</artifactId>
             <scope>compile</scope>
         </dependency>
     </dependencies>
