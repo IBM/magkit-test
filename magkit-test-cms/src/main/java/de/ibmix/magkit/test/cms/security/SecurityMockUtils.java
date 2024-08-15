@@ -31,7 +31,6 @@ import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.WebContext;
-import org.mockito.Mockito;
 
 import javax.jcr.RepositoryException;
 import java.util.Arrays;
