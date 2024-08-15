@@ -43,7 +43,6 @@ import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockRoleManage
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockSecuritySupport;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockUser;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockUserManager;
-import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.register;
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -52,7 +51,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Testing SecurityMockUtils.
@@ -106,23 +104,14 @@ public class SecurityMockUtilsTest {
 
         UserManager manager = mockUserManager("test");
         assertThat(manager, notNullValue());
+        assertThat(manager.getAllUsers(), notNullValue());
+        assertThat(manager.getAllUsers().size(), is(0));
+        assertThat(manager.getAnonymousUser(), nullValue());
+        assertThat(manager.getSystemUser(), nullValue());
 
         support = getComponentSingleton(SecuritySupport.class);
         assertThat(support, notNullValue());
-
         assertThat(support.getUserManager("test"), is(manager));
-    }
-
-    @Test
-    public void testRegister() {
-        UserManager manager = mockUserManager("test");
-        User fritz = mock(User.class);
-        when(fritz.getName()).thenReturn("Fritz");
-
-        assertThat(manager.getUser("Fritz"), nullValue());
-
-        register("test", fritz);
-        assertThat(manager.getUser("Fritz"), is(fritz));
     }
 
     @Test

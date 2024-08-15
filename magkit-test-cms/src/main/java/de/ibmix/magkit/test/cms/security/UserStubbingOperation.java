@@ -26,7 +26,9 @@ import info.magnolia.cms.security.User;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -55,7 +57,8 @@ public abstract class UserStubbingOperation implements StubbingOperation<User> {
             @Override
             public void of(User user) {
                 assertThat(user, notNullValue());
-                doReturn(uuid).when(user).getIdentifier();
+                String identifier = isNotBlank(uuid) ? uuid : UUID.randomUUID().toString();
+                doReturn(identifier).when(user).getIdentifier();
             }
         };
     }
