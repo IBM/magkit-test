@@ -35,8 +35,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.when;
 
+/**
+ * Utility class that provides factory methods for UserManagerStubbingOperation.
+ * Stubbing operations to be used as parameters in SecurityMockUtils.mockUserManager(...).
+ *
+ * @author wolf.bubenik@ibmix.de
+ * @since 2024-08-15
+ */
 public abstract class UserManagerStubbingOperation implements StubbingOperation<UserManager> {
 
+    /**
+     * Creates a stubbing operation, that creates a User mock with the given name and uuid, registers it at a UserManager mock and add it to the list of all Users of a UserManager.
+     *
+     * @param name the name of the new user, not null
+     * @param uuid the identifier of the new user, a random UUID is used if null or an empty String is passed
+     * @param stubbings optional UserStubbingOperations to modify the new User mock
+     * @return a UserManagerStubbingOperation for adding a User to a UserManager
+     */
     public static UserManagerStubbingOperation stubUser(final String name, final String uuid, UserStubbingOperation... stubbings) {
         return new UserManagerStubbingOperation() {
             @Override
@@ -56,6 +71,12 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
         };
     }
 
+    /**
+     * Creates a stubbing operation, that registers the User at a UserManager mock and add it to the list of all Users of a UserManager.
+     *
+     * @param user the User mock to be added to a UserManager mock
+     * @return a UserManagerStubbingOperation for adding a User to a UserManager
+     */
     public static UserManagerStubbingOperation stubUser(final User user) {
         return new UserManagerStubbingOperation() {
             @Override
@@ -80,6 +101,14 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
         };
     }
 
+    /**
+     * Creates a stubbing operation, that creates a system User mock with name "superuser", a random uuid and password "superuser",
+     * registers it at a UserManager mock and add it to the list of all Users of a UserManager.
+     * Existing system user will be replaced.
+     *
+     * @param stubbings optional UserStubbingOperations to modify the new User mock
+     * @return a UserManagerStubbingOperation for adding a system User to a UserManager
+     */
     public static UserManagerStubbingOperation stubSystemUser(UserStubbingOperation... stubbings) {
         return new UserManagerStubbingOperation() {
             @Override
@@ -98,6 +127,14 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
         };
     }
 
+    /**
+     * Creates a stubbing operation, that creates an anonymous User mock with name "anonymous", and random uuid,
+     * registers it at a UserManager mock and adds it to the list of all Users of a UserManager.
+     * Existing anonymous user will be replaced.
+     *
+     * @param stubbings optional UserStubbingOperations to modify the new User mock
+     * @return a UserManagerStubbingOperation for adding a system User to a UserManager
+     */
     public static UserManagerStubbingOperation stubAnonymousUser(UserStubbingOperation... stubbings) {
         return new UserManagerStubbingOperation() {
             @Override
@@ -116,6 +153,12 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
         };
     }
 
+    /**
+     * Creates a stubbing operation, that replaces all existing Users of a UserManager by the new List of User mocks.
+     *
+     * @param allUsers  the new Collection of User mocks to be registered at a UserManager
+     * @return a UserManagerStubbingOperation for adding new Users to a UserManager
+     */
     public static UserManagerStubbingOperation stubAllUsers(final Collection<User> allUsers) {
         return new UserManagerStubbingOperation() {
             @Override
@@ -140,6 +183,12 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
         };
     }
 
+    /**
+     * Creates a stubbing operation, that stubs the lock-time period of a UserManager.
+     *
+     * @param lockTimePeriod the new Value for the lock-time as int
+     * @return a UserManagerStubbingOperation for stubbing the lock-time period to a UserManager
+     */
     public static UserManagerStubbingOperation stubLockTimePeriod(int lockTimePeriod) {
         return new UserManagerStubbingOperation() {
             @Override
@@ -150,6 +199,12 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
         };
     }
 
+    /**
+     * Creates a stubbing operation, that stubs the max number of failed login attempts of a UserManager.
+     *
+     * @param maxFailedLoginAttempts the new limit of failed login attempts as int
+     * @return a UserManagerStubbingOperation for stubbing the max number of failed login attempts of a UserManager
+     */
     public static UserManagerStubbingOperation stubMaxFailedLoginAttempts(int maxFailedLoginAttempts) {
         return new UserManagerStubbingOperation() {
             @Override
