@@ -34,6 +34,7 @@ import info.magnolia.context.WebContext;
 
 import javax.jcr.RepositoryException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.UUID;
 
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
@@ -46,7 +47,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * An util class to create Mockito mocks of magnolia security classes.
+ * A util class to create Mockito mocks of magnolia security classes.
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2013-04-30
@@ -80,13 +81,17 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return am;
     }
 
-    public static UserManager mockUserManager(String realm) {
+    public static UserManager mockUserManager(String realm, UserManagerStubbingOperation... stubbings) {
+        assertThat(realm, notNullValue());
         SecuritySupport security = mockSecuritySupport();
         UserManager userManager = security.getUserManager(realm);
         if (userManager == null) {
             userManager = mock(UserManager.class);
+            when(userManager.getAllUsers()).thenReturn(new HashSet<>());
             when(security.getUserManager(realm)).thenReturn(userManager);
         }
+        UserManager finalManager = userManager;
+        Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalManager));
         return userManager;
     }
 
@@ -115,37 +120,20 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return finalManager;
     }
 
-    public static void register(String realm, User user) {
-        UserManager userManager = mockUserManager(realm);
-        when(userManager.getUser(user.getName())).thenReturn(user);
-        when(userManager.getUserById(user.getIdentifier())).thenReturn(user);
-    }
-
-    public static void register(Group group) throws AccessDeniedException {
-        GroupManager manager = mockGroupManager();
-        when(manager.getGroup(group.getName())).thenReturn(group);
-    }
-
-    public static void register(Role role) {
-        mockRoleManager(RoleManagerStubbingOperation.stubRole(role));
-    }
-
     public static User mockUser(final String name, UserStubbingOperation... stubbings) {
         return mockUser(WEBSITE, name, UUID.randomUUID().toString(), stubbings);
     }
 
     public static User mockUser(final String realm, final String name, final String uuid, UserStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
-        User user = mockUserManager(realm).getUser(name);
+        UserManager userManager = mockUserManager(realm);
+        User user = userManager.getUser(name);
         if (user == null) {
-            user = mock(User.class);
-            UserStubbingOperation.stubName(name).of(user);
-            UserStubbingOperation.stubIdentifier(uuid).of(user);
-            register(realm, user);
+            UserManagerStubbingOperation.stubUser(name, uuid).of(userManager);
         }
-        User finalUser = user;
+        User finalUser = userManager.getUser(name);
         Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalUser));
-        return user;
+        return finalUser;
     }
 
     public static Group mockGroup(final String name, GroupStubbingOperation... stubbings) throws AccessDeniedException {
@@ -154,12 +142,13 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
 
     public static Group mockGroup(final String name, final String uuid, GroupStubbingOperation... stubbings) throws AccessDeniedException {
         assertThat(stubbings, notNullValue());
-        Group group = mockGroupManager().getGroup(name);
+        GroupManager manager = mockGroupManager();
+        Group group = manager.getGroup(name);
         if (group == null) {
             group = mock(Group.class);
             GroupStubbingOperation.stubName(name).of(group);
             GroupStubbingOperation.stubId(uuid).of(group);
-            register(group);
+            GroupManagerStubbingOperation.stubGroup(group).of(manager);
         }
         Group finalGroup = group;
         Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalGroup));
@@ -171,12 +160,13 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
     }
 
     public static Role mockRole(final String name, final String uuid) {
-        Role role = mockRoleManager().getRole(name);
+        RoleManager roleManager = mockRoleManager();
+        Role role = roleManager.getRole(name);
         if (role == null) {
             role = mock(Role.class);
             RoleStubbingOperation.stubName(name).of(role);
             RoleStubbingOperation.stubId(uuid).of(role);
-            register(role);
+            RoleManagerStubbingOperation.stubRole(role).of(roleManager);
         }
         return role;
     }
