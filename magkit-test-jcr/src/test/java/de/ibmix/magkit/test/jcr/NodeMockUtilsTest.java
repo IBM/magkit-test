@@ -74,6 +74,7 @@ public class NodeMockUtilsTest {
         assertThat(node.hasProperties(), is(true));
         assertThat(node.isNodeType(NodeType.NT_BASE), is(true));
         assertThat(node.getMixinNodeTypes().length, is(0));
+        assertThat(node.toString(), is("/untitled id:" + node.getIdentifier()));
         verify(op1, times(1)).of(node);
         verify(op2, times(1)).of(node);
 

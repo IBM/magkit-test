@@ -243,6 +243,16 @@ public final class NodeMockUtils {
         stubProperty(name, value).of(node);
         return node.getProperty(name);
     };
+    public static final Answer<String> TO_STRING_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String result = EMPTY;
+        try {
+            result = node.getPath() + " id:" + node.getIdentifier();
+        } catch (RepositoryException e) {
+            // ignore
+        }
+        return result;
+    };
 
     private NodeMockUtils() {
     }
@@ -414,6 +424,7 @@ public final class NodeMockUtils {
         // check if this is the correct default value
         stubType(NodeType.NT_BASE).of(result);
         when(result.isNodeType(anyString())).then(IS_NODE_TYPE_ANSWER);
+        doAnswer(TO_STRING_ANSWER).when(result).toString();
         return result;
     }
 
