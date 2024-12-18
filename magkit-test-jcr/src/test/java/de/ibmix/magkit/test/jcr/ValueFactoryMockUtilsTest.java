@@ -22,11 +22,18 @@ package de.ibmix.magkit.test.jcr;
 
 import org.junit.Test;
 
+import javax.jcr.Binary;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 
+import java.util.Calendar;
+
+import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -38,7 +45,6 @@ import static org.mockito.Mockito.verify;
  * @since 2012-08-03
  */
 public class ValueFactoryMockUtilsTest {
-
 
     /**
      * Test of mockValueFactory method, of class ValueFactoryMockUtils.
@@ -52,5 +58,16 @@ public class ValueFactoryMockUtilsTest {
         assertThat(factory, notNullValue());
         verify(op1, times(1)).of(factory);
         verify(op2, times(1)).of(factory);
+
+        assertEquals("test", factory.createValue("test").getString());
+        assertEquals(2.3D, factory.createValue(2.3D).getDouble(), 0.0);
+        assertEquals(123, factory.createValue(123L).getLong());
+        assertTrue(factory.createValue(true).getBoolean());
+        Calendar now = Calendar.getInstance();
+        assertEquals(now, factory.createValue(now).getDate());
+        Binary binary = mock(Binary.class);
+        assertEquals(binary, factory.createValue(binary).getBinary());
+        Node node = mockNode("test");
+        assertEquals(node.getIdentifier(), factory.createValue(node).getString());
     }
 }
