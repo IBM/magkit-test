@@ -32,7 +32,10 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Session;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.groovy.parser.antlr4.util.StringUtils;
@@ -40,6 +43,10 @@ import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Store;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
 /**
  * Starts up Tomcat with a given Magnolia webapp. This allows to execute tests
@@ -59,24 +66,26 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  *
  * @author joerg.frantzius
  */
-public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallback {
+public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
 
+    private static final String EXTENSION_STORE_KEY = MagnoliaTomcatExtension.class.getName();
     public static final String WAR_NAME_SYSTEM_PROPERTY = "project.build.finalName";
     public static final String LOCAL_AUTHOR_URL = "http://127.0.0.1:8080";
-
-    public enum MagnoliaConfigSelectors {
-        MAGNOLIA_PROFILE, MAGNOLIA_INSTANCE_TYPE, MAGNOLIA_STAGE
-    }
 
     // system property that tells us to set RestAssured request timeouts to
     // unlimited,
     // so tests can be debugged
     public static final String NO_TEST_REQUEST_TIMEOUT_SYSTEM_PROPERTY = "de.ibmix.magkit.test.server.noTestRequestTimeout";
 
+    public enum MagnoliaConfigSelectors {
+        MAGNOLIA_PROFILE, MAGNOLIA_INSTANCE_TYPE, MAGNOLIA_STAGE
+    }
+
     /**
      * Some particular Magnolia config properties we care about.
      */
     public enum MagnoliaConfigProps {
+        MAGNOLIA_HOME("magnolia.home"),
         MAGNOLIA_UPDATE_AUTO("magnolia.update.auto"),
         MAGNOLIA_REPOSITORIES_JACKRABBIT_CONFIG("magnolia.repositories.jackrabbit.config"),
         MAGNOLIA_LOGS_DIR("magnolia.logs.dir"),
@@ -122,7 +131,12 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
         setMagnoliaConfigSelector(context);
 
         Path currentDir = Paths.get("").toAbsolutePath();
-        Path magnoliaDir = currentDir.resolve("target/magnolia");
+        // make sure we have a fresh directory with no repo data with each run
+        Path magnoliaDir = currentDir.resolve("target/magnolia-" + System.currentTimeMillis());
+
+        // this determines e.g. the magnolia.cache.startdir , where ehcache keeps
+        // serialized cache entries, so we make sure cache will be in an empty directory
+        System.setProperty(MagnoliaConfigProps.MAGNOLIA_HOME._configKey, magnoliaDir.toString());
 
         // must override log directory
         Path magnoliaLogsDir = magnoliaDir.resolve("logs");
@@ -176,6 +190,9 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
 
     @Override
     public void beforeAll(ExtensionContext context) throws IOException, LifecycleException {
+        // make ourselves accessible for injection as a parameter to a test method
+        getStore(context).put(EXTENSION_STORE_KEY, this);
+
         if (StringUtils.isEmpty(_warName)) {
             throw new RuntimeException(
                     "TomcatTest expectation failed: given warName is empty, and system property project.build.finalName is also empty, please configure maven-surefire-plugin to pass this as a system property as shown here: https://maven.apache.org/surefire/maven-surefire-plugin/examples/system-properties.html");
@@ -188,7 +205,8 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
         Files.createDirectories(tomcatDir);
 
         _tomcat.setPort(8080);
-        _tomcat.setBaseDir("./target/TomcatTest");
+        // make sure we have a fresh directory for Tomcat (avoid any existing SESSIONS.ser file in there)
+        _tomcat.setBaseDir("./target/TomcatTest-" + System.currentTimeMillis());
         _tomcat.getHost().setAutoDeploy(true);
         Path webAppDir = currentDir.resolve("target/" + _warName);
         _webAppContext = (StandardContext) _tomcat.addWebapp("", webAppDir.toFile().getAbsolutePath());
@@ -218,6 +236,20 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
         });
     }
 
+    private Store getStore(ExtensionContext context) {
+        return context.getStore(ExtensionContext.Namespace.GLOBAL);
+    }
+
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return parameterContext.getParameter().getType().isAssignableFrom(MagnoliaTomcatExtension.class);
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return getStore(extensionContext).get(EXTENSION_STORE_KEY, MagnoliaTomcatExtension.class);
+    }
+
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
         _tomcat.stop();
@@ -226,6 +258,27 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
 
     public String getServerUrl() {
         return LOCAL_AUTHOR_URL;
+    }
+
+    /**
+     * Force all existing sessions to expire after given number of seconds from now.
+     */
+    public void forceSessionMaxInactiveInterval(int sessionTimeoutSecs) {
+        Context context = (Context) _tomcat.getHost().findChildren()[0];
+        // see https://github.com/apache/tomcat/blob/main/test/org/apache/catalina/startup/TomcatBaseTest.java#L922
+        Session[] sessions = context.getManager().findSessions();
+        for (Session session : sessions) {
+            session.setMaxInactiveInterval(sessionTimeoutSecs);
+        }
+    }
+
+    public void awaitSessionTimeout(int sessionTimeoutSecs) {
+        try {
+            int timeout = sessionTimeoutSecs + _tomcat.getEngine().getBackgroundProcessorDelay() * 2 + /* allow for some weird jitter */ 4;
+            TimeUnit.SECONDS.sleep(timeout);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
