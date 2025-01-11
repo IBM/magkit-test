@@ -34,7 +34,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.apache.catalina.Context;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Session;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
@@ -127,12 +130,11 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
      *
      * @throws IOException
      */
-    protected void configureMagnolia(ExtensionContext context) throws IOException {
+    protected void configureMagnolia(ExtensionContext context, Path testRunDir) throws IOException {
         setMagnoliaConfigSelector(context);
 
-        Path currentDir = Paths.get("").toAbsolutePath();
         // make sure we have a fresh directory with no repo data with each run
-        Path magnoliaDir = currentDir.resolve("target/magnolia-" + System.currentTimeMillis());
+        Path magnoliaDir = testRunDir.resolve("magnolia");
 
         // this determines e.g. the magnolia.cache.startdir , where ehcache keeps
         // serialized cache entries, so we make sure cache will be in an empty directory
@@ -189,7 +191,7 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws IOException, LifecycleException {
+    public void beforeAll(ExtensionContext context) throws IOException, LifecycleException, InterruptedException {
         // make ourselves accessible for injection as a parameter to a test method
         getStore(context).put(EXTENSION_STORE_KEY, this);
 
@@ -197,16 +199,19 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
             throw new RuntimeException(
                     "TomcatTest expectation failed: given warName is empty, and system property project.build.finalName is also empty, please configure maven-surefire-plugin to pass this as a system property as shown here: https://maven.apache.org/surefire/maven-surefire-plugin/examples/system-properties.html");
         }
-        configureMagnolia(context);
+
+        Path currentDir = Paths.get("").toAbsolutePath();
+        Path testRunDir = currentDir.resolve("target/" + MagnoliaTomcatExtension.class.getSimpleName() + "-" + System.currentTimeMillis());
+
+        configureMagnolia(context, testRunDir);
 
         // create a new directory for Tomcat
-        Path currentDir = Paths.get("").toAbsolutePath();
-        Path tomcatDir = currentDir.resolve("target/TomcatTest");
+        Path tomcatDir = testRunDir.resolve("Tomcat");
         Files.createDirectories(tomcatDir);
 
         _tomcat.setPort(8080);
         // make sure we have a fresh directory for Tomcat (avoid any existing SESSIONS.ser file in there)
-        _tomcat.setBaseDir("./target/TomcatTest-" + System.currentTimeMillis());
+        _tomcat.setBaseDir(tomcatDir.toAbsolutePath().toString());
         _tomcat.getHost().setAutoDeploy(true);
         Path webAppDir = currentDir.resolve("target/" + _warName);
         _webAppContext = (StandardContext) _tomcat.addWebapp("", webAppDir.toFile().getAbsolutePath());
@@ -227,13 +232,39 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
         _tomcat.init();
         // must call getConnector(), see https://stackoverflow.com/a/59282431/1245428
         _tomcat.getConnector();
-        _tomcat.start();
+        // have the session reaper Thread execute once per second, see ContainerBase.threadStart()
+        _tomcat.getEngine().setBackgroundProcessorDelay(1);
 
-        // run server loop that waits for shutdown command
+        // prepare LifecycleListener that will tell us when Tomcat has come up
+        // (i.e. at least has come up to the point where its session reaper thread has started)
+        final Boolean[] started = {Boolean.FALSE};
+        _tomcat.getServer().addLifecycleListener(new LifecycleListener() {
+
+            @Override
+            public void lifecycleEvent(LifecycleEvent event) {
+                if (event.getType().equals(Lifecycle.AFTER_START_EVENT)) {
+                    started[0] = true;
+                }
+            }
+        });
+
+        _tomcat.start();
+        // asynchronously run server loop that waits for shutdown command
         CompletableFuture.supplyAsync(() -> {
             _tomcat.getServer().await();
             return true;
         });
+
+        // wait for Tomcat to come up
+        int waitedMillis = 0;
+        int maxWaitMillis = 10000;
+        while (!started[0]) {
+            Thread.sleep(100);
+            waitedMillis = waitedMillis + 100;
+            if (waitedMillis > maxWaitMillis) {
+                throw new RuntimeException("Tomcat didn't come up after " + waitedMillis + "ms?!");
+            }
+        }
     }
 
     private Store getStore(ExtensionContext context) {
