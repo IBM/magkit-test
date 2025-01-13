@@ -22,14 +22,10 @@
     </modules>
 
     <properties>
-        <!-- TODO: check these versions against new Magnolia version -->
         <version.hamcrest-core>2.2</version.hamcrest-core>
         <version.el-api>2.2.5</version.el-api>
-        <junitVersion>5.10.2</junitVersion>
+        <junitVersion>5.11.3</junitVersion>
         <mockitoVersion>5.12.0</mockitoVersion>
-        <!-- use the byte-buddy version appropriate for our mockito version
-        instead of the one Magnolia drags in -->
-        <byteBuddyVersion>1.14.15</byteBuddyVersion>
         <restAssuredVersion>5.4.0</restAssuredVersion>
         <jacocoVersion>0.8.12</jacocoVersion>
         <!-- we need current surefire plugin to run TomcatTest -->
@@ -71,16 +67,6 @@
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${mockitoVersion}</version>
                 <scope>test</scope>
-            </dependency>
-            <!-- override the byte-buddy version coming from Magnolia with the
-            one from Mockito, see
-            https://github.com/mockito/mockito/releases/tag/v4.5.1 for
-            explanation-->
-            <dependency>
-                <groupId>net.bytebuddy</groupId>
-                <artifactId>byte-buddy</artifactId>
-                <version>${byteBuddyVersion}</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>info.magnolia</groupId>
