@@ -43,6 +43,7 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.groovy.parser.antlr4.util.StringUtils;
 import org.apache.tomcat.util.scan.StandardJarScanner;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -179,13 +180,28 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
     }
 
     protected void setOtherSystemProperties(ExtensionContext context) {
-        Optional<Object> testInstanceOptional = context.getTestInstance();
-        if (testInstanceOptional.isPresent()) {
-            Object testInstance = testInstanceOptional.get();
-            if (testInstance instanceof MagnoliaConfigurer) {
-                Map<String, String> systemPropsToSet = ((MagnoliaConfigurer) testInstance).getSystemPropsToSet();
-                systemPropsToSet.keySet().stream()
-                    .forEachOrdered(k -> System.setProperty(k, systemPropsToSet.get(k)));
+        // I guess "required" because there may be DynamicTests, but we don't care about those
+        Class<?> testClass = context.getRequiredTestClass();
+        if (MagnoliaConfigurer.class.isAssignableFrom(testClass)) {
+            TestInstance testInstanceAnnotation = testClass.getAnnotation(TestInstance.class);
+            if (testInstanceAnnotation == null) {
+                throw new RuntimeException("Your class " + testClass + " implements the interface " + MagnoliaConfigurer.class + " but does not have the " +
+                    TestInstance.class.getName() + " annotation. Please please annotate your test class with @TestInstance(Lifecycle.PER_CLASS)");
+
+            }
+            if (testInstanceAnnotation.value() != TestInstance.Lifecycle.PER_CLASS) {
+                throw new RuntimeException("Your class " + testClass + " has the " + TestInstance.class + " annotation, but not with the value "
+                + org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS + ". If you want your " + MagnoliaConfigurer.class + " interface to work, " +
+                "then please annotate your test class with @TestInstance(Lifecycle.PER_CLASS)");
+            }
+            Optional<Object> testInstanceOptional = context.getTestInstance();
+            if (testInstanceOptional.isPresent()) {
+                Object testInstance = testInstanceOptional.get();
+                if (testInstance instanceof MagnoliaConfigurer) {
+                    Map<String, String> systemPropsToSet = ((MagnoliaConfigurer) testInstance).getSystemPropsToSet();
+                    systemPropsToSet.keySet().stream()
+                        .forEachOrdered(k -> System.setProperty(k, systemPropsToSet.get(k)));
+                }
             }
         }
     }
