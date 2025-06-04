@@ -94,7 +94,7 @@ public class TomcatExtensionPublicTest {
 
     /**
      * Test for a filter config, including ordering / position in filter chain,
-     * and functionality of a Voter
+     * and functionality of a Voter.
      */
     @Test
     public void testFilterWithVoterConfig() {
@@ -104,10 +104,10 @@ public class TomcatExtensionPublicTest {
         // we are making some assumptions on Magnolia's implementation here (not ours); 
         // if one such assumption is wrong, make test fail with error that states this
         assertEquals(CompositeFilter.class, rootFilter.getClass(), "Magnolia implementation has changed");
-        MgnlFilter[] filters = ((CompositeFilter)rootFilter).getFilters();
+        MgnlFilter[] filters = ((CompositeFilter) rootFilter).getFilters();
         MgnlFilter secondFilter = filters[1];
         assertEquals(ContentTypeFilter.class, secondFilter.getClass(), "Magnolia implementation has changed");
-        Voter[] filterBypasses = ((ContentTypeFilter)secondFilter).getBypasses();
+        Voter[] filterBypasses = ((ContentTypeFilter) secondFilter).getBypasses();
         
         // we can check for an expected voter to be present ...
         Voter firstVoter = filterBypasses[0];
@@ -118,7 +118,7 @@ public class TomcatExtensionPublicTest {
             + "?v-uiId=0&v-pushId=5d9dd3e8-e6ed-4655-aa1a-3e2d24cd4895&X-Atmosphere-tracking-id=6927c2cc-93d8-4ae6-b302-ce69349c10ce&X-Atmosphere-Framework"
             + "=2.3.2.vaadin2-javascript&X-Atmosphere-Transport=long-polling&X-Atmosphere-TrackMessageSize=true"
             + "&Content-Type=application%2Fjson%3B%20charset%3DUTF-8&X-atmo-protocol=true&_=1748612171401";
-        URIRegexVoter uriRegexVoter = (URIRegexVoter)firstVoter;
+        URIRegexVoter uriRegexVoter = (URIRegexVoter) firstVoter;
         assertNotEquals(0, uriRegexVoter.vote(someVaadinPush), "Expected Voter to vote true (!=0) for Vaadin PUSH request");
     }
     
