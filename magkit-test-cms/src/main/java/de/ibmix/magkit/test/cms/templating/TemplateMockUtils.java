@@ -24,6 +24,7 @@ import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.AreaDefinition;
+import info.magnolia.rendering.template.RenderableDefinition;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
@@ -128,16 +129,28 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
      * @param template the Template to be registered at TemplateManager
      */
     public static void register(String id, TemplateDefinition template) {
+        register(id, mockDefinitionProvider(template));
+    }
+
+    /**
+     * Stubs the TemplateManager mock returned by mockTemplateManager() to return the given Template instance
+     * on each call of templateManager.getTemplateDefinition(templateKey).
+     * TemplateManager.getAvailableTemplates() will be stubbed to return all previously registered Templates and the new one.
+     *
+     * @param id       the id of the template as String
+     * @param provider the DefinitionProvider to be registered at TemplateManager
+     */
+    public static <T extends RenderableDefinition> void register(String id, DefinitionProvider<T> provider) {
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
         // register Template only if we have a key. SubTemplates do not have an owen key and should not be registered here. Is that really correct?
         if (isNotBlank(id)) {
             try {
-                DefinitionProvider<TemplateDefinition> definitionProvider = mockDefinitionProvider(template);
-                doReturn(definitionProvider).when(registry).getProvider(id);
-                when(registry.getTemplateDefinition(id)).thenReturn(template);
+                doReturn(provider).when(registry).getProvider(id);
+                TemplateDefinition templateDefinition = (TemplateDefinition) provider.get();
+                when(registry.getTemplateDefinition(id)).thenReturn(templateDefinition);
                 // update mocking of getAvailableTemplates():
-                List<TemplateDefinition> newDefinitions = new ArrayList<TemplateDefinition>(registry.getAllDefinitions());
-                newDefinitions.add(template);
+                List<TemplateDefinition> newDefinitions = new ArrayList<>(registry.getAllDefinitions());
+                newDefinitions.add(templateDefinition);
                 when(registry.getTemplateDefinitions()).thenReturn(newDefinitions);
                 when(registry.getAllDefinitions()).thenReturn(newDefinitions);
             } catch (RegistrationException e) {
@@ -147,9 +160,15 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
         }
     }
 
-    public static <T> DefinitionProvider<T> mockDefinitionProvider(T definition) {
+    public static <T extends RenderableDefinition> DefinitionProvider<T> mockDefinitionProvider(T definition) {
+        return mockDefinitionProvider(definition, true, System.currentTimeMillis());
+    }
+
+    public static <T extends RenderableDefinition> DefinitionProvider<T> mockDefinitionProvider(T definition, boolean isValid, long timestamp) {
         DefinitionProvider<T> result = mock(DefinitionProvider.class);
         doReturn(definition).when(result).get();
+        doReturn(isValid).when(result).isValid();
+        doReturn(timestamp).when(result).getLastModified();
         return result;
     }
 
