@@ -73,7 +73,7 @@ public class TemplateMockUtilsTest {
     }
 
     @Test
-    public void testMockSTKPage() throws Exception {
+    public void testMockConfiguredTemplateDefinition() throws Exception {
         TemplateDefinitionStubbingOperation op1 = mock(TemplateDefinitionStubbingOperation.class);
         ConfiguredTemplateDefinition t = mockConfiguredTemplateDefinition("key", op1);
         assertThat(t, notNullValue());
@@ -153,6 +153,7 @@ public class TemplateMockUtilsTest {
         verify(op1, Mockito.times(1)).of(td);
         assertThat(mockTemplateDefinitionRegistry().getTemplateDefinition("test"), is(td));
         assertThat(mockTemplateDefinitionRegistry().getProvider("test").get(), is(td));
+        assertThat(mockTemplateDefinitionRegistry().getProvider("test").isValid(), is(true));
         assertThat(mockTemplateDefinitionRegistry().getAllDefinitions().size(), is(1));
         assertThat(mockTemplateDefinitionRegistry().getAllDefinitions().contains(td), is(true));
 
@@ -168,6 +169,7 @@ public class TemplateMockUtilsTest {
         verify(op1, Mockito.times(1)).of(td);
         assertThat(mockTemplateDefinitionRegistry().getTemplateDefinition("test"), is(td));
         assertThat(mockTemplateDefinitionRegistry().getProvider("test").get(), is(td));
+        assertThat(mockTemplateDefinitionRegistry().getProvider("test").isValid(), is(true));
         assertThat(mockTemplateDefinitionRegistry().getAllDefinitions().size(), is(1));
         assertThat(mockTemplateDefinitionRegistry().getAllDefinitions().contains(td), is(true));
 
