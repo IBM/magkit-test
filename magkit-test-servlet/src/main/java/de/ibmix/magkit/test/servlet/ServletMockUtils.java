@@ -45,8 +45,31 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Servlet mock utils clas that provides methods for creation of mocks of
- * HttpServletRequest, HttpServletResponse, ServletContext, PageContext, HttpSession and Cookie.
+ * Utility / factory class providing convenient, consistently pre-configured Mockito based mocks
+ * for core Servlet API artifacts: {@link HttpServletRequest}, {@link HttpServletResponse},
+ * {@link ServletContext}, {@link PageContext}, {@link HttpSession} and {@link Cookie}.
+ * <p>
+ * Each factory method returns a new mock instance with sensible defaults applied so that tests
+ * can focus only on the behavior under test and override ("stubbings") the defaults where
+ * required. Additional behavior can be supplied through dedicated *StubbingOperation strategies
+ * passed as varargs. Passing no stubbing operations yields the documented defaults. Passing
+ * {@code null} triggers an {@link AssertionError}. If you want only defaults simply call the
+ * method without arguments.
+ * </p>
+ * <p>
+ * Thread safety: The produced mocks are <em>not</em> thread-safe; treat each returned instance as
+ * test-method local. The class itself is stateless and therefore thread-safe.
+ * </p>
+ * <p>
+ * Typical usage:
+ * <pre>{@code
+ * HttpServletRequest request = ServletMockUtils.mockHttpServletRequest(
+ *     HttpServletRequestStubbingOperation.stubParameter("foo", "bar")
+ * );
+ * HttpServletResponse response = ServletMockUtils.mockHttpServletResponse();
+ * }
+ * </pre>
+ * </p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2011-03-04
@@ -86,17 +109,29 @@ public final class ServletMockUtils {
     };
 
     /**
-     * Method for creating a Mockito mock of a HttpServletRequest with defaults:
-     * An empty attribute name iterator, an empty parameter map and a default session with ID "test".
+     * Create a new {@link HttpServletRequest} mock with the following defaults:
+     * <ul>
+     *     <li>Empty attribute names enumeration.</li>
+     *     <li>Empty and mutable parameter map (backed by a {@link TreeMap}).</li>
+     *     <li>Working implementations for {@link HttpServletRequest#getParameterNames()},
+     *     {@link HttpServletRequest#getParameterValues(String)} and {@link HttpServletRequest#getParameter(String)} that
+     *     reflect the (possibly later modified) parameter map.</li>
+     *     <li>A default {@link HttpSession} with id "test".</li>
+     *     <li>{@link HttpServletRequest#getServletContext()} resolves to the session's servlet context.</li>
+     *     <li>{@link HttpServletRequest#getContextPath()} delegates to the servlet context.</li>
+     * </ul>
+     * Apply further configuration by supplying one or more {@link HttpServletRequestStubbingOperation} instances.
      *
-     * @param stubbings an array of HttpServletRequestStubbingOperation
-     * @return a HttpServletRequest mock with stubbed behaviour
-     * @throws AssertionError when stubbings are null
+     * @param stubbings additional stubbing operations (must not be {@code null})
+     * @return configured request mock
+     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @see HttpServletRequestStubbingOperation
+     * @since 2011-03-04
      */
     public static HttpServletRequest mockHttpServletRequest(HttpServletRequestStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getAttributeNames()).thenReturn(new IteratorEnumeration(emptyIterator()));
+        when(request.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
         when(request.getParameterMap()).thenReturn(new TreeMap<>());
         doAnswer(REQUEST_PARAMETER_NAMES_ANSWER).when(request).getParameterNames();
         doAnswer(REQUEST_PARAMETER_VALUES_ANSWER).when(request).getParameterValues(anyString());
@@ -111,12 +146,20 @@ public final class ServletMockUtils {
     }
 
     /**
-     * Method for creating a Mockito mock of a HttpServletResponse with defaults:
-     * A PrintWriter mock, ServletOutputStream mock and default (do nothing) behaviour for URL encoding methods.
+     * Create a new {@link HttpServletResponse} mock with the following defaults:
+     * <ul>
+     *     <li>Mocked {@link PrintWriter} returned by {@link HttpServletResponse#getWriter()}.</li>
+     *     <li>Mocked {@link ServletOutputStream} returned by {@link HttpServletResponse#getOutputStream()}.</li>
+     *     <li>{@link HttpServletResponse#encodeRedirectURL(String)} and {@link HttpServletResponse#encodeURL(String)}
+     *     simply echo their input parameter.</li>
+     * </ul>
+     * Additional behavior can be provided through {@link HttpServletResponseStubbingOperation} instances.
      *
-     * @param stubbings an array of HttpServletResponseStubbingOperation
-     * @return a HttpServletResponse mock with stubbed behaviour
-     * @throws AssertionError when stubbings are null
+     * @param stubbings additional stubbing operations (must not be {@code null})
+     * @return configured response mock
+     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @see HttpServletResponseStubbingOperation
+     * @since 2011-03-04
      */
     public static HttpServletResponse mockHttpServletResponse(HttpServletResponseStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
@@ -138,18 +181,24 @@ public final class ServletMockUtils {
     }
 
     /**
-     * Method for creating a Mockito mock of a ServletContext with defaults:
-     * A ServletContext mock and empty iterators for attribute names and init parameter names.
+     * Create a new {@link ServletContext} mock with the following defaults:
+     * <ul>
+     *     <li>Empty attribute names enumeration.</li>
+     *     <li>Empty init parameter names enumeration.</li>
+     * </ul>
+     * Further configuration can be applied via {@link ServletContextStubbingOperation} instances.
      *
-     * @param stubbings an array of ServletContextStubbingOperation
-     * @return a ServletContext mock with stubbed behaviour
-     * @throws AssertionError when stubbings are null
+     * @param stubbings additional stubbing operations (must not be {@code null})
+     * @return configured servlet context mock
+     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @see ServletContextStubbingOperation
+     * @since 2011-03-04
      */
     public static ServletContext mockServletContext(ServletContextStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         ServletContext context = mock(ServletContext.class);
-        when(context.getAttributeNames()).thenReturn(new IteratorEnumeration(emptyIterator()));
-        when(context.getInitParameterNames()).thenReturn(new IteratorEnumeration(emptyIterator()));
+        when(context.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
+        when(context.getInitParameterNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
         for (ServletContextStubbingOperation stubbing : stubbings) {
             stubbing.of(context);
         }
@@ -157,12 +206,20 @@ public final class ServletMockUtils {
     }
 
     /**
-     * Method for creating a Mockito mock of a PageContext with defaults:
-     * A HttpServletRequest mock, HttpServletResponse mock and returning Session and ServletContext from request session.
+     * Create a new {@link PageContext} mock with the following defaults:
+     * <ul>
+     *     <li>An {@link HttpServletRequest} mock (see {@link #mockHttpServletRequest(HttpServletRequestStubbingOperation...)})</li>
+     *     <li>An {@link HttpServletResponse} mock (see {@link #mockHttpServletResponse(HttpServletResponseStubbingOperation...)})</li>
+     *     <li>{@link PageContext#getSession()} delegates to the underlying request's session.</li>
+     *     <li>{@link PageContext#getServletContext()} delegates to the session's servlet context.</li>
+     * </ul>
+     * Apply further configuration via {@link PageContextStubbingOperation} instances.
      *
-     * @param stubbings an array of PageContextStubbingOperation
-     * @return a PageContext mock with stubbed behaviour
-     * @throws AssertionError when stubbings are null
+     * @param stubbings additional stubbing operations (must not be {@code null})
+     * @return configured page context mock
+     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @see PageContextStubbingOperation
+     * @since 2011-03-04
      */
     public static PageContext mockPageContext(PageContextStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
@@ -178,19 +235,26 @@ public final class ServletMockUtils {
     }
 
     /**
-     * Method for creating a Mockito mock of a HttpSession with defaults:
-     * an empty iterator for attribute names and a ServletContext mock.
+     * Create a new {@link HttpSession} mock with the following defaults:
+     * <ul>
+     *     <li>The supplied {@code id} returned by {@link HttpSession#getId()}.</li>
+     *     <li>Empty attribute names enumeration.</li>
+     *     <li>A mocked {@link ServletContext} (see {@link #mockServletContext(ServletContextStubbingOperation...)})</li>
+     * </ul>
+     * Additional behavior can be provided through {@link HttpSessionStubbingOperation} instances.
      *
-     * @param id  the session ID as String
-     * @param stubbings an array of HttpSessionStubbingOperation
-     * @return a HttpSession mock with stubbed behaviour
-     * @throws AssertionError when stubbings are null
+     * @param id session identifier to be returned by {@link HttpSession#getId()}
+     * @param stubbings additional stubbing operations (must not be {@code null})
+     * @return configured session mock
+     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @see HttpSessionStubbingOperation
+     * @since 2011-03-04
      */
     public static HttpSession mockHttpSession(String id, HttpSessionStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         HttpSession session = mock(HttpSession.class);
         when(session.getId()).thenReturn(id);
-        when(session.getAttributeNames()).thenReturn(new IteratorEnumeration(emptyIterator()));
+        when(session.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
         HttpSessionStubbingOperation.stubServletContext().of(session);
         for (HttpSessionStubbingOperation stubbing : stubbings) {
             stubbing.of(session);
@@ -199,13 +263,16 @@ public final class ServletMockUtils {
     }
 
     /**
-     * Method for creating a Mockito mock of a Cookie with no defaults.
+     * Create a new {@link Cookie} mock with its {@link Cookie#getName()} and {@link Cookie#getValue()} methods
+     * returning the supplied values. No further defaults are applied beyond what Mockito provides.
+     * Additional behavior can be applied via provided {@link CookieStubbingOperation} instances.
      *
-     * @param name  the Cookie name as String
-     * @param value  the Cookie value as String
-     * @param stubbings an array of CookieStubbingOperation
-     * @return a Cookie mock with stubbed behaviour
-     * @throws AssertionError when stubbings are null
+     * @param name cookie name (may be {@code null} if test scenario requires it)
+     * @param value cookie value (may be {@code null} if test scenario requires it)
+     * @param stubbings additional stubbing operations (ignored if {@code null} or empty)
+     * @return configured cookie mock
+     * @see CookieStubbingOperation
+     * @since 2011-03-04
      */
     public static Cookie mockCookie(String name, String value, CookieStubbingOperation... stubbings) {
         Cookie result = mock(Cookie.class);
@@ -229,6 +296,9 @@ public final class ServletMockUtils {
         return request != null ? request.getSession() : null;
     };
 
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
     private ServletMockUtils() {
     }
 }

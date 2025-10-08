@@ -39,17 +39,32 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
 
 /**
- * Utility class that provides factory methods for HttpServletRequestStubbingOperation.
- * Stubbing operations to be used as parameters in ServletMockUtils.mockHttpServletRequest(...)
- * or for stubbing the behaviour of an existing mock: HttpServletRequestStubbingOperation.stubContextPath("path").of(mock).
+ * Abstract base class for stubbing operations on {@link HttpServletRequest} mocks.
+ * <p>
+ * Subclasses must implement the {@link #of(HttpServletRequest)} method to define how the stubbing is applied to the given request.
+ * Factory methods are provided to create common stubbing operations for various request properties.
+ * </p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2011-03-10
  */
 public abstract class HttpServletRequestStubbingOperation {
-
+    /**
+     * Applies the stubbing operation to the given {@link HttpServletRequest} mock.
+     *
+     * @param request the {@link HttpServletRequest} mock to stub
+     */
     public abstract void of(HttpServletRequest request);
 
+    /**
+     * Creates a stubbing operation that sets the context path of the request.
+     * <p>
+     * If no session exists, a mock session and servlet context are created. If a session exists but no servlet context, a mock servlet context is created. If a servlet context exists, its context path is stubbed.
+     * </p>
+     *
+     * @param value the context path to be returned by getContextPath()
+     * @return a stubbing operation for the context path
+     */
     public static HttpServletRequestStubbingOperation stubContextPath(final String value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -71,6 +86,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the HTTP method of the request.
+     *
+     * @param value the HTTP method to be returned by getMethod()
+     * @return a stubbing operation for the HTTP method
+     */
     public static HttpServletRequestStubbingOperation stubMethod(final String value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -82,6 +103,13 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets a header value for the request.
+     *
+     * @param name  the name of the header
+     * @param value the value to be returned by getHeader(name)
+     * @return a stubbing operation for the header
+     */
     public static HttpServletRequestStubbingOperation stubHeader(final String name, final String value) {
         assertThat(name, notNullValue());
         return new HttpServletRequestStubbingOperation() {
@@ -94,6 +122,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the query string of the request.
+     *
+     * @param value the query string to be returned by getQueryString()
+     * @return a stubbing operation for the query string
+     */
     public static HttpServletRequestStubbingOperation stubQueryString(final String value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -105,6 +139,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the HttpSession for the request.
+     *
+     * @param value the HttpSession to be returned by getSession()
+     * @return a stubbing operation for the session
+     */
     public static HttpServletRequestStubbingOperation stubHttpSession(final HttpSession value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -117,10 +157,24 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets a mock HttpSession with the given id and applies additional stubbing operations.
+     *
+     * @param id                 the session id
+     * @param stubbingOperations additional stubbing operations for the session
+     * @return a stubbing operation for the session
+     */
     public static HttpServletRequestStubbingOperation stubHttpSession(final String id, final HttpSessionStubbingOperation... stubbingOperations) {
         return stubHttpSession(ServletMockUtils.mockHttpSession(id, stubbingOperations));
     }
 
+    /**
+     * Creates a stubbing operation that sets a request parameter with the given name and values.
+     *
+     * @param name   the parameter name
+     * @param values the parameter values
+     * @return a stubbing operation for the parameter
+     */
     public static HttpServletRequestStubbingOperation stubParameter(final String name, final String... values) {
         assertThat(name, notNullValue());
         return new HttpServletRequestStubbingOperation() {
@@ -139,6 +193,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the request parameter map.
+     *
+     * @param parameters the parameter map to be set
+     * @return a stubbing operation for the parameter map
+     */
     public static HttpServletRequestStubbingOperation stubParameterMap(final Map<String, String[]> parameters) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -152,6 +212,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the server name of the request.
+     *
+     * @param value the server name to be returned by getServerName()
+     * @return a stubbing operation for the server name
+     */
     public static HttpServletRequestStubbingOperation stubServerName(final String value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -163,6 +229,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the server port of the request.
+     *
+     * @param value the server port to be returned by getServerPort()
+     * @return a stubbing operation for the server port
+     */
     public static HttpServletRequestStubbingOperation stubServerPort(final int value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -174,6 +246,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the protocol of the request.
+     *
+     * @param value the protocol to be returned by getProtocol()
+     * @return a stubbing operation for the protocol
+     */
     public static HttpServletRequestStubbingOperation stubProtocol(final String value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -185,6 +263,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the request URI.
+     *
+     * @param value the URI to be returned by getRequestURI()
+     * @return a stubbing operation for the request URI
+     */
     public static HttpServletRequestStubbingOperation stubRequestUri(final String value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -196,6 +280,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the request URL.
+     *
+     * @param value the URL to be returned by getRequestURL()
+     * @return a stubbing operation for the request URL
+     */
     public static HttpServletRequestStubbingOperation stubRequestUrl(final String value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -207,6 +297,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the secure flag of the request.
+     *
+     * @param value true if the request is secure, false otherwise
+     * @return a stubbing operation for the secure flag
+     */
     public static HttpServletRequestStubbingOperation stubIsSecure(final boolean value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -218,6 +314,13 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets an attribute on the request.
+     *
+     * @param name  the attribute name
+     * @param value the attribute value
+     * @return a stubbing operation for the attribute
+     */
     public static HttpServletRequestStubbingOperation stubAttribute(final String name, final Object value) {
         return new HttpServletRequestStubbingOperation() {
             @Override
@@ -238,6 +341,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the local name of the request.
+     *
+     * @param value the local name to be returned by getLocalName()
+     * @return a stubbing operation for the local name
+     */
     public static HttpServletRequestStubbingOperation stubLocalName(final String value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -249,6 +358,12 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets the local port of the request.
+     *
+     * @param value the local port to be returned by getLocalPort()
+     * @return a stubbing operation for the local port
+     */
     public static HttpServletRequestStubbingOperation stubLocalPort(final int value) {
         return new HttpServletRequestStubbingOperation() {
 
@@ -260,11 +375,25 @@ public abstract class HttpServletRequestStubbingOperation {
         };
     }
 
+    /**
+     * Creates a stubbing operation that sets a cookie on the request.
+     *
+     * @param name      the cookie name
+     * @param value     the cookie value
+     * @param stubbings additional stubbing operations for the cookie
+     * @return a stubbing operation for the cookie
+     */
     public static HttpServletRequestStubbingOperation stubCookie(final String name, final String value, final CookieStubbingOperation... stubbings) {
         Cookie cookie = ServletMockUtils.mockCookie(name, value, stubbings);
         return stubCookies(cookie);
     }
 
+    /**
+     * Creates a stubbing operation that sets cookies on the request.
+     *
+     * @param cookies the cookies to be set
+     * @return a stubbing operation for the cookies
+     */
     public static HttpServletRequestStubbingOperation stubCookies(final Cookie... cookies) {
         return new HttpServletRequestStubbingOperation() {
 
