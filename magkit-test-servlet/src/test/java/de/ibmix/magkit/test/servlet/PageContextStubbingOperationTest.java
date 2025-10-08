@@ -205,7 +205,8 @@ public class PageContextStubbingOperationTest {
 
     @Test
     public void testStubServletContextCreatesContextWhenAbsent() {
-        PageContext pc = mock(PageContext.class); // getServletContext() returns null
+        // getServletContext() returns null
+        PageContext pc = mock(PageContext.class);
         ServletContextStubbingOperation op1 = mock(ServletContextStubbingOperation.class);
         ServletContextStubbingOperation op2 = mock(ServletContextStubbingOperation.class);
 
