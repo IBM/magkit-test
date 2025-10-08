@@ -10,7 +10,7 @@ The mocks are always created with some basic stubbing of a default behavior.
     <dependency>
         <artifactId>magkit-test-servlet</artifactId>
         <groupId>de.ibmix.magkit</groupId>
-        <version>1.0.0</version>
+        <version>1.0.8</version>
     </dependency>
 ```
 
