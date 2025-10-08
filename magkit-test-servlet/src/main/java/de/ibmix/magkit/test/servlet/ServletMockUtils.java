@@ -76,38 +76,6 @@ import static org.mockito.Mockito.when;
  */
 public final class ServletMockUtils {
 
-    private static final Answer<String> REPLY_PARAMETER_ANSWER = invocation -> (String) invocation.getArguments()[0];
-
-    private static final Answer<String> REQUEST_CONTEXT_PATH_ANSWER = invocationOnMock -> {
-        HttpServletRequest request = (HttpServletRequest) invocationOnMock.getMock();
-        ServletContext context = request != null ? request.getServletContext() : null;
-        return context != null ? context.getContextPath() : null;
-    };
-
-    private static final Answer<ServletContext> REQUEST_SERVLET_CONTEXT_ANSWER = invocationOnMock -> {
-        HttpServletRequest request = (HttpServletRequest) invocationOnMock.getMock();
-        HttpSession session = request != null ? request.getSession() : null;
-        return session != null ? session.getServletContext() : null;
-    };
-
-    private static final Answer<Enumeration<String>> REQUEST_PARAMETER_NAMES_ANSWER = invocation -> {
-        HttpServletRequest request = (HttpServletRequest) invocation.getMock();
-        return enumeration(request.getParameterMap().keySet());
-    };
-
-    private static final Answer<String[]> REQUEST_PARAMETER_VALUES_ANSWER = invocation -> {
-        HttpServletRequest request = (HttpServletRequest) invocation.getMock();
-        String key = (String) invocation.getArguments()[0];
-        return request.getParameterMap().get(key);
-    };
-
-    private static final Answer<String> REQUEST_PARAMETER_ANSWER = invocation -> {
-        HttpServletRequest request = (HttpServletRequest) invocation.getMock();
-        String key = (String) invocation.getArguments()[0];
-        String[] values = request.getParameterMap().get(key);
-        return values != null && values.length > 0 ? values[0] : null;
-    };
-
     /**
      * Create a new {@link HttpServletRequest} mock with the following defaults:
      * <ul>
@@ -283,6 +251,38 @@ public final class ServletMockUtils {
         }
         return result;
     }
+
+    private static final Answer<String> REPLY_PARAMETER_ANSWER = invocation -> (String) invocation.getArguments()[0];
+
+    private static final Answer<String> REQUEST_CONTEXT_PATH_ANSWER = invocationOnMock -> {
+        HttpServletRequest request = (HttpServletRequest) invocationOnMock.getMock();
+        ServletContext context = request != null ? request.getServletContext() : null;
+        return context != null ? context.getContextPath() : null;
+    };
+
+    private static final Answer<ServletContext> REQUEST_SERVLET_CONTEXT_ANSWER = invocationOnMock -> {
+        HttpServletRequest request = (HttpServletRequest) invocationOnMock.getMock();
+        HttpSession session = request != null ? request.getSession() : null;
+        return session != null ? session.getServletContext() : null;
+    };
+
+    private static final Answer<Enumeration<String>> REQUEST_PARAMETER_NAMES_ANSWER = invocation -> {
+        HttpServletRequest request = (HttpServletRequest) invocation.getMock();
+        return enumeration(request.getParameterMap().keySet());
+    };
+
+    private static final Answer<String[]> REQUEST_PARAMETER_VALUES_ANSWER = invocation -> {
+        HttpServletRequest request = (HttpServletRequest) invocation.getMock();
+        String key = (String) invocation.getArguments()[0];
+        return request.getParameterMap().get(key);
+    };
+
+    private static final Answer<String> REQUEST_PARAMETER_ANSWER = invocation -> {
+        HttpServletRequest request = (HttpServletRequest) invocation.getMock();
+        String key = (String) invocation.getArguments()[0];
+        String[] values = request.getParameterMap().get(key);
+        return values != null && values.length > 0 ? values[0] : null;
+    };
 
     private static final Answer<ServletContext> SESSION_SERVLET_CONTEXT_ANSWER = invocationOnMock -> {
         PageContext mock = (PageContext) invocationOnMock.getMock();
