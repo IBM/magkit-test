@@ -59,6 +59,9 @@ import static org.mockito.Mockito.mock;
  * Value v = vf.createValue("fixed"); // returns mock with numeric/date conversions if applicable
  * </pre>
  * Note: All methods declare {@link RepositoryException} for API symmetry; current implementation never throws it.
+ *
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public final class ValueFactoryMockUtils {
 

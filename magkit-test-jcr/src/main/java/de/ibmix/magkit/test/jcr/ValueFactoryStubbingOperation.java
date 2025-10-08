@@ -49,6 +49,9 @@ import static org.mockito.Mockito.when;
  *   <li>Returned {@link Value} mocks implement rich conversion semantics as documented in {@link ValueMockUtils}.</li>
  * </ul>
  * Thread safety: Individual operations are immutable and can be reused for multiple factories if desired.
+ *
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-03
  */
 public abstract class ValueFactoryStubbingOperation implements ExceptionStubbingOperation<ValueFactory, RepositoryException> {
 

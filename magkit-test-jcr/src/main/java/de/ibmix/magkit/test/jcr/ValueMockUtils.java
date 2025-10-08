@@ -66,6 +66,9 @@ import static org.mockito.Mockito.when;
  * <p>
  * Note: All methods declare {@link RepositoryException} to mirror JCR API signatures; the current implementation
  * does not throw it.
+ *
+ * @author wolf.bubenik@ibmix.de
+ * @since 2012-08-04
  */
 public final class ValueMockUtils {
     /**
