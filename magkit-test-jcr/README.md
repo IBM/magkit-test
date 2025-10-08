@@ -45,7 +45,7 @@ public void setUp() {
 
 // Be polite and cleanup your mess for others:
 @After
-public void setUp() {
+public void setTearDown() {
     SessionMockUtils.cleanSession();
 }
 ```
