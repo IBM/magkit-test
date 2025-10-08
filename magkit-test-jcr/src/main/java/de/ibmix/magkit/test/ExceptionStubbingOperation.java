@@ -21,7 +21,7 @@ package de.ibmix.magkit.test;
  */
 
 /**
- * Interface for all StubbingOperations that do not throw an exception.
+ * Interface for all StubbingOperations that do throw an exception.
  *
  * @param <T> The type of the mocked class to be stubbed
  * @param <E> The exception type to be thrown by the stubbed methods

@@ -29,33 +29,71 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
- * Utility class for mocking javax.jcr.Workspace.
+ * Utility factory for creating Mockito-based {@link Workspace} mocks for unit tests.
+ * <p>
+ * This class centralizes common default stubbing for JCR {@link Workspace} objects to reduce duplication
+ * and improve readability in test code. It provides overloaded {@code mockWorkspace} factory methods that:
+ * </p>
+ * <ul>
+ *     <li>Create a Mockito mock of {@link Workspace}.</li>
+ *     <li>Always stub the workspace name (default: {@code "test"}).</li>
+ *     <li>Apply any additional {@link WorkspaceStubbingOperation}s passed via varargs, in the given order.</li>
+ * </ul>
+ * <h3>Usage Example</h3>
+ * <pre>{@code
+ * import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubName;
+ *
+ * Workspace ws = WorkspaceMockUtils.mockWorkspace(
+ *     // additional stubbing operations
+ *     stubName("preview")
+ * );
+ *
+ * Workspace custom = WorkspaceMockUtils.mockWorkspace("edit", otherOperation1(), otherOperation2());
+ * }</pre>
+ * <p>
+ * The methods never return {@code null}. A {@link RepositoryException} is propagated if any provided stubbing
+ * operation throws it. The factory itself is stateless and therefore thread-safe; the returned mock follows
+ * Mockito's usual thread-safety characteristics (not guaranteed for concurrent mutation).
+ * </p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-08-03
  */
 public final class WorkspaceMockUtils {
 
+    /**
+     * Hidden constructor to prevent instantiation.
+     */
     private WorkspaceMockUtils() {
     }
 
     /**
-     * Factory method for a Workspace mock with default name "test".
+     * Create a {@link Workspace} Mockito mock with the default workspace name {@code "test"}.
+     * <p>
+     * Additional custom stubbing operations can be supplied; they are executed in the order provided.
+     * </p>
      *
-     * @param stubbings the WorkspaceStubbingOperation to be executed on the mock
-     * @return a Workspace mock, never null
-     * @throws RepositoryException may be thrown by one of the stubbing operations
+     * @param stubbings optional additional stubbing operations; may be empty but never {@code null}
+     * @return the configured {@link Workspace} mock (never {@code null})
+     * @throws RepositoryException if any stubbing operation throws it
+     * @see #mockWorkspace(String, WorkspaceStubbingOperation...)
      */
     public static Workspace mockWorkspace(WorkspaceStubbingOperation... stubbings) throws RepositoryException {
         return mockWorkspace("test", stubbings);
     }
 
     /**
-     * Factory method for a Workspace mock with the given name.
+     * Create a {@link Workspace} Mockito mock with a specific workspace name.
+     * <p>
+     * Validates that {@code name} is not blank. The name is applied first, then all additional stubbing
+     * operations are executed in the order provided.
+     * </p>
      *
-     * @param stubbings the WorkspaceStubbingOperation to be executed on the mock
-     * @return a Workspace mock, never null
-     * @throws RepositoryException may be thrown by one of the stubbing operations
+     * @param name non-blank workspace name to be returned by {@link Workspace#getName()}; must not be blank
+     * @param stubbings optional additional stubbing operations; may be empty but never {@code null}
+     * @return the configured {@link Workspace} mock (never {@code null})
+     * @throws RepositoryException if any stubbing operation throws it
+     * @throws AssertionError if {@code name} is blank
      */
     public static Workspace mockWorkspace(String name, WorkspaceStubbingOperation... stubbings) throws RepositoryException {
         assertTrue(isNotBlank(name));
