@@ -110,6 +110,33 @@ assertThat(toList(node.getProperties()).size(), is(3))
 
 For more examples and details please consult the test cases.
 
+## NodeMockUtils
+
+`NodeMockUtils` provides concise factory methods to obtain Mockito-based JCR `Node` mocks including their surrounding session/workspace context.
+
+Key features:
+- Get-or-create semantics per absolute path (idempotent mocking)
+- Automatic creation of intermediate path segments
+- Fluent stubbing via `NodeStubbingOperation` (e.g. `stubProperty`, `stubType`, `stubNode`)
+- Simple XML import support (`mockNodeFromXml`) to bootstrap larger hierarchies
+
+Basic examples:
+```java
+import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
+import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
+
+Node section = mockNode("root/section", stubProperty("title", "Section Title"));
+Node page = mockNode("root/section/page", stubProperty("title", "Page Title"));
+```
+XML import:
+```java
+try (InputStream in = getClass().getResourceAsStream("/export.xml")) {
+    Node imported = NodeMockUtils.mockNodeFromXml("website", in);
+    // assertions against imported hierarchy
+}
+```
+Handle normalization ensures both `"root/section"` and `"/root/section"` resolve to the same mock. Use `SessionMockUtils.cleanSession()` between tests to isolate state.
+
 ## License
 
 This code is published under the Apache2.0 license.
@@ -141,4 +168,3 @@ If you would like to see the detailed LICENSE click [here](../LICENSE).
 ## Authors
 
 - Author: Wolf Bubenik - wolf.bubenik@ibm.com
-
