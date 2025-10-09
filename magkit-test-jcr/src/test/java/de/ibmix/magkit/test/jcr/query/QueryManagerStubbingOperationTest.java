@@ -98,6 +98,15 @@ public class QueryManagerStubbingOperationTest {
         assertThat(op, notNullValue());
         QueryManager m = mock(QueryManager.class);
         op.of(m);
+        assertThat(q, is(m.getQuery(n)));
+
+        op = stubQuery(null, q);
+        op.of(m);
+        assertThat(q, is(m.getQuery(null)));
+
+        op = stubQuery(null, null);
+        op.of(m);
+        assertThat(null, is(m.getQuery(null)));
     }
 
     @Test

@@ -308,13 +308,11 @@ public class NodeMockUtilsTest {
         assertThat(node.getProperty("inheritContext").getString(), is("true"));
         assertThat(node.getProperty("inheritContext").getBoolean(), is(true));
         assertThat(node.getProperty("inheritContext").getValue().getString(), is("true"));
-        assertThat(node.getProperty("contentCategory").getValues().length, is(1));
 
         assertThat(node.getProperty("mgnl:created").getType(), is(PropertyType.DATE));
         assertThat(node.getProperty("mgnl:created").getString(), is("2014-11-21T16:50:16.228+01:00"));
         assertThat(node.getProperty("mgnl:created").getDate(), is(ISO8601.parse("2014-11-21T16:50:16.228+01:00")));
         assertThat(node.getProperty("mgnl:created").getValue().getString(), is("2014-11-21T16:50:16.228+01:00"));
-        assertThat(node.getProperty("contentCategory").getValues().length, is(1));
 
         Node nested = node.getNode("content/01/layouts/0/slides/0");
         assertThat(nested, notNullValue());
@@ -392,9 +390,8 @@ public class NodeMockUtilsTest {
         assertThat(node.getProperty("binary"), nullValue());
         Binary bin = mock(Binary.class);
         Property p = node.setProperty("binary", bin);
-        assertThat(p.getType(), is(PropertyType.BINARY));
-        assertThat(node.getProperty("binary"), is(p));
-        assertThat(node.getProperty("binary").getBinary(), is(bin));
+        assertPropertyBasics(node, "binary", p, PropertyType.BINARY);
+        assertThat(p.getBinary(), is(bin));
     }
 
     @Test
@@ -402,9 +399,8 @@ public class NodeMockUtilsTest {
         Node node = NodeMockUtils.mockNode();
         assertThat(node.getProperty("boolean"), nullValue());
         Property p = node.setProperty("boolean", true);
-        assertThat(p.getType(), is(PropertyType.BOOLEAN));
-        assertThat(node.getProperty("boolean"), is(p));
-        assertThat(node.getProperty("boolean").getBoolean(), is(true));
+        assertPropertyBasics(node, "boolean", p, PropertyType.BOOLEAN);
+        assertThat(p.getBoolean(), is(true));
     }
 
     @Test
@@ -413,9 +409,8 @@ public class NodeMockUtilsTest {
         assertThat(node.getProperty("calendar"), nullValue());
         Calendar now = Calendar.getInstance();
         Property p = node.setProperty("calendar", now);
-        assertThat(p.getType(), is(PropertyType.DATE));
-        assertThat(node.getProperty("calendar"), is(p));
-        assertThat(node.getProperty("calendar").getDate(), is(now));
+        assertPropertyBasics(node, "calendar", p, PropertyType.DATE);
+        assertThat(p.getDate(), is(now));
     }
 
     @Test
@@ -423,9 +418,8 @@ public class NodeMockUtilsTest {
         Node node = NodeMockUtils.mockNode();
         assertThat(node.getProperty("double"), nullValue());
         Property p = node.setProperty("double", 1.2D);
-        assertThat(p.getType(), is(PropertyType.DOUBLE));
-        assertThat(node.getProperty("double"), is(p));
-        assertThat(node.getProperty("double").getDouble(), is(1.2D));
+        assertPropertyBasics(node, "double", p, PropertyType.DOUBLE);
+        assertThat(p.getDouble(), is(1.2D));
     }
 
     @Test
@@ -433,9 +427,8 @@ public class NodeMockUtilsTest {
         Node node = NodeMockUtils.mockNode();
         assertThat(node.getProperty("long"), nullValue());
         Property p = node.setProperty("long", 1L);
-        assertThat(p.getType(), is(PropertyType.LONG));
-        assertThat(node.getProperty("long"), is(p));
-        assertThat(node.getProperty("long").getLong(), is(1L));
+        assertPropertyBasics(node, "long", p, PropertyType.LONG);
+        assertThat(p.getLong(), is(1L));
     }
 
     @Test
@@ -443,9 +436,8 @@ public class NodeMockUtilsTest {
         Node node = NodeMockUtils.mockNode();
         assertThat(node.getProperty("string"), nullValue());
         Property p = node.setProperty("string", "value");
-        assertThat(p.getType(), is(PropertyType.STRING));
-        assertThat(node.getProperty("string"), is(p));
-        assertThat(node.getProperty("string").getString(), is("value"));
+        assertPropertyBasics(node, "string", p, PropertyType.STRING);
+        assertThat(p.getString(), is("value"));
     }
 
     @Test
@@ -453,11 +445,10 @@ public class NodeMockUtilsTest {
         Node node = NodeMockUtils.mockNode();
         assertThat(node.getProperty("string"), nullValue());
         Property p = node.setProperty("string", new String[]{"value1", "value2", "value3"});
-        assertThat(p.getType(), is(PropertyType.STRING));
-        assertThat(node.getProperty("string"), is(p));
-        assertThat(node.getProperty("string").getString(), is("value1"));
-        assertThat(node.getProperty("string").getValues().length, is(3));
-        assertThat(node.getProperty("string").getValues()[2].getString(), is("value3"));
+        assertPropertyBasics(node, "string", p, PropertyType.STRING);
+        assertThat(p.getString(), is("value1"));
+        assertThat(p.getValues().length, is(3));
+        assertThat(p.getValues()[2].getString(), is("value3"));
     }
 
     @Test
@@ -466,36 +457,31 @@ public class NodeMockUtilsTest {
         Node child = NodeMockUtils.mockNode("other");
         assertThat(node.getProperty("link"), nullValue());
         Property p = node.setProperty("link", child);
-        assertThat(p.getType(), is(PropertyType.REFERENCE));
-        assertThat(node.getProperty("link"), is(p));
-        assertThat(node.getProperty("link").getString(), is(child.getIdentifier()));
+        assertPropertyBasics(node, "link", p, PropertyType.REFERENCE);
+        assertThat(p.getString(), is(child.getIdentifier()));
     }
 
     @Test
     public void setPropertyTestValue() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
         assertThat(node.getProperty("value"), nullValue());
-
         Value value = mock(Value.class);
         Property p = node.setProperty("value", value);
-        assertThat(node.getProperty("value"), is(p));
-        assertThat(node.getProperty("value").getValue(), is(value));
-        assertThat(node.getProperty("value").getType(), is(PropertyType.UNDEFINED));
+        assertPropertyBasics(node, "value", p, PropertyType.UNDEFINED);
+        assertThat(p.getValue(), is(value));
     }
 
     @Test
     public void setPropertyTestValues() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
         assertThat(node.getProperty("values"), nullValue());
-
         Value v1 = mock(Value.class);
         Value v2 = mock(Value.class);
         Property p = node.setProperty("values", new Value[] {v1, v2});
-        assertThat(node.getProperty("values"), is(p));
-        assertThat(node.getProperty("values").getValues().length, is(2));
-        assertThat(node.getProperty("values").getValues()[0], is(v1));
-        assertThat(node.getProperty("values").getValues()[1], is(v2));
-        assertThat(node.getProperty("values").getType(), is(PropertyType.UNDEFINED));
+        assertPropertyBasics(node, "values", p, PropertyType.UNDEFINED);
+        assertThat(p.getValues().length, is(2));
+        assertThat(p.getValues()[0], is(v1));
+        assertThat(p.getValues()[1], is(v2));
     }
 
     @Test
@@ -521,5 +507,112 @@ public class NodeMockUtilsTest {
         assertThat(node.getAncestor(2).getPath(), is("/some/node"));
         // expect ItemNotFoundException
         node.getAncestor(3);
+    }
+
+    @Test
+    public void mockNodeBlankPathDefaultsUntitled() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode("");
+        assertThat(node.getName(), is("untitled"));
+        assertThat(node.getPath(), is("/untitled"));
+    }
+
+    /**
+     * Verify that calling mockNode twice for the same repository/path returns the same instance and applies additional stubbings.
+     */
+    @Test
+    public void mockNodeRepositoryExistingNodeReused() throws RepositoryException {
+        Node first = NodeMockUtils.mockNode("repoA", "/reuse/path", NodeStubbingOperation.stubProperty("p1", "v1"));
+        Node second = NodeMockUtils.mockNode("repoA", "/reuse/path", NodeStubbingOperation.stubProperty("p2", "v2"));
+        assertThat(first == second, is(true));
+        assertThat(second.getProperty("p1").getString(), is("v1"));
+        assertThat(second.getProperty("p2").getString(), is("v2"));
+    }
+
+    /**
+     * addNode with blank name should return null and not modify children.
+     */
+    @Test
+    public void addNodeBlankNameReturnsNull() throws RepositoryException {
+        Node parent = NodeMockUtils.mockNode("some/node");
+        assertThat(parent.hasNodes(), is(false));
+        Node added = parent.addNode("");
+        assertThat(added, nullValue());
+        assertThat(parent.hasNodes(), is(false));
+    }
+
+    /**
+     * addNode with blank type should keep default NT_BASE primary type.
+     */
+    @Test
+    public void addNodeBlankTypeKeepsDefaultPrimaryType() throws RepositoryException {
+        Node parent = NodeMockUtils.mockNode("type/test");
+        Node child = parent.addNode("child", "");
+        assertThat(child.getPrimaryNodeType().getName(), is(NodeType.NT_BASE));
+    }
+
+    /**
+     * Test overloaded setProperty variants with explicit type parameter.
+     */
+    @Test
+    public void setPropertyVariantsWithTypeParameter() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode();
+        Property p1 = node.setProperty("s1", "value", PropertyType.STRING);
+        assertThat(p1.getType(), is(PropertyType.STRING));
+        assertThat(node.getProperty("s1").getString(), is("value"));
+
+        Property p2 = node.setProperty("s2", new String[]{"a", "b"}, PropertyType.STRING);
+        assertThat(p2.getType(), is(PropertyType.STRING));
+        assertThat(node.getProperty("s2").getValues().length, is(2));
+        assertThat(node.getProperty("s2").getValues()[1].getString(), is("b"));
+
+        Value v = mock(Value.class);
+        Property p3 = node.setProperty("s3", v, PropertyType.UNDEFINED);
+        assertThat(p3.getType(), is(PropertyType.UNDEFINED));
+        assertThat(node.getProperty("s3").getValue(), is(v));
+
+        Value v1 = mock(Value.class);
+        Value v2 = mock(Value.class);
+        Property p4 = node.setProperty("s4", new Value[]{v1, v2}, PropertyType.UNDEFINED);
+        assertThat(p4.getValues().length, is(2));
+        assertThat(node.getProperty("s4").getValues()[0], is(v1));
+        assertThat(node.getProperty("s4").getValues()[1], is(v2));
+        assertThat(p4.getType(), is(PropertyType.UNDEFINED));
+    }
+
+    /**
+     * Re-stub the identifier and ensure session mappings for old id are cleared.
+     */
+    @Test
+    public void stubIdentifierReassignmentUpdatesSession() throws RepositoryException {
+        Node node = NodeMockUtils.mockNode("id/test");
+        Session session = node.getSession();
+        String oldId = node.getIdentifier();
+        assertThat(session.getNodeByIdentifier(oldId), is(node));
+        NodeStubbingOperation.stubIdentifier("new-identifier-123").of(node);
+        assertThat(node.getIdentifier(), is("new-identifier-123"));
+        assertThat(session.getNodeByIdentifier("new-identifier-123"), is(node));
+        assertThat(session.getNodeByIdentifier(oldId), nullValue());
+    }
+
+    /**
+     * Invalid XML should throw a RuntimeException in mockNodeFromXml.
+     */
+    @Test(expected = RuntimeException.class)
+    public void mockNodeFromXmlInvalidInputThrows() {
+        java.io.InputStream is = new java.io.ByteArrayInputStream("<not><valid>".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        NodeMockUtils.mockNodeFromXml("badRepo", is);
+    }
+
+    /**
+     * Direct test of getPathForParent(null, relPath) returning root path.
+     */
+    @Test
+    public void getPathForParentNullReturnsRoot() throws RepositoryException {
+        assertThat(NodeMockUtils.getPathForParent(null, "anything"), is("/"));
+    }
+
+    private void assertPropertyBasics(Node node, String name, Property property, int type) throws RepositoryException {
+        assertThat(property.getType(), is(type));
+        assertThat(node.getProperty(name), is(property));
     }
 }

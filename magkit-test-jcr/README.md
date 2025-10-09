@@ -1,5 +1,19 @@
 # Magkit Test JCR
 
+**A comprehensive JCR mocking framework for unit testing with Mockito.**
+
+This module provides a powerful builder API for creating Mockito mocks of `javax.jcr` classes with pre-configured, realistic behaviors. It simplifies JCR unit testing by offering factory methods that create interconnected mock hierarchies, eliminating the boilerplate code typically required for JCR testing setup.
+
+## Key Features
+
+- **Complete JCR Mock Coverage**: Support for Repository, Session, Workspace, Node, Property, Value, Query, QueryManager, and QueryResult
+- **Hierarchical Mock Management**: Automatically creates and manages parent-child relationships between JCR objects
+- **Thread-Safe Testing**: Uses ThreadLocal storage to enable parallel test execution
+- **Stubbing Operations**: Flexible configuration through dedicated stubbing operation classes
+- **Get-or-Create Pattern**: Reuses existing mocks within the same test thread to maintain consistency
+
+## Overview
+
 This project contains a builder API to create mockito mocks of javax.jcr classes and stub their behaviour. 
 The mocks are always created with some basic subbing of a default behaviour.
 
