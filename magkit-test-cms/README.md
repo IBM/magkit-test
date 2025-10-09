@@ -1,5 +1,38 @@
 # Magkit Test CMS (Magnolia)
 
+A lightweight builder API to quickly create consistent Mockito-based Magnolia test contexts (WebContext/SystemContext), server configuration mocks, and JCR query/query result mocks. It removes boilerplate around the static MgnlContext and ComponentProvider registration while offering composable stubbing operations for fine-grained behavior control.
+
+## Quick Examples
+```java
+import static de.ibmix.magkit.test.cms.context.ContextMockUtils.*;
+import static de.ibmix.magkit.test.cms.context.ServerConfigurationMockUtils.mockServerConfiguration;
+import static de.ibmix.magkit.test.cms.context.ServerConfigurationStubbingOperation.*;
+import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.*;
+import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
+import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
+
+// 1) Web context with locale + request parameter
+mockWebContext(stubLocale(Locale.GERMAN), stubRequestParameter("id", "42"));
+assert Locale.GERMAN.equals(MgnlContext.getWebContext().getLocale());
+assert "42".equals(MgnlContext.getWebContext().getParameter("id"));
+
+// 2) Server configuration mock
+mockServerConfiguration(
+    stubDefaultBaseUrl("https://example.test"),
+    stubDefaultExtension("html"),
+    stubIsAdmin(true)
+);
+assert MgnlContext.getServerConfiguration().isAdmin();
+
+// 3) JCR node + query result
+Node article = mockNode("website:article", stubProperty("title", "Hello"));
+QueryResult result = mockQueryResult("website", "JCR-SQL2", "SELECT * FROM [nt:base]");
+// Your test code consuming result / node here
+
+// 4) Cleanup between tests
+cleanContext();
+```
+
 This project contains a builder API to create mockito mocks of info.magnolia classes and stub their behaviour. 
 The mocks are always created with some basic stubbing of a default behaviour.
 
@@ -9,10 +42,10 @@ The mocks are always created with some basic stubbing of a default behaviour.
     <dependency>
         <artifactId>magkit-test-cms</artifactId>
         <groupId>de.ibmix.magkit</groupId>
-        <version>1.0.0</version>
+        <version>1.0.8</version>
     </dependency>
 ```
-It requires magnolia 6.2.19 or later and uses magkit-test-servlet and magkit-test-jcr. 
+It requires magnolia 6.2.45 or later and uses magkit-test-servlet and magkit-test-jcr. 
 
 ### Mock a class:
 XxxMockUtil classes provide static methods for each class to mock. These mock methods implement a get-or-create pattern: 
@@ -71,6 +104,57 @@ info.magnolia.rendering.template classes
 - info.magnolia.rendering.template.AreaDefinition
 
 Finally, we provide convenience methods for mocking jcr nodes with magnolia NodeTypes and register their JcrSession in the magnolia WebContext.
+
+### MockUtils Overview
+Brief overview of the available MockUtils grouped by functional context. Use them together with the StubbingOperation classes to build consistent and finely tuned test scenarios.
+
+| Group | MockUtils Class | Core Mocks / Target Types | Typical Usage |
+|-------|-----------------|---------------------------|---------------|
+| Context / Global | `ContextMockUtils` | WebContext, SystemContext, AggregationState, Query/QueryResult | Build complete Magnolia test contexts incl. JCR sessions |
+| Context / Global | `ComponentsMockUtils` | Any Magnolia components | Register generic component mocks for constructor injection |
+| Server | `ServerConfigurationMockUtils` | ServerConfiguration | Test server dependent paths, base URL, admin mode |
+| Internationalization | `I18nContentSupportMockUtils` | I18nContentSupport | Localization, property resolution, multi-language tests |
+| JCR Nodes | `MagnoliaNodeMockUtils` | JCR node hierarchies | Page / area / asset nodes with consistent properties |
+| DAM | `AssetMockUtils` | Asset, AssetProvider, AssetProviderRegistry | Media & asset logic without real storage |
+| Security | `SecurityMockUtils` | User, Group, Role, UserManager, AccessManager, SecuritySupport | Auth / authorization, role & permission checks |
+| Site | `SiteMockUtils` | Site, SiteManager, ThemeReference, resources | Multi-site & domain related behavior |
+| Site | `ThemeMockUtils` | Theme | Theme resources, styles, references |
+| Templating | `TemplateMockUtils` | TemplateDefinition, AreaDefinition, TemplateDefinitionRegistry | Rendering / template selection, layout logic |
+| Module | `ModuleMockUtils` | ModuleDefinition, ModuleRegistry, InstallContext, ServletDefinition | Module installation, registry & servlet definitions |
+
+Notes:
+- Combine multiple MockUtils (e.g. Context + Node + I18n) for realistic end-to-end test cases.
+- Always clean global state after each test with `ContextMockUtils.cleanContext()`
+
+### StubbingOperation Overview
+A concise mapping of provided StubbingOperation factories to the Magnolia types they configure.
+
+| StubbingOperation Class | Target Type(s) | Purpose |
+|-------------------------|----------------|---------|
+| `WebContextStubbingOperation` | `WebContext` | Locale, request/response, parameters, attributes, JCR sessions |
+| `SystemContextStubbingOperation` | `SystemContext` | System-scoped attributes and context flags |
+| `AggregationStateStubbingOperation` | `AggregationState` | URI, template, channel/state related properties |
+| `ServerConfigurationStubbingOperation` | `ServerConfiguration` | Base URL, default extension, admin flag |
+| `I18nContentSupportStubbingOperation` | `I18nContentSupport` | Locale/property resolution, enablement flags |
+| `MagnoliaNodeStubbingOperation` | `javax.jcr.Node` | Node type, properties, dates, template meta |
+| `AccessManagerStubbingOperation` | `AccessManager` | Permission checks (allow/deny) |
+| `UserStubbingOperation` | `User` | Name, roles, groups, active flags |
+| `GroupStubbingOperation` | `Group` | Name, permissions, roles |
+| `RoleStubbingOperation` | `Role` | Name and permission assignment |
+| `UserManagerStubbingOperation` | `UserManager` | User lookup and listing behavior |
+| `RoleManagerStubbingOperation` | `RoleManager` | Role retrieval and registration behavior |
+| `AssetStubbingOperation` | `Asset` | Asset metadata (name, MIME type, size) |
+| `SiteStubbingOperation` | `Site` | Site properties, theme reference, domains |
+| `SiteManagerStubbingOperation` | `SiteManager` | Active site lookup, site registration |
+| `ThemeStubbingOperation` | `Theme` | Theme resources and name |
+| `TemplateDefinitionStubbingOperation` | `TemplateDefinition` | Template identifiers, render type, title |
+| `AreaDefinitionStubbingOperation` | `AreaDefinition` | Area properties (name, type, inheritance) |
+| `InstallContextStubbingOperation` | `InstallContext` | Module install phase values, messages |
+| `ModuleDefinitionStubbingOperation` | `ModuleDefinition` | Module metadata (name, version) |
+| `ModuleRegistryStubbingOperation` | `ModuleRegistry` | Module resolution and registration stubs |
+| `ServletDefinitionStubbingOperation` | Servlet Definition (Magnolia) | Servlet metadata (name, class, params) |
+
+For each of these, combine multiple operations to compose complex mock behavior while keeping tests readable.
 
 For each mocked class there is a XxxStubbingOperation class to stub its behaviour.
 
@@ -195,4 +279,3 @@ If you would like to see the detailed LICENSE click [here](../LICENSE).
 ## Authors
 
 - Author: Wolf Bubenik - wolf.bubenik@ibm.com
-
