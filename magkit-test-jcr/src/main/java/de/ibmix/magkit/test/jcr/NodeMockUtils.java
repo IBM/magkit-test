@@ -75,188 +75,6 @@ import static org.mockito.Mockito.when;
  */
 public final class NodeMockUtils {
 
-    public static final Answer<Boolean> IS_NODE_TYPE_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String type = (String) invocation.getArguments()[0];
-        return StringUtils.equals(node.getPrimaryNodeType().getName(), type);
-    };
-    public static final Answer<Object> ACCEPT_ANSWER = invocation -> {
-        Object[] args = invocation.getArguments();
-        ItemVisitor visitor = (ItemVisitor) args[0];
-        visitor.visit((Node) invocation.getMock());
-        return null;
-    };
-    public static final Answer<Item> ANCESTOR_ANSWER = invocation -> {
-        Object[] args = invocation.getArguments();
-        int depth = (Integer) args[0];
-        Item node = (Item) invocation.getMock();
-        if (depth < 0 || node.getDepth() < depth) {
-            throw new ItemNotFoundException("No ancestor with depth " + depth);
-        }
-        Item result = node;
-        while (result.getDepth() > depth) {
-            result = result.getParent();
-        }
-        return result;
-    };
-    public static final Answer<String> PATH_ANSWER = invocation -> {
-        Item node = (Item) invocation.getMock();
-        Node parent = node.getParent();
-        // note that we may have a property namespace withing the path. This is very likely not correct
-        // but allows using the item path for mocking session.getItem(absPath)
-        return getPathForParent(parent, node.getName());
-    };
-    public static final Answer<Integer> DEPTH_ANSWER = invocation -> {
-        Item node = (Item) invocation.getMock();
-        Node parent = node.getParent();
-        return parent == null ? 0 : parent.getDepth() + 1;
-    };
-    public static final Answer<Session> SESSION_ANSWER = invocation -> {
-        Item node = (Item) invocation.getMock();
-        Item parent = node.getParent();
-        return parent == null ? null : parent.getSession();
-    };
-    public static final Answer<Node> NODE_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String relPath = (String) invocation.getArguments()[0];
-        String absPath = getPathForParent(node, relPath);
-        Session s = node.getSession();
-        return s == null ? null : (Node) s.getItem(absPath);
-    };
-    public static final Answer<Property> PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String relPath = (String) invocation.getArguments()[0];
-        String absPath = getPathForParent(node, relPath);
-        Session s = node.getSession();
-        return s == null ? null : (Property) s.getItem(absPath);
-    };
-    public static final Answer<NodeIteratorAdapter> NODES_ANSWER = invocation -> {
-        TestNode node = (TestNode) invocation.getMock();
-        return new NodeIteratorAdapter(node.getNodeCollection());
-    };
-    public static final Answer<Boolean> HAS_NODES_ANSWER = invocation -> {
-        TestNode node = (TestNode) invocation.getMock();
-        return node.getNodeCollection() != null && !node.getNodeCollection().isEmpty();
-    };
-    public static final Answer<PropertyIteratorAdapter> PROPERTIES_ANSWER = invocation -> {
-        TestNode node = (TestNode) invocation.getMock();
-        return new PropertyIteratorAdapter(node.getPropertyCollection());
-    };
-    public static final Answer<Boolean> HAS_PROPERTIES_ANSWER = invocation -> {
-        TestNode node = (TestNode) invocation.getMock();
-        return node.getPropertyCollection() != null && !node.getPropertyCollection().isEmpty();
-    };
-    public static final Answer<Boolean> ITEM_EXISTS_ANSWER = invocation -> {
-        Item node = (Item) invocation.getMock();
-        String relPath = (String) invocation.getArguments()[0];
-        String absPath = getPathForParent(node, relPath);
-        Session s = node.getSession();
-        return s != null && s.itemExists(absPath);
-    };
-    public static final Answer<Node> ADD_NODE_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String relPath = (String) invocation.getArguments()[0];
-        Node result = null;
-        if (isNotBlank(relPath)) {
-            String separator = node.getPath().endsWith("/") ? EMPTY : "/";
-            String absPath = node.getPath() + separator + relPath;
-            result = mockNode(node.getSession().getWorkspace().getName(), absPath);
-        }
-        return result;
-    };
-    public static final Answer<Node> ADD_NODE_WITH_TYPE_ANSWER = invocation -> {
-        String type = (String) invocation.getArguments()[1];
-        Node result = ADD_NODE_ANSWER.answer(invocation);
-        if (result != null && isNotBlank(type)) {
-            stubType(type).of(result);
-        }
-        return result;
-    };
-    public static final Answer<Property> SET_BOOLEAN_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        Boolean value = (Boolean) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<Property> SET_BINARY_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        Binary value = (Binary) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-
-    public static final Answer<Property> SET_CALENDAR_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        Calendar value = (Calendar) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<Property> SET_DOUBLE_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        Double value = (Double) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<Property> SET_LONG_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        Long value = (Long) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<Property> SET_NODE_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        Node value = (Node) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<Property> SET_STRING_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        String value = (String) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<Property> SET_STRINGS_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        String[] value = (String[]) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<Property> SET_VALUE_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        Value value = (Value) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<Property> SET_VALUES_PROPERTY_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String name = (String) invocation.getArguments()[0];
-        Value[] value = (Value[]) invocation.getArguments()[1];
-        stubProperty(name, value).of(node);
-        return node.getProperty(name);
-    };
-    public static final Answer<String> TO_STRING_ANSWER = invocation -> {
-        Node node = (Node) invocation.getMock();
-        String result = EMPTY;
-        try {
-            result = node.getPath() + " id:" + node.getIdentifier();
-        } catch (RepositoryException e) {
-            // ignore
-        }
-        return result;
-    };
-
-    private NodeMockUtils() {
-    }
-
     /**
      * Creates a Node mock with name "untitled" and default type NodeType.NT_BASE in the "website" workspace.
      *
@@ -441,6 +259,188 @@ public final class NodeMockUtils {
             }
         }
         return result;
+    }
+
+    public static final Answer<Boolean> IS_NODE_TYPE_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String type = (String) invocation.getArguments()[0];
+        return StringUtils.equals(node.getPrimaryNodeType().getName(), type);
+    };
+    public static final Answer<Object> ACCEPT_ANSWER = invocation -> {
+        Object[] args = invocation.getArguments();
+        ItemVisitor visitor = (ItemVisitor) args[0];
+        visitor.visit((Node) invocation.getMock());
+        return null;
+    };
+    public static final Answer<Item> ANCESTOR_ANSWER = invocation -> {
+        Object[] args = invocation.getArguments();
+        int depth = (Integer) args[0];
+        Item node = (Item) invocation.getMock();
+        if (depth < 0 || node.getDepth() < depth) {
+            throw new ItemNotFoundException("No ancestor with depth " + depth);
+        }
+        Item result = node;
+        while (result.getDepth() > depth) {
+            result = result.getParent();
+        }
+        return result;
+    };
+    public static final Answer<String> PATH_ANSWER = invocation -> {
+        Item node = (Item) invocation.getMock();
+        Node parent = node.getParent();
+        // note that we may have a property namespace withing the path. This is very likely not correct
+        // but allows using the item path for mocking session.getItem(absPath)
+        return getPathForParent(parent, node.getName());
+    };
+    public static final Answer<Integer> DEPTH_ANSWER = invocation -> {
+        Item node = (Item) invocation.getMock();
+        Node parent = node.getParent();
+        return parent == null ? 0 : parent.getDepth() + 1;
+    };
+    public static final Answer<Session> SESSION_ANSWER = invocation -> {
+        Item node = (Item) invocation.getMock();
+        Item parent = node.getParent();
+        return parent == null ? null : parent.getSession();
+    };
+    public static final Answer<Node> NODE_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String relPath = (String) invocation.getArguments()[0];
+        String absPath = getPathForParent(node, relPath);
+        Session s = node.getSession();
+        return s == null ? null : (Node) s.getItem(absPath);
+    };
+    public static final Answer<Property> PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String relPath = (String) invocation.getArguments()[0];
+        String absPath = getPathForParent(node, relPath);
+        Session s = node.getSession();
+        return s == null ? null : (Property) s.getItem(absPath);
+    };
+    public static final Answer<NodeIteratorAdapter> NODES_ANSWER = invocation -> {
+        TestNode node = (TestNode) invocation.getMock();
+        return new NodeIteratorAdapter(node.getNodeCollection());
+    };
+    public static final Answer<Boolean> HAS_NODES_ANSWER = invocation -> {
+        TestNode node = (TestNode) invocation.getMock();
+        return node.getNodeCollection() != null && !node.getNodeCollection().isEmpty();
+    };
+    public static final Answer<PropertyIteratorAdapter> PROPERTIES_ANSWER = invocation -> {
+        TestNode node = (TestNode) invocation.getMock();
+        return new PropertyIteratorAdapter(node.getPropertyCollection());
+    };
+    public static final Answer<Boolean> HAS_PROPERTIES_ANSWER = invocation -> {
+        TestNode node = (TestNode) invocation.getMock();
+        return node.getPropertyCollection() != null && !node.getPropertyCollection().isEmpty();
+    };
+    public static final Answer<Boolean> ITEM_EXISTS_ANSWER = invocation -> {
+        Item node = (Item) invocation.getMock();
+        String relPath = (String) invocation.getArguments()[0];
+        String absPath = getPathForParent(node, relPath);
+        Session s = node.getSession();
+        return s != null && s.itemExists(absPath);
+    };
+    public static final Answer<Node> ADD_NODE_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String relPath = (String) invocation.getArguments()[0];
+        Node result = null;
+        if (isNotBlank(relPath)) {
+            String separator = node.getPath().endsWith("/") ? EMPTY : "/";
+            String absPath = node.getPath() + separator + relPath;
+            result = mockNode(node.getSession().getWorkspace().getName(), absPath);
+        }
+        return result;
+    };
+    public static final Answer<Node> ADD_NODE_WITH_TYPE_ANSWER = invocation -> {
+        String type = (String) invocation.getArguments()[1];
+        Node result = ADD_NODE_ANSWER.answer(invocation);
+        if (result != null && isNotBlank(type)) {
+            stubType(type).of(result);
+        }
+        return result;
+    };
+    public static final Answer<Property> SET_BOOLEAN_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Boolean value = (Boolean) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<Property> SET_BINARY_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Binary value = (Binary) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+
+    public static final Answer<Property> SET_CALENDAR_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Calendar value = (Calendar) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<Property> SET_DOUBLE_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Double value = (Double) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<Property> SET_LONG_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Long value = (Long) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<Property> SET_NODE_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Node value = (Node) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<Property> SET_STRING_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        String value = (String) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<Property> SET_STRINGS_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        String[] value = (String[]) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<Property> SET_VALUE_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Value value = (Value) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<Property> SET_VALUES_PROPERTY_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String name = (String) invocation.getArguments()[0];
+        Value[] value = (Value[]) invocation.getArguments()[1];
+        stubProperty(name, value).of(node);
+        return node.getProperty(name);
+    };
+    public static final Answer<String> TO_STRING_ANSWER = invocation -> {
+        Node node = (Node) invocation.getMock();
+        String result = EMPTY;
+        try {
+            result = node.getPath() + " id:" + node.getIdentifier();
+        } catch (RepositoryException e) {
+            // ignore
+        }
+        return result;
+    };
+
+    private NodeMockUtils() {
     }
 
     /**
