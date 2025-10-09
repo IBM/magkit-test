@@ -26,11 +26,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
 
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
@@ -303,7 +305,8 @@ public class QueryMockUtilsTest {
         assertThat(row.getValue("prop1").getString(), is("value1"));
         assertThat(row.getValue("prop2").getString(), is("value2"));
         assertThat(row.getValues(), notNullValue());
-        assertThat(row.getValues().length, is(0)); // Default empty values array
+        // Default empty values array
+        assertThat(row.getValues().length, is(0));
     }
 
     @Test
@@ -324,16 +327,19 @@ public class QueryMockUtilsTest {
         QueryResult qr = QueryMockUtils.mockQueryResult(node1, node2, node3);
 
         // Test nodes iterator
-        assertThat(qr.getNodes().nextNode(), is(node1));
-        assertThat(qr.getNodes().nextNode(), is(node2));
-        assertThat(qr.getNodes().nextNode(), is(node3));
-        assertThat(qr.getNodes().hasNext(), is(false));
+        NodeIterator results = qr.getNodes();
+        assertThat(results.nextNode(), is(node1));
+        assertThat(results.nextNode(), is(node2));
+        assertThat(results.nextNode(), is(node3));
+        assertThat(results.hasNext(), is(false));
 
         // Test rows iterator
-        assertThat(qr.getRows().nextRow().getNode(), is(node1));
-        assertThat(qr.getRows().nextRow().getNode(), is(node2));
-        assertThat(qr.getRows().nextRow().getNode(), is(node3));
-        assertThat(qr.getRows().hasNext(), is(false));
+        RowIterator rows = qr.getRows();
+        assertThat(rows, notNullValue());
+        assertThat(rows.nextRow().getNode(), is(node1));
+        assertThat(rows.nextRow().getNode(), is(node2));
+        assertThat(rows.nextRow().getNode(), is(node3));
+        assertThat(rows.hasNext(), is(false));
     }
 
     @Test
@@ -370,17 +376,20 @@ public class QueryMockUtilsTest {
         QueryResult qr = QueryMockUtils.mockQueryResult(node1, node2);
 
         // Verify NODES_ANSWER functionality through multiple iterations
-        assertThat(qr.getNodes().nextNode(), is(node1));
-        assertThat(qr.getNodes().nextNode(), is(node2));
-        assertThat(qr.getNodes().hasNext(), is(false));
+        NodeIterator results = qr.getNodes();
+        assertThat(results.nextNode(), is(node1));
+        assertThat(results.nextNode(), is(node2));
+        assertThat(results.hasNext(), is(false));
 
         // Reset and test again to ensure Answer works consistently
-        assertThat(qr.getNodes().nextNode(), is(node1));
-        assertThat(qr.getNodes().nextNode(), is(node2));
+        results = qr.getNodes();
+        assertThat(results.nextNode(), is(node1));
+        assertThat(results.nextNode(), is(node2));
 
         // Verify ROWS_ANSWER functionality
-        Row row1 = qr.getRows().nextRow();
-        Row row2 = qr.getRows().nextRow();
+        RowIterator rows = qr.getRows();
+        Row row1 = rows.nextRow();
+        Row row2 = rows.nextRow();
 
         assertThat(row1.getNode(), is(node1));
         assertThat(row1.getValue("test").getString(), is("value1"));
