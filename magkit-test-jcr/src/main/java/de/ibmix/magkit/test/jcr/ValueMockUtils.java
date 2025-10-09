@@ -71,27 +71,6 @@ import static org.mockito.Mockito.when;
  * @since 2012-08-04
  */
 public final class ValueMockUtils {
-    /**
-     * Answer that implements {@link Value#getStream()} by delegating to the currently configured {@link Binary} of the mock.
-     * Returns {@code null} if no binary is set.
-     */
-    public static final Answer<InputStream> STREAM_ANSWER = invocation -> {
-        Value value = (Value) invocation.getMock();
-        Binary binary = value.getBinary();
-        return binary == null ? null : binary.getStream();
-    };
-    /**
-     * Answer used to implement {@link Object#toString()} on the value mock. Delegates to {@link Value#getString()} and
-     * returns the literal {@code "NULL"} if the string value is {@code null} to aid debugging of test failures.
-     */
-    public static final Answer<String> TO_STRING_ANSWER = invocation -> {
-        Value value = (Value) invocation.getMock();
-        String result = value.getString();
-        return result != null ? result : "NULL";
-    };
-
-    private ValueMockUtils() {
-    }
 
     /**
      * Create a mock {@link Value} of type {@link PropertyType#STRING} with conversion behaviour inferred from the text.
@@ -274,5 +253,27 @@ public final class ValueMockUtils {
             when(result.getSize()).thenReturn((long) bytes.length);
         }
         return result;
+    }
+
+    /**
+     * Answer that implements {@link Value#getStream()} by delegating to the currently configured {@link Binary} of the mock.
+     * Returns {@code null} if no binary is set.
+     */
+    public static final Answer<InputStream> STREAM_ANSWER = invocation -> {
+        Value value = (Value) invocation.getMock();
+        Binary binary = value.getBinary();
+        return binary == null ? null : binary.getStream();
+    };
+    /**
+     * Answer used to implement {@link Object#toString()} on the value mock. Delegates to {@link Value#getString()} and
+     * returns the literal {@code "NULL"} if the string value is {@code null} to aid debugging of test failures.
+     */
+    public static final Answer<String> TO_STRING_ANSWER = invocation -> {
+        Value value = (Value) invocation.getMock();
+        String result = value.getString();
+        return result != null ? result : "NULL";
+    };
+
+    private ValueMockUtils() {
     }
 }
