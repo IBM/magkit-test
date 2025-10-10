@@ -83,6 +83,7 @@ import static org.mockito.Mockito.when;
  * <h3>Thread safety</h3>
  * All provided mocks are local to the test execution thread; no internal state is shared besides the component
  * provider registration. Ensure registry cleanup when tests run in parallel.
+ *
  * @author wolf.bubenik@ibmix.de
  * @since 2011-03-25
  */
@@ -274,6 +275,9 @@ public final class AssetMockUtils extends ComponentsMockUtils {
     private static final Answer<Long> ASSET_FILE_SIZE_ANSWER = new AssetResourcePropertyLongAnswer(AssetNodeTypes.AssetResource.SIZE);
     private static final Answer<InputStream> ASSET_STREAM_ANSWER = new AssetResourcePropertyStreamAnswer(AssetNodeTypes.AssetResource.DATA);
 
+    private AssetMockUtils() {
+    }
+
     /**
      * Answer implementation resolving a String property directly on the asset node.
      */
@@ -366,8 +370,5 @@ public final class AssetMockUtils extends ComponentsMockUtils {
             }
             return result;
         }
-    }
-
-    private AssetMockUtils() {
     }
 }

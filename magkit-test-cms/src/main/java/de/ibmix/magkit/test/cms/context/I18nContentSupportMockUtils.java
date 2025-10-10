@@ -35,7 +35,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.apache.commons.lang3.StringUtils; // added for JavaDoc link resolution
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Utility class providing factory methods to create and register Mockito based mocks of {@link I18nContentSupport}.
@@ -119,7 +119,7 @@ public final class I18nContentSupportMockUtils extends ComponentsMockUtils {
      * @return the property name or {@link StringUtils#EMPTY} if not present.
      */
     private static String getName(Object[] arguments) {
-        return hasObject(arguments, 1) ? (String) arguments[1] : EMPTY; // JavaDoc refers to StringUtils#EMPTY
+        return hasObject(arguments, 1) ? (String) arguments[1] : EMPTY;
     }
 
     /**

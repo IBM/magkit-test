@@ -70,8 +70,8 @@ public class MagnoliaNodeMockUtilsTest {
 
     @Test
     public void mockPageNodeTest() throws RepositoryException {
-        NodeStubbingOperation op1 = Mockito.mock(NodeStubbingOperation.class);
-        NodeStubbingOperation op2 = Mockito.mock(NodeStubbingOperation.class);
+        PageNodeStubbingOperation op1 = Mockito.mock(PageNodeStubbingOperation.class);
+        PageNodeStubbingOperation op2 = Mockito.mock(PageNodeStubbingOperation.class);
         Node node = mockPageNode(op1, op2);
         assertThat(node.getPrimaryNodeType(), notNullValue());
         assertThat(node.getPrimaryNodeType().getName(), is(NT_PAGE));
@@ -88,7 +88,7 @@ public class MagnoliaNodeMockUtilsTest {
 
     @Test
     public void mockAreaNodeTest() throws RepositoryException {
-        NodeStubbingOperation op1 = Mockito.mock(NodeStubbingOperation.class);
+        AreaNodeStubbingOperation op1 = Mockito.mock(AreaNodeStubbingOperation.class);
         Node node = mockAreaNode("test", op1);
         verify(op1, times(1)).of(node);
         assertThat(node.getPrimaryNodeType().getName(), is(NT_AREA));

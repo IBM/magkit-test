@@ -143,12 +143,22 @@ public final class NodeMockUtils {
 
     /**
      * Creates (or retrieves if already mocked) a {@link Node} mock by parsing the given XML input stream.
-     * The XML must be encoded in UTF-8 and conform to the JCR XML import format.
+     * The XML must be encoded in UTF-8 and conform to the JCR XML import format used by Magnolia / Jackrabbit.
+     * <p>
+     * Implementation details:
+     * <ul>
+     *   <li>Uses a SAX parser with the default factory settings (no validation, no namespace adjustments).</li>
+     *   <li>Delegates element handling to {@code JcrXmlHandler} which creates node mocks and stubs properties accordingly.</li>
+     *   <li>The provided input stream is not closed; caller remains responsible for resource cleanup.</li>
+     * </ul>
+     * </p>
+     * <p><strong>Error handling:</strong> Any {@link ParserConfigurationException}, {@link SAXException} or {@link IOException}
+     * encountered during parsing is wrapped in a {@link RuntimeException} to simplify test code (unchecked).</p>
      *
      * @param repository name of the workspace
-     * @param xmlUtf8 input stream providing the XML content. The stream is <strong>not</strong> closed by this method.
-     * @return the created {@link Node} mock instance
-     * @throws RepositoryException if the XML is invalid or a repository error occurs
+     * @param xmlUtf8 input stream providing the XML content (UTF-8 encoded)
+     * @return the root {@link Node} mock representing the parsed XML tree
+     * @throws RuntimeException if the XML is invalid or an I/O parsing error occurs
      */
     public static Node mockNodeFromXml(final String repository, InputStream xmlUtf8) {
         try {
@@ -296,6 +306,29 @@ public final class NodeMockUtils {
         return result;
     }
 
+    /**
+     * Group of reusable Mockito {@link Answer} instances used to implement lightweight JCR semantics on the created node mocks.
+     * <p>
+     * They are applied in {@link #mockPlainNode(String)} and focus on path calculation, ancestor traversal, session lookup,
+     * child/property iteration and dynamic property setting. Each Answer keeps logic minimal while enabling typical test navigation.
+     * </p>
+     * <p><strong>Behavior summary:</strong></p>
+     * <ul>
+     *   <li><code>IS_NODE_TYPE_ANSWER</code>: checks primary type name equality.</li>
+     *   <li><code>ACCEPT_ANSWER</code>: invokes {@link ItemVisitor#visit(Node)} on the current mock.</li>
+     *   <li><code>ANCESTOR_ANSWER</code>: climbs parents until requested depth; throws {@link ItemNotFoundException} on invalid depth.</li>
+     *   <li><code>PATH_ANSWER</code>: builds absolute path from parent path + own name.</li>
+     *   <li><code>DEPTH_ANSWER</code>: calculates depth relative to root (root = 0).</li>
+     *   <li><code>SESSION_ANSWER</code>: inherits session from parent if available.</li>
+     *   <li><code>NODE_ANSWER</code>/<code>PROPERTY_ANSWER</code>: resolves relative path by concatenation and retrieving from session.</li>
+     *   <li><code>NODES_ANSWER</code>/<code>PROPERTIES_ANSWER</code>: wrap internal collections in Jackrabbit iterator adapters.</li>
+     *   <li><code>HAS_NODES_ANSWER</code>/<code>HAS_PROPERTIES_ANSWER</code>: existence checks for internal collections.</li>
+     *   <li><code>ITEM_EXISTS_ANSWER</code>: delegates existence check to session via absolute path.</li>
+     *   <li><code>ADD_NODE_ANSWER</code>/<code>ADD_NODE_WITH_TYPE_ANSWER</code>: create child node mocks (optionally stub type) beneath current path.</li>
+     *   <li>SET_*_PROPERTY answers: create and attach properties of the respective type via the appropriate {@link NodeStubbingOperation} stubProperty overload.</li>
+     *   <li><code>TO_STRING_ANSWER</code>: returns a concise identifier containing path and UUID.</li>
+     * </ul>
+     */
     public static final Answer<Boolean> IS_NODE_TYPE_ANSWER = invocation -> {
         Node node = (Node) invocation.getMock();
         String type = (String) invocation.getArguments()[0];
@@ -476,8 +509,9 @@ public final class NodeMockUtils {
     }
 
     /**
-     * Abstract base class for test node mocks.
-     * Provides default implementations for common JCR methods and manages the mock's state.
+     * Internal abstract base for mock nodes used by the utility methods. Maintains collections of child nodes and properties
+     * allowing iterator answers to operate on predictable in-memory structures. Removal keeps session/item registrations consistent
+     * by delegating to {@link SessionStubbingOperation#stubRemoveItem(javax.jcr.Item)}.
      */
     abstract static class TestNode implements Node {
         abstract Collection<Node> getNodeCollection();
@@ -494,4 +528,3 @@ public final class NodeMockUtils {
         }
     }
 }
-

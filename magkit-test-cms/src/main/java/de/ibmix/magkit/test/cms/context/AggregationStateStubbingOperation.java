@@ -1,17 +1,5 @@
 package de.ibmix.magkit.test.cms.context;
 
-import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Locale;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 /*-
  * #%L
  * magkit-test-cms Magnolia Module
@@ -32,9 +20,21 @@ import javax.jcr.RepositoryException;
  * #L%
  */
 
+import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Locale;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
-import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
+import de.ibmix.magkit.test.cms.node.PageNodeStubbingOperation;
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.cms.core.Channel;
 
@@ -62,7 +62,7 @@ import info.magnolia.cms.core.Channel;
  *   <li>If a provided {@link Node} value is {@code null}, only its direct method (e.g. {@code getMainContentNode()}) is stubbed; dependent stubbings (handle, repository) are skipped.</li>
  *   <li>String parameters may be {@code null}; the corresponding getter will then return {@code null}.</li>
  * </ul>
- * Thread-safety: Not thread-safe, intended for isolated unit tests manipulating static Magnolia runtime state.
+ * Thread-safety: Thread-safe, intended for multithreaded unit tests. Manipulated static Magnolia runtime state is backed with ThreadLocal<Context>.
  * <p>
  * Error handling: All operations delegate to Mockito; no checked exceptions are thrown unless declared (repository access in node based stubbings).
  * <p>
@@ -108,7 +108,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
      * @return operation configuring {@link AggregationState#getMainContentNode()}
      * @throws RepositoryException if underlying node mocking signals an error (normally not thrown)
      */
-    public static AggregationStateStubbingOperation stubMainContentNode(String path, NodeStubbingOperation... stubbings) throws RepositoryException {
+    public static AggregationStateStubbingOperation stubMainContentNode(String path, PageNodeStubbingOperation... stubbings) throws RepositoryException {
         Node node = MagnoliaNodeMockUtils.mockPageNode(path, stubbings);
         return stubMainContentNode(node);
     }
@@ -143,7 +143,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
      * @return operation configuring {@link AggregationState#getCurrentContentNode()}
      * @throws RepositoryException if node mocking fails
      */
-    public static AggregationStateStubbingOperation stubCurrentContentNode(String path, NodeStubbingOperation... stubbings) throws RepositoryException {
+    public static AggregationStateStubbingOperation stubCurrentContentNode(String path, PageNodeStubbingOperation... stubbings) throws RepositoryException {
         Node node = MagnoliaNodeMockUtils.mockPageNode(path, stubbings);
         return stubCurrentContentNode(node);
     }

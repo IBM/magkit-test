@@ -86,7 +86,7 @@ import static org.mockito.Mockito.mock;
  * @author wolf.bubenik@ibmix.de
  * @since 2010-08-27
  */
-@SuppressWarnings({"deprecation"})
+@SuppressWarnings("deprecation")
 public final class ContextMockUtils extends ComponentsMockUtils {
 
     /**

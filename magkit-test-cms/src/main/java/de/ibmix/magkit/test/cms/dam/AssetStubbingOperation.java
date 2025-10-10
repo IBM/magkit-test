@@ -61,10 +61,9 @@ import static org.mockito.Mockito.when;
  * </p>
  * <h3>Thread safety</h3>
  * Returned operations are stateless and thread-safe; they can be reused across tests. Binary stream stubbing creates fresh mocks per invocation.
- * </h3>
  * <h3>Error handling</h3>
  * Methods may throw {@link RepositoryException} when interacting with JCR nodes for {@link JcrAsset} stubbing. In typical mock setups these should not occur.
- * </h3>
+ *
  * @author wolf.bubenik@ibmix.de
  * @since 2010-11-17
  */

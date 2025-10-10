@@ -192,7 +192,7 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
     public static InstallContextStubbingOperation stubStatus(final InstallStatus status) {
         return new InstallContextStubbingOperation() {
             @Override
-            public void of(InstallContext mock) { // removed throws RepositoryException, not thrown
+            public void of(InstallContext mock) {
                 assertThat(mock, notNullValue());
                 doReturn(status).when(mock).getStatus();
             }
@@ -297,7 +297,7 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
     public static InstallContextStubbingOperation stubMessage(final String moduleName, final String message, final String details, final Date timestamp, final InstallContext.MessagePriority priority) {
         return new InstallContextStubbingOperation() {
             @Override
-            public void of(InstallContext mock) { // removed throws RepositoryException, not thrown
+            public void of(InstallContext mock) {
                 Map<String, List<InstallContext.Message>> messages = mock.getMessages();
                 List<InstallContext.Message> moduleMessages = messages.getOrDefault(moduleName, new ArrayList<>());
                 InstallContext.Message newMessage = mock(InstallContext.Message.class);
