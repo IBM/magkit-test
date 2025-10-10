@@ -69,10 +69,10 @@ import static org.mockito.Mockito.mock;
  *     <li>Optional, additional {@code *StubbingOperation} instances can further refine the returned mock.</li>
  *     <li>Global state is cleaned with {@link #cleanContext()} to avoid test interference.</li>
  * </ul>
- * <strong>Side effects:</strong> Each mock factory potentially mutates the global Magnolia runtime state by replacing the current context instance.
+ * <strong>Side effects:</strong> Each mock factory potentially mutates the thread-local Magnolia runtime state by replacing the current context instance.
  * Call {@link #cleanContext()} after each test (e.g. in an {@code @AfterEach}) to restore a clean environment.
  * <p>
- * <strong>Thread-safety:</strong> Not thread-safe. Intended for single-threaded unit tests.
+ * <strong>Thread-safety:</strong> Thread-safe because static MgnlContext is backed by ThreadLocal<Context>. Intended for multithreaded unit tests.
  * <p>
  * <strong>Typical usage:</strong>
  * <pre>{@code

@@ -49,8 +49,7 @@ import info.magnolia.cms.beans.config.ServerConfiguration;
  * component so that subsequent tests can register a fresh instance, preventing cross-test interference.
  * </p>
  * <p>
- * Thread-safety: This utility assumes tests run in isolation (e.g. JUnit) and does not provide explicit synchronization.
- * Avoid concurrent modification of Magnolia's component registry when using this utility.
+ * Thread-safety: Creating of mocks by {@link ComponentsMockUtils} is backed by ThreadLocal and is thread save.
  * </p>
  *
  * @author wolf.bubenik@ibmix.de
