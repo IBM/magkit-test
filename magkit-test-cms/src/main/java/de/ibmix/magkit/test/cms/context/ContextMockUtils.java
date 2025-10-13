@@ -60,21 +60,18 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Utility/factory collection for creating Mockito based Magnolia {@link WebContext}, {@link SystemContext}, {@link AggregationState} and JCR query related mocks.
- * <p>
- * All factory methods in this class centralize repetitive boilerplate needed to integrate Magnolia's static {@link MgnlContext} and component provider with Mockito.
- * They make sure that:
+ * <p>All factory methods in this class centralize repetitive boilerplate needed to integrate Magnolia's static {@link MgnlContext} and component provider with Mockito.</p>
+ * <p>They make sure that:</p>
  * <ul>
  *     <li>A suitable Magnolia context instance is registered in {@link MgnlContext#setInstance(Context)}.</li>
  *     <li>Default stubbings (request/response, i18n support, parameter/attribute resolution) are applied so tests can focus on their specific behaviour.</li>
  *     <li>Optional, additional {@code *StubbingOperation} instances can further refine the returned mock.</li>
  *     <li>Global state is cleaned with {@link #cleanContext()} to avoid test interference.</li>
  * </ul>
- * <strong>Side effects:</strong> Each mock factory potentially mutates the thread-local Magnolia runtime state by replacing the current context instance.
- * Call {@link #cleanContext()} after each test (e.g. in an {@code @AfterEach}) to restore a clean environment.
- * <p>
- * <strong>Thread-safety:</strong> Thread-safe because static MgnlContext is backed by ThreadLocal<Context>. Intended for multithreaded unit tests.
- * <p>
- * <strong>Typical usage:</strong>
+ * <p><strong>Side effects:</strong> Each mock factory potentially mutates the thread-local Magnolia runtime state by replacing the current context instance.
+ * Call {@link #cleanContext()} after each test (e.g. in an {@code @AfterEach}) to restore a clean environment.</p>
+ * <p><strong>Thread-safety:</strong> Thread-safe because static MgnlContext is backed by ThreadLocal&lt;Context&gt;. Intended for multithreaded unit tests.</p>
+ * <p><strong>Typical usage:</strong></p>
  * <pre>{@code
  * @Test
  * void testQueryExecution() throws RepositoryException {

@@ -47,25 +47,87 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * A util class to create Mockito mocks of magnolia security classes.
+ * Utility/factory methods to create Mockito based mocks for Magnolia security related components
+ * (AccessManager, UserManager, GroupManager, RoleManager and their domain objects).<br>
+ * <p>
+ * The methods follow a lazy creation pattern: if a mock for the requested object already exists (as returned by
+ * the currently mocked {@link SecuritySupport} or {@link WebContext}), it is reused; otherwise a new mock is created,
+ * registered (where appropriate) and optionally further configured through provided stubbing operations.
+ * </p>
+ * <p>
+ * Each factory method accepts zero or more dedicated *StubbingOperation functional interfaces allowing concise,
+ * chainable customization of the produced mocks without exposing Mockito calls at the call site. This keeps
+ * test code expressive and focused on intent.
+ * </p>
+ * <p>
+ * Contract / guarantees:
+ * </p>
+ * <ul>
+ *   <li>Never returns {@code null}; will assert required arguments (realm, repository id, stubbing arrays).</li>
+ *   <li>Ensures idempotent creation inside a single test execution path (reuses already registered mocks).</li>
+ *   <li>Vararg stubbing parameters are applied in order of appearance.</li>
+ * </ul>
+ * <p>
+ * Typical usage example:
+ * <pre>
+ *   User user = SecurityMockUtils.mockUser("author", UserStubbingOperation.stubEnabled(true));
+ *   Role editors = SecurityMockUtils.mockRole("editors");
+ * </pre>
+ * </p>
+ *
+ * <p><b>Thread safety:</b> This utility is intended for single-threaded test execution. Concurrent usage might
+ * lead to race conditions when first-time mocks are registered.</p>
+ *
+ * <p><b>Error handling:</b> Parameter validation relies on Hamcrest {@code assertThat}; failing preconditions
+ * raise {@link AssertionError}.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2013-04-30
  */
 public final class SecurityMockUtils extends ComponentsMockUtils {
 
+    /**
+     * Clears the registered {@link SecuritySupport} component from the Magnolia component provider / registry used
+     * in tests so that subsequent calls will create a fresh mock instance.
+     */
     public static void cleanSecuritySupport() {
         clearComponentProvider(SecuritySupport.class);
     }
 
+    /**
+     * Returns the (possibly newly created) Mockito mock instance of {@link SecuritySupport} registered in the
+     * component provider. Subsequent calls will return the same instance until {@link #cleanSecuritySupport()} is invoked.
+     *
+     * @return mocked {@link SecuritySupport} (never {@code null})
+     */
     public static SecuritySupport mockSecuritySupport() {
         return mockComponentInstance(SecuritySupport.class);
     }
 
+    /**
+     * Convenience overload creating or retrieving an {@link AccessManager} mock for the default website repository
+     * and applying the provided stubbing operations.
+     *
+     * @param stubbings ordered varargs of operations to configure the resulting mock
+     * @return mocked {@link AccessManager}
+     * @throws RepositoryException if one of the provided stubbing operations triggers repository interaction issues
+     * @throws AssertionError      if {@code stubbings} array reference is {@code null}
+     */
     public static AccessManager mockAccessManager(AccessManagerStubbingOperation... stubbings) throws RepositoryException {
         return mockAccessManager(WEBSITE, stubbings);
     }
 
+    /**
+     * Creates or retrieves an {@link AccessManager} mock for the given repository id from the current {@link WebContext}.
+     * If none exists yet a new mock is created, registered via {@link de.ibmix.magkit.test.cms.context.WebContextStubbingOperation#stubAccessManager(String, AccessManager)}
+     * and subsequently configured by the supplied stubbing operations.
+     *
+     * @param repositoryId the logical Magnolia repository id (must be non blank)
+     * @param stubbings    ordered varargs of operations to configure the access manager mock (must not be {@code null})
+     * @return mocked {@link AccessManager} for the given repository id
+     * @throws RepositoryException if a stubbing operation throws it
+     * @throws AssertionError      if {@code repositoryId} is blank or {@code stubbings} array reference is {@code null}
+     */
     public static AccessManager mockAccessManager(String repositoryId, AccessManagerStubbingOperation... stubbings) throws RepositoryException {
         assertThat(stubbings, notNullValue());
         assertThat("The repository id must not be empty or blank.", isNotBlank(repositoryId));
@@ -81,6 +143,16 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return am;
     }
 
+    /**
+     * Creates or retrieves the {@link UserManager} mock for the specified realm from the mocked {@link SecuritySupport}.
+     * If it does not yet exist a new mock is created, registered and initialized with an empty user set.
+     * All provided stubbing operations are applied afterwards.
+     *
+     * @param realm     Magnolia security realm (must not be {@code null})
+     * @param stubbings optional ordered varargs of operations to configure the user manager mock
+     * @return mocked {@link UserManager}
+     * @throws AssertionError if {@code realm} is {@code null}
+     */
     public static UserManager mockUserManager(String realm, UserManagerStubbingOperation... stubbings) {
         assertThat(realm, notNullValue());
         SecuritySupport security = mockSecuritySupport();
@@ -95,6 +167,13 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return userManager;
     }
 
+    /**
+     * Creates or retrieves the global {@link GroupManager} mock from the {@link SecuritySupport}. Applies any supplied
+     * stubbing operations in order.
+     *
+     * @param stubbings optional ordered varargs of operations to configure the group manager mock
+     * @return mocked {@link GroupManager}
+     */
     public static GroupManager mockGroupManager(GroupManagerStubbingOperation... stubbings) {
         SecuritySupport security = mockSecuritySupport();
         GroupManager manager = security.getGroupManager();
@@ -107,6 +186,14 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return manager;
     }
 
+    /**
+     * Creates or retrieves the global {@link RoleManager} mock from the {@link SecuritySupport}. Applies the provided
+     * stubbing operations in order.
+     *
+     * @param stubbings ordered varargs of operations to configure the role manager mock (must not be {@code null})
+     * @return mocked {@link RoleManager}
+     * @throws AssertionError if {@code stubbings} array reference is {@code null}
+     */
     public static RoleManager mockRoleManager(RoleManagerStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         SecuritySupport security = mockSecuritySupport();
@@ -120,10 +207,31 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return finalManager;
     }
 
+    /**
+     * Convenience overload creating or retrieving a {@link User} mock in the default website realm. A random UUID is
+     * generated for the user if it needs to be newly created. Additional stubbing operations are applied afterwards.
+     *
+     * @param name      logical user name (login)
+     * @param stubbings ordered varargs customizing the user mock (must not be {@code null})
+     * @return mocked {@link User}
+     * @throws AssertionError if {@code stubbings} array reference is {@code null}
+     */
     public static User mockUser(final String name, UserStubbingOperation... stubbings) {
         return mockUser(WEBSITE, name, UUID.randomUUID().toString(), stubbings);
     }
 
+    /**
+     * Creates or retrieves a {@link User} mock for the given realm and user name. If the user does not yet exist a
+     * new mock is created (through a stubbing operation adding it to the {@link UserManager}) and initialized with the
+     * provided uuid. Supplied stubbing operations are applied after creation.
+     *
+     * @param realm     Magnolia security realm
+     * @param name      logical user name
+     * @param uuid      identifier assigned to the user
+     * @param stubbings ordered varargs customizing the user mock (must not be {@code null})
+     * @return mocked {@link User}
+     * @throws AssertionError if {@code stubbings} array reference is {@code null}
+     */
     public static User mockUser(final String realm, final String name, final String uuid, UserStubbingOperation... stubbings) {
         assertThat(stubbings, notNullValue());
         UserManager userManager = mockUserManager(realm);
@@ -136,10 +244,31 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return finalUser;
     }
 
+    /**
+     * Convenience overload creating or retrieving a {@link Group} mock with a generated UUID.
+     *
+     * @param name      group name
+     * @param stubbings ordered varargs customizing the group mock (must not be {@code null})
+     * @return mocked {@link Group}
+     * @throws AccessDeniedException if a stubbing operation triggers an access check that fails
+     * @throws AssertionError        if {@code stubbings} array reference is {@code null}
+     */
     public static Group mockGroup(final String name, GroupStubbingOperation... stubbings) throws AccessDeniedException {
         return mockGroup(name, UUID.randomUUID().toString(), stubbings);
     }
 
+    /**
+     * Creates or retrieves a {@link Group} mock for the given name and UUID. If absent a new mock is created, has its
+     * name and id stubbed and is registered with the {@link GroupManager}. Additional stubbing operations are then
+     * applied.
+     *
+     * @param name      group name
+     * @param uuid      group identifier
+     * @param stubbings ordered varargs customizing the group mock (must not be {@code null})
+     * @return mocked {@link Group}
+     * @throws AccessDeniedException if a stubbing operation throws it
+     * @throws AssertionError        if {@code stubbings} array reference is {@code null}
+     */
     public static Group mockGroup(final String name, final String uuid, GroupStubbingOperation... stubbings) throws AccessDeniedException {
         assertThat(stubbings, notNullValue());
         GroupManager manager = mockGroupManager();
@@ -155,10 +284,24 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
         return finalGroup;
     }
 
+    /**
+     * Convenience overload creating or retrieving a {@link Role} mock with a generated UUID.
+     *
+     * @param name role name
+     * @return mocked {@link Role}
+     */
     public static Role mockRole(final String name) {
         return mockRole(name, UUID.randomUUID().toString());
     }
 
+    /**
+     * Creates or retrieves a {@link Role} mock for the given name. If absent a new mock is produced, its name and id
+     * are stubbed and it is registered with the {@link RoleManager}.
+     *
+     * @param name role name
+     * @param uuid role identifier
+     * @return mocked {@link Role}
+     */
     public static Role mockRole(final String name, final String uuid) {
         RoleManager roleManager = mockRoleManager();
         Role role = roleManager.getRole(name);

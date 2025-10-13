@@ -32,20 +32,6 @@ import java.util.Calendar;
  * {@code UserNodeStubbingOperation} instances (subclass of {@link MagnoliaNodeStubbingOperation}) which, when executed via
  * {@link MagnoliaNodeStubbingOperation#of(Node)}, stub the corresponding single property or create reference list child nodes.
  * </p>
- * <p><strong>Provided operations:</strong>
- * <ul>
- *   <li><code>stubEmail</code>: Stubs textual email property <em>email</em> (no syntax validation).</li>
- *   <li><code>stubEnabled</code>: Stubs boolean enabled state <em>enabled</em>.</li>
- *   <li><code>stubFailedLoginAttempts</code>: Stubs numeric counter <em>failedLoginAttempts</em>.</li>
- *   <li><code>stubLanguage</code>: Stubs user language code <em>language</em>.</li>
- *   <li><code>stubLastAccess</code>: Stubs timestamp <em>lastAccess</em>.</li>
- *   <li><code>stubName</code>: Stubs display name <em>name</em>.</li>
- *   <li><code>stubPassword</code>: Stubs password <em>pswd</em> (stored as plain test value).</li>
- *   <li><code>stubTitle</code>: Stubs title <em>title</em>.</li>
- *   <li><code>stubGroups</code>: Creates/overwrites child node <em>groups</em> with numbered identifier properties ("00", "01", ...).</li>
- *   <li><code>stubRoles</code>: Creates/overwrites child node <em>roles</em> with numbered identifier properties.</li>
- * </ul>
- * </p>
  * <p><strong>Reference list semantics:</strong> Group and role relations are represented by a simple child node containing one property per referenced node holding its identifier. No JCR REFERENCE type or referential integrity is enforced.</p>
  * <p><strong>Behavior & validation:</strong>
  * <ul>
@@ -65,7 +51,7 @@ import java.util.Calendar;
  *   UserNodeStubbingOperation.stubRoles(roleNode1, roleNode2).of(user);
  * </pre>
  * <p><strong>Thread-safety:</strong> Operations are stateless; created mock graphs are not thread-safe and should be isolated per test.</p>
- * <p><strong>Error handling:</strong> Only assertion failures for null target nodes; any {@link RepositoryException} originates from nested stubbing operations if configured to throw.</p>
+ * <p><strong>Error handling:</strong> Only assertion failures for null target nodes.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2025-10-10

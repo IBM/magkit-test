@@ -32,17 +32,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Factory helpers for stubbing Magnolia page node specific properties, in particular the template assignment.
- * <p>
- * A page node usually requires a Magnolia template id (mgnl:template) to drive rendering and component availability.
- * This utility offers a concise factory to mock a {@code TemplateDefinition} and write its id onto the target node.
- * </p>
- * <p><strong>Behavior:</strong>
+ * <p>A page node usually requires a Magnolia template id (mgnl:template) to drive rendering and component availability.
+ * This utility offers a concise factory to mock a {@code TemplateDefinition} and write its id onto the target node.</p>
+ * <p><strong>Behavior:</strong></p>
  * <ul>
  *   <li>No validation of the provided {@code templateId}; blank or null values are written verbatim.</li>
- *   <li>Fails fast (Hamcrest assertion) if the target node passed to {@link MagnoliaNodeStubbingOperation#of(Node)} is null.</li>
+ *   <li>Fails fast (Hamcrest assertion) if the target node passed to the stubbing operation is null.</li>
  *   <li>Mocks the template definition first so subsequent test logic can query both the node property and the mocked definition.</li>
  * </ul>
- * </p>
  * <p>Example usage:</p>
  * <pre>
  *   Node page = MagnoliaNodeMockUtils.mockPageNode(
@@ -71,7 +68,7 @@ public abstract class PageNodeStubbingOperation extends MagnoliaNodeStubbingOper
      *
      * @param templateId Magnolia template id (e.g. {@code my-module:article}); may be null or blank
      * @param stubbings optional template definition stubbing operations; may be empty
-     * @return stubbing operation executable via {@link MagnoliaNodeStubbingOperation#of(Node)}
+     * @return stubbing operation applying the template property on execution
      */
     public static MagnoliaNodeStubbingOperation stubTemplate(final String templateId, final TemplateDefinitionStubbingOperation... stubbings) {
         return new MagnoliaNodeStubbingOperation() {
