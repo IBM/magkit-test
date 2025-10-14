@@ -53,10 +53,11 @@ import static org.mockito.Mockito.doReturn;
  * Operations are intentionally lightweight and may be reused across tests; they keep no state besides the
  * captured constructor arguments.
  *
+ * @param <T> the specific type of template definition the operation can be applied to
  * @author wolf.bubenik@ibmix.de
  * @since 2016-04-14
  */
-public abstract class TemplateDefinitionStubbingOperation implements StubbingOperation<TemplateDefinition> {
+public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefinition> implements StubbingOperation<T> {
 
     /**
      * Stub {@link TemplateDefinition#getDeletable()} to return the supplied value.
@@ -64,10 +65,10 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value boolean to be returned by {@code getDeletable()}
      * @return operation stubbing the deletable flag
      */
-    public static TemplateDefinitionStubbingOperation stubDeletable(final boolean value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubDeletable(final boolean value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
-            public void of(TemplateDefinition template) {
+            public void of(T template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getDeletable();
             }
@@ -80,8 +81,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value dialog identifier (may be {@code null} to simulate no dialog)
      * @return operation stubbing the dialog
      */
-    public static TemplateDefinitionStubbingOperation stubDialog(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubDialog(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -96,8 +97,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value boolean to be returned by {@code getEditable()}
      * @return operation stubbing the editable flag
      */
-    public static TemplateDefinitionStubbingOperation stubEditable(final boolean value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubEditable(final boolean value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -112,8 +113,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value boolean to be returned by {@code getMoveable()}
      * @return operation stubbing the moveable flag
      */
-    public static TemplateDefinitionStubbingOperation stubMoveable(final boolean value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubMoveable(final boolean value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -128,8 +129,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value boolean to be returned by {@code getVisible()}
      * @return operation stubbing visibility
      */
-    public static TemplateDefinitionStubbingOperation stubVisible(final boolean value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubVisible(final boolean value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -144,8 +145,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value boolean to be returned by {@code getWritable()}
      * @return operation stubbing writability
      */
-    public static TemplateDefinitionStubbingOperation stubWritable(final boolean value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubWritable(final boolean value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -160,8 +161,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value template type; may be {@code null}
      * @return operation stubbing the type
      */
-    public static TemplateDefinitionStubbingOperation stubType(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubType(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -176,8 +177,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value template subtype; may be {@code null}
      * @return operation stubbing the subtype
      */
-    public static TemplateDefinitionStubbingOperation stubSubtype(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubSubtype(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -196,8 +197,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @deprecated since 5.4.4. I18nBasename is deprecated and will be removed in a future version.
      */
     @Deprecated
-    public static TemplateDefinitionStubbingOperation stubI18nBasename(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubI18nBasename(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -212,8 +213,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value description string; may be {@code null}
      * @return operation stubbing the description
      */
-    public static TemplateDefinitionStubbingOperation stubDescription(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubDescription(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -228,8 +229,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value template id (e.g. {@code my-module:pages/home}); may be {@code null}
      * @return operation stubbing the id
      */
-    public static TemplateDefinitionStubbingOperation stubId(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubId(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -244,8 +245,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value internal technical name; may be {@code null}
      * @return operation stubbing the name
      */
-    public static TemplateDefinitionStubbingOperation stubName(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubName(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -260,8 +261,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value human readable title; may be {@code null}
      * @return operation stubbing the title
      */
-    public static TemplateDefinitionStubbingOperation stubTitle(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubTitle(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -276,8 +277,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value script path or resource location; may be {@code null}
      * @return operation stubbing the template script
      */
-    public static TemplateDefinitionStubbingOperation stubTemplateScript(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubTemplateScript(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -296,8 +297,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value parameter value to set; {@code null} removes the key if present
      * @return operation applying the parameter mutation semantics
      */
-    public static TemplateDefinitionStubbingOperation stubParameter(final String name, final Object value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubParameter(final String name, final Object value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(final TemplateDefinition template) {
                 assertThat(template, notNullValue());
@@ -323,8 +324,8 @@ public abstract class TemplateDefinitionStubbingOperation implements StubbingOpe
      * @param value render type (e.g. {@code freemarker}); may be {@code null}
      * @return operation stubbing the render type
      */
-    public static TemplateDefinitionStubbingOperation stubRenderType(final String value) {
-        return new TemplateDefinitionStubbingOperation() {
+    public static <T extends TemplateDefinition> TemplateDefinitionStubbingOperation<T> stubRenderType(final String value) {
+        return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
                 assertThat(template, notNullValue());

@@ -57,9 +57,7 @@ import static info.magnolia.repository.RepositoryConstants.WEBSITE;
  *   Node component = MagnoliaNodeMockUtils.mockComponentNode("teaser", NodeStubbingOperation.stubProperty("enabled", true));
  *   Node user = MagnoliaNodeMockUtils.mockUserNode("john", NodeStubbingOperation.stubProperty("fullName", "John Doe"));
  * </pre>
- * <p>
- * Thread-safety: created mocks are not thread-safe. Build a separate graph per test.
- * </p>
+ * <p><b>Thread safety:</b> Implementation is backed by ComponentProvider that uses ThreadLocal and is thread-safe; intended for multithreaded test initialization code.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2014-08-26

@@ -189,7 +189,11 @@ public abstract class MagnoliaNodeStubbingOperation extends NodeStubbingOperatio
      * @throws RepositoryException if property or node stubbing fails
      */
     public static void stubNodeReferenceList(Node node, String listName, Node... referencedNodes) throws RepositoryException {
-        assert node != null;
+        assertThat(node, notNullValue());
+        // remove existing list node if present to avoid stale properties
+        if (node.hasNode(listName)) {
+            node.getNode(listName).remove();
+        }
         stubNode(listName, stubType(NodeTypes.ContentNode.NAME)).of(node);
         Node groups = node.getNode(listName);
         for (int i = 0; i < referencedNodes.length; i++) {

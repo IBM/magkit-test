@@ -58,6 +58,7 @@ import static org.mockito.Mockito.mock;
  * <h3>Error Handling</h3>
  * Any {@link RepositoryException} thrown while applying stubbing logic for an {@link InstallContext} is caught and ignored
  * because repository interaction is not relevant for pure mocking; tests expecting repository failures must simulate them explicitly.
+ * <p><b>Thread safety:</b> Implementation is backed by ComponentProvider that uses ThreadLocal and is thread-safe; intended for multithreaded test initialization code.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2020-03-04

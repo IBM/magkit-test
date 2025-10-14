@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubAttribute;
+import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCharacterEncoding;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubContextPath;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCookie;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCookies;
@@ -361,5 +362,12 @@ public class HttpServletRequestStubbingOperationTest {
         assertThat(_request.isSecure(), is(false));
         stubIsSecure(true).of(_request);
         assertThat(_request.isSecure(), is(true));
+    }
+
+    @Test
+    public void stubCharacterEncodingTest() {
+        assertThat(_request.getCharacterEncoding(), nullValue());
+        stubCharacterEncoding("test-encoding").of(_request);
+        assertThat(_request.getCharacterEncoding(), is("test-encoding"));
     }
 }

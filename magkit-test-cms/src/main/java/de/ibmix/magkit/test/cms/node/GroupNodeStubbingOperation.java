@@ -22,6 +22,9 @@ package de.ibmix.magkit.test.cms.node;
 
 import javax.jcr.Node;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
  * Factory helpers for stubbing Magnolia group node related properties for unit tests.
  * <p>
@@ -61,10 +64,11 @@ public abstract class GroupNodeStubbingOperation extends MagnoliaNodeStubbingOpe
      * @param title group title value (may be null or blank)
      * @return stubbing operation (returns a UserNodeStubbingOperation for historical API reasons)
      */
-    public static UserNodeStubbingOperation stubTitle(final String title) {
-        return new UserNodeStubbingOperation() {
+    public static GroupNodeStubbingOperation stubTitle(final String title) {
+        return new GroupNodeStubbingOperation() {
             @Override
             public void of(Node node) throws javax.jcr.RepositoryException {
+                assertThat(node, notNullValue());
                 stubProperty("title", title).of(node);
             }
         };
@@ -75,10 +79,11 @@ public abstract class GroupNodeStubbingOperation extends MagnoliaNodeStubbingOpe
      * @param description description text (may be null or blank)
      * @return stubbing operation
      */
-    public static UserNodeStubbingOperation stubDescription(final String description) {
-        return new UserNodeStubbingOperation() {
+    public static GroupNodeStubbingOperation stubDescription(final String description) {
+        return new GroupNodeStubbingOperation() {
             @Override
             public void of(Node node) throws javax.jcr.RepositoryException {
+                assertThat(node, notNullValue());
                 stubProperty("description", description).of(node);
             }
         };
@@ -89,8 +94,8 @@ public abstract class GroupNodeStubbingOperation extends MagnoliaNodeStubbingOpe
      * @param groupNodes subgroup nodes referenced (order preserved for property numbering)
      * @return stubbing operation
      */
-    public static UserNodeStubbingOperation stubGroups(final Node... groupNodes) {
-        return new UserNodeStubbingOperation() {
+    public static GroupNodeStubbingOperation stubGroups(final Node... groupNodes) {
+        return new GroupNodeStubbingOperation() {
             @Override
             public void of(Node node) throws javax.jcr.RepositoryException {
                 stubNodeReferenceList(node, "groups", groupNodes);
@@ -103,8 +108,8 @@ public abstract class GroupNodeStubbingOperation extends MagnoliaNodeStubbingOpe
      * @param roleNodes role nodes referenced (order preserved for property numbering)
      * @return stubbing operation
      */
-    public static UserNodeStubbingOperation stubRoles(final Node... roleNodes) {
-        return new UserNodeStubbingOperation() {
+    public static GroupNodeStubbingOperation stubRoles(final Node... roleNodes) {
+        return new GroupNodeStubbingOperation() {
             @Override
             public void of(Node node) throws javax.jcr.RepositoryException {
                 stubNodeReferenceList(node, "roles", roleNodes);

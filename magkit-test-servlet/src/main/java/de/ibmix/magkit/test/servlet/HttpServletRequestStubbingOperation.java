@@ -195,8 +195,9 @@ public abstract class HttpServletRequestStubbingOperation {
 
     /**
      * Creates a stubbing operation that sets the request parameter map.
+     * If {@code parameters} is {@code null} or empty nothing is changed.
      *
-     * @param parameters the parameter map to be set
+     * @param parameters the parameter map to be set (may be {@code null})
      * @return a stubbing operation for the parameter map
      */
     public static HttpServletRequestStubbingOperation stubParameterMap(final Map<String, String[]> parameters) {
@@ -205,6 +206,9 @@ public abstract class HttpServletRequestStubbingOperation {
             @Override
             public void of(HttpServletRequest request) {
                 assertThat(request, notNullValue());
+                if (parameters == null || parameters.isEmpty()) {
+                    return;
+                }
                 for (Map.Entry<String, String[]> parameter : parameters.entrySet()) {
                     stubParameter(parameter.getKey(), parameter.getValue()).of(request);
                 }
@@ -406,6 +410,23 @@ public abstract class HttpServletRequestStubbingOperation {
                     newCookies = ArrayUtils.addAll(oldCookies, cookies);
                 }
                 doReturn(newCookies).when(request).getCookies();
+            }
+        };
+    }
+
+    /**
+     * Creates a stubbing operation that sets the character encoding of the request.
+     *
+     * @param value the character encoding to be returned by getLocalPort()
+     * @return a stubbing operation for the character encoding
+     */
+    public static HttpServletRequestStubbingOperation stubCharacterEncoding(final String value) {
+        return new HttpServletRequestStubbingOperation() {
+
+            @Override
+            public void of(final HttpServletRequest request) {
+                assertThat(request, notNullValue());
+                doReturn(value).when(request).getCharacterEncoding();
             }
         };
     }

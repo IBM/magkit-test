@@ -22,6 +22,7 @@ package de.ibmix.magkit.test.cms.templating;
 
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.Registry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.RenderableDefinition;
@@ -59,7 +60,7 @@ import static org.mockito.Mockito.when;
  * TemplateDefinitionRegistry registry = TemplateMockUtils.mockTemplateDefinitionRegistry();
  * assertSame(home, registry.getTemplateDefinition("my-module:pages/home"));
  * }</pre>
- * Thread safety: Implementation is backed by ThreadLocal. The helpers are intended for multi threaded unit test execution.
+ * Thread safety: Implementation is backed by ThreadLocal. The helpers are intended for multithreaded unit test execution.
  * Side effects: Methods that register definitions mutate the state (stubbing) of the shared registry mock.
  * Clean up: Call {@link #cleanTemplateManager()} between tests if test isolation is required.
  *
@@ -215,7 +216,7 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
                 newDefinitions.add(templateDefinition);
                 when(registry.getTemplateDefinitions()).thenReturn(newDefinitions);
                 when(registry.getAllDefinitions()).thenReturn(newDefinitions);
-            } catch (RegistrationException e) {
+            } catch (Registry.InvalidDefinitionException | RegistrationException e) {
                 throw new IllegalStateException(e);
             }
         }

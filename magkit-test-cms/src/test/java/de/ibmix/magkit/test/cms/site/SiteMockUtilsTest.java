@@ -27,12 +27,17 @@ import info.magnolia.test.mock.MockComponentProvider;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import static de.ibmix.magkit.test.cms.site.SiteMockUtils.cleanSiteManager;
+import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockAssignedSite;
 import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockCurrentSite;
 import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockDefaultSite;
+import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockPlainSiteManager;
+import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockSite;
 import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockSiteManager;
+import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static info.magnolia.objectfactory.Components.getComponentProvider;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -96,8 +101,48 @@ public class SiteMockUtilsTest {
     }
 
     @Test
-    public void testMockAssignedSite() {
+    public void testMockAssignedSite() throws RepositoryException {
+        // Arrange node hierarchy:
+        Node root = mockNode("root");
+        Node section = mockNode("root/section");
+        Node page = mockNode("root/section/page");
 
+        SiteStubbingOperation op1 = mock(SiteStubbingOperation.class);
+        SiteStubbingOperation op2 = mock(SiteStubbingOperation.class);
+
+        SiteManager manager = mockPlainSiteManager();
+        assertThat(manager.getAssignedSite(root), nullValue());
+        assertThat(manager.getAssignedSite(section), nullValue());
+        assertThat(manager.getAssignedSite(page), nullValue());
+
+        // First call: creates new site and assigns recursively (children already assigned)
+        Site site1 = mockAssignedSite(root, "alpha", op1);
+        assertThat(site1, notNullValue());
+        assertThat(site1.getName(), is("alpha"));
+        verify(op1, times(1)).of(site1);
+        assertThat(manager.getAssignedSite(root), is(site1));
+        assertThat(manager.getAssignedSite(section), is(site1));
+        assertThat(manager.getAssignedSite(page), is(site1));
+
+        // Second call: site exists (else branch) reassigns children and applies new stubbing
+        Site site2 = mockAssignedSite(root, "alpha", op2);
+        assertThat(site2, is(site1));
+        verify(op2, times(1)).of(site1);
+        assertThat(manager.getAssignedSite(section), is(site1));
+        assertThat(manager.getAssignedSite(page), is(site1));
+    }
+
+    @Test
+    public void testMockSiteBlankNameAndReuse() throws RepositoryException {
+        SiteStubbingOperation op = mock(SiteStubbingOperation.class);
+        // Blank name -> normalized to default
+        Site s1 = mockSite("   ", op);
+        assertThat(s1.getName(), is("default"));
+        verify(op, times(1)).of(s1);
+        // Reuse existing site (creation branch skipped) and apply stubbing again
+        Site s2 = mockSite("default", op);
+        assertThat(s2, is(s1));
+        verify(op, times(2)).of(s1);
     }
 
     @Test

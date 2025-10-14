@@ -24,7 +24,6 @@ import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.ComponentAvailability;
 import info.magnolia.rendering.template.InheritanceConfiguration;
-import info.magnolia.rendering.template.TemplateDefinition;
 
 import javax.jcr.Node;
 import java.util.Comparator;
@@ -41,8 +40,6 @@ import static org.mockito.Mockito.mock;
  * providing additional operations only meaningful for areas.
  * <ul>
  *   <li>Each static method returns a new immutable {@code AreaDefinitionStubbingOperation}.</li>
- *   <li>The anonymous implementation overrides {@link TemplateDefinitionStubbingOperation#of(TemplateDefinition)} to
- *       throw an {@link UnsupportedOperationException} (guarding against accidental use with a plain template).</li>
  *   <li>The type specific {@link #of(AreaDefinition)} method performs the Mockito stubbing.</li>
  *   <li>Multiple operations can be applied sequentially to compose complex stubbing in tests.</li>
  * </ul>
@@ -57,14 +54,7 @@ import static org.mockito.Mockito.mock;
  * @author wolf.bubenik@ibmix.de
  * @since 2016-04-14
  */
-public abstract class AreaDefinitionStubbingOperation extends TemplateDefinitionStubbingOperation {
-    /**
-     * Perform this stubbing operation on the provided {@link AreaDefinition} mock.
-     * Implementations must not mutate other global state.
-     *
-     * @param area mocked {@link AreaDefinition} (must not be {@code null})
-     */
-    public abstract void of(AreaDefinition area);
+public abstract class AreaDefinitionStubbingOperation extends TemplateDefinitionStubbingOperation<AreaDefinition> {
 
     /**
      * Stub {@link AreaDefinition#getAvailableComponents()} to return the supplied map of component availabilities.
@@ -76,10 +66,6 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(TemplateDefinition template) {
-                throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
-            }
-
             public void of(AreaDefinition template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getAvailableComponents();
@@ -97,10 +83,6 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(TemplateDefinition template) {
-                throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
-            }
-
             public void of(AreaDefinition template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getContentStructure();
@@ -118,10 +100,6 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(TemplateDefinition template) {
-                throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
-            }
-
             public void of(AreaDefinition template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getCreateAreaNode();
@@ -139,10 +117,6 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(TemplateDefinition template) {
-                throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
-            }
-
             public void of(AreaDefinition template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getEnabled();
@@ -160,10 +134,6 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(TemplateDefinition template) {
-                throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
-            }
-
             public void of(AreaDefinition template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getInheritance();
@@ -204,10 +174,6 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(TemplateDefinition template) {
-                throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
-            }
-
             public void of(AreaDefinition template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getMaxComponents();
@@ -225,10 +191,6 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(TemplateDefinition template) {
-                throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
-            }
-
             public void of(AreaDefinition template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getOptional();
@@ -246,10 +208,6 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(TemplateDefinition template) {
-                throw new UnsupportedOperationException("Not allowed for TemplateDefinition");
-            }
-
             public void of(AreaDefinition template) {
                 assertThat(template, notNullValue());
                 doReturn(value).when(template).getType();

@@ -496,9 +496,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
      */
     private static void addSystemContextAttributes(Map<String, Object> attributes) {
         SystemContext systemContext = mockComponentInstance(SystemContext.class);
-        if (systemContext != null) {
-            attributes.putAll(systemContext.getAttributes(Context.APPLICATION_SCOPE));
-        }
+        attributes.putAll(systemContext.getAttributes(Context.APPLICATION_SCOPE));
     }
 
     /**

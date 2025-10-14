@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
  *   <li>Vararg stubbing arrays must be non-null (enforced by assertion) but may be empty.</li>
  *   <li>The first invocation creating a site ensures the site is registered with the manager via {@link SiteManagerStubbingOperation#stubSite(Site)}.</li>
  * </ul>
- * <p>Thread-safety: Thread-safe. Intended for multi-threaded unit test setup.</p>
+ * <p>Thread-safety: ComponentProvider is backed by ThreadLocal and therefore thread-safe; intended for multithreaded test initialization code.</p>
  * <p>Error handling: Uses Hamcrest {@code assertThat} for defensive null checks on stubbing arrays. Failing assertions raise {@link AssertionError}.</p>
  * <p>Typical usage:</p>
  * <pre>{@code

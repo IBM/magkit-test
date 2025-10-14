@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
  * </ul>
  * <p>Registry handling: If no {@link ThemeRegistry} mock is registered yet, one is created via {@link ComponentsMockUtils#mockComponentInstance(Class)}.
  * When requesting a theme by name, an existing {@link DefinitionProvider} is reused; otherwise a new provider mock is created and registered.</p>
- * <p>Thread safety: Not thread-safe; intended for single-threaded test initialization code only.</p>
+ * <p>Thread safety: ComponentProvider is backed by ThreadLocal and therefore thread-safe; intended for multithreaded test initialization code.</p>
  * <p>Null handling: The vararg parameters for stubbing operations are treated as optional (may be {@code null}). Individual elements are applied in order; {@code null} elements are ignored.</p>
  *
  * @author wolf.bubenik@ibmix.de
@@ -90,10 +90,10 @@ public final class ThemeMockUtils {
      * @return existing or newly created theme mock with applied stubbings
      * @see ThemeStubbingOperation
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     public static Theme mockTheme(String name, ThemeStubbingOperation... stubbings) {
         ThemeRegistry themeRegistry = ComponentsMockUtils.mockComponentInstance(ThemeRegistry.class);
-        DefinitionProvider<Theme> definitionProvider = (DefinitionProvider) themeRegistry.getProvider(name);
+        DefinitionProvider<Theme> definitionProvider = themeRegistry.getProvider(name);
         Theme theme;
         if (definitionProvider == null) {
             definitionProvider = mock(DefinitionProvider.class);

@@ -23,6 +23,7 @@ package de.ibmix.magkit.test.cms.node;
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,11 +39,17 @@ import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockContentNod
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockContentNodeNode;
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockMgnlNode;
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockPageNode;
+import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockUserNode;
+import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockGroupNode;
+import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockRoleNode;
 import static info.magnolia.cms.core.MgnlNodeType.NT_AREA;
 import static info.magnolia.cms.core.MgnlNodeType.NT_COMPONENT;
 import static info.magnolia.cms.core.MgnlNodeType.NT_CONTENT;
 import static info.magnolia.cms.core.MgnlNodeType.NT_CONTENTNODE;
 import static info.magnolia.cms.core.MgnlNodeType.NT_PAGE;
+import static info.magnolia.repository.RepositoryConstants.USERS;
+import static info.magnolia.repository.RepositoryConstants.USER_GROUPS;
+import static info.magnolia.repository.RepositoryConstants.USER_ROLES;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -87,6 +94,14 @@ public class MagnoliaNodeMockUtilsTest {
     }
 
     @Test
+    public void mockPageNodeWithNameTest() throws RepositoryException {
+        PageNodeStubbingOperation op = Mockito.mock(PageNodeStubbingOperation.class);
+        Node node = mockPageNode("/home", op);
+        assertThat(node.getPrimaryNodeType().getName(), is(NT_PAGE));
+        verify(op, times(1)).of(node);
+    }
+
+    @Test
     public void mockAreaNodeTest() throws RepositoryException {
         AreaNodeStubbingOperation op1 = Mockito.mock(AreaNodeStubbingOperation.class);
         Node node = mockAreaNode("test", op1);
@@ -103,11 +118,29 @@ public class MagnoliaNodeMockUtilsTest {
     }
 
     @Test
+    public void mockContentNodeNodeWithRepositoryTest() throws RepositoryException {
+        NodeStubbingOperation op1 = Mockito.mock(NodeStubbingOperation.class);
+        Node node = mockContentNodeNode("custom-repo", "/a/b", op1);
+        verify(op1, times(1)).of(node);
+        assertThat(node.getPrimaryNodeType().getName(), is(NT_CONTENTNODE));
+        assertThat(MgnlContext.getJCRSession("custom-repo").getNode("/a/b"), is(node));
+    }
+
+    @Test
     public void mockContentNodeTest() throws RepositoryException {
         NodeStubbingOperation op1 = Mockito.mock(NodeStubbingOperation.class);
         Node node = mockContentNode("test", op1);
         verify(op1, times(1)).of(node);
         assertThat(node.getPrimaryNodeType().getName(), is(NT_CONTENT));
+    }
+
+    @Test
+    public void mockContentNodeWithRepositoryTest() throws RepositoryException {
+        NodeStubbingOperation op1 = Mockito.mock(NodeStubbingOperation.class);
+        Node node = mockContentNode("other-repo", "content/path", op1);
+        verify(op1, times(1)).of(node);
+        assertThat(node.getPrimaryNodeType().getName(), is(NT_CONTENT));
+        assertThat(MgnlContext.getJCRSession("other-repo").getNode("/content/path"), is(node));
     }
 
     @Test
@@ -119,15 +152,38 @@ public class MagnoliaNodeMockUtilsTest {
     }
 
     @Test
+    public void mockUserGroupRoleNodesTest() throws RepositoryException {
+        UserNodeStubbingOperation userOp1 = Mockito.mock(UserNodeStubbingOperation.class);
+        Node user1 = mockUserNode("john", userOp1);
+        assertThat(user1.getPrimaryNodeType().getName(), is(NodeTypes.User.NAME));
+        verify(userOp1, times(1)).of(user1);
+        UserNodeStubbingOperation userOp2 = Mockito.mock(UserNodeStubbingOperation.class);
+        Node user2 = mockUserNode("john", userOp2);
+        assertThat(user2, is(user1));
+        verify(userOp2, times(1)).of(user1);
+        assertThat(MgnlContext.getJCRSession(USERS).getNode("/john"), is(user1));
+
+        GroupNodeStubbingOperation groupOp = Mockito.mock(GroupNodeStubbingOperation.class);
+        Node group = mockGroupNode("editors", groupOp);
+        assertThat(group.getPrimaryNodeType().getName(), is(NodeTypes.Group.NAME));
+        verify(groupOp, times(1)).of(group);
+        assertThat(MgnlContext.getJCRSession(USER_GROUPS).getNode("/editors"), is(group));
+
+        RoleNodeStubbingOperation roleOp = Mockito.mock(RoleNodeStubbingOperation.class);
+        Node role = mockRoleNode("author-role", roleOp);
+        assertThat(role.getPrimaryNodeType().getName(), is(NodeTypes.Role.NAME));
+        verify(roleOp, times(1)).of(role);
+        assertThat(MgnlContext.getJCRSession(USER_ROLES).getNode("/author-role"), is(role));
+    }
+
+    @Test
     public void mockMgnlNodeTest() throws RepositoryException {
         NodeStubbingOperation op1 = Mockito.mock(NodeStubbingOperation.class);
         Node node = mockMgnlNode("test-repository", "test/node", "test:nodeType", op1);
         verify(op1, times(1)).of(node);
         assertThat(node.getPrimaryNodeType().getName(), is("test:nodeType"));
-        // Verify that WebContext and Session have been mocked...
         assertThat(MgnlContext.getWebContext(), notNullValue());
         assertThat(MgnlContext.getJCRSession("test-repository"), is(node.getSession()));
-        //... and that the Node has been added to the session:
         assertThat(MgnlContext.getJCRSession("test-repository").getNode("/test/node"), is(node));
     }
 }

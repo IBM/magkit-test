@@ -22,6 +22,9 @@ package de.ibmix.magkit.test.cms.node;
 
 import javax.jcr.Node;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
  * Factory helpers for stubbing Magnolia role node properties for unit tests.
  * <p>A Magnolia role node typically defines permissions/ACLs (not covered here) and simple descriptive metadata such as
@@ -59,10 +62,11 @@ public abstract class RoleNodeStubbingOperation extends MagnoliaNodeStubbingOper
      * @param title title value (may be null or blank)
      * @return stubbing operation (returns UserNodeStubbingOperation for historic API reasons)
      */
-    public static UserNodeStubbingOperation stubTitle(final String title) {
-        return new UserNodeStubbingOperation() {
+    public static RoleNodeStubbingOperation stubTitle(final String title) {
+        return new RoleNodeStubbingOperation() {
             @Override
             public void of(Node node) throws javax.jcr.RepositoryException {
+                assertThat(node, notNullValue());
                 stubProperty("title", title).of(node);
             }
         };
@@ -75,10 +79,11 @@ public abstract class RoleNodeStubbingOperation extends MagnoliaNodeStubbingOper
      * @param description description text (may be null or blank)
      * @return stubbing operation
      */
-    public static UserNodeStubbingOperation stubDescription(final String description) {
-        return new UserNodeStubbingOperation() {
+    public static RoleNodeStubbingOperation stubDescription(final String description) {
+        return new RoleNodeStubbingOperation() {
             @Override
             public void of(Node node) throws javax.jcr.RepositoryException {
+                assertThat(node, notNullValue());
                 stubProperty("description", description).of(node);
             }
         };

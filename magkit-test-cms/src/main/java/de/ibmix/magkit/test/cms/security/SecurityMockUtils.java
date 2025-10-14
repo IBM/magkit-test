@@ -75,8 +75,7 @@ import static org.mockito.Mockito.when;
  * </pre>
  * </p>
  *
- * <p><b>Thread safety:</b> This utility is intended for single-threaded test execution. Concurrent usage might
- * lead to race conditions when first-time mocks are registered.</p>
+ * <p><b>Thread safety:</b> Implementation is backed by ComponentProvider that uses ThreadLocal and is thread-safe; intended for multithreaded test initialization code.</p>
  *
  * <p><b>Error handling:</b> Parameter validation relies on Hamcrest {@code assertThat}; failing preconditions
  * raise {@link AssertionError}.</p>

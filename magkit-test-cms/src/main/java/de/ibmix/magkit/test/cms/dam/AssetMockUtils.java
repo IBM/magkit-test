@@ -80,9 +80,7 @@ import static org.mockito.Mockito.when;
  * JcrAsset asset2 = AssetMockUtils.mockJcrAsset("/images/logo.png",
  *      AssetStubbingOperation.stubAssetProperty(AssetNodeTypes.Asset.TITLE, "Logo"));
  * </pre>
- * <h3>Thread safety</h3>
- * All provided mocks are local to the test execution thread; no internal state is shared besides the component
- * provider registration. Ensure registry cleanup when tests run in parallel.
+ * <p><b>Thread safety:</b> Implementation is backed by ComponentProvider that uses ThreadLocal and is thread-safe; intended for multithreaded test initialization code.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2011-03-25
