@@ -127,7 +127,9 @@ public class UserNodeStubbingOperationTest {
         int listProps = 0;
         while (it.hasNext()) {
             String n = it.nextProperty().getName();
-            if (n.matches("0\\d")) listProps++;
+            if (n.matches("0\\d")) {
+                listProps++;
+            }
         }
         assertThat(listProps, is(0));
     }

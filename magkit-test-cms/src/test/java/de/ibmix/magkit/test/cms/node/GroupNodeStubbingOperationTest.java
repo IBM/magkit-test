@@ -73,16 +73,16 @@ public class GroupNodeStubbingOperationTest {
     @Test
     public void stubGroupsListCreation() throws RepositoryException {
         Node parent = mockGroupNode("parent");
-        Node childA = mockGroupNode("childA");
-        Node childB = mockGroupNode("childB");
-        stubGroups(childA, childB).of(parent);
+        Node child1 = mockGroupNode("childA");
+        Node child2 = mockGroupNode("childB");
+        stubGroups(child1, child2).of(parent);
         Node groups = parent.getNode("groups");
         assertThat(groups, notNullValue());
         assertThat(groups.getPrimaryNodeType().getName(), is(NodeTypes.ContentNode.NAME));
         assertThat(groups.hasProperty("00"), is(true));
-        assertThat(groups.getProperty("00").getString(), is(childA.getIdentifier()));
+        assertThat(groups.getProperty("00").getString(), is(child1.getIdentifier()));
         assertThat(groups.hasProperty("01"), is(true));
-        assertThat(groups.getProperty("01").getString(), is(childB.getIdentifier()));
+        assertThat(groups.getProperty("01").getString(), is(child2.getIdentifier()));
     }
 
     @Test
