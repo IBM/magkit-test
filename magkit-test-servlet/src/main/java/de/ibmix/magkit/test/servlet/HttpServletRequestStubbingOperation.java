@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import org.apache.commons.collections4.ResettableIterator;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 import org.apache.commons.lang3.ArrayUtils;
@@ -33,8 +34,6 @@ import java.util.Map;
 
 import static org.apache.commons.collections4.IteratorUtils.arrayIterator;
 import static org.apache.commons.collections4.IteratorUtils.toList;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
 
@@ -70,14 +69,18 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 HttpSession session = request.getSession();
                 if (session == null) {
-                    stubHttpSession("test", HttpSessionStubbingOperation.stubServletContext(ServletContextStubbingOperation.stubContextPath(value))).of(request);
+                    stubHttpSession("test", HttpSessionStubbingOperation.stubServletContext(
+                        ServletContextStubbingOperation.stubContextPath(value)
+                    )).of(request);
                 } else {
                     ServletContext servletContext = session.getServletContext();
                     if (servletContext == null) {
-                        HttpSessionStubbingOperation.stubServletContext(ServletContextStubbingOperation.stubContextPath(value)).of(session);
+                        HttpSessionStubbingOperation.stubServletContext(
+                            ServletContextStubbingOperation.stubContextPath(value)
+                        ).of(session);
                     } else {
                         ServletContextStubbingOperation.stubContextPath(value).of(servletContext);
                     }
@@ -97,7 +100,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getMethod();
             }
         };
@@ -111,12 +114,12 @@ public abstract class HttpServletRequestStubbingOperation {
      * @return a stubbing operation for the header
      */
     public static HttpServletRequestStubbingOperation stubHeader(final String name, final String value) {
-        assertThat(name, notNullValue());
+        Require.Argument.notNull(name, "name must not be null");
         return new HttpServletRequestStubbingOperation() {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getHeader(name);
             }
         };
@@ -133,7 +136,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getQueryString();
             }
         };
@@ -150,7 +153,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getSession();
                 doReturn(value).when(request).getSession(anyBoolean());
             }
@@ -176,13 +179,12 @@ public abstract class HttpServletRequestStubbingOperation {
      * @return a stubbing operation for the parameter
      */
     public static HttpServletRequestStubbingOperation stubParameter(final String name, final String... values) {
-        assertThat(name, notNullValue());
+        Require.Argument.notNull(name, "name must not be null");
         return new HttpServletRequestStubbingOperation() {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
-                assertThat(name, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 Map<String, String[]> parameterMap = request.getParameterMap();
                 if (values != null && values.length > 0) {
                     parameterMap.put(name, values);
@@ -205,7 +207,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 if (parameters == null || parameters.isEmpty()) {
                     return;
                 }
@@ -227,7 +229,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getServerName();
             }
         };
@@ -244,7 +246,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getServerPort();
             }
         };
@@ -261,7 +263,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getProtocol();
             }
         };
@@ -278,7 +280,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getRequestURI();
             }
         };
@@ -295,7 +297,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(new StringBuffer(value)).when(request).getRequestURL();
             }
         };
@@ -312,7 +314,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).isSecure();
             }
         };
@@ -326,18 +328,18 @@ public abstract class HttpServletRequestStubbingOperation {
      * @return a stubbing operation for the attribute
      */
     public static HttpServletRequestStubbingOperation stubAttribute(final String name, final Object value) {
+        Require.Argument.notNull(name, "name must not be null");
         return new HttpServletRequestStubbingOperation() {
             @Override
             public void of(HttpServletRequest request) {
-                assertThat(request, notNullValue());
-                assertThat(name, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getAttribute(name);
                 IteratorEnumeration<String> nameEnum = (IteratorEnumeration<String>) request.getAttributeNames();
                 ((ResettableIterator<String>) nameEnum.getIterator()).reset();
                 List<String> names = toList(nameEnum.getIterator());
                 if (names.contains(name) && value == null) {
                     names.remove(name);
-                } else if (value != null) {
+                } else if (value != null && !names.contains(name)) {
                     names.add(name);
                 }
                 nameEnum.setIterator(arrayIterator((Object) names.toArray()));
@@ -353,10 +355,9 @@ public abstract class HttpServletRequestStubbingOperation {
      */
     public static HttpServletRequestStubbingOperation stubLocalName(final String value) {
         return new HttpServletRequestStubbingOperation() {
-
             @Override
             public void of(final HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getLocalName();
             }
         };
@@ -370,10 +371,9 @@ public abstract class HttpServletRequestStubbingOperation {
      */
     public static HttpServletRequestStubbingOperation stubLocalPort(final int value) {
         return new HttpServletRequestStubbingOperation() {
-
             @Override
             public void of(final HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getLocalPort();
             }
         };
@@ -403,7 +403,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(final HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 Cookie[] oldCookies = request.getCookies();
                 Cookie[] newCookies = cookies;
                 if (oldCookies != null && cookies != null) {
@@ -425,7 +425,7 @@ public abstract class HttpServletRequestStubbingOperation {
 
             @Override
             public void of(final HttpServletRequest request) {
-                assertThat(request, notNullValue());
+                Require.Argument.notNull(request, "request must not be null");
                 doReturn(value).when(request).getCharacterEncoding();
             }
         };

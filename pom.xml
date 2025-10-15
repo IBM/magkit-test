@@ -19,6 +19,7 @@
         <module>magkit-test-cms</module>
         <module>magkit-test-server</module>
         <module>magkit-test-webapp</module>
+        <module>magkit-test-assert</module>
     </modules>
 
     <properties>

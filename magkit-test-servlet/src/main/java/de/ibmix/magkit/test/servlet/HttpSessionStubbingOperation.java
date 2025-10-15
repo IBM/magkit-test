@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import org.apache.commons.collections4.ResettableIterator;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 
@@ -29,8 +30,6 @@ import java.util.List;
 
 import static org.apache.commons.collections4.IteratorUtils.arrayIterator;
 import static org.apache.commons.collections4.IteratorUtils.toList;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -88,7 +87,7 @@ public abstract class HttpSessionStubbingOperation {
         return new HttpSessionStubbingOperation() {
             @Override
             public void of(HttpSession session) {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getServletContext()).thenReturn(context);
             }
         };
@@ -120,13 +119,12 @@ public abstract class HttpSessionStubbingOperation {
      * @return operation configuring the attribute retrieval behavior
      */
     public static HttpSessionStubbingOperation stubAttribute(final String name, final Object value) {
+        Require.Argument.notNull(name, "name must not be null");
         return new HttpSessionStubbingOperation() {
             @Override
             public void of(HttpSession session) {
-                assertThat(session, notNullValue());
-                assertThat(name, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getAttribute(name)).thenReturn(value);
-                // We expect an IteratorEnumeration<String> created by ServletMockUtils
                 IteratorEnumeration<String> nameEnum = (IteratorEnumeration<String>) session.getAttributeNames();
                 @SuppressWarnings("unchecked")
                 ResettableIterator<String> iter = (ResettableIterator<String>) nameEnum.getIterator();
@@ -135,7 +133,6 @@ public abstract class HttpSessionStubbingOperation {
                 if (names.contains(name) && value == null) {
                     names.remove(name);
                 } else if (value != null && !names.contains(name)) {
-                    // avoid duplicate entries
                     names.add(name);
                 }
                 nameEnum.setIterator(arrayIterator(names.toArray(new String[0])));
@@ -153,7 +150,7 @@ public abstract class HttpSessionStubbingOperation {
         return new HttpSessionStubbingOperation() {
             @Override
             public void of(final HttpSession session) {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getLastAccessedTime()).thenReturn(time);
             }
         };
@@ -169,7 +166,7 @@ public abstract class HttpSessionStubbingOperation {
         return new HttpSessionStubbingOperation() {
             @Override
             public void of(final HttpSession session) {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getCreationTime()).thenReturn(time);
             }
         };
@@ -185,7 +182,7 @@ public abstract class HttpSessionStubbingOperation {
         return new HttpSessionStubbingOperation() {
             @Override
             public void of(final HttpSession session) {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.isNew()).thenReturn(value);
             }
         };

@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import org.apache.commons.collections4.ResettableIterator;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 
@@ -29,9 +30,6 @@ import java.util.List;
 
 import static org.apache.commons.collections4.IteratorUtils.arrayIterator;
 import static org.apache.commons.collections4.IteratorUtils.toList;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -83,10 +81,9 @@ public abstract class ServletContextStubbingOperation {
      */
     public static ServletContextStubbingOperation stubContextPath(final String value) {
         return new ServletContextStubbingOperation() {
-
             @Override
             public void of(ServletContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 when(context.getContextPath()).thenReturn(value);
             }
         };
@@ -102,14 +99,15 @@ public abstract class ServletContextStubbingOperation {
      * @return a stubbing operation adding the attribute
      */
     public static ServletContextStubbingOperation stubAttribute(final String name, final Object value) {
+        Require.Argument.notNull(name, "name must not be null");
         return new ServletContextStubbingOperation() {
-
             @Override
             public void of(ServletContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 when(context.getAttribute(name)).thenReturn(value);
                 Enumeration<String> enumeration = context.getAttributeNames();
-                assertThat("Attribute names enumeration must be IteratorEnumeration", enumeration, instanceOf(IteratorEnumeration.class));
+                Require.State.isInstanceof(enumeration, IteratorEnumeration.class, "enumeration must be IteratorEnumeration");
+                @SuppressWarnings("unchecked")
                 IteratorEnumeration<String> nameEnum = (IteratorEnumeration<String>) enumeration;
                 augmentEnumeration(nameEnum, name);
             }
@@ -126,14 +124,15 @@ public abstract class ServletContextStubbingOperation {
      * @return a stubbing operation adding the init parameter
      */
     public static ServletContextStubbingOperation stubInitParameter(final String name, final String value) {
+        Require.Argument.notNull(name, "name must not be null");
         return new ServletContextStubbingOperation() {
-
             @Override
             public void of(ServletContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 when(context.getInitParameter(name)).thenReturn(value);
                 Enumeration<String> enumeration = context.getInitParameterNames();
-                assertThat("Init parameter names enumeration must be IteratorEnumeration", enumeration, instanceOf(IteratorEnumeration.class));
+                Require.State.isInstanceof(enumeration, IteratorEnumeration.class, "enumeration must be IteratorEnumeration");
+                @SuppressWarnings("unchecked")
                 IteratorEnumeration<String> nameEnum = (IteratorEnumeration<String>) enumeration;
                 augmentEnumeration(nameEnum, name);
             }
@@ -159,10 +158,9 @@ public abstract class ServletContextStubbingOperation {
      * @param name the name to add (must not be {@code null})
      */
     private static void augmentEnumeration(IteratorEnumeration<String> enumeration, String name) {
-        assertThat(enumeration, notNullValue());
-        assertThat(name, notNullValue());
-        // Obtain and validate the resettable iterator
-        assertThat("Iterator must be ResettableIterator", enumeration.getIterator(), instanceOf(ResettableIterator.class));
+        Require.State.notNull(enumeration, "enumeration must not be null");
+        Require.Argument.notNull(name, "name must not be null");
+        Require.State.isInstanceof(enumeration.getIterator(), ResettableIterator.class, "Iterator must be ResettableIterator");
         @SuppressWarnings("unchecked")
         ResettableIterator<String> iterator = (ResettableIterator<String>) enumeration.getIterator();
         iterator.reset();

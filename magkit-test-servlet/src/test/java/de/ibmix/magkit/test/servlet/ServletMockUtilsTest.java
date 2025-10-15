@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
@@ -35,10 +35,12 @@ import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletRespo
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpSession;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockPageContext;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockServletContext;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,28 +58,28 @@ public class ServletMockUtilsTest {
         HttpServletRequestStubbingOperation op1 = mock(HttpServletRequestStubbingOperation.class);
         HttpServletRequestStubbingOperation op2 = mock(HttpServletRequestStubbingOperation.class);
         HttpServletRequest result = mockHttpServletRequest(op1, op2);
-        assertThat(result, notNullValue());
+        assertNotNull(result);
 
         // We do not run into NullPointerException when accessing the attributes and parameters
-        assertThat(result.getAttributeNames().hasMoreElements(), is(false));
-        assertThat(result.getParameterMap().isEmpty(), is(true));
-        assertThat(result.getParameterNames().hasMoreElements(), is(false));
-        assertThat(result.getParameterValues("any"), nullValue());
+        assertFalse(result.getAttributeNames().hasMoreElements());
+        assertTrue(result.getParameterMap().isEmpty());
+        assertFalse(result.getParameterNames().hasMoreElements());
+        assertNull(result.getParameterValues("any"));
 
         // Each request mock has a session mock with the id "test"...
-        assertThat(result.getSession().getId(), is("test"));
+        assertEquals("test", result.getSession().getId());
 
         // ane each session mock has a servlet context mock:
-        assertThat(result.getSession().getServletContext(), notNullValue());
+        assertNotNull(result.getSession().getServletContext());
 
         // All passed HttpServletRequestStubbingOperation have been executed:
         verify(op1, times(1)).of(result);
         verify(op2, times(1)).of(result);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testMockHttpServletRequestForNull() {
-        mockHttpServletRequest(null);
+        assertThrows(IllegalArgumentException.class, () -> mockHttpServletRequest((HttpServletRequestStubbingOperation[]) null));
     }
 
     @Test
@@ -85,18 +87,18 @@ public class ServletMockUtilsTest {
         HttpServletResponseStubbingOperation op1 = mock(HttpServletResponseStubbingOperation.class);
         HttpServletResponseStubbingOperation op2 = mock(HttpServletResponseStubbingOperation.class);
         HttpServletResponse result = mockHttpServletResponse(op1, op2);
-        assertThat(result, notNullValue());
-        assertThat(result.getWriter(), notNullValue());
-        assertThat(result.getOutputStream(), notNullValue());
-        assertThat(result.encodeRedirectURL("some.test/url"), is("some.test/url"));
-        assertThat(result.encodeURL("some.test/url"), is("some.test/url"));
+        assertNotNull(result);
+        assertNotNull(result.getWriter());
+        assertNotNull(result.getOutputStream());
+        assertEquals("some.test/url", result.encodeRedirectURL("some.test/url"));
+        assertEquals("some.test/url", result.encodeURL("some.test/url"));
         verify(op1, times(1)).of(result);
         verify(op2, times(1)).of(result);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testMockHttpServletResponseForNull() {
-        mockHttpServletResponse(null);
+        assertThrows(IllegalArgumentException.class, () -> mockHttpServletResponse((HttpServletResponseStubbingOperation[]) null));
     }
 
     @Test
@@ -104,18 +106,18 @@ public class ServletMockUtilsTest {
         ServletContextStubbingOperation op1 = mock(ServletContextStubbingOperation.class);
         ServletContextStubbingOperation op2 = mock(ServletContextStubbingOperation.class);
         ServletContext result = mockServletContext(op1, op2);
-        assertThat(result, notNullValue());
-        assertThat(result.getAttributeNames(), notNullValue());
-        assertThat(result.getAttributeNames().hasMoreElements(), is(false));
-        assertThat(result.getInitParameterNames(), notNullValue());
-        assertThat(result.getInitParameterNames().hasMoreElements(), is(false));
+        assertNotNull(result);
+        assertNotNull(result.getAttributeNames());
+        assertFalse(result.getAttributeNames().hasMoreElements());
+        assertNotNull(result.getInitParameterNames());
+        assertFalse(result.getInitParameterNames().hasMoreElements());
         verify(op1, times(1)).of(result);
         verify(op2, times(1)).of(result);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testMockServletContextForNull() {
-        mockServletContext(null);
+        assertThrows(IllegalArgumentException.class, () -> mockServletContext((ServletContextStubbingOperation[]) null));
     }
 
     @Test
@@ -123,14 +125,14 @@ public class ServletMockUtilsTest {
         PageContextStubbingOperation op1 = mock(PageContextStubbingOperation.class);
         PageContextStubbingOperation op2 = mock(PageContextStubbingOperation.class);
         PageContext result = mockPageContext(op1, op2);
-        assertThat(result, notNullValue());
+        assertNotNull(result);
         verify(op1, times(1)).of(result);
         verify(op2, times(1)).of(result);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testMockPageContextForNull() {
-        mockPageContext(null);
+        assertThrows(IllegalArgumentException.class, () -> mockPageContext((PageContextStubbingOperation[]) null));
     }
 
     @Test
@@ -138,17 +140,17 @@ public class ServletMockUtilsTest {
         HttpSessionStubbingOperation op1 = mock(HttpSessionStubbingOperation.class);
         HttpSessionStubbingOperation op2 = mock(HttpSessionStubbingOperation.class);
         HttpSession result = mockHttpSession("id", op1, op2);
-        assertThat(result, notNullValue());
-        assertThat(result.getId(), is("id"));
-        assertThat(result.getAttributeNames(), notNullValue());
-        assertThat(result.getAttributeNames().hasMoreElements(), is(false));
+        assertNotNull(result);
+        assertEquals("id", result.getId());
+        assertNotNull(result.getAttributeNames());
+        assertFalse(result.getAttributeNames().hasMoreElements());
         verify(op1, times(1)).of(result);
         verify(op2, times(1)).of(result);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testMockHttpSessionForNull() {
-        mockHttpSession(null, null);
+        assertThrows(IllegalArgumentException.class, () -> mockHttpSession(null, (HttpSessionStubbingOperation[]) null));
     }
 
     @Test
@@ -157,9 +159,9 @@ public class ServletMockUtilsTest {
         CookieStubbingOperation op2 = mock(CookieStubbingOperation.class);
 
         Cookie cookie = mockCookie("cookieName", "cookieValue", op1, op2);
-        assertThat(cookie, notNullValue());
-        assertThat(cookie.getName(), is("cookieName"));
-        assertThat(cookie.getValue(), is("cookieValue"));
+        assertNotNull(cookie);
+        assertEquals("cookieName", cookie.getName());
+        assertEquals("cookieValue", cookie.getValue());
         verify(op1, times(1)).of(cookie);
         verify(op2, times(1)).of(cookie);
     }

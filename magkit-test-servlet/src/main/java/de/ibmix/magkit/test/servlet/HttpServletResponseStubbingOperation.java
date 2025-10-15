@@ -25,9 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
+import de.ibmix.magkit.assertations.Require;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -71,7 +70,7 @@ public abstract class HttpServletResponseStubbingOperation {
         return new HttpServletResponseStubbingOperation() {
             @Override
             public void of(HttpServletResponse response) {
-                assertThat(response, notNullValue());
+                Require.Argument.notNull(response, "response must not be null");
                 when(response.getContentType()).thenReturn(value);
             }
         };
@@ -89,7 +88,7 @@ public abstract class HttpServletResponseStubbingOperation {
         return new HttpServletResponseStubbingOperation() {
             @Override
             public void of(HttpServletResponse response) {
-                assertThat(response, notNullValue());
+                Require.Argument.notNull(response, "response must not be null");
                 try {
                     when(response.getOutputStream()).thenReturn(value);
                 } catch (IOException e) {
@@ -110,7 +109,7 @@ public abstract class HttpServletResponseStubbingOperation {
         return new HttpServletResponseStubbingOperation() {
             @Override
             public void of(HttpServletResponse response) {
-                assertThat(response, notNullValue());
+                Require.Argument.notNull(response, "response must not be null");
                 try {
                     when(response.getWriter()).thenReturn(value);
                 } catch (IOException e) {
@@ -130,7 +129,7 @@ public abstract class HttpServletResponseStubbingOperation {
         return new HttpServletResponseStubbingOperation() {
             @Override
             public void of(HttpServletResponse response) {
-                assertThat(response, notNullValue());
+                Require.Argument.notNull(response, "response must not be null");
                 when(response.getCharacterEncoding()).thenReturn(value);
             }
         };
@@ -146,7 +145,7 @@ public abstract class HttpServletResponseStubbingOperation {
         return new HttpServletResponseStubbingOperation() {
             @Override
             public void of(HttpServletResponse response) {
-                assertThat(response, notNullValue());
+                Require.Argument.notNull(response, "response must not be null");
                 when(response.getLocale()).thenReturn(value);
             }
         };

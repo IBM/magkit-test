@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 import org.mockito.stubbing.Answer;
 
@@ -37,8 +38,6 @@ import java.util.TreeMap;
 
 import static java.util.Collections.enumeration;
 import static org.apache.commons.collections4.IteratorUtils.emptyIterator;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -97,7 +96,7 @@ public final class ServletMockUtils {
      * @since 2011-03-04
      */
     public static HttpServletRequest mockHttpServletRequest(HttpServletRequestStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
         when(request.getParameterMap()).thenReturn(new TreeMap<>());
@@ -130,7 +129,7 @@ public final class ServletMockUtils {
      * @since 2011-03-04
      */
     public static HttpServletResponse mockHttpServletResponse(HttpServletResponseStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         HttpServletResponse response = mock(HttpServletResponse.class);
         try {
             PrintWriter writer = mock(PrintWriter.class);
@@ -163,7 +162,7 @@ public final class ServletMockUtils {
      * @since 2011-03-04
      */
     public static ServletContext mockServletContext(ServletContextStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         ServletContext context = mock(ServletContext.class);
         when(context.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
         when(context.getInitParameterNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
@@ -190,7 +189,7 @@ public final class ServletMockUtils {
      * @since 2011-03-04
      */
     public static PageContext mockPageContext(PageContextStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         PageContext context = mock(PageContext.class);
         PageContextStubbingOperation.stubHttpServletRequest().of(context);
         PageContextStubbingOperation.stubHttpServletResponse().of(context);
@@ -219,7 +218,7 @@ public final class ServletMockUtils {
      * @since 2011-03-04
      */
     public static HttpSession mockHttpSession(String id, HttpSessionStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         HttpSession session = mock(HttpSession.class);
         when(session.getId()).thenReturn(id);
         when(session.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
