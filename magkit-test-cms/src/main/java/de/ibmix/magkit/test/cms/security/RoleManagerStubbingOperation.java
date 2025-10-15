@@ -33,8 +33,29 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.doReturn;
 
 /**
- * Utility class that provides factory methods for RoleManagerStubbingOperation that stub the behaviour of a RoleManager mock.
- * Stubbing operations to be used as parameters in SecurityMockUtils.mockRoleManager(...).
+ * Factory holder for creating {@link RoleManager} related {@link StubbingOperation}s.<br>
+ * <p>
+ * Provides reusable Mockito stubbing operations to configure a {@link RoleManager} mock in tests, keeping test code
+ * declarative while hiding repetitive stubbing logic. Intended for usage with {@code SecurityMockUtils.mockRoleManager(...)},
+ * or direct application via {@code op.of(roleManagerMock)}.
+ * </p>
+ * <p>
+ * Contract / guarantees:
+ * </p>
+ * <ul>
+ *   <li>All factory methods return non-null operations.</li>
+ *   <li>Argument validation via {@code assertThat} produces {@link AssertionError} on failure when executed.</li>
+ *   <li>Operations only mutate supplied mocks, no shared state retained.</li>
+ * </ul>
+ * <p>
+ * Example:
+ * <pre>
+ *   Role r = Mockito.mock(Role.class);
+ *   RoleStubbingOperation.stubName("publisher").of(r);
+ *   RoleManagerStubbingOperation.stubRole(r).of(SecurityMockUtils.mockRoleManager());
+ * </pre>
+ * </p>
+ * <p><b>Thread safety:</b> Stateless operations; typical single-threaded test usage assumed.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2023-11-02
@@ -42,12 +63,12 @@ import static org.mockito.Mockito.doReturn;
 public abstract class RoleManagerStubbingOperation implements StubbingOperation<RoleManager> {
 
     /**
-     * Create a RoleManagerStubbingOperation that registers a Role at the RoleManager.
-     * Stubs method getRole(String name) to return the Role
-     * and method getRoleNameById(String id) to return the name of the provided Role.
+     * Registers the provided {@link Role} with the {@link RoleManager} mock making {@link RoleManager#getRole(String)}
+     * and (if id present) {@link RoleManager#getRoleNameById(String)} return consistent values.
      *
-     * @param role the Role to be registered
-     * @return the RoleManagerStubbingOperation, never null
+     * @param role role mock to register (must not be null when executed)
+     * @return stubbing operation (never null)
+     * @throws AssertionError if target manager or role (or its name) is null when executed
      */
     public static RoleManagerStubbingOperation stubRole(final Role role) {
         return new RoleManagerStubbingOperation() {
@@ -67,11 +88,12 @@ public abstract class RoleManagerStubbingOperation implements StubbingOperation<
     }
 
     /**
-     * Create a RoleManagerStubbingOperation for stubbing method getRoleNameById(String id) to return the name of the provided Role.
+     * Stubs {@link RoleManager#getRoleNameById(String)} to return the provided role name for the given id.
      *
-     * @param id the Role id as String
-     * @param name the Role name to be returned as String
-     * @return the RoleManagerStubbingOperation, never null
+     * @param id   role identifier (must not be null when executed)
+     * @param name role name to return (may be null if test requires absent mapping)
+     * @return stubbing operation
+     * @throws AssertionError if manager or id is null when executed
      */
     public static RoleManagerStubbingOperation stubRoleNameById(final String id, final String name) {
         return new RoleManagerStubbingOperation() {
@@ -85,12 +107,13 @@ public abstract class RoleManagerStubbingOperation implements StubbingOperation<
     }
 
     /**
-     * Create a RoleManagerStubbingOperation for adding an access control list (ACL) for a role.
-     * Stubs method getACLs(String roleName) to return the given ACL.
+     * Adds or replaces an {@link ACL} for the specified role name by updating the map returned from
+     * {@link RoleManager#getACLs(String)} so it contains the given ACL keyed by its own name.
      *
-     * @param role the name of the role
-     * @param acl the ACL for this role
-     * @return the RoleManagerStubbingOperation, never null
+     * @param role role name
+     * @param acl  access control list instance
+     * @return stubbing operation
+     * @throws AssertionError if manager, role, acl or acl name are null when executed
      */
     public static RoleManagerStubbingOperation stubAcl(final String role, final ACL acl) {
         return new RoleManagerStubbingOperation() {

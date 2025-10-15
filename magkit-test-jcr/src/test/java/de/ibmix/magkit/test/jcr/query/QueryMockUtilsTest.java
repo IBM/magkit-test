@@ -26,11 +26,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
 
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
@@ -74,7 +76,7 @@ public class QueryMockUtilsTest {
 
     @Test(expected = AssertionError.class)
     public void testMockQueryForNull() throws RepositoryException {
-        QueryMockUtils.mockQuery("de", "statement", null);
+        QueryMockUtils.mockQuery("de", "statement", (QueryStubbingOperation[]) null);
     }
 
     @Test
@@ -135,7 +137,7 @@ public class QueryMockUtilsTest {
         assertThat(qr.getRows(), notNullValue());
         assertThat(qr.getRows().nextRow().getNode(), is(c));
 
-        qr = QueryMockUtils.mockQueryResult(new Node[0]);
+        qr = QueryMockUtils.mockQueryResult();
         assertThat(qr, notNullValue());
         assertThat(qr.getNodes(), notNullValue());
         assertThat(qr.getNodes().hasNext(), is(false));
@@ -201,5 +203,218 @@ public class QueryMockUtilsTest {
         assertThat(row, notNullValue());
         assertThat(row.getScore(), is(0.0));
         assertThat(row.getValues(), notNullValue());
+    }
+
+    @Test
+    public void mockQueryManagerWithStubbingOperations() throws RepositoryException {
+        QueryManagerStubbingOperation stubbing = mock(QueryManagerStubbingOperation.class);
+        QueryManager qm = QueryMockUtils.mockQueryManager(stubbing);
+        assertThat(qm, notNullValue());
+        verify(stubbing, times(1)).of(qm);
+    }
+
+    @Test
+    public void mockQueryManagerForWorkspaceWithStubbingOperations() throws RepositoryException {
+        QueryManagerStubbingOperation stubbing1 = mock(QueryManagerStubbingOperation.class);
+        QueryManagerStubbingOperation stubbing2 = mock(QueryManagerStubbingOperation.class);
+
+        QueryManager qm = QueryMockUtils.mockQueryManager("testWorkspace", stubbing1, stubbing2);
+        assertThat(qm, notNullValue());
+
+        verify(stubbing1, times(1)).of(qm);
+        verify(stubbing2, times(1)).of(qm);
+    }
+
+    @Test
+    public void mockQueryManagerReusesExistingQueryManager() throws RepositoryException {
+        // Create first QueryManager
+        QueryManager qm1 = QueryMockUtils.mockQueryManager("reuseTest");
+
+        // Get QueryManager again for same workspace - should return the same instance
+        QueryManager qm2 = QueryMockUtils.mockQueryManager("reuseTest");
+
+        assertThat(qm1, is(qm2));
+    }
+
+    @Test
+    public void mockQueryManagerWithNullWorkspace() throws RepositoryException {
+        QueryManager qm = QueryMockUtils.mockQueryManager((String) null);
+        assertThat(mockSession("website").getWorkspace().getQueryManager(), is(qm));
+    }
+
+    @Test
+    public void mockQueryManagerWithEmptyWorkspace() throws RepositoryException {
+        QueryManager qm = QueryMockUtils.mockQueryManager("");
+        assertThat(mockSession("website").getWorkspace().getQueryManager(), is(qm));
+    }
+
+    @Test
+    public void mockQueryManagerWithBlankWorkspace() throws RepositoryException {
+        QueryManager qm = QueryMockUtils.mockQueryManager("   ");
+        assertThat(mockSession("website").getWorkspace().getQueryManager(), is(qm));
+    }
+
+    @Test
+    public void mockQueryWithManagerWithoutAdditionalStubbings() throws RepositoryException {
+        Query q = QueryMockUtils.mockQueryWithManager("simpleWorkspace", "SQL-2", "SELECT * FROM [nt:base]");
+
+        assertThat(q.getLanguage(), is("SQL-2"));
+        assertThat(q.getStatement(), is("SELECT * FROM [nt:base]"));
+
+        QueryManager qm = mockSession("simpleWorkspace").getWorkspace().getQueryManager();
+        assertThat(qm.createQuery("SELECT * FROM [nt:base]", "SQL-2"), is(q));
+    }
+
+    @Test
+    public void mockQueryWithManagerWithMultipleStubbings() throws RepositoryException {
+        Node resultNode = mockNode("result");
+        QueryStubbingOperation stubbing1 = QueryStubbingOperation.stubResult(resultNode);
+        QueryStubbingOperation stubbing2 = mock(QueryStubbingOperation.class);
+
+        Query q = QueryMockUtils.mockQueryWithManager("multiStubWorkspace", "XPATH", "//element(*,nt:base)",
+                stubbing1, stubbing2);
+
+        assertThat(q.getLanguage(), is("XPATH"));
+        assertThat(q.getStatement(), is("//element(*,nt:base)"));
+        assertThat(q.execute().getNodes().nextNode(), is(resultNode));
+
+        verify(stubbing2, times(1)).of(q);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testMockRowQueryResultForNull() throws RepositoryException {
+        QueryMockUtils.mockRowQueryResult((Row[]) null);
+    }
+
+    @Test
+    public void mockEmptyRowQueryResult() throws RepositoryException {
+        QueryResult qr = QueryMockUtils.mockRowQueryResult();
+        assertThat(qr, notNullValue());
+        assertThat(qr.getRows().hasNext(), is(false));
+        assertThat(qr.getNodes().hasNext(), is(false));
+    }
+
+    @Test
+    public void mockRowWithMultipleStubbingOperations() throws RepositoryException {
+        RowStubbingOperation stubbing1 = RowStubbingOperation.stubValue("prop1", "value1");
+        RowStubbingOperation stubbing2 = RowStubbingOperation.stubValue("prop2", "value2");
+
+        Row row = QueryMockUtils.mockRow(0.8, stubbing1, stubbing2);
+
+        assertThat(row.getScore(), is(0.8));
+        assertThat(row.getValue("prop1").getString(), is("value1"));
+        assertThat(row.getValue("prop2").getString(), is("value2"));
+        assertThat(row.getValues(), notNullValue());
+        // Default empty values array
+        assertThat(row.getValues().length, is(0));
+    }
+
+    @Test
+    public void mockRowWithNoStubbingOperations() throws RepositoryException {
+        Row row = QueryMockUtils.mockRow(0.5);
+
+        assertThat(row.getScore(), is(0.5));
+        assertThat(row.getValues(), notNullValue());
+        assertThat(row.getValues().length, is(0));
+    }
+
+    @Test
+    public void testQueryResultWithMultipleNodes() throws RepositoryException {
+        Node node1 = mockNode("node1", stubProperty("id", "1"));
+        Node node2 = mockNode("node2", stubProperty("id", "2"));
+        Node node3 = mockNode("node3", stubProperty("id", "3"));
+
+        QueryResult qr = QueryMockUtils.mockQueryResult(node1, node2, node3);
+
+        // Test nodes iterator
+        NodeIterator results = qr.getNodes();
+        assertThat(results.nextNode(), is(node1));
+        assertThat(results.nextNode(), is(node2));
+        assertThat(results.nextNode(), is(node3));
+        assertThat(results.hasNext(), is(false));
+
+        // Test rows iterator
+        RowIterator rows = qr.getRows();
+        assertThat(rows, notNullValue());
+        assertThat(rows.nextRow().getNode(), is(node1));
+        assertThat(rows.nextRow().getNode(), is(node2));
+        assertThat(rows.nextRow().getNode(), is(node3));
+        assertThat(rows.hasNext(), is(false));
+    }
+
+    @Test
+    public void testToRowWithComplexNodeStructure() throws RepositoryException {
+        Node parentNode = mockNode("parent", stubProperty("parentProp", "parentValue"));
+        Node childNode = mockNode("parent/child", stubProperty("childProp", "childValue"));
+        Node grandChildNode = mockNode("parent/child/grandchild", stubProperty("grandChildProp", "grandChildValue"));
+
+        Row row = QueryMockUtils.toRow(parentNode);
+
+        assertThat(row.getNode(), is(parentNode));
+        assertThat(row.getValue("parentProp").getString(), is("parentValue"));
+        assertThat(row.getPath(), is("/parent"));
+        assertThat(row.getScore(), is(0.0));
+
+        // Test access to child nodes through row
+        assertThat(row.getNode("child"), is(childNode));
+        assertThat(row.getValue("child/childProp").getString(), is("childValue"));
+        assertThat(row.getPath("child"), is("/parent/child"));
+        assertThat(row.getScore("child"), is(0.0));
+
+        // Test access to grandchild nodes through row
+        assertThat(row.getNode("child/grandchild"), is(grandChildNode));
+        assertThat(row.getValue("child/grandchild/grandChildProp").getString(), is("grandChildValue"));
+        assertThat(row.getPath("child/grandchild"), is("/parent/child/grandchild"));
+        assertThat(row.getScore("child/grandchild"), is(0.0));
+    }
+
+    @Test
+    public void testAnswerImplementationsWithComplexQueryResult() throws RepositoryException {
+        Node node1 = mockNode("testNode1", stubProperty("test", "value1"));
+        Node node2 = mockNode("testNode2", stubProperty("test", "value2"));
+
+        QueryResult qr = QueryMockUtils.mockQueryResult(node1, node2);
+
+        // Verify NODES_ANSWER functionality through multiple iterations
+        NodeIterator results = qr.getNodes();
+        assertThat(results.nextNode(), is(node1));
+        assertThat(results.nextNode(), is(node2));
+        assertThat(results.hasNext(), is(false));
+
+        // Reset and test again to ensure Answer works consistently
+        results = qr.getNodes();
+        assertThat(results.nextNode(), is(node1));
+        assertThat(results.nextNode(), is(node2));
+
+        // Verify ROWS_ANSWER functionality
+        RowIterator rows = qr.getRows();
+        Row row1 = rows.nextRow();
+        Row row2 = rows.nextRow();
+
+        assertThat(row1.getNode(), is(node1));
+        assertThat(row1.getValue("test").getString(), is("value1"));
+        assertThat(row2.getNode(), is(node2));
+        assertThat(row2.getValue("test").getString(), is("value2"));
+    }
+
+    @Test
+    public void testMultipleRowQueryResultForWorkspace() throws RepositoryException {
+        Row row1 = QueryMockUtils.mockRow(0.9, RowStubbingOperation.stubValue("name1", "value1"));
+        Row row2 = QueryMockUtils.mockRow(0.7, RowStubbingOperation.stubValue("name2", "value2"));
+        Row row3 = QueryMockUtils.mockRow(0.5, RowStubbingOperation.stubValue("name3", "value3"));
+
+        QueryResult qr = QueryMockUtils.mockRowQueryResult("multiRowTest", "SQL-2", "SELECT * FROM [nt:base]", row1, row2, row3);
+
+        QueryManager qm = mockSession("multiRowTest").getWorkspace().getQueryManager();
+        assertThat(qm.createQuery("SELECT * FROM [nt:base]", "SQL-2").execute(), is(qr));
+
+        // Verify all rows are returned in correct order
+        assertThat(qr.getRows().nextRow(), is(row1));
+        assertThat(qr.getRows().nextRow(), is(row2));
+        assertThat(qr.getRows().nextRow(), is(row3));
+        assertThat(qr.getRows().hasNext(), is(false));
+
+        // Nodes should be empty for row-only result
+        assertThat(qr.getNodes().hasNext(), is(false));
     }
 }

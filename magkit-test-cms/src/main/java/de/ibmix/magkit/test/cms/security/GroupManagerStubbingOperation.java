@@ -35,14 +35,43 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.doReturn;
 
 /**
- * Utility class that provides factory methods for GroupManagerStubbingOperation that stub the behaviour of a GroupManager mock.
- * Stubbing operations to be used as parameters in SecurityMockUtils.mockGroupManager(...).
+ * Factory holder for creating {@link GroupManager} related {@link StubbingOperation}s.<br>
+ * <p>
+ * Supplies composable Mockito stubbing operations to configure a {@link GroupManager} mock in tests. Intended for
+ * use with {@code SecurityMockUtils.mockGroupManager(...)} or by direct application via {@code op.of(groupManagerMock)}.
+ * </p>
+ * <p>
+ * Contract / guarantees:
+ * </p>
+ * <ul>
+ *   <li>All factory methods return non-null operations.</li>
+ *   <li>Argument validation uses {@code assertThat} and throws {@link AssertionError} upon failure when executed.</li>
+ *   <li>Operations mutate only the passed mock; no shared state.</li>
+ * </ul>
+ * <p>
+ * Example:
+ * <pre>
+ *   Group g = Mockito.mock(Group.class);
+ *   GroupStubbingOperation.stubName("editors").of(g);
+ *   GroupManager manager = SecurityMockUtils.mockGroupManager();
+ *   GroupManagerStubbingOperation.stubGroup(g).of(manager);
+ * </pre>
+ * </p>
+ * <p><b>Thread safety:</b> Stateless operations; typical single-threaded test usage assumed.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2023-11-02
  */
 public abstract class GroupManagerStubbingOperation implements StubbingOperation<GroupManager> {
 
+    /**
+     * Registers (or refreshes) the given {@link Group} within the target {@link GroupManager} mock.
+     * Ensures {@link GroupManager#getGroup(String)} returns the group and adds it to {@link GroupManager#getAllGroups()}.
+     *
+     * @param group group mock to register (must not be null when executed)
+     * @return stubbing operation (never null)
+     * @throws AssertionError if target manager or group is null when executed
+     */
     public static GroupManagerStubbingOperation stubGroup(final Group group) {
         return new GroupManagerStubbingOperation() {
             @Override
@@ -58,12 +87,19 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
                         doReturn(allGroups).when(mock).getAllGroups();
                     }
                 } catch (AccessDeniedException e) {
-                    // ignore, will not happen on mocks
+                    // ignored for mocks
                 }
             }
         };
     }
 
+    /**
+     * Registers all provided groups using {@link #stubGroup(Group)} for each element.
+     *
+     * @param groups groups to register (array reference must not be null when executed; elements may be null-safe tested downstream)
+     * @return stubbing operation aggregating registrations
+     * @throws AssertionError if target manager or {@code groups} is null when executed
+     */
     public static GroupManagerStubbingOperation stubAllGroups(final Group... groups) {
         return new GroupManagerStubbingOperation() {
             @Override
@@ -75,6 +111,14 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
         };
     }
 
+    /**
+     * Stubs {@link GroupManager#getAllSuperGroups(String)} to return the provided groups for the given group name.
+     *
+     * @param groupName target group name
+     * @param groups    super groups to return
+     * @return stubbing operation
+     * @throws AssertionError if manager, group array or groupName are null when executed
+     */
     public static GroupManagerStubbingOperation stubAllSuperGroups(final String groupName, final Group... groups) {
         return new GroupManagerStubbingOperation() {
             @Override
@@ -87,6 +131,14 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
         };
     }
 
+    /**
+     * Stubs {@link GroupManager#getAllSubGroups(String)} to return the provided groups for the given group name.
+     *
+     * @param groupName target group name
+     * @param groups    sub groups to return
+     * @return stubbing operation
+     * @throws AssertionError if manager, group array or groupName are null when executed
+     */
     public static GroupManagerStubbingOperation stubAllSubGroups(final String groupName, final Group... groups) {
         return new GroupManagerStubbingOperation() {
             @Override
@@ -99,6 +151,14 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
         };
     }
 
+    /**
+     * Stubs {@link GroupManager#getDirectSubGroups(String)} for the provided group name.
+     *
+     * @param groupName group whose direct sub groups are requested
+     * @param groups    direct sub groups
+     * @return stubbing operation
+     * @throws AssertionError if manager, group array or groupName are null when executed
+     */
     public static GroupManagerStubbingOperation stubDirectSubGroups(final String groupName, final Group... groups) {
         return new GroupManagerStubbingOperation() {
             @Override
@@ -111,6 +171,14 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
         };
     }
 
+    /**
+     * Stubs {@link GroupManager#getDirectSuperGroups(String)} for the provided group name.
+     *
+     * @param groupName group whose direct super groups are requested
+     * @param groups    direct super groups
+     * @return stubbing operation
+     * @throws AssertionError if manager, group array or groupName are null when executed
+     */
     public static GroupManagerStubbingOperation stubDirectSuperGroups(final String groupName, final Group... groups) {
         return new GroupManagerStubbingOperation() {
             @Override
@@ -123,6 +191,14 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
         };
     }
 
+    /**
+     * Stubs {@link GroupManager#getGroupsWithRole(String)} returning the provided groups.
+     *
+     * @param roleName role name
+     * @param groups   groups owning the role
+     * @return stubbing operation
+     * @throws AssertionError if manager, group array or roleName are null when executed
+     */
     public static GroupManagerStubbingOperation stubGroupsWithRole(final String roleName, final Group... groups) {
         return new GroupManagerStubbingOperation() {
             @Override
@@ -135,6 +211,15 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
         };
     }
 
+    /**
+     * Adds or replaces an {@link ACL} entry for the given group name. Updates the map returned by
+     * {@link GroupManager#getACLs(String)} to contain the provided ACL keyed by its name.
+     *
+     * @param groupName group name
+     * @param acl       access control list definition
+     * @return stubbing operation
+     * @throws AssertionError if manager, groupName, acl or acl name are null when executed
+     */
     public static GroupManagerStubbingOperation stubAcl(final String groupName, ACL acl) {
         return new GroupManagerStubbingOperation() {
             @Override

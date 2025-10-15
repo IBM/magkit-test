@@ -41,6 +41,7 @@ import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockServletContext;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -151,5 +152,86 @@ public class PageContextStubbingOperationTest {
         HttpServletResponse response = (HttpServletResponse) _pageContext.getResponse();
         assertThat(response, notNullValue());
         verify(op1, times(1)).of(response);
+        verify(op2, times(1)).of(response);
+    }
+
+    @Test
+    public void testStubHttpServletRequestCreatesNewWhenAbsent() {
+        // raw mock: getRequest() returns null
+        PageContext pc = mock(PageContext.class);
+        HttpServletRequestStubbingOperation op1 = mock(HttpServletRequestStubbingOperation.class);
+        HttpServletRequestStubbingOperation op2 = mock(HttpServletRequestStubbingOperation.class);
+
+        stubHttpServletRequest(op1, op2).of(pc);
+
+        HttpServletRequest created = (HttpServletRequest) pc.getRequest();
+        assertThat("Request should be created and set on page context", created, notNullValue());
+        // operations executed exactly once during mockHttpServletRequest()
+        verify(op1, times(1)).of(created);
+        verify(op2, times(1)).of(created);
+    }
+
+    @Test
+    public void testStubHttpServletResponseCreatesNewWhenAbsent() {
+        // getResponse() returns null
+        PageContext pc = mock(PageContext.class);
+        HttpServletResponseStubbingOperation op = mock(HttpServletResponseStubbingOperation.class);
+
+        stubHttpServletResponse(op).of(pc);
+
+        HttpServletResponse created = (HttpServletResponse) pc.getResponse();
+        assertThat("Response should be created and set on page context", created, notNullValue());
+        // applied once inside mock factory
+        verify(op, times(1)).of(created);
+    }
+
+    @Test
+    public void testStubHttpSessionCreatesSessionWhenAbsent() {
+        // getSession() returns null
+        PageContext pc = mock(PageContext.class);
+        HttpSessionStubbingOperation op = mock(HttpSessionStubbingOperation.class);
+
+        stubHttpSession("newSession", op).of(pc);
+
+        // getSession() on raw mock still null (operation only ensured a request+session exists on the request)
+        // therefore inspect the created request
+        HttpServletRequest req = (HttpServletRequest) pc.getRequest();
+        assertThat("Request should be created", req, notNullValue());
+        HttpSession session = req.getSession();
+        assertThat("Session should be created on request", session, notNullValue());
+        assertThat("Session id should match", session.getId(), is("newSession"));
+        verify(op, times(1)).of(session);
+    }
+
+    @Test
+    public void testStubServletContextCreatesContextWhenAbsent() {
+        // getServletContext() returns null
+        PageContext pc = mock(PageContext.class);
+        ServletContextStubbingOperation op1 = mock(ServletContextStubbingOperation.class);
+        ServletContextStubbingOperation op2 = mock(ServletContextStubbingOperation.class);
+
+        stubServletContext(op1, op2).of(pc);
+
+        // PageContext#getServletContext still null (not wired because raw mock), verify ops executed with some ServletContext
+        verify(op1, times(1)).of(any(ServletContext.class));
+        verify(op2, times(1)).of(any(ServletContext.class));
+        // ensure a request + session were created indirectly
+        HttpServletRequest req = (HttpServletRequest) pc.getRequest();
+        assertThat(req, notNullValue());
+        assertThat(req.getSession(), notNullValue());
+    }
+
+    @Test
+    public void testStubServletContextWithProvidedContextCreatesSessionWhenAbsent() {
+        PageContext pc = mock(PageContext.class);
+        ServletContext provided = mockServletContext();
+
+        stubServletContext(provided).of(pc);
+
+        HttpServletRequest req = (HttpServletRequest) pc.getRequest();
+        assertThat("Request should be created", req, notNullValue());
+        HttpSession session = req.getSession();
+        assertThat("Session should be created", session, notNullValue());
+        assertThat("ServletContext of session should be the provided one", session.getServletContext(), is(provided));
     }
 }

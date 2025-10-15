@@ -1,5 +1,19 @@
 # Magkit Test JCR
 
+**A comprehensive JCR mocking framework for unit testing with Mockito.**
+
+This module provides a powerful builder API for creating Mockito mocks of `javax.jcr` classes with pre-configured, realistic behaviors. It simplifies JCR unit testing by offering factory methods that create interconnected mock hierarchies, eliminating the boilerplate code typically required for JCR testing setup.
+
+## Key Features
+
+- **Complete JCR Mock Coverage**: Support for Repository, Session, Workspace, Node, Property, Value, Query, QueryManager, and QueryResult
+- **Hierarchical Mock Management**: Automatically creates and manages parent-child relationships between JCR objects
+- **Thread-Safe Testing**: Uses ThreadLocal storage to enable parallel test execution
+- **Stubbing Operations**: Flexible configuration through dedicated stubbing operation classes
+- **Get-or-Create Pattern**: Reuses existing mocks within the same test thread to maintain consistency
+
+## Overview
+
 This project contains a builder API to create mockito mocks of javax.jcr classes and stub their behaviour. 
 The mocks are always created with some basic subbing of a default behaviour.
 
@@ -9,7 +23,7 @@ The mocks are always created with some basic subbing of a default behaviour.
     <dependency>
         <artifactId>magkit-test-jcr</artifactId>
         <groupId>de.ibmix.magkit</groupId>
-        <version>1.0.0</version>
+        <version>1.0.8</version>
     </dependency>
 ```
 It requires javax.jcr 2.0. 
@@ -45,7 +59,7 @@ public void setUp() {
 
 // Be polite and cleanup your mess for others:
 @After
-public void setUp() {
+public void setTearDown() {
     SessionMockUtils.cleanSession();
 }
 ```
@@ -110,6 +124,33 @@ assertThat(toList(node.getProperties()).size(), is(3))
 
 For more examples and details please consult the test cases.
 
+## NodeMockUtils
+
+`NodeMockUtils` provides concise factory methods to obtain Mockito-based JCR `Node` mocks including their surrounding session/workspace context.
+
+Key features:
+- Get-or-create semantics per absolute path (idempotent mocking)
+- Automatic creation of intermediate path segments
+- Fluent stubbing via `NodeStubbingOperation` (e.g. `stubProperty`, `stubType`, `stubNode`)
+- Simple XML import support (`mockNodeFromXml`) to bootstrap larger hierarchies
+
+Basic examples:
+```java
+import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
+import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
+
+Node section = mockNode("root/section", stubProperty("title", "Section Title"));
+Node page = mockNode("root/section/page", stubProperty("title", "Page Title"));
+```
+XML import:
+```java
+try (InputStream in = getClass().getResourceAsStream("/export.xml")) {
+    Node imported = NodeMockUtils.mockNodeFromXml("website", in);
+    // assertions against imported hierarchy
+}
+```
+Handle normalization ensures both `"root/section"` and `"/root/section"` resolve to the same mock. Use `SessionMockUtils.cleanSession()` between tests to isolate state.
+
 ## License
 
 This code is published under the Apache2.0 license.
@@ -141,4 +182,3 @@ If you would like to see the detailed LICENSE click [here](../LICENSE).
 ## Authors
 
 - Author: Wolf Bubenik - wolf.bubenik@ibm.com
-

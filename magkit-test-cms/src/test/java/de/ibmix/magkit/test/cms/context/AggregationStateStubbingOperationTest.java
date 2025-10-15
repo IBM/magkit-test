@@ -25,10 +25,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Locale;
+import javax.jcr.Node;
 
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.cleanContext;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockAggregationState;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
+import static de.ibmix.magkit.test.cms.context.AggregationStateStubbingOperation.*;
+import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockPageNode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -36,6 +39,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * No surprise here. Tests for AggregationStateStubbingOperation.
+ *
+ * Merged with former AggregationStateAdditionalStubbingOperationTest for consolidated coverage.
  *
  * @author wolf.bubenik
  * @since 2011-04-14
@@ -52,70 +57,70 @@ public class AggregationStateStubbingOperationTest {
 
     @Test(expected = AssertionError.class)
     public void testStubSelectorForNull() throws Exception {
-        AggregationStateStubbingOperation.stubSelector("").of(null);
+        stubSelector("").of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubExtensionForNull() throws Exception {
-        AggregationStateStubbingOperation.stubExtension("").of(null);
+        stubExtension("").of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubHandleForNull() throws Exception {
-        AggregationStateStubbingOperation.stubHandle("").of(null);
+        stubHandle("").of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubCharacterEncodingForNull() throws Exception {
-        AggregationStateStubbingOperation.stubCharacterEncoding("").of(null);
+        stubCharacterEncoding("").of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubRepositoryForNull() throws Exception {
-        AggregationStateStubbingOperation.stubRepository("").of(null);
+        stubRepository("").of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubLocaleForNull() throws Exception {
-        AggregationStateStubbingOperation.stubLocale(Locale.CANADA).of(null);
+        stubLocale(Locale.CANADA).of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubCurrentUriForNull() throws Exception {
-        AggregationStateStubbingOperation.stubCurrentUri("").of(null);
+        stubCurrentUri("").of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubOriginalBrowserUriForNull() throws Exception {
-        AggregationStateStubbingOperation.stubOriginalBrowserUri("").of(null);
+        stubOriginalBrowserUri("").of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubOriginalBrowserUrlForNull() throws Exception {
-        AggregationStateStubbingOperation.stubOriginalBrowserUrl("").of(null);
+        stubOriginalBrowserUrl("").of(null);
     }
 
     @Test(expected = AssertionError.class)
     public void testStubOriginalUriForNull() throws Exception {
-        AggregationStateStubbingOperation.stubOriginalUri("").of(null);
+        stubOriginalUri("").of(null);
     }
 
     @Test
     public void testStubSelector() throws Exception {
-        AggregationStateStubbingOperation.stubSelector(null).of(_state);
+        stubSelector(null).of(_state);
         assertThat(_state.getSelector(), nullValue());
         assertThat(_state.getSelectors().length, is(0));
 
-        AggregationStateStubbingOperation.stubSelector("").of(_state);
+        stubSelector("").of(_state);
         assertThat(_state.getSelector(), is(""));
         assertThat(_state.getSelectors().length, is(0));
 
-        AggregationStateStubbingOperation.stubSelector("selector").of(_state);
+        stubSelector("selector").of(_state);
         assertThat(_state.getSelector(), is("selector"));
         assertThat(_state.getSelectors()[0], is("selector"));
         assertThat(mockWebContext().getAttribute("selector"), nullValue());
 
-        AggregationStateStubbingOperation.stubSelector("selector1=test~selector2=aperto~selector2=notAsRequestAttribute").of(_state);
+        stubSelector("selector1=test~selector2=aperto~selector2=notAsRequestAttribute").of(_state);
         assertThat(_state.getSelector(), is("selector1=test~selector2=aperto~selector2=notAsRequestAttribute"));
         assertThat(_state.getSelectors(), notNullValue());
         assertThat(_state.getSelectors()[0], is("selector1=test"));
@@ -128,68 +133,68 @@ public class AggregationStateStubbingOperationTest {
 
     @Test
     public void testStubExtension() throws Exception {
-        AggregationStateStubbingOperation.stubExtension("html").of(_state);
+        stubExtension("html").of(_state);
         assertThat(_state.getExtension(), is("html"));
     }
 
     @Test
     public void testStubHandle() throws Exception {
-        AggregationStateStubbingOperation.stubHandle("handle").of(_state);
+        stubHandle("handle").of(_state);
         assertThat(_state.getHandle(), is("handle"));
     }
 
     @Test
     public void testStubCharacterEncoding() throws Exception {
-        AggregationStateStubbingOperation.stubCharacterEncoding("UTF-8").of(_state);
+        stubCharacterEncoding("UTF-8").of(_state);
         assertThat(_state.getCharacterEncoding(), is("UTF-8"));
     }
 
     @Test
     public void testStubRepository() throws Exception {
-        AggregationStateStubbingOperation.stubRepository("repository").of(_state);
+        stubRepository("repository").of(_state);
         assertThat(_state.getRepository(), is("repository"));
     }
 
     @Test
     public void testStubLocale() throws Exception {
-        AggregationStateStubbingOperation.stubLocale(Locale.CANADA).of(_state);
+        stubLocale(Locale.CANADA).of(_state);
         assertThat(_state.getLocale(), is(Locale.CANADA));
     }
 
     @Test
     public void testStubCurrentUri() throws Exception {
-        AggregationStateStubbingOperation.stubCurrentUri("uri").of(_state);
+        stubCurrentUri("uri").of(_state);
         assertThat(_state.getCurrentURI(), is("uri"));
     }
 
     @Test
     public void stubPreviewModeTest() throws Exception {
         assertThat(_state.isPreviewMode(), is(false));
-        AggregationStateStubbingOperation.stubPreviewMode(true).of(_state);
+        stubPreviewMode(true).of(_state);
         assertThat(_state.isPreviewMode(), is(true));
     }
 
     @Test
     public void testStubOriginalBrowserUri() throws Exception {
-        AggregationStateStubbingOperation.stubOriginalBrowserUri("uri").of(_state);
+        stubOriginalBrowserUri("uri").of(_state);
         assertThat(_state.getOriginalBrowserURI(), is("uri"));
     }
 
     @Test
     public void testStubOriginalBrowserUrl() throws Exception {
-        AggregationStateStubbingOperation.stubOriginalBrowserUrl("uri").of(_state);
+        stubOriginalBrowserUrl("uri").of(_state);
         assertThat(_state.getOriginalBrowserURL(), is("uri"));
     }
 
     @Test
     public void testStubOriginalUri() throws Exception {
-        AggregationStateStubbingOperation.stubOriginalUri("uri").of(_state);
+        stubOriginalUri("uri").of(_state);
         assertThat(_state.getOriginalURI(), is("uri"));
     }
 
     @Test
     public void testStubOriginalUrl() throws Exception {
-        AggregationStateStubbingOperation.stubOriginalUrl("uri").of(_state);
+        stubOriginalUrl("uri").of(_state);
         assertThat(_state.getOriginalURL(), is("uri"));
     }
 
@@ -197,8 +202,112 @@ public class AggregationStateStubbingOperationTest {
     public void stubChannelTest() throws Exception {
         assertThat(_state.getChannel(), nullValue());
 
-        AggregationStateStubbingOperation.stubChannel("Landwehrkanal").of(_state);
+        stubChannel("Landwehrkanal").of(_state);
         assertThat(_state.getChannel(), notNullValue());
         assertThat(_state.getChannel().getName(), is("Landwehrkanal"));
+    }
+
+    // --- Merged additional coverage tests below ---
+
+    @Test
+    public void stubMainContentNodeNullDoesNotSetHandleOrRepository() throws Exception {
+        assertThat(_state.getMainContentNode(), nullValue());
+        assertThat(_state.getHandle(), nullValue());
+        assertThat(_state.getRepository(), nullValue());
+        stubMainContentNode((Node) null).of(_state);
+        assertThat(_state.getMainContentNode(), nullValue());
+        assertThat(_state.getHandle(), nullValue());
+        assertThat(_state.getRepository(), nullValue());
+    }
+
+    @Test
+    public void stubMainContentNodeWithNodeSetsHandleAndRepository() throws Exception {
+        Node page = mockPageNode("/site/en/home");
+        stubMainContentNode(page).of(_state);
+        assertThat(_state.getMainContentNode(), is(page));
+        assertThat(_state.getHandle(), is(page.getPath()));
+        assertThat(_state.getRepository(), is(page.getSession().getWorkspace().getName()));
+    }
+
+    @Test
+    public void stubMainContentNodeWithPathConvenience() throws Exception {
+        stubMainContentNode("/site/en/about").of(_state);
+        assertThat(_state.getMainContentNode(), notNullValue());
+        assertThat(_state.getMainContentNode().getPath(), is("/site/en/about"));
+        assertThat(_state.getHandle(), is("/site/en/about"));
+        assertThat(_state.getRepository(), is("website"));
+    }
+
+    @Test
+    public void stubCurrentContentNodeWithNodeSetsHandleAndRepository() throws Exception {
+        Node page = mockPageNode("/site/de/home");
+        stubCurrentContentNode(page).of(_state);
+        assertThat(_state.getCurrentContentNode(), is(page));
+        assertThat(_state.getHandle(), is(page.getPath()));
+        assertThat(_state.getRepository(), is(page.getSession().getWorkspace().getName()));
+    }
+
+    @Test
+    public void stubCurrentContentNodeWithPathConvenience() throws Exception {
+        stubCurrentContentNode("/site/de/about").of(_state);
+        assertThat(_state.getCurrentContentNode(), notNullValue());
+        assertThat(_state.getCurrentContentNode().getPath(), is("/site/de/about"));
+        assertThat(_state.getHandle(), is("/site/de/about"));
+        assertThat(_state.getRepository(), is("website"));
+    }
+
+    @Test
+    public void stubSelectorsNullArray() throws Exception {
+        stubHandle("h").of(_state);
+        stubRepository("r").of(_state);
+        stubSelectors(null).of(_state);
+        assertThat(_state.getSelectors(), nullValue());
+        assertThat(_state.getHandle(), is("h"));
+        assertThat(_state.getRepository(), is("r"));
+    }
+
+    @Test
+    public void stubSelectorsIgnoresMalformedAndMultiEquals() throws Exception {
+        stubSelectors(new String[]{"foo", "bar=baz", "x=y=z"}).of(_state);
+        String[] selectors = _state.getSelectors();
+        assertThat(selectors.length, is(3));
+        assertThat(selectors[0], is("foo"));
+        assertThat(selectors[1], is("bar=baz"));
+        assertThat(selectors[2], is("x=y=z"));
+        assertThat(mockWebContext().getAttribute("bar"), is("baz"));
+        assertThat(mockWebContext().getAttribute("foo"), nullValue());
+        assertThat(mockWebContext().getAttribute("x"), nullValue());
+    }
+
+    @Test
+    public void stubSelectorsDoesNotOverwriteExistingAttribute() throws Exception {
+        mockWebContext(WebContextStubbingOperation.stubAttribute("exists", "old"));
+        stubSelectors(new String[]{"exists=new", "exists=other"}).of(_state);
+        assertThat(mockWebContext().getAttribute("exists"), is("old"));
+        assertThat(_state.getSelectors().length, is(2));
+    }
+
+    @Test
+    public void combinedMainAndCurrentContentNodesLastWinsForHandleAndRepository() throws Exception {
+        Node main = mockPageNode("/site/en/main");
+        Node current = mockPageNode("/site/en/main/section");
+        stubMainContentNode(main).of(_state);
+        stubCurrentContentNode(current).of(_state);
+        assertThat(_state.getMainContentNode(), is(main));
+        assertThat(_state.getCurrentContentNode(), is(current));
+        assertThat(_state.getHandle(), is(current.getPath()));
+        assertThat(_state.getRepository(), is(current.getSession().getWorkspace().getName()));
+    }
+
+    @Test
+    public void stubCurrentContentNodeNullDoesNotOverrideHandleOrRepository() throws Exception {
+        Node main = mockPageNode("/site/en/main2");
+        stubMainContentNode(main).of(_state);
+        String expectedHandle = _state.getHandle();
+        String expectedRepo = _state.getRepository();
+        stubCurrentContentNode((Node) null).of(_state);
+        assertThat(_state.getCurrentContentNode(), nullValue());
+        assertThat(_state.getHandle(), is(expectedHandle));
+        assertThat(_state.getRepository(), is(expectedRepo));
     }
 }

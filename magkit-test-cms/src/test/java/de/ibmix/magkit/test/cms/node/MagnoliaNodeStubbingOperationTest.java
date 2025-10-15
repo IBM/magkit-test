@@ -72,7 +72,7 @@ public class MagnoliaNodeStubbingOperationTest {
         assertThat(_node.getProperty("mgnl:template"), nullValue());
 
         TemplateDefinitionStubbingOperation op = mock(TemplateDefinitionStubbingOperation.class);
-        MagnoliaNodeStubbingOperation.stubTemplate("test", op).of(_node);
+        PageNodeStubbingOperation.stubTemplate("test", op).of(_node);
         TemplateDefinition def = Components.getComponent(TemplateDefinitionRegistry.class).getProvider("test").get();
         assertThat(def, notNullValue());
         verify(op, times(1)).of(def);
@@ -88,7 +88,7 @@ public class MagnoliaNodeStubbingOperationTest {
         assertThat(_node.getProperty("mgnl:template"), nullValue());
 
         AreaDefinitionStubbingOperation op = mock(AreaDefinitionStubbingOperation.class);
-        MagnoliaNodeStubbingOperation.stubAreaTemplate("test", op).of(_node);
+        AreaNodeStubbingOperation.stubAreaTemplate("test", op).of(_node);
         AreaDefinition def =  (AreaDefinition) Components.getComponent(TemplateDefinitionRegistry.class).getProvider("test").get();
         assertThat(def, notNullValue());
         verify(op, times(1)).of(def);

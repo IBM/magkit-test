@@ -49,11 +49,36 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Utility class that provides factory methods for NodeStubbingOperation.
- * Stubbing operations to be used as parameters in NodeMockUtils.mock...(...).
+ * Factory collection for creating {@link Node}-scoped Mockito stubbing operations.
+ * <p>
+ * Each static method returns a {@link NodeStubbingOperation} (an {@link ExceptionStubbingOperation}) that encapsulates
+ * an idempotent set of Mockito stubs to be applied to a {@link Node} mock via {@link NodeStubbingOperation#of(Node)}.
+ * Operations are intentionally small, composable building blocks and may be combined (varargs) by higher level
+ * helpers such as {@code NodeMockUtils.mockNode(String, NodeStubbingOperation...)}.
+ * </p>
+ * <p><strong>Consistency handling:</strong><br>
+ * When a target node is an internal {@code NodeMockUtils.TestNode} implementation, operations attempt to keep bidirectional
+ * relations (parent/child, session registration, property collections) consistent. For plain Mockito node mocks the
+ * stubbing is deliberately minimal and focused only on the directly requested behavior.
+ * </p>
+ * <p><strong>Typical usage:</strong>
+ * <pre>{@code
+ * Node article = NodeMockUtils.mockNode("article",
+ *     NodeStubbingOperation.stubType("mgnl:page"),
+ *     NodeStubbingOperation.stubIdentifier("1234-uuid"),
+ *     NodeStubbingOperation.stubProperty("title", "Hello")
+ * );
+ * }</pre>
+ * </p>
+ * <p><strong>Thread-safety:</strong> Operations are stateless; concurrency concerns relate only to the underlying mock which
+ * is normally mutated in a single test thread.</p>
+ * <p><strong>Error handling:</strong> Assertions fail fast on invalid inputs (e.g. null target nodes) to surface test setup
+ * mistakes early. Declared {@link RepositoryException}s are only passed through when dependent API calls are preconfigured to throw.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-10-09
+ * @see PropertyStubbingOperation
+ * @see SessionStubbingOperation
  */
 public abstract class NodeStubbingOperation implements ExceptionStubbingOperation<Node, RepositoryException> {
     public static final String PROPNAME_TITLE = "title";
@@ -61,10 +86,12 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     public static final String UNTITLED_HANDLE = "/" + UNTITLED;
 
     /**
-     * Creates NodeStubbingOperation that stubs method {@link javax.jcr.Node#getSession()} to return the provided session.
+     * Stub {@link Node#getSession()} to return the supplied session and register the node + its properties/items in that session.
+     * <p>For a {@code TestNode} the session registration keeps internal collections consistent; for a plain mock only
+     * {@code getSession()} is stubbed plus minimal registration.</p>
      *
-     * @param session the session to return
-     * @return NodeStubbingOperation instance
+     * @param session session to associate (may be {@code null} if deliberate test case)
+     * @return stubbing operation
      */
     public static NodeStubbingOperation stubJcrSession(final Session session) {
         return new NodeStubbingOperation() {
@@ -77,16 +104,17 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     }
 
     /**
-     * Creates NodeStubbingOperation that stubs method node.getPrimaryNodeType() to return a NodeType by provided name.
+     * Stub {@link Node#getPrimaryNodeType()} and related {@code jcr:primaryType} property by name.
+     * <p>When {@code typeName} is null no NodeType mock is created and the primary type returns null.</p>
      *
-     * @param typeName the name of the NodeType to return
-     * @return NodeStubbingOperation instance
+     * @param typeName node type name or {@code null}
+     * @return stubbing operation
      */
     public static NodeStubbingOperation stubType(final String typeName) {
         return new NodeStubbingOperation() {
             public void of(Node node) throws RepositoryException {
                 assertThat(node, notNullValue());
-                // TODO: check default NodeType (null or NT_BASE?)
+                // TODO: consider providing a default base type instead of null if needed by callers.
                 NodeType nodeType = null;
                 if (typeName != null) {
                     nodeType = mock(NodeType.class);
@@ -100,10 +128,10 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     }
 
     /**
-     * Creates NodeStubbingOperation that stubs method node.getTitle() to return the provided value.
+     * Convenience for stubbing a textual title property ("title").
      *
-     * @param value the String to return
-     * @return NodeStubbingOperation instance
+     * @param value title value (may be {@code null})
+     * @return stubbing operation
      */
     public static NodeStubbingOperation stubTitle(final String value) {
         return new NodeStubbingOperation() {
@@ -115,6 +143,14 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub a STRING or multi value STRING property by name.
+     * <p>The first element (if any) is returned by {@link Property#getString()} / {@link Property#getValue()}.</p>
+     *
+     * @param name property name
+     * @param values zero or more string values
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final String name, final String... values) {
         return new NodeStubbingOperation() {
             @Override
@@ -125,6 +161,13 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub a BINARY property (single or multi valued).
+     *
+     * @param name property name
+     * @param values binary values
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final String name, final Binary... values) {
         return new NodeStubbingOperation() {
             @Override
@@ -135,6 +178,13 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub a DATE property (Calendar values).
+     *
+     * @param name property name
+     * @param values calendar values
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final String name, final Calendar... values) {
         return new NodeStubbingOperation() {
             @Override
@@ -145,6 +195,13 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub a BOOLEAN property.
+     *
+     * @param name property name
+     * @param values boolean values
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final String name, final Boolean... values) {
         return new NodeStubbingOperation() {
             @Override
@@ -155,6 +212,13 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub a DOUBLE property.
+     *
+     * @param name property name
+     * @param values double values
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final String name, final Double... values) {
         return new NodeStubbingOperation() {
             @Override
@@ -165,6 +229,13 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub a LONG property.
+     *
+     * @param name property name
+     * @param values long values
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final String name, final Long... values) {
         return new NodeStubbingOperation() {
             @Override
@@ -175,6 +246,13 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub a REFERENCE property referencing another node.
+     *
+     * @param name property name
+     * @param value referenced node (may be {@code null})
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final String name, final Node value) {
         return new NodeStubbingOperation() {
             @Override
@@ -186,6 +264,13 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub a property from prepared {@link Value} objects.
+     *
+     * @param name property name
+     * @param value JCR values
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final String name, final Value... value) {
         return new NodeStubbingOperation() {
             @Override
@@ -197,13 +282,19 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Attach a fully configured {@link Property} mock to the node while keeping session/node internal collections in sync when possible.
+     * <p>For {@code TestNode} instances the property replaces any previous property of same name.</p>
+     *
+     * @param property prepared property mock
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubProperty(final Property property) {
         return new NodeStubbingOperation() {
             @Override
             public void of(final Node node) throws RepositoryException {
                 assertThat(node, notNullValue());
                 when(property.getParent()).thenReturn(node);
-                // if we have a Node mock created by NodeMockUtils it will have a session that should be in sync with node properties:
                 if (node instanceof NodeMockUtils.TestNode) {
                     NodeMockUtils.TestNode testNode = (NodeMockUtils.TestNode) node;
                     Session s = testNode.getSession();
@@ -219,33 +310,43 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
                     }
                     testNode.getPropertyCollection().add(property);
                 } else {
-                    // To support simple mocks as well we just stub the node property.
                     String propertyName = property.getName();
                     doReturn(property).when(node).getProperty(propertyName);
                 }
-
             }
         };
     }
 
+    /**
+     * Create and register a child node (by name + optional stubbings) beneath a parent node.
+     * <p>Uses {@link NodeMockUtils#mockNode(String, NodeStubbingOperation...)} for child creation.</p>
+     *
+     * @param name child node name
+     * @param stubbings additional node stubbings for the child
+     * @return stubbing operation
+     * @throws RepositoryException propagated from nested stubbings
+     */
     public static NodeStubbingOperation stubNode(final String name, final NodeStubbingOperation... stubbings) throws RepositoryException {
         Node child = NodeMockUtils.mockNode(name, stubbings);
         return stubNode(child);
     }
 
+    /**
+     * Register an existing child node beneath a parent; keeps parent/child relation consistent for {@code TestNode}.
+     *
+     * @param child child node
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubNode(final Node child) {
         return new NodeStubbingOperation() {
             @Override
             public void of(final Node parent) throws RepositoryException {
                 assertThat(parent, notNullValue());
-                // If we have a Node mock created by NodeMockUtils...
                 if (parent instanceof NodeMockUtils.TestNode) {
-                    // ... keep all path and parent-child relations of nodes, properties and session consistent.
                     Collection<Node> nodes = ((NodeMockUtils.TestNode) parent).getNodeCollection();
                     nodes.add(child);
                     stubParent(parent).of(child);
                 } else if (isNotEmpty(child.getName())) {
-                    // Otherwise just support simple Node mocks without ensuring consistency.
                     String childName = child.getName();
                     doReturn(child).when(parent).getNode(childName);
                     doReturn(parent).when(child).getParent();
@@ -255,15 +356,11 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     }
 
     /**
-     * Creates NodeStubbingOperation that stubs a Node for the provided path.
-     * If the provided String is null, empty or blank, "/untitled" will be used as default.
-     * "/" will be added at the beginning of the path if missing.
-     * Two properties of the Node will be stubbed:
-     * - node.getHandle() to return the provided value
-     * - node.getName() to return the provided value
+     * Stub the node name. Blank input defaults to {@link #UNTITLED}. Existing children/paths are not recalculated here; higher-level
+     * operations (like {@link #stubParent(Node)}) handle tree consistency.
      *
-     * @param value the String to return
-     * @return NodeStubbingOperation instance
+     * @param value desired node name (may be blank)
+     * @return stubbing operation
      */
     public static NodeStubbingOperation stubName(final String value) {
         return new NodeStubbingOperation() {
@@ -276,21 +373,14 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     }
 
     /**
-     * Creates NodeStubbingOperation that stubs node.getUUID() to return the provided value.
-     * Following properties will be stubbed:
-     * - session.getNodeByUUID(oldUuid) to return NULL
-     * - session.getNodeByIdentifier(oldUuid) to return NULL
-     * - session.getNodeByUUID(uuid) to return node
-     * - session.getNodeByIdentifier(uuid) to return node
-     * - node.getIdentifier() to return the provided value
-     * - node.getUUID() to return the provided value
+     * Stub UUID/identifier of a node; also updates associated session lookup methods (old UUID mappings cleared, new ones added).
+     * Requires a non-blank identifier.
      *
-     * @param identifier the String to return
-     * @return NodeStubbingOperation instance
+     * @param identifier new identifier (not blank)
+     * @return stubbing operation
      */
     public static NodeStubbingOperation stubIdentifier(final String identifier) {
         return new NodeStubbingOperation() {
-
             public void of(Node node) throws RepositoryException {
                 assertThat(node, notNullValue());
                 assertThat(isNotBlank(identifier), is(true));
@@ -309,15 +399,11 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     }
 
     /**
-     * Creates NodeStubbingOperation that stubs node.getParent() to return the provided value.
-     * Executes following stubbingOperations:
-     * - stubLevel.of(child)
-     * - stubAncestors().of(child)
-     * - stubName(child.getName()).of(child) to trigger unregistering of child with previous path and stubbing of new path
-     * stubParent(child).of(grandchild) is recursively executed for all children of child to update their level, ancestors and paths.
+     * Stub parent relation for a node; re-registers the node (and recursively its descendants & properties) in the new session context if present.
+     * <p>Also protects against setting a node as its own parent and clears old session lookups.</p>
      *
-     * @param parent the parent node to be stubbed
-     * @return NodeStubbingOperation instance
+     * @param parent new parent node
+     * @return stubbing operation
      */
     public static NodeStubbingOperation stubParent(final Node parent) {
         return new NodeStubbingOperation() {
@@ -334,6 +420,12 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         };
     }
 
+    /**
+     * Stub node mixin types returned by {@link Node#getMixinNodeTypes()}.
+     *
+     * @param mixins array of mixin NodeType mocks
+     * @return stubbing operation
+     */
     public static NodeStubbingOperation stubMixinNodeTypes(final NodeType... mixins) {
         return new NodeStubbingOperation() {
             @Override

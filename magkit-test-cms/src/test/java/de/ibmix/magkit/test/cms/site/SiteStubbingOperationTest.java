@@ -22,6 +22,7 @@ package de.ibmix.magkit.test.cms.site;
 
 import info.magnolia.module.site.Domain;
 import info.magnolia.module.site.Site;
+import info.magnolia.module.site.theme.Theme;
 import info.magnolia.module.site.theme.ThemeReference;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -86,6 +88,19 @@ public class SiteStubbingOperationTest {
         stubTheme(theme).of(_site);
         assertThat(_site.getTheme(), is(theme));
 
+        stubTheme(null).of(_site);
+        assertThat(_site.getTheme(), nullValue());
+    }
+
+    @Test
+    public void testStubThemeWithName() {
+        assertThat(_site.getTheme(), nullValue());
+
+        ThemeStubbingOperation stubTheme = mock(ThemeStubbingOperation.class);
+        stubTheme("myTheme", stubTheme).of(_site);
+        assertThat(_site.getTheme(), notNullValue());
+        assertThat(_site.getTheme().getName(), is("myTheme"));
+        verify(stubTheme, times(1)).of(any(Theme.class));
     }
 
     @Test

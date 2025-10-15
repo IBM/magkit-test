@@ -49,8 +49,36 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Utility class that provides factory methods for WebContextStubbingOperation.
- * Stubbing operations to be used as parameters in ContextMockUtils.mockWebContext(...).
+ * Factory holder for reusable {@code WebContextStubbingOperation} instances to configure a mocked {@link WebContext} for unit tests.
+ * <p>
+ * Each static factory creates a lightweight operation whose {@link de.ibmix.magkit.test.StubbingOperation#of(Object) of(WebContext)} method applies targeted Mockito stubbings
+ * without constructing a new context. Designed for composability via {@link ContextMockUtils#mockWebContext(WebContextStubbingOperation...)}.
+ * <p>
+ * Key characteristics:
+ * <ul>
+ *   <li><strong>Idempotent:</strong> Re-applying the same operation overwrites previous stubs with identical values (no accumulation).</li>
+ *   <li><strong>Null tolerant:</strong> Providing {@code null} values results in getters returning {@code null}; no exception is thrown.</li>
+ *   <li><strong>Blank repository IDs:</strong> Mapped to {@link info.magnolia.repository.RepositoryConstants#WEBSITE} where applicable.</li>
+ *   <li><strong>Session/request creation:</strong> Operations that depend on a request or session will lazily create mocks if absent (e.g. {@link #stubAttribute(String, Object, int)}).</li>
+ *   <li><strong>Scope handling:</strong> Attribute stubbing mimics Magnolia's request attribute strategy for LOCAL, SESSION, APPLICATION scopes (application scope currently not implemented).</li>
+ * </ul>
+ * Side effects & coupling:
+ * <ul>
+ *   <li>Some operations (e.g. {@link #stubParameters(Map)}) delegate to {@link #stubExistingRequest(HttpServletRequestStubbingOperation...)} potentially creating a mock request.</li>
+ *   <li>Session related operations may create a new {@link javax.servlet.http.HttpSession} if missing.</li>
+ * </ul>
+ * Thread-safety: Not thread-safe; intended for single-threaded test execution manipulating static Magnolia context state.
+ * <p>
+ * Typical usage:
+ * <pre>{@code
+ * WebContext context = ContextMockUtils.mockWebContext(
+ *     WebContextStubbingOperation.stubLocale(Locale.ENGLISH),
+ *     WebContextStubbingOperation.stubContextPath("/myapp"),
+ *     WebContextStubbingOperation.stubParameter("view", "detail"),
+ *     WebContextStubbingOperation.stubJcrSession("website")
+ * );
+ * }</pre>
+ * Combine several operations in one call for concise, expressive test setup.
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2011-03-02
@@ -58,10 +86,10 @@ import static org.mockito.Mockito.when;
 public abstract class WebContextStubbingOperation implements StubbingOperation<WebContext> {
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getLocale() to return the provided value.
+     * Stubs {@link WebContext#getLocale()}.
      *
-     * @param locale the java.util Locale to be returned
-     * @return a new WebContextStubbingOperation instance
+     * @param locale locale returned by {@link WebContext#getLocale()} (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubLocale(final Locale locale) {
         return new WebContextStubbingOperation() {
@@ -74,10 +102,10 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getAggregationState() to return the provided value.
+     * Stubs {@link WebContext#getAggregationState()}.
      *
-     * @param aggState a info.magnolia.cms.core.AggregationState instance or null
-     * @return a new WebContextStubbingOperation instance
+     * @param aggState aggregation state value (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubAggregationState(final AggregationState aggState) {
         return new WebContextStubbingOperation() {
@@ -90,11 +118,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getAccessManager(repositoryId) and getAccessManager(repositoryId, workspaceId) to return the provided value.
+     * Stubs {@link WebContext#getAccessManager(String)} for a repository id. Blank/empty {@code repositoryId} mapped to {@code WEBSITE}.
      *
-     * @param repositoryId the repository ID/name as java.lang.String
-     * @param am           the info.magnolia.cms.security.AccessManager to be returned
-     * @return a new WebContextStubbingOperation instance
+     * @param repositoryId repository id/name (blank treated as {@link info.magnolia.repository.RepositoryConstants#WEBSITE})
+     * @param am access manager returned (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubAccessManager(final String repositoryId, final AccessManager am) {
         return new WebContextStubbingOperation() {
@@ -108,14 +136,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getRequest() to return the provided value.
-     * if the provided request is not null,
-     * - getContextPath() will be stubbed to return request.getContextPath() (@see WebContextStubbingOperation#stubContextPath(String))
-     * - getParameters() will be stubbed using request.getParameterMap() (@see WebContextStubbingOperation#stubParameters(java.util.Map))
-     * will be stubbed as well.
+     * Stubs {@link WebContext#getRequest()}.
+     * Does not automatically stub parameters or context path – use {@link #stubParameters(Map)} or {@link #stubContextPath(String)} separately for clarity.
      *
-     * @param request the javax.servlet.http.HttpServletRequest to be returned
-     * @return a new WebContextStubbingOperation instance
+     * @param request request returned (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubRequest(final HttpServletRequest request) {
         return new WebContextStubbingOperation() {
@@ -127,6 +152,13 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         };
     }
 
+    /**
+     * Ensures a request exists and applies provided {@link HttpServletRequestStubbingOperation}s.
+     * If no request is present a new mock is created via {@link ServletMockUtils#mockHttpServletRequest(HttpServletRequestStubbingOperation...)}.
+     *
+     * @param stubbings optional request stubbing operations
+     * @return operation applying the stubbings
+     */
     public static WebContextStubbingOperation stubExistingRequest(final HttpServletRequestStubbingOperation... stubbings) {
         return new WebContextStubbingOperation() {
 
@@ -145,14 +177,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getParameters() to return a String Map containing the first value for each key.
-     * If the provided parameters map is not null or empty,
-     * - getParameterValues(String name)
-     * - getParameter(String name)
-     * will be stubbed as well.
+     * Stubs request parameters on the current or newly created request using a provided parameter map.
+     * Delegates to {@link #stubExistingRequest(HttpServletRequestStubbingOperation...)}.
      *
-     * @param parameterMap the parameters name - values Map
-     * @return a new WebContextStubbingOperation instance
+     * @param parameterMap map of parameter name to array of values (may be {@code null} or empty)
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubParameters(final Map<String, String[]> parameterMap) {
         return new WebContextStubbingOperation() {
@@ -165,13 +194,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getParameterValues(String name) to return the provided values.
-     * If the values[] is not null or empty, getParameter(String name) will be stubbed to return the first value.
-     * The stubbing of getParameters() will be updated as well.
+     * Stubs a single request parameter. Creates a request if absent. Parameter values are applied via {@link HttpServletRequestStubbingOperation#stubParameter(String, String...)}.
      *
-     * @param name   the parameter name as java.lang.String
-     * @param values the parameter values as jav.lang.String[]
-     * @return a new WebContextStubbingOperation instance
+     * @param name parameter name (must not be {@code null})
+     * @param values one or more values (may be empty or {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubParameter(final String name, final String... values) {
         return new WebContextStubbingOperation() {
@@ -185,27 +212,25 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getAttribute(String name) to return the provided value.
-     * Uses stubParameterValues(name, new String[] {value}}) to archive a consistent stubbing of
-     * - getParameter(String name)
-     * - getParameterValues(String name)
-     * - getParameters()
+     * Convenience for LOCAL scope attribute stubbing. See {@link #stubAttribute(String, Object, int)}.
      *
-     * @param name  the parameter name as java.lang.String
-     * @param value the parameter value as java.lang.String
-     * @return a new WebContextStubbingOperation instance
+     * @param name attribute name (must not be {@code null})
+     * @param value attribute value (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubAttribute(final String name, final Object value) {
         return stubAttribute(name, value, Context.LOCAL_SCOPE);
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getAttribute(String name, int scope) and getAttribute(String name) to return the provided value.
+     * Stubs attribute retrieval according to Magnolia scope semantics for LOCAL and SESSION.
+     * APPLICATION scope is currently not implemented (no-op).
+     * Creates request/session mock if missing for the selected scope.
      *
-     * @param name  the parameter name as java.lang.String
-     * @param value the parameter value as java.lang.String
-     * @param scope the attribute scope is int
-     * @return a new WebContextStubbingOperation instance
+     * @param name attribute name (must not be {@code null})
+     * @param value attribute value (may be {@code null})
+     * @param scope one of {@link Context#LOCAL_SCOPE}, {@link Context#SESSION_SCOPE}, {@link Context#APPLICATION_SCOPE}
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubAttribute(final String name, final Object value, final int scope) {
         return new WebContextStubbingOperation() {
@@ -216,7 +241,6 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
                 if (context.getRequest() == null) {
                     stubExistingRequest().of(context);
                 }
-                // mimic RequestAttributeStrategy:
                 switch (scope) {
                     case Context.LOCAL_SCOPE:
                         HttpServletRequestStubbingOperation.stubAttribute(name, value).of(context.getRequest());
@@ -230,7 +254,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
                         HttpSessionStubbingOperation.stubAttribute(name, value).of(httpsession);
                         break;
                     case Context.APPLICATION_SCOPE:
-                        // NOT jet supported
+                        // Not yet supported.
                         break;
                     default:
                         break;
@@ -240,10 +264,10 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getResponse() to return the provided value.
+     * Stubs {@link WebContext#getResponse()}.
      *
-     * @param response the javax.servlet.http.HttpServletResponse to be returned
-     * @return a new WebContextStubbingOperation instance
+     * @param response response returned (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubResponse(final HttpServletResponse response) {
         return new WebContextStubbingOperation() {
@@ -256,10 +280,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getResponse() to return the provided value.
+     * Ensures a response exists and applies provided {@link HttpServletResponseStubbingOperation}s.
+     * Creates a new response mock if absent via {@link ServletMockUtils#mockHttpServletResponse(HttpServletResponseStubbingOperation...)}.
      *
-     * @param stubbings the HttpServletResponseStubbingOperations for a new HttpServletResponse mock
-     * @return a new WebContextStubbingOperation instance
+     * @param stubbings optional response stubbing operations
+     * @return operation applying the stubbings
      */
     public static WebContextStubbingOperation stubExistingResponse(final HttpServletResponseStubbingOperation... stubbings) {
         return new WebContextStubbingOperation() {
@@ -279,12 +304,10 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getServletContext() to return the provided value.
-     * <br>
-     * If the provided ServletContext is not null getContextPath() will be stubbed to return servletContext.getContextPath().
+     * Stubs {@link WebContext#getServletContext()} indirectly by ensuring a request/session exists and associating a servlet context.
      *
-     * @param servletContext the ServletContext to be returned
-     * @return a new WebContextStubbingOperation instance
+     * @param servletContext servlet context returned (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubServletContext(final ServletContext servletContext) {
         return stubExistingRequest(HttpServletRequestStubbingOperation.stubHttpSession("test",
@@ -294,10 +317,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getContextPath() to return the provided value.
+     * Stubs {@link WebContext#getContextPath()}.
+     * Creates a request if none exists and applies the context path.
      *
-     * @param path the webb applications context path as java.lang.String
-     * @return a new WebContextStubbingOperation instance.
+     * @param path context path value (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubContextPath(final String path) {
         return new WebContextStubbingOperation() {
@@ -314,9 +338,14 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         };
     }
 
+    /**
+     * Stubs {@link WebContext#getUser()}.
+     *
+     * @param user user returned (may be {@code null})
+     * @return operation applying the stubbing
+     */
     public static WebContextStubbingOperation stubUser(final User user) {
         return new WebContextStubbingOperation() {
-
             @Override
             public void of(final WebContext context) {
                 assertThat(context, notNullValue());
@@ -326,11 +355,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getJcrSession(String name) to return the provided value.
+     * Stubs {@link WebContext#getJCRSession(String)} to return a provided {@link Session}.
      *
-     * @param workspace workspace name
-     * @param session the javax.jcr.Session to be returned
-     * @return a new WebContextStubbingOperation instance
+     * @param workspace workspace name (must not be blank)
+     * @param session session returned (may be {@code null})
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubJcrSession(final String workspace, final Session session) {
         return new WebContextStubbingOperation() {
@@ -347,11 +376,12 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
     }
 
     /**
-     * Creates a WebContextStubbingOperation that stubs getJcrSession(String name) to return the provided value.
+     * Ensures a JCR {@link Session} exists for a workspace and applies additional {@link SessionStubbingOperation}s.
+     * Creates a session via {@link de.ibmix.magkit.test.jcr.SessionMockUtils#mockSession(String, SessionStubbingOperation...)} if absent; otherwise augments existing session.
      *
-     * @param workspace the Workspace of the session to be mocked
-     * @param sessionStubbings session stubbing operations
-     * @return a new WebContextStubbingOperation instance
+     * @param workspace workspace name (must not be blank)
+     * @param sessionStubbings optional session stubbing operations
+     * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubJcrSession(final String workspace, final SessionStubbingOperation... sessionStubbings) {
         return new WebContextStubbingOperation() {

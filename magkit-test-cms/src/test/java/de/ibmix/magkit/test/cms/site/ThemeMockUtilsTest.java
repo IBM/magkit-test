@@ -30,9 +30,12 @@ import info.magnolia.module.site.theme.registry.ThemeRegistry;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.ibmix.magkit.test.cms.site.ThemeMockUtils.mockPlainTheme;
+import static de.ibmix.magkit.test.cms.site.ThemeMockUtils.mockTheme;
 import static de.ibmix.magkit.test.cms.site.ThemeMockUtils.mockThemeReference;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -40,6 +43,9 @@ import static org.mockito.Mockito.verify;
 
 /**
  * Testing ThemeMockUtils.
+ *
+ * Additional tests cover idempotent reuse of theme/provider, handling of null vararg and null elements
+ * and behaviour of mockPlainTheme.
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2014-12-05
@@ -87,5 +93,46 @@ public class ThemeMockUtilsTest {
         assertThat(file.getLink(), is("link"));
         assertThat(file.getMedia(), is("media"));
         assertThat(file.getConditionalComment(), is("comment"));
+    }
+
+    /**
+     * Ensure calling mockTheme twice with same name reuses the same Theme instance (provider already present)
+     * and applies additional stubbings. Also covers skipping of null elements inside the stubbings vararg.
+     */
+    @Test
+    public void testMockThemeIdempotentReuseAndNullElementSkipping() {
+        Theme themeFirst = mockTheme("reuse", ThemeStubbingOperation.stubCssFiles("/a.css"));
+        assertThat(themeFirst, notNullValue());
+        int initialCss = themeFirst.getCssFiles().size();
+        // second call: provider exists -> else branch; include null element to verify it is ignored
+        Theme themeSecond = mockTheme("reuse", null, ThemeStubbingOperation.stubJsFiles("/x.js", "/y.js"));
+        assertThat(themeSecond, notNullValue());
+        assertThat(themeSecond == themeFirst, is(true));
+        // css list unchanged, js list now has two entries
+        assertThat(themeSecond.getCssFiles().size(), is(initialCss));
+        assertThat(themeSecond.getJsFiles().size(), is(2));
+    }
+
+    /**
+     * Ensure passing an explicit null vararg array for stubbings is handled gracefully (no NPE, no operations).
+     */
+    @Test
+    public void testMockThemeWithNullStubbingsArray() {
+        Theme theme = mockTheme("nullArray", (ThemeStubbingOperation[]) null);
+        assertThat(theme, notNullValue());
+        assertThat(theme.getName(), is("nullArray"));
+    }
+
+    /**
+     * Verify mockPlainTheme returns an unregistered theme (no provider in ThemeRegistry) while name is stubbed.
+     */
+    @Test
+    public void testMockPlainThemeNotRegistered() {
+        // ensure a registry mock exists (may be newly created here)
+        ThemeRegistry registry = ComponentsMockUtils.mockComponentInstance(ThemeRegistry.class);
+        Theme plain = mockPlainTheme("plainTheme");
+        assertThat(plain, notNullValue());
+        assertThat(plain.getName(), is("plainTheme"));
+        assertThat(registry.getProvider("plainTheme"), nullValue());
     }
 }

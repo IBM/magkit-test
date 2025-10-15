@@ -22,6 +22,7 @@ package de.ibmix.magkit.test.cms.context;
 
 import de.ibmix.magkit.test.jcr.SessionStubbingOperation;
 import de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation;
+import de.ibmix.magkit.test.servlet.HttpServletResponseStubbingOperation;
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.User;
@@ -323,12 +324,133 @@ public class WebContextStubbingOperationTest {
     }
 
     @Test
+    public void testStubServletContextNull() {
+        // ensure request/session exist and have a servlet context initially
+        assertThat(_context.getRequest(), notNullValue());
+        // call with null should set servlet context of session to null but not remove request/session
+        WebContextStubbingOperation.stubServletContext(null).of(_context);
+        assertThat(_context.getRequest(), notNullValue());
+        assertThat(_context.getRequest().getSession(), notNullValue());
+        assertThat(_context.getServletContext(), nullValue());
+        assertThat(_context.getRequest().getSession().getServletContext(), nullValue());
+    }
+
+    @Test
     public void testStubUser() {
         assertThat(_context.getUser(), nullValue());
 
         User user = mock(User.class);
         WebContextStubbingOperation.stubUser(user).of(_context);
         assertThat(_context.getUser(), is(user));
+    }
+
+    @Test
+    public void stubExistingRequestCreatesNewWhenAbsent() throws Exception {
+        // remove existing request
+        WebContextStubbingOperation.stubRequest(null).of(_context);
+        assertThat(_context.getRequest(), nullValue());
+        stubExistingRequest(HttpServletRequestStubbingOperation.stubContextPath("/created")).of(_context);
+        assertThat(_context.getRequest(), notNullValue());
+        assertThat(_context.getRequest().getContextPath(), is("/created"));
+    }
+
+    @Test
+    public void stubExistingResponseCreatesAndAugments() throws Exception {
+        // initial response present
+        HttpServletResponse initial = _context.getResponse();
+        assertThat(initial, notNullValue());
+        // remove response
+        WebContextStubbingOperation.stubResponse(null).of(_context);
+        assertThat(_context.getResponse(), nullValue());
+        // create new with encoding UTF-8
+        WebContextStubbingOperation.stubExistingResponse(HttpServletResponseStubbingOperation.stubCharacterEncoding("UTF-8")).of(_context);
+        HttpServletResponse first = _context.getResponse();
+        assertThat(first, notNullValue());
+        assertThat(first.getCharacterEncoding(), is("UTF-8"));
+        // augment existing response changing encoding
+        WebContextStubbingOperation.stubExistingResponse(HttpServletResponseStubbingOperation.stubCharacterEncoding("ISO-8859-1")).of(_context);
+        assertThat(_context.getResponse(), is(first));
+        assertThat(_context.getResponse().getCharacterEncoding(), is("ISO-8859-1"));
+    }
+
+    @Test
+    public void stubContextPathCreatesRequestWhenNone() throws Exception {
+        WebContextStubbingOperation.stubRequest(null).of(_context);
+        assertThat(_context.getRequest(), nullValue());
+        stubContextPath("/auto").of(_context);
+        assertThat(_context.getRequest(), notNullValue());
+        assertThat(_context.getContextPath(), is("/auto"));
+    }
+
+    @Test
+    public void stubParametersNullMapDoesNothing() throws Exception {
+        // ensure request present
+        assertThat(_context.getRequest(), notNullValue());
+        Map<String, String> beforeMap = _context.getParameters();
+        int before = beforeMap == null ? 0 : beforeMap.size();
+        WebContextStubbingOperation.stubParameters(null).of(_context);
+        Map<String, String> afterMap = _context.getParameters();
+        int after = afterMap == null ? 0 : afterMap.size();
+        assertThat(after, is(before));
+    }
+
+    @Test
+    public void stubParameterNullValuesRemovesParameter() throws Exception {
+        stubParameter("temp", "x", "y").of(_context);
+        assertThat(_context.getParameterValues("temp").length, is(2));
+        stubParameter("temp", (String[]) null).of(_context);
+        assertThat(_context.getParameter("temp"), nullValue());
+        assertThat(_context.getParameterValues("temp"), nullValue());
+    }
+
+    @Test
+    public void stubAttributeApplicationScopeNoOp() throws Exception {
+        stubAttribute("appKey", "val", Context.APPLICATION_SCOPE).of(_context);
+        // application scope not implemented -> should not appear
+        assertThat(_context.getAttribute("appKey"), nullValue());
+        assertThat(_context.getAttributes(Context.APPLICATION_SCOPE).containsKey("appKey"), is(false));
+    }
+
+    @Test
+    public void stubSessionAttributeRemoval() throws Exception {
+        stubAttribute("toRemove", "sessionVal", Context.SESSION_SCOPE).of(_context);
+        assertThat(_context.getAttribute("toRemove", Context.SESSION_SCOPE), is((Object) "sessionVal"));
+        stubAttribute("toRemove", null, Context.SESSION_SCOPE).of(_context);
+        assertThat(_context.getAttribute("toRemove", Context.SESSION_SCOPE), nullValue());
+        assertThat(_context.getAttributes(Context.SESSION_SCOPE).containsKey("toRemove"), is(false));
+    }
+
+    @Test
+    public void stubJcrSessionAddsAdditionalStubbingsOnExisting() throws Exception {
+        stubJcrSession("extra").of(_context);
+        Session first = _context.getJCRSession("extra");
+        assertThat(first, notNullValue());
+        stubJcrSession("extra", SessionStubbingOperation.stubAttribute("k", "v")).of(_context);
+        Session again = _context.getJCRSession("extra");
+        assertThat(again, is(first));
+        assertThat(again.getAttribute("k"), is("v"));
+    }
+
+    @Test
+    public void stubAttributeInvalidScopeNoOp() {
+        int localSizeBefore = _context.getAttributes(Context.LOCAL_SCOPE).size();
+        int sessionSizeBefore = _context.getAttributes(Context.SESSION_SCOPE).size();
+        int appSizeBefore = _context.getAttributes(Context.APPLICATION_SCOPE).size();
+        WebContextStubbingOperation.stubAttribute("invalid", "value", -123).of(_context);
+        assertThat(_context.getAttribute("invalid"), nullValue());
+        assertThat(_context.getAttributes(Context.LOCAL_SCOPE).size(), is(localSizeBefore));
+        assertThat(_context.getAttributes(Context.SESSION_SCOPE).size(), is(sessionSizeBefore));
+        assertThat(_context.getAttributes(Context.APPLICATION_SCOPE).size(), is(appSizeBefore));
+    }
+
+    @Test
+    public void stubJcrSessionOverrideReplacesPrevious() throws RepositoryException {
+        Session first = mock(Session.class);
+        WebContextStubbingOperation.stubJcrSession("overrideRepo", first).of(_context);
+        assertThat(_context.getJCRSession("overrideRepo"), is(first));
+        Session second = mock(Session.class);
+        WebContextStubbingOperation.stubJcrSession("overrideRepo", second).of(_context);
+        assertThat(_context.getJCRSession("overrideRepo"), is(second));
     }
 
     @After

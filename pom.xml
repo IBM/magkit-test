@@ -22,19 +22,19 @@
     </modules>
 
     <properties>
-        <version.hamcrest-core>2.2</version.hamcrest-core>
+        <version.hamcrest>3.0</version.hamcrest>
         <version.el-api>2.2.5</version.el-api>
-        <junitVersion>5.10.2</junitVersion>
-        <mockitoVersion>5.12.0</mockitoVersion>
+        <junitVersion>5.14.0</junitVersion>
+        <mockitoVersion>5.20.0</mockitoVersion>
         <!-- use the byte-buddy version appropriate for our mockito version
         instead of the one Magnolia drags in -->
-        <byteBuddyVersion>1.14.15</byteBuddyVersion>
-        <restAssuredVersion>5.4.0</restAssuredVersion>
+        <byteBuddyVersion>1.17.7</byteBuddyVersion>
+        <restAssuredVersion>5.5.6</restAssuredVersion>
         <!-- override magnolia version from magkit-pom -->
         <version.magnolia>6.2.45</version.magnolia>
-        <jacocoVersion>0.8.12</jacocoVersion>
+        <jacocoVersion>0.8.13</jacocoVersion>
         <!-- we need current surefire plugin to run TomcatTest -->
-        <maven.surefire.version>3.3.0</maven.surefire.version>
+        <maven.surefire.version>3.5.4</maven.surefire.version>
     </properties>
 
     <dependencyManagement>
@@ -42,7 +42,7 @@
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest</artifactId>
-                <version>${version.hamcrest-core}</version>
+                <version>${version.hamcrest}</version>
                 <scope>test</scope>
             </dependency>
 

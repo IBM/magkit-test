@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 /**
  * Utility class that provides factory methods for CookieStubbingOperation.
  * Stubbing operations to be used as parameters in ServletMockUtils.mockCookie(...)
- * or for stubbing the behaviour of an existing mock: CookieStubbingOperation.stubDomain("domain").of(mock).
+ * or for stubbing the behavior of an existing mock: CookieStubbingOperation.stubDomain("domain").of(mock).
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2014-02-11
@@ -37,6 +37,12 @@ import static org.mockito.Mockito.when;
 public abstract class CookieStubbingOperation {
     public abstract void of(Cookie context);
 
+    /**
+     * Stubs the domain of a Cookie.
+     *
+     * @param value the domain to be returned by getDomain()
+     * @return a CookieStubbingOperation that stubs the domain
+     */
     public static CookieStubbingOperation stubDomain(final String value) {
         return new CookieStubbingOperation() {
 
@@ -48,6 +54,12 @@ public abstract class CookieStubbingOperation {
         };
     }
 
+    /**
+     * Stubs the comment of a Cookie.
+     *
+     * @param value the comment to be returned by getComment()
+     * @return a CookieStubbingOperation that stubs the comment
+     */
     public static CookieStubbingOperation stubComment(final String value) {
         return new CookieStubbingOperation() {
 
@@ -59,6 +71,12 @@ public abstract class CookieStubbingOperation {
         };
     }
 
+    /**
+     * Stubs the max age of a Cookie.
+     *
+     * @param value the max age to be returned by getMaxAge()
+     * @return a CookieStubbingOperation that stubs the max age
+     */
     public static CookieStubbingOperation stubMaxAge(final int value) {
         return new CookieStubbingOperation() {
 
@@ -70,6 +88,12 @@ public abstract class CookieStubbingOperation {
         };
     }
 
+    /**
+     * Stubs the path of a Cookie.
+     *
+     * @param value the path to be returned by getPath()
+     * @return a CookieStubbingOperation that stubs the path
+     */
     public static CookieStubbingOperation stubPath(final String value) {
         return new CookieStubbingOperation() {
 
@@ -81,6 +105,12 @@ public abstract class CookieStubbingOperation {
         };
     }
 
+    /**
+     * Stubs the secure flag of a Cookie.
+     *
+     * @param value the secure flag to be returned by getSecure()
+     * @return a CookieStubbingOperation that stubs the secure flag
+     */
     public static CookieStubbingOperation stubSecure(final boolean value) {
         return new CookieStubbingOperation() {
 
@@ -92,6 +122,12 @@ public abstract class CookieStubbingOperation {
         };
     }
 
+    /**
+     * Stubs the version of a Cookie.
+     *
+     * @param value the version to be returned by getVersion()
+     * @return a CookieStubbingOperation that stubs the version
+     */
     public static CookieStubbingOperation stubVersion(final int value) {
         return new CookieStubbingOperation() {
 
