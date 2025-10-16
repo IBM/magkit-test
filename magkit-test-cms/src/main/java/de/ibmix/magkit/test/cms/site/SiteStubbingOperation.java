@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.module.site.Domain;
@@ -31,19 +32,17 @@ import java.util.Map;
 
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
 import static java.util.Arrays.asList;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
  * Factory for building {@link Site} related {@link StubbingOperation} instances that enrich Mockito based site mocks
  * with frequently required Magnolia specific configuration (name, domains, i18n, theme, variations).
  * <p>Usage pattern: Obtain or create a {@link Site} mock (e.g. via {@link SiteMockUtils#mockSite(String, SiteStubbingOperation...)})
- * and pass one or more operations produced by this class; each returned operation invokes {@link #of(Site)} to apply
+ * and pass one or more operations produced by this class; each returned operation invokes {@link StubbingOperation#of(Object)} to apply
  * its stubbing logic. Operations are small and composable to keep test setup readable and intention revealing.</p>
  * <p>Behaviour & design notes:</p>
  * <ul>
- *   <li>All operations assert that the supplied {@link Site} instance is non-null (fail-fast with AssertionError).</li>
+ *   <li>All operations assert that the supplied {@link Site} instance is non-null (fail-fast with IllegalArgumentException).</li>
  *   <li>Varargs parameters (e.g. domains, theme stubbings) may be empty; {@code null} arrays lead to adding a {@code null} list element only if explicitly passed (rare).</li>
  *   <li>{@link #stubVariation(Site)} mutates the site variation map obtained from {@link Site#getVariations()} and re-stubs the getter to preserve the change.</li>
  *   <li>{@link #stubI18n()} provides a convenience overload creating a default {@link I18nContentSupport} mock.</li>
@@ -67,7 +66,7 @@ public abstract class SiteStubbingOperation implements StubbingOperation<Site> {
         return new SiteStubbingOperation() {
             @Override
             public void of(final Site site) {
-                assertThat(site, notNullValue());
+                Require.Argument.notNull(site, "site should not be null");
                 when(site.getName()).thenReturn(value);
             }
         };
@@ -84,7 +83,7 @@ public abstract class SiteStubbingOperation implements StubbingOperation<Site> {
         return new SiteStubbingOperation() {
             @Override
             public void of(final Site site) {
-                assertThat(site, notNullValue());
+                Require.Argument.notNull(site, "site should not be null");
                 when(site.getDomains()).thenReturn(asList(domains));
             }
         };
@@ -114,7 +113,7 @@ public abstract class SiteStubbingOperation implements StubbingOperation<Site> {
         return new SiteStubbingOperation() {
             @Override
             public void of(final Site site) {
-                assertThat(site, notNullValue());
+                Require.Argument.notNull(site, "site should not be null");
                 when(site.getI18n()).thenReturn(i18n);
             }
         };
@@ -130,7 +129,7 @@ public abstract class SiteStubbingOperation implements StubbingOperation<Site> {
         return new SiteStubbingOperation() {
             @Override
             public void of(final Site site) {
-                assertThat(site, notNullValue());
+                Require.Argument.notNull(site, "site should not be null");
                 when(site.getTheme()).thenReturn(theme);
             }
         };
@@ -160,9 +159,9 @@ public abstract class SiteStubbingOperation implements StubbingOperation<Site> {
         return new SiteStubbingOperation() {
             @Override
             public void of(final Site site) {
-                assertThat(site, notNullValue());
+                Require.Argument.notNull(site, "site should not be null");
                 Map<String, Site> variations = site.getVariations();
-                assertThat(variations, notNullValue());
+                Require.Argument.notNull(variations, "site variations should not be null");
                 if (value != null) {
                     variations.put(value.getName(), value);
                     when(site.getVariations()).thenReturn(variations);

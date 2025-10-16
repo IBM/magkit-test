@@ -30,16 +30,16 @@ import info.magnolia.context.WebContext;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockUtil;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import java.util.Locale;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
@@ -49,7 +49,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class MockWebContext {
 
-    @After
+    @AfterEach
     public void cleanUp() {
         ContextMockUtils.cleanContext();
         ComponentsTestUtil.clear();
@@ -61,43 +61,43 @@ public class MockWebContext {
         // So mockt man einen Magnolia WebContext mit einer bestimmten Sprache (die Sprache ist optional):
         WebContext ctx = ContextMockUtils.mockWebContext(Locale.GERMAN);
         // Der Webcontext hat die gewünschte Sprache ...
-        assertThat(ctx.getLocale(), is(Locale.GERMAN));
+        assertEquals(Locale.GERMAN, ctx.getLocale());
         // ... und die Mock-Instanz ist im MagnoliaContext hinterlegt:
-        assertThat(MgnlContext.getWebContext(), is(ctx));
+        assertSame(ctx, MgnlContext.getWebContext());
         // ... and available as Component for injection:
-        assertThat(Components.getComponent(WebContext.class), is(ctx));
+        assertSame(ctx, Components.getComponent(WebContext.class));
         // Wiederhohltes mocken eines WebContext liefert die erste Instanz zurück (get- or- create)
         WebContext ctx2 = ContextMockUtils.mockWebContext(Locale.FRENCH);
-        assertThat(ctx, is(ctx2));
+        assertSame(ctx, ctx2);
         // ... mit geänderter Sprache:
-        assertThat(ctx.getLocale(), is(Locale.FRENCH));
+        assertEquals(Locale.FRENCH, ctx.getLocale());
         // Beim mocken eines WebContext wird immer auch ein I18nContentSupport-Mock erzeugt:
-        assertThat(Components.getComponent(I18nContentSupport.class), notNullValue());
+        assertNotNull(Components.getComponent(I18nContentSupport.class));
         // ... einen Request-Mock ...
-        assertThat(ctx.getRequest(), notNullValue());
+        assertNotNull(ctx.getRequest());
         // ... einen Response-Mock ...
-        assertThat(ctx.getResponse(), notNullValue());
+        assertNotNull(ctx.getResponse());
         // Egal wo Attribute, Parameter oder der ContextPath gestubbt werden, bleibt die Konsistenz zwischen den Mocks gewahrt:
         // Attribute des WebContext passen zu denen des Request ...
         WebContextStubbingOperation.stubAttribute("attribute_1", "attributeValue_1").of(ctx);
-        assertThat((String) ctx.getRequest().getAttribute("attribute_1"), is("attributeValue_1"));
+        assertEquals("attributeValue_1", ctx.getRequest().getAttribute("attribute_1"));
         // ... und Request-Attribute zu denen des WebContext:
         HttpServletRequestStubbingOperation.stubAttribute("attribute_2", "attributeValue_2").of(ctx.getRequest());
-        assertThat((String) ctx.getAttribute("attribute_2"), is("attributeValue_2"));
+        assertEquals("attributeValue_2", ctx.getAttribute("attribute_2"));
         // Parameter des WebContext passen zu denen des Request ...
         WebContextStubbingOperation.stubParameter("parameter_1", "parameterValue_1").of(ctx);
-        assertThat(ctx.getRequest().getParameter("parameter_1"), is("parameterValue_1"));
+        assertEquals("parameterValue_1", ctx.getRequest().getParameter("parameter_1"));
         // ... und Request-Parameter zu denen des WebContext:
         HttpServletRequestStubbingOperation.stubParameter("parameter_2", "parameterValue_2").of(ctx.getRequest());
-        assertThat(ctx.getParameter("parameter_2"), is("parameterValue_2"));
+        assertEquals("parameterValue_2", ctx.getParameter("parameter_2"));
         // Ebenso der ContextPath:
         WebContextStubbingOperation.stubContextPath("/test").of(ctx);
-        assertThat(ctx.getRequest().getContextPath(), is("/test"));
+        assertEquals("/test", ctx.getRequest().getContextPath());
         // und anders herum:
         HttpServletRequestStubbingOperation.stubContextPath("/other").of(ctx.getRequest());
-        assertThat(ctx.getContextPath(), is("/other"));
+        assertEquals("/other", ctx.getContextPath());
         // Dafür haben wir noch keinen AggregationState:
-        assertThat(ctx.getAggregationState(), nullValue());
+        assertNull(ctx.getAggregationState());
     }
 
     @Test
@@ -108,30 +108,30 @@ public class MockWebContext {
         // Die Sprache muss extra gesetzt werden:
         ctx.setLocale(Locale.GERMAN);
         // ... und die Mock-Instanz ist im MagnoliaContext hinterlegt:
-        assertThat(MgnlContext.getWebContext(), is(ctx));
+        assertSame(ctx, MgnlContext.getWebContext());
 
         // Wiederhohltes mocken eines WebContext kann die erste Instanz zurück liefern (get- or- create)
         WebContext ctx2 = (WebContext) MockUtil.getMockContext(false);
         ctx2.setLocale(Locale.FRENCH);
-        assertThat(ctx, is(ctx2));
+        assertSame(ctx, ctx2);
         // ... mit geänderter Sprache:
-        assertThat(ctx.getLocale(), is(Locale.FRENCH));
+        assertEquals(Locale.FRENCH, ctx.getLocale());
 
         // Beim mocken eines WebContext wird TestContext als Implementierung für SystemContext im ComponentsProvider angegeben...
-        assertThat(Components.getComponent(SystemContext.class), notNullValue());
+        assertNotNull(Components.getComponent(SystemContext.class));
         // ... aber kein I18nContentSupport-Mock:
         // Components.getComponent(I18nContentSupport.class) wirft eine MgnlInstantiationException
 
         // ... keinen Request-Mock ...
-        assertThat(ctx.getRequest(), nullValue());
+        assertNull(ctx.getRequest());
         // ... keinen Response-Mock ...
-        assertThat(ctx.getResponse(), nullValue());
+        assertNull(ctx.getResponse());
         // ... und auch keinen HttpSession-mock ...
-        assertThat(ctx.getServletContext(), nullValue());
+        assertNull(ctx.getServletContext());
 
         // ... und für Konsistenz zwischen den HTTP-Klassen und dem TestWebContext muss man selber sorgen.
 
         // Dafür haben wir immer einen AggregationState:
-        assertThat(ctx.getAggregationState(), notNullValue());
+        assertNotNull(ctx.getAggregationState());
     }
 }

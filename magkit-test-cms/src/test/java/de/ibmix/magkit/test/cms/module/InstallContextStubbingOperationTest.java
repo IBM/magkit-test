@@ -28,9 +28,9 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.InstallStatus;
 import info.magnolia.module.model.ModuleDefinition;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -38,12 +38,11 @@ import javax.jcr.Session;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -58,111 +57,111 @@ public class InstallContextStubbingOperationTest {
 
     private InstallContext _installContext;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ContextMockUtils.cleanContext();
         _installContext = mock(InstallContext.class);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() throws Exception {
         ContextMockUtils.cleanContext();
     }
 
     @Test
     public void stubCurrentModuleDefinition() throws RepositoryException {
-        assertThat(_installContext.getCurrentModuleDefinition(), nullValue());
+        assertNull(_installContext.getCurrentModuleDefinition());
 
         ModuleDefinition definition = mock(ModuleDefinition.class);
         InstallContextStubbingOperation.stubCurrentModuleDefinition(definition).of(_installContext);
-        assertThat(_installContext.getCurrentModuleDefinition(), is(definition));
+        assertEquals(definition, _installContext.getCurrentModuleDefinition());
     }
 
     @Test
     public void stubJcrSession() throws RepositoryException {
-        assertThat(_installContext.getJCRSession("test"), nullValue());
-        assertThat(_installContext.getConfigJCRSession(), nullValue());
+        assertNull(_installContext.getJCRSession("test"));
+        assertNull(_installContext.getConfigJCRSession());
 
         SessionStubbingOperation op = mock(SessionStubbingOperation.class);
         InstallContextStubbingOperation.stubJcrSession("test", op).of(_installContext);
         Session testSession = SessionMockUtils.mockSession("test");
-        assertThat(_installContext.getJCRSession("test"), notNullValue());
-        assertThat(_installContext.getJCRSession("test"), is(testSession));
-        assertThat(_installContext.getConfigJCRSession(), nullValue());
+        assertNotNull(_installContext.getJCRSession("test"));
+        assertEquals(testSession, _installContext.getJCRSession("test"));
+        assertNull(_installContext.getConfigJCRSession());
         verify(op, times(1)).of(testSession);
     }
 
     @Test
     public void stubConfigJCRSession() throws RepositoryException {
-        assertThat(_installContext.getJCRSession("config"), nullValue());
-        assertThat(_installContext.getConfigJCRSession(), nullValue());
+        assertNull(_installContext.getJCRSession("config"));
+        assertNull(_installContext.getConfigJCRSession());
 
         SessionStubbingOperation op = mock(SessionStubbingOperation.class);
         InstallContextStubbingOperation.stubConfigJCRSession(op).of(_installContext);
         Session configSession = SessionMockUtils.mockSession("config");
-        assertThat(_installContext.getJCRSession("config"), notNullValue());
-        assertThat(_installContext.getJCRSession("config"), is(configSession));
-        assertThat(_installContext.getConfigJCRSession(), notNullValue());
-        assertThat(_installContext.getConfigJCRSession(), is(configSession));
+        assertNotNull(_installContext.getJCRSession("config"));
+        assertEquals(configSession, _installContext.getJCRSession("config"));
+        assertNotNull(_installContext.getConfigJCRSession());
+        assertEquals(configSession, _installContext.getConfigJCRSession());
         verify(op, times(1)).of(configSession);
     }
 
     @Test
     public void stubStatus() throws RepositoryException {
-        assertThat(_installContext.getStatus(), nullValue());
+        assertNull(_installContext.getStatus());
         InstallContextStubbingOperation.stubStatus(InstallStatus.installFailed).of(_installContext);
-        assertThat(_installContext.getStatus(), is(InstallStatus.installFailed));
+        assertEquals(InstallStatus.installFailed, _installContext.getStatus());
     }
 
     @Test
     public void stubModulesNode() throws RepositoryException {
-        assertThat(_installContext.getModulesNode(), nullValue());
+        assertNull(_installContext.getModulesNode());
         assertFalse(_installContext.hasModulesNode());
 
         InstallContextStubbingOperation.stubModulesNode().of(_installContext);
         assertTrue(_installContext.hasModulesNode());
-        assertThat(_installContext.getModulesNode(), is(NodeMockUtils.mockNode("config", "modules")));
-        assertThat(_installContext.getModulesNode().getPrimaryNodeType().getName(), is(NodeTypes.Content.NAME));
+        assertEquals(NodeMockUtils.mockNode("config", "modules"), _installContext.getModulesNode());
+        assertEquals(NodeTypes.Content.NAME, _installContext.getModulesNode().getPrimaryNodeType().getName());
     }
 
     @Test
     public void stubGetOrCreateCurrentModuleNode() throws RepositoryException {
-        assertThat(_installContext.getOrCreateCurrentModuleNode(), nullValue());
+        assertNull(_installContext.getOrCreateCurrentModuleNode());
         assertFalse(_installContext.isModuleRegistered("test"));
 
         InstallContextStubbingOperation.stubGetOrCreateCurrentModuleNode("test").of(_installContext);
-        assertThat(_installContext.getOrCreateCurrentModuleNode(), is(NodeMockUtils.mockNode("config", "/modules/test")));
-        assertThat(_installContext.getOrCreateCurrentModuleNode().getPrimaryNodeType().getName(), is(NodeTypes.Content.NAME));
+        assertEquals(NodeMockUtils.mockNode("config", "/modules/test"), _installContext.getOrCreateCurrentModuleNode());
+        assertEquals(NodeTypes.Content.NAME, _installContext.getOrCreateCurrentModuleNode().getPrimaryNodeType().getName());
         assertTrue(_installContext.isModuleRegistered("test"));
     }
 
     @Test
     public void stubGetOrCreateCurrentModuleConfigNode() throws RepositoryException {
-        assertThat(_installContext.getOrCreateCurrentModuleConfigNode(), nullValue());
+        assertNull(_installContext.getOrCreateCurrentModuleConfigNode());
         assertFalse(_installContext.isModuleRegistered("test"));
 
         InstallContextStubbingOperation.stubGetOrCreateCurrentModuleConfigNode("test").of(_installContext);
-        assertThat(_installContext.getOrCreateCurrentModuleConfigNode(), is(NodeMockUtils.mockNode("config", "/modules/test/config")));
-        assertThat(_installContext.getOrCreateCurrentModuleConfigNode().getPrimaryNodeType().getName(), is(NodeTypes.Content.NAME));
+        assertEquals(NodeMockUtils.mockNode("config", "/modules/test/config"), _installContext.getOrCreateCurrentModuleConfigNode());
+        assertEquals(NodeTypes.Content.NAME, _installContext.getOrCreateCurrentModuleConfigNode().getPrimaryNodeType().getName());
         assertTrue(_installContext.isModuleRegistered("test"));
     }
 
     @Test
     public void stubMessage() throws RepositoryException {
         assertTrue(_installContext.getMessages().isEmpty());
-        assertThat(_installContext.getMessages().get("test"), nullValue());
+        assertNull(_installContext.getMessages().get("test"));
 
         Date now = Calendar.getInstance().getTime();
         InstallContextStubbingOperation.stubMessage("test", "message-1", "detail", now, InstallContext.MessagePriority.info).of(_installContext);
         InstallContextStubbingOperation.stubMessage("test", "message-2", null, null, InstallContext.MessagePriority.info).of(_installContext);
         InstallContextStubbingOperation.stubMessage("other", "other message", null, null, InstallContext.MessagePriority.info).of(_installContext);
-        assertThat(_installContext.getMessages().size(), is(2));
-        assertThat(_installContext.getMessages().get("test").size(), is(2));
-        assertThat(_installContext.getMessages().get("test").get(0).getMessage(), is("message-1"));
-        assertThat(_installContext.getMessages().get("test").get(0).getDetails(), is("detail"));
-        assertThat(_installContext.getMessages().get("test").get(0).getTimestamp(), is(now));
-        assertThat(_installContext.getMessages().get("test").get(0).getPriority(), is(InstallContext.MessagePriority.info));
-        assertThat(_installContext.getMessages().get("test").get(1).getMessage(), is("message-2"));
-        assertThat(_installContext.getMessages().get("other").get(0).getMessage(), is("other message"));
+        assertEquals(2, _installContext.getMessages().size());
+        assertEquals(2, _installContext.getMessages().get("test").size());
+        assertEquals("message-1", _installContext.getMessages().get("test").get(0).getMessage());
+        assertEquals("detail", _installContext.getMessages().get("test").get(0).getDetails());
+        assertEquals(now, _installContext.getMessages().get("test").get(0).getTimestamp());
+        assertEquals(InstallContext.MessagePriority.info, _installContext.getMessages().get("test").get(0).getPriority());
+        assertEquals("message-2", _installContext.getMessages().get("test").get(1).getMessage());
+        assertEquals("other message", _installContext.getMessages().get("other").get(0).getMessage());
     }
 }

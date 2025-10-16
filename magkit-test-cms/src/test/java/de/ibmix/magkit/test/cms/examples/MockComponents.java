@@ -26,16 +26,15 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.dam.templating.functions.DamTemplatingFunctions;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.ComponentsTestUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.mockComponentInstance;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * Compare Magnolia JCR Mock-Objects with ibmix MockUtils.
@@ -45,7 +44,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class MockComponents {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
@@ -59,11 +58,11 @@ public class MockComponents {
         DamTemplatingFunctions dtf = mockComponentInstance(DamTemplatingFunctions.class);
 
         // Now we can access this DamTemplatingFunctions-mock directly from magnolia Components ...
-        assertThat(Components.getComponent(DamTemplatingFunctions.class), is(dtf));
+        assertSame(dtf, Components.getComponent(DamTemplatingFunctions.class));
 
         // 2. ... or have it injected into another class that is managed by the Magnolia Components:
         ServiceWithInjectedDamTemplatingFunctions service = Components.getComponentProvider().newInstance(ServiceWithInjectedDamTemplatingFunctions.class);
-        assertThat(service.getDtf(), is(dtf));
+        assertSame(dtf, service.getDtf());
         // Note, that injection only works using the class constructor.
         // Field injection is not supported by the Magnolia MockComponentProvider - the common base of both MockUtils.
     }
@@ -78,32 +77,31 @@ public class MockComponents {
         ComponentsTestUtil.setInstance(DamTemplatingFunctions.class, dtf);
 
         /// Now we can access this DamTemplatingFunctions-mock directly from magnolia Components ...
-        assertThat(Components.getComponent(DamTemplatingFunctions.class), is(dtf));
+        assertSame(dtf, Components.getComponent(DamTemplatingFunctions.class));
 
         // 2. ... or have it injected into another class that is managed by the Magnolia Components:
         ServiceWithInjectedDamTemplatingFunctions service = Components.getComponentProvider().newInstance(ServiceWithInjectedDamTemplatingFunctions.class);
-        assertThat(service.getDtf(), is(dtf));
+        assertSame(dtf, service.getDtf());
         // Again, injection only works using the class constructor.
         // Field injection is not supported by the Magnolia MockComponentProvider - the common base of both MockUtils.
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         ComponentsTestUtil.clear();
         SystemProperty.clear();
         MgnlContext.setInstance(null);
     }
 
-    // Scenario: We want to test a class that internally uses the DamTemplatingFunctions.
-    private class ServiceWithInjectedDamTemplatingFunctions {
-        private DamTemplatingFunctions _dtf;
+    private static class ServiceWithInjectedDamTemplatingFunctions {
+        private final DamTemplatingFunctions _dtf;
 
         @Inject
         ServiceWithInjectedDamTemplatingFunctions(DamTemplatingFunctions dtf) {
             _dtf = dtf;
         }
 
-        public DamTemplatingFunctions getDtf() {
+        DamTemplatingFunctions getDtf() {
             return _dtf;
         }
     }

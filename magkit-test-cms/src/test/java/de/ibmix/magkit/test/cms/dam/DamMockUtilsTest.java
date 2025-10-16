@@ -23,16 +23,13 @@ package de.ibmix.magkit.test.cms.dam;
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.dam.api.Asset;
 import info.magnolia.dam.jcr.JcrAsset;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 
 import static de.ibmix.magkit.test.cms.dam.AssetMockUtils.mockAsset;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,7 +41,8 @@ import static org.mockito.Mockito.verify;
  * @since 2014-04-07
  */
 public class DamMockUtilsTest {
-    @Before
+
+    @BeforeEach
     public void setUp() throws Exception {
         ContextMockUtils.cleanContext();
     }
@@ -52,29 +50,29 @@ public class DamMockUtilsTest {
     @Test
     public void testMockAssetWithNull() throws Exception {
         Asset asset = mockAsset(null, null, null);
-        assertThat(asset, notNullValue());
-        assertThat(asset.getName(), is("untitled"));
-        assertThat(asset.getPath(), is("/untitled"));
-        assertThat(asset.getCaption(), is(""));
+        assertNotNull(asset);
+        assertEquals("untitled", asset.getName());
+        assertEquals("/untitled", asset.getPath());
+        assertEquals("", asset.getCaption());
 
-        assertThat(asset.getComment(), is(""));
-        assertThat(asset.getContentStream(), nullValue());
-        assertThat(asset.getCopyright(), is(""));
-        assertThat(asset.getDescription(), is(""));
-        assertThat(asset.getFileName(), is(""));
-        assertThat(asset.getFileSize(), is(0L));
-        assertThat(asset.getLanguage(), is(""));
-        assertThat(asset.getLastModified(), nullValue());
-        assertThat(asset.getLink(), nullValue());
-        assertThat(asset.getMimeType(), is(""));
-        assertThat(asset.getSubject(), is(""));
-        assertThat(asset.getTitle(), is(""));
+        assertEquals("", asset.getComment());
+        assertNull(asset.getContentStream());
+        assertEquals("", asset.getCopyright());
+        assertEquals("", asset.getDescription());
+        assertEquals("", asset.getFileName());
+        assertEquals(0L, asset.getFileSize());
+        assertEquals("", asset.getLanguage());
+        assertNull(asset.getLastModified());
+        assertNull(asset.getLink());
+        assertEquals("", asset.getMimeType());
+        assertEquals("", asset.getSubject());
+        assertEquals("", asset.getTitle());
 
         Node assetNode = ((JcrAsset) asset).getNode();
-        assertThat(assetNode, notNullValue());
-        assertThat(assetNode.getName(), is("untitled"));
-        assertThat(assetNode.getPath(), is("/untitled"));
-        assertThat(assetNode.getNode("jcr:content"), notNullValue());
+        assertNotNull(assetNode);
+        assertEquals("untitled", assetNode.getName());
+        assertEquals("/untitled", assetNode.getPath());
+        assertNotNull(assetNode.getNode("jcr:content"));
     }
 
     @Test
@@ -82,9 +80,9 @@ public class DamMockUtilsTest {
         AssetStubbingOperation op1 = mock(AssetStubbingOperation.class);
         AssetStubbingOperation op2 = mock(AssetStubbingOperation.class);
         Asset asset = mockAsset("some/folder/with/asset", "some", "test-id", op1, op2);
-        assertThat(asset, notNullValue());
-        assertThat(asset.getName(), is("asset"));
-        assertThat(asset.getPath(), is("/some/folder/with/asset"));
+        assertNotNull(asset);
+        assertEquals("asset", asset.getName());
+        assertEquals("/some/folder/with/asset", asset.getPath());
         verify(op1, times(1)).of(asset);
         verify(op2, times(1)).of(asset);
     }

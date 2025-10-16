@@ -23,12 +23,12 @@ package de.ibmix.magkit.test.cms.security;
 import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.RoleManager;
 import info.magnolia.cms.security.auth.ACL;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -42,48 +42,48 @@ public class RoleManagerStubbingOperationTest {
 
     private RoleManager _roleManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         _roleManager = mock(RoleManager.class);
     }
 
     @Test
     public void stubRole() {
-        assertThat(_roleManager.getRole("test"), nullValue());
+        assertNull(_roleManager.getRole("test"));
 
         Role role = mock(Role.class);
         doReturn("test").when(role).getName();
         RoleManagerStubbingOperation.stubRole(role).of(_roleManager);
-        assertThat(_roleManager.getRole("test"), is(role));
-        assertThat(_roleManager.getRoleNameById("test-td"), nullValue());
+        assertEquals(role, _roleManager.getRole("test"));
+        assertNull(_roleManager.getRoleNameById("test-td"));
 
         doReturn("test-id").when(role).getId();
         RoleManagerStubbingOperation.stubRole(role).of(_roleManager);
-        assertThat(_roleManager.getRole("test"), is(role));
-        assertThat(_roleManager.getRoleNameById("test-id"), is("test"));
+        assertEquals(role, _roleManager.getRole("test"));
+        assertEquals("test", _roleManager.getRoleNameById("test-id"));
     }
 
     @Test
     public void stubRoleNameById() {
-        assertThat(_roleManager.getRoleNameById("test-td"), nullValue());
+        assertNull(_roleManager.getRoleNameById("test-td"));
 
         RoleManagerStubbingOperation.stubRoleNameById("test-id", "test").of(_roleManager);
-        assertThat(_roleManager.getRoleNameById("test-id"), is("test"));
+        assertEquals("test", _roleManager.getRoleNameById("test-id"));
     }
 
     @Test
     public void stubAcl() {
-        assertThat(_roleManager.getACLs("test").isEmpty(), is(true));
+        assertTrue(_roleManager.getACLs("test").isEmpty());
 
         ACL acl = mock(ACL.class);
         doReturn("test-acl").when(acl).getName();
         RoleManagerStubbingOperation.stubAcl("test", acl).of(_roleManager);
-        assertThat(_roleManager.getACLs("test").size(), is(1));
-        assertThat(_roleManager.getACLs("test").get("test-acl"), is(acl));
+        assertEquals(1, _roleManager.getACLs("test").size());
+        assertEquals(acl, _roleManager.getACLs("test").get("test-acl"));
 
         ACL acl2 = mock(ACL.class);
         doReturn("test-acl2").when(acl2).getName();
         RoleManagerStubbingOperation.stubAcl("test", acl2).of(_roleManager);
-        assertThat(_roleManager.getACLs("test").size(), is(2));
+        assertEquals(2, _roleManager.getACLs("test").size());
     }
 }

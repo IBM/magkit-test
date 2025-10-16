@@ -93,7 +93,7 @@ public final class WorkspaceMockUtils {
      * @param stubbings optional additional stubbing operations; may be empty but never {@code null}
      * @return the configured {@link Workspace} mock (never {@code null})
      * @throws RepositoryException if any stubbing operation throws it
-     * @throws AssertionError if {@code name} is blank
+     * @throws IllegalArgumentException if {@code name} is blank
      */
     public static Workspace mockWorkspace(String name, WorkspaceStubbingOperation... stubbings) throws RepositoryException {
         Require.Argument.notBlank(name, "name must not be blank");

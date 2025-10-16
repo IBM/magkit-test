@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
-
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.imaging.ImagingSupport;
 import info.magnolia.module.site.CssResourceDefinition;
@@ -33,8 +33,6 @@ import static de.ibmix.magkit.test.cms.site.ThemeMockUtils.mockCssFile;
 import static de.ibmix.magkit.test.cms.site.ThemeMockUtils.mockResource;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -87,7 +85,7 @@ public abstract class ThemeStubbingOperation implements StubbingOperation<Theme>
 
             @Override
             public void of(final Theme theme) {
-                assertThat(theme, notNullValue());
+                Require.Argument.notNull(theme, "theme should not be null");
                 if (links != null) {
                     CssResourceDefinition[] files = new CssResourceDefinition[links.length];
                     for (int i = 0; i < links.length; i++) {
@@ -114,7 +112,7 @@ public abstract class ThemeStubbingOperation implements StubbingOperation<Theme>
 
             @Override
             public void of(final Theme theme) {
-                assertThat(theme, notNullValue());
+                Require.Argument.notNull(theme, "theme should not be null");
                 List<CssResourceDefinition> files = theme.getCssFiles();
                 files.addAll(asList(values));
                 // Simple mockito mocks return a new empty LinkedList per default.
@@ -136,7 +134,7 @@ public abstract class ThemeStubbingOperation implements StubbingOperation<Theme>
 
             @Override
             public void of(final Theme theme) {
-                assertThat(theme, notNullValue());
+                Require.Argument.notNull(theme, "theme should not be null");
                 List<ResourceDefinition> files = theme.getJsFiles();
                 files.addAll(asList(values));
                 // Simple mockito mocks return a new empty LinkedList per default.
@@ -159,7 +157,7 @@ public abstract class ThemeStubbingOperation implements StubbingOperation<Theme>
 
             @Override
             public void of(final Theme theme) {
-                assertThat(theme, notNullValue());
+                Require.Argument.notNull(theme, "theme should not be null");
                 if (links != null) {
                     ResourceDefinition[] files = new ResourceDefinition[links.length];
                     for (int i = 0; i < links.length; i++) {
@@ -182,7 +180,7 @@ public abstract class ThemeStubbingOperation implements StubbingOperation<Theme>
         return new ThemeStubbingOperation() {
             @Override
             public void of(Theme theme) {
-                assertThat(theme, notNullValue());
+                Require.Argument.notNull(theme, "theme should not be null");
                 doReturn(imagingSupport).when(theme).getImaging();
             }
         };

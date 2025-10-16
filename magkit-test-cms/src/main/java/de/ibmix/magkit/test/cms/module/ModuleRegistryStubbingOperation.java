@@ -20,14 +20,13 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 
 import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockModuleDefinition;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubVersion;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -80,9 +79,9 @@ public abstract class ModuleRegistryStubbingOperation implements StubbingOperati
     public static ModuleRegistryStubbingOperation stubModuleDefinition(final String name, final ModuleDefinition md) {
         return new ModuleRegistryStubbingOperation() {
             @Override
-            public void of(ModuleRegistry mr) {
-                assertThat(mr, notNullValue());
-                doReturn(md).when(mr).getDefinition(name);
+            public void of(ModuleRegistry moduleRegistry) {
+                Require.Argument.notNull(moduleRegistry, "moduleRegistry should not be null");
+                doReturn(md).when(moduleRegistry).getDefinition(name);
             }
         };
     }

@@ -25,16 +25,16 @@ import de.ibmix.magkit.test.cms.site.SiteMockUtils;
 import info.magnolia.module.site.Site;
 import info.magnolia.module.site.SiteManager;
 import info.magnolia.objectfactory.Components;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
@@ -45,7 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class MockSite {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
@@ -54,28 +54,28 @@ public class MockSite {
     public void mockPlainSiteWithMagkit() throws RepositoryException {
         // 1) Mock a Site:
         Site site = SiteMockUtils.mockSite("mySite");
-        assertThat(site.getName(), is("mySite"));
-        assertThat(Components.getComponent(SiteManager.class).getSite("mySite"), is(site));
-        assertThat(site.getI18n(), notNullValue());
+        assertEquals("mySite", site.getName());
+        assertSame(site, Components.getComponent(SiteManager.class).getSite("mySite"));
+        assertNotNull(site.getI18n());
 
         // 2) Mock the default Site:
         Site defaultSite = SiteMockUtils.mockDefaultSite();
-        assertThat(defaultSite.getName(), is("default"));
-        assertThat(Components.getComponent(SiteManager.class).getDefaultSite(), is(defaultSite));
-        assertThat(Components.getComponent(SiteManager.class).getSite("default"), is(defaultSite));
+        assertEquals("default", defaultSite.getName());
+        assertSame(defaultSite, Components.getComponent(SiteManager.class).getDefaultSite());
+        assertSame(defaultSite, Components.getComponent(SiteManager.class).getSite("default"));
 
         // 3) Mock the current Site:
         Site currentSite = SiteMockUtils.mockCurrentSite("currentSite");
-        assertThat(currentSite.getName(), is("currentSite"));
-        assertThat(Components.getComponent(SiteManager.class).getCurrentSite(), is(currentSite));
-        assertThat(Components.getComponent(SiteManager.class).getSite("currentSite"), is(currentSite));
+        assertEquals("currentSite", currentSite.getName());
+        assertSame(currentSite, Components.getComponent(SiteManager.class).getCurrentSite());
+        assertSame(currentSite, Components.getComponent(SiteManager.class).getSite("currentSite"));
 
         // 4) Mock the assigned Site of a Node:
         Node node = mockNode("any/node");
         Site assignedSite = SiteMockUtils.mockAssignedSite(node, "assignedSite");
-        assertThat(assignedSite.getName(), is("assignedSite"));
-        assertThat(Components.getComponent(SiteManager.class).getAssignedSite(node), is(assignedSite));
-        assertThat(Components.getComponent(SiteManager.class).getSite("assignedSite"), is(assignedSite));
+        assertEquals("assignedSite", assignedSite.getName());
+        assertSame(assignedSite, Components.getComponent(SiteManager.class).getAssignedSite(node));
+        assertSame(assignedSite, Components.getComponent(SiteManager.class).getSite("assignedSite"));
     }
 
     @Test

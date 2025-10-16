@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.model.DependencyDefinition;
 import info.magnolia.module.model.ModuleDefinition;
@@ -32,8 +33,6 @@ import info.magnolia.module.model.VersionRange;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -78,9 +77,9 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
     public static ModuleDefinitionStubbingOperation stubDisplayName(final String displayName) {
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition md) {
-                assertThat(md, notNullValue());
-                when(md.getDisplayName()).thenReturn(displayName);
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
+                when(moduleDefinition.getDisplayName()).thenReturn(displayName);
             }
         };
     }
@@ -93,9 +92,9 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
     public static ModuleDefinitionStubbingOperation stubName(final String name) {
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition md) {
-                assertThat(md, notNullValue());
-                when(md.getName()).thenReturn(name);
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
+                when(moduleDefinition.getName()).thenReturn(name);
             }
         };
     }
@@ -108,9 +107,9 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
     public static ModuleDefinitionStubbingOperation stubDescription(final String value) {
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition md) {
-                assertThat(md, notNullValue());
-                when(md.getDescription()).thenReturn(value);
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
+                when(moduleDefinition.getDescription()).thenReturn(value);
             }
         };
     }
@@ -123,9 +122,9 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
     public static ModuleDefinitionStubbingOperation stubClassName(final String value) {
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition md) {
-                assertThat(md, notNullValue());
-                when(md.getClassName()).thenReturn(value);
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
+                when(moduleDefinition.getClassName()).thenReturn(value);
             }
         };
     }
@@ -142,10 +141,10 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
     public static ModuleDefinitionStubbingOperation stubVersion(final String version) {
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition md) {
-                assertThat(md, notNullValue());
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
                 Version v = Version.parseVersion(version);
-                when(md.getVersion()).thenReturn(v);
+                when(moduleDefinition.getVersion()).thenReturn(v);
             }
         };
     }
@@ -157,14 +156,14 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
      * @return operation adding servlet definition
      */
     public static ModuleDefinitionStubbingOperation stubServlet(final ServletDefinition value) {
-        assertThat(value, notNullValue());
+        Require.Argument.notNull(value, "value should not be null");
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition mock) {
-                assertThat(mock, notNullValue());
-                Collection<ServletDefinition> servlets = mock.getServlets();
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
+                Collection<ServletDefinition> servlets = moduleDefinition.getServlets();
                 servlets.add(value);
-                doReturn(servlets).when(mock).getServlets();
+                doReturn(servlets).when(moduleDefinition).getServlets();
             }
         };
     }
@@ -175,12 +174,12 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
      * @return operation configuring servlet definitions
      */
     public static ModuleDefinitionStubbingOperation stubServlets(final Collection<ServletDefinition> values) {
-        assertThat(values, notNullValue());
+        Require.Argument.notNull(values, "values should not be null");
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition mock) {
-                assertThat(mock, notNullValue());
-                doReturn(values).when(mock).getServlets();
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
+                doReturn(values).when(moduleDefinition).getServlets();
             }
         };
     }
@@ -200,16 +199,16 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
     public static ModuleDefinitionStubbingOperation stubDependency(final String name, final String version, boolean optional) {
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition mock) {
-                assertThat(mock, notNullValue());
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "groupManager should not be null");
                 DependencyDefinition result = mock(DependencyDefinition.class);
                 doReturn(name).when(result).getName();
                 doReturn(version).when(result).getVersion();
                 doReturn(optional).when(result).isOptional();
                 doReturn(VersionRange.parse(version)).when(result).getVersionRange();
-                Collection<DependencyDefinition> dependencies = mock.getDependencies();
+                Collection<DependencyDefinition> dependencies = moduleDefinition.getDependencies();
                 dependencies.add(result);
-                doReturn(dependencies).when(mock).getDependencies();
+                doReturn(dependencies).when(moduleDefinition).getDependencies();
             }
         };
     }
@@ -225,15 +224,15 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
     public static ModuleDefinitionStubbingOperation stubRepository(final String name, final String nodeTypeFile, final String... workspaces) {
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition mock) {
-                assertThat(mock, notNullValue());
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
                 RepositoryDefinition result = mock(RepositoryDefinition.class);
                 doReturn(name).when(result).getName();
                 doReturn(nodeTypeFile).when(result).getNodeTypeFile();
                 doReturn(Arrays.asList(workspaces)).when(result).getWorkspaces();
-                Collection<RepositoryDefinition> repositories = mock.getRepositories();
+                Collection<RepositoryDefinition> repositories = moduleDefinition.getRepositories();
                 repositories.add(result);
-                doReturn(repositories).when(mock).getRepositories();
+                doReturn(repositories).when(moduleDefinition).getRepositories();
             }
         };
     }
@@ -247,15 +246,15 @@ public abstract class ModuleDefinitionStubbingOperation implements StubbingOpera
     public static ModuleDefinitionStubbingOperation stubProperty(final String name, final String value) {
         return new ModuleDefinitionStubbingOperation() {
             @Override
-            public void of(ModuleDefinition mock) {
-                assertThat(mock, notNullValue());
+            public void of(ModuleDefinition moduleDefinition) {
+                Require.Argument.notNull(moduleDefinition, "moduleDefinition should not be null");
                 PropertyDefinition result = mock(PropertyDefinition.class);
                 doReturn(name).when(result).getName();
                 doReturn(value).when(result).getValue();
-                Collection<PropertyDefinition> properties = mock.getProperties();
+                Collection<PropertyDefinition> properties = moduleDefinition.getProperties();
                 properties.add(result);
-                doReturn(properties).when(mock).getProperties();
-                doReturn(value).when(mock).getProperty(name);
+                doReturn(properties).when(moduleDefinition).getProperties();
+                doReturn(value).when(moduleDefinition).getProperty(name);
             }
         };
     }

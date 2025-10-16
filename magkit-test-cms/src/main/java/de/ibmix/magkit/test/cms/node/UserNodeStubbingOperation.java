@@ -20,12 +20,11 @@ package de.ibmix.magkit.test.cms.node;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.util.Calendar;
-
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Factory helpers for stubbing Magnolia user node properties and relations in unit tests.
@@ -70,7 +69,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("email", email).of(node);
             }
         };
@@ -85,7 +84,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("enabled", enabled).of(node);
             }
         };
@@ -100,7 +99,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("failedLoginAttempts", failedLoginAttempts).of(node);
             }
         };
@@ -115,7 +114,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("language", language).of(node);
             }
         };
@@ -130,7 +129,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("lastAccess", lastAccess).of(node);
             }
         };
@@ -145,7 +144,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("name", name).of(node);
             }
         };
@@ -160,7 +159,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("pswd", password).of(node);
             }
         };
@@ -175,7 +174,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("title", title).of(node);
             }
         };
@@ -190,7 +189,7 @@ public abstract class UserNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new UserNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubNodeReferenceList(node, "groups", groupNodes);
             }
         };

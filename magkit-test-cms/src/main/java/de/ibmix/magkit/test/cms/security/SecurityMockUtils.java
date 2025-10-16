@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.cms.security.AccessManager;
@@ -40,9 +41,6 @@ import java.util.UUID;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
 import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAccessManager;
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -78,7 +76,7 @@ import static org.mockito.Mockito.when;
  * <p><b>Thread safety:</b> Implementation is backed by ComponentProvider that uses ThreadLocal and is thread-safe; intended for multithreaded test initialization code.</p>
  *
  * <p><b>Error handling:</b> Parameter validation relies on Hamcrest {@code assertThat}; failing preconditions
- * raise {@link AssertionError}.</p>
+ * raise {@link IllegalArgumentException}.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2013-04-30
@@ -110,7 +108,7 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      * @param stubbings ordered varargs of operations to configure the resulting mock
      * @return mocked {@link AccessManager}
      * @throws RepositoryException if one of the provided stubbing operations triggers repository interaction issues
-     * @throws AssertionError      if {@code stubbings} array reference is {@code null}
+     * @throws IllegalArgumentException      if {@code stubbings} array reference is {@code null}
      */
     public static AccessManager mockAccessManager(AccessManagerStubbingOperation... stubbings) throws RepositoryException {
         return mockAccessManager(WEBSITE, stubbings);
@@ -125,11 +123,11 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      * @param stubbings    ordered varargs of operations to configure the access manager mock (must not be {@code null})
      * @return mocked {@link AccessManager} for the given repository id
      * @throws RepositoryException if a stubbing operation throws it
-     * @throws AssertionError      if {@code repositoryId} is blank or {@code stubbings} array reference is {@code null}
+     * @throws IllegalArgumentException      if {@code repositoryId} is blank or {@code stubbings} array reference is {@code null}
      */
     public static AccessManager mockAccessManager(String repositoryId, AccessManagerStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
-        assertThat("The repository id must not be empty or blank.", isNotBlank(repositoryId));
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
+        Require.Argument.notBlank(repositoryId, "repositoryId should not be null");
         WebContext context = mockWebContext();
         AccessManager am = context.getAccessManager(repositoryId);
         if (am == null) {
@@ -150,10 +148,11 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      * @param realm     Magnolia security realm (must not be {@code null})
      * @param stubbings optional ordered varargs of operations to configure the user manager mock
      * @return mocked {@link UserManager}
-     * @throws AssertionError if {@code realm} is {@code null}
+     * @throws IllegalArgumentException if {@code realm} is {@code null}
      */
     public static UserManager mockUserManager(String realm, UserManagerStubbingOperation... stubbings) {
-        assertThat(realm, notNullValue());
+        Require.Argument.notNull(realm, "realm should not be null");
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         SecuritySupport security = mockSecuritySupport();
         UserManager userManager = security.getUserManager(realm);
         if (userManager == null) {
@@ -174,6 +173,7 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      * @return mocked {@link GroupManager}
      */
     public static GroupManager mockGroupManager(GroupManagerStubbingOperation... stubbings) {
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         SecuritySupport security = mockSecuritySupport();
         GroupManager manager = security.getGroupManager();
         if (manager == null) {
@@ -191,10 +191,10 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      *
      * @param stubbings ordered varargs of operations to configure the role manager mock (must not be {@code null})
      * @return mocked {@link RoleManager}
-     * @throws AssertionError if {@code stubbings} array reference is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} array reference is {@code null}
      */
     public static RoleManager mockRoleManager(RoleManagerStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         SecuritySupport security = mockSecuritySupport();
         RoleManager manager = security.getRoleManager();
         if (manager == null) {
@@ -213,7 +213,7 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      * @param name      logical user name (login)
      * @param stubbings ordered varargs customizing the user mock (must not be {@code null})
      * @return mocked {@link User}
-     * @throws AssertionError if {@code stubbings} array reference is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} array reference is {@code null}
      */
     public static User mockUser(final String name, UserStubbingOperation... stubbings) {
         return mockUser(WEBSITE, name, UUID.randomUUID().toString(), stubbings);
@@ -229,10 +229,10 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      * @param uuid      identifier assigned to the user
      * @param stubbings ordered varargs customizing the user mock (must not be {@code null})
      * @return mocked {@link User}
-     * @throws AssertionError if {@code stubbings} array reference is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} array reference is {@code null}
      */
     public static User mockUser(final String realm, final String name, final String uuid, UserStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         UserManager userManager = mockUserManager(realm);
         User user = userManager.getUser(name);
         if (user == null) {
@@ -250,7 +250,7 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      * @param stubbings ordered varargs customizing the group mock (must not be {@code null})
      * @return mocked {@link Group}
      * @throws AccessDeniedException if a stubbing operation triggers an access check that fails
-     * @throws AssertionError        if {@code stubbings} array reference is {@code null}
+     * @throws IllegalArgumentException        if {@code stubbings} array reference is {@code null}
      */
     public static Group mockGroup(final String name, GroupStubbingOperation... stubbings) throws AccessDeniedException {
         return mockGroup(name, UUID.randomUUID().toString(), stubbings);
@@ -266,10 +266,10 @@ public final class SecurityMockUtils extends ComponentsMockUtils {
      * @param stubbings ordered varargs customizing the group mock (must not be {@code null})
      * @return mocked {@link Group}
      * @throws AccessDeniedException if a stubbing operation throws it
-     * @throws AssertionError        if {@code stubbings} array reference is {@code null}
+     * @throws IllegalArgumentException        if {@code stubbings} array reference is {@code null}
      */
     public static Group mockGroup(final String name, final String uuid, GroupStubbingOperation... stubbings) throws AccessDeniedException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         GroupManager manager = mockGroupManager();
         Group group = manager.getGroup(name);
         if (group == null) {

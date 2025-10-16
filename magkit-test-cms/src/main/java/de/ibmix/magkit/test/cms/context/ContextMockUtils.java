@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
 import de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation;
 import de.ibmix.magkit.test.jcr.query.QueryMockUtils;
@@ -51,8 +52,6 @@ import java.util.Map;
 
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
 import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubAggregationState;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -108,7 +107,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
      * @throws RepositoryException if JCR access stubbing fails
      */
     public static WebContext mockWebContext(WebContextStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         WebContext context;
         if (MgnlContext.hasInstance() && MgnlContext.isWebContext()) {
             context = MgnlContext.getWebContext();
@@ -159,7 +158,7 @@ public final class ContextMockUtils extends ComponentsMockUtils {
      * @throws RepositoryException if creation of a backing web context triggers a repository error
      */
     public static AggregationState mockAggregationState(AggregationStateStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         WebContext context = mockWebContext();
         AggregationState aggState = context.getAggregationState();
         if (aggState == null) {

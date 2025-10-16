@@ -24,8 +24,8 @@ import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -39,9 +39,10 @@ import java.io.IOException;
 
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
@@ -52,7 +53,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class MockQueries {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
@@ -70,21 +71,21 @@ public class MockQueries {
 
         // Done. The Magnolia QueryUtils can be used to access the Query:
         NodeIterator mgnlResult = QueryUtil.search("testRepo", "test query statement", Query.XPATH);
-        assertThat(mgnlResult, notNullValue());
-        assertThat(mgnlResult.nextNode(), is(first));
-        assertThat(mgnlResult.nextNode(), is(second));
-        assertThat(mgnlResult.nextNode(), is(third));
+        assertNotNull(mgnlResult);
+        assertSame(first, mgnlResult.nextNode());
+        assertSame(second, mgnlResult.nextNode());
+        assertSame(third, mgnlResult.nextNode());
         // the duplicated Node (/result/two) has been removed from result by QueryUtils.
-        assertThat(mgnlResult.hasNext(), is(false));
+        assertFalse(mgnlResult.hasNext());
 
         // When accessing the mocked QueryResult (via workspace QueryManager) we may access the Node properties as Rows:
         QueryResult result = MgnlContext.getJCRSession("testRepo").getWorkspace().getQueryManager().createQuery("test query statement", Query.XPATH).execute();
         RowIterator rows = result.getRows();
         Row firstRow = rows.nextRow();
-        assertThat(firstRow, notNullValue());
-        assertThat(firstRow.getValue("test").getString(), is("test-1"));
-        assertThat(rows.nextRow().getValue("test").getString(), is("test-2"));
-        assertThat(rows.nextRow().getValue("test").getString(), is("test-3"));
+        assertNotNull(firstRow);
+        assertEquals("test-1", firstRow.getValue("test").getString());
+        assertEquals("test-2", rows.nextRow().getValue("test").getString());
+        assertEquals("test-3", rows.nextRow().getValue("test").getString());
     }
 
     @Test
@@ -106,7 +107,7 @@ public class MockQueries {
         // The query string must contain the required primaryNodeType after the "from" and before the "where" clause.
         // The default primaryNodeType of MockNodes created by Magnolia is "mgnl:contentNode".
         QueryResult result = session.getWorkspace().getQueryManager().createQuery("test query statement from mgnl:contentNode", Query.XPATH).execute();
-        assertThat(result, notNullValue());
+        assertNotNull(result);
         // Note: The MockQueryResult of Magnolia contains ALL Nodes of the Session filtered by their PrimaryNodeType:
 //        assertThat(result.getNodes().nextNode(), not(is(first)));
 //        assertThat(result.getNodes().nextNode(), is(parent));

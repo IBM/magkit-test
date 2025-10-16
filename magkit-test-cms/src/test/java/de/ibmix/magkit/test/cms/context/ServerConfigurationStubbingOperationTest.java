@@ -21,17 +21,18 @@ package de.ibmix.magkit.test.cms.context;
  */
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.ibmix.magkit.test.cms.context.ServerConfigurationMockUtils.cleanServerConfiguration;
 import static de.ibmix.magkit.test.cms.context.ServerConfigurationMockUtils.mockServerConfiguration;
 import static de.ibmix.magkit.test.cms.context.ServerConfigurationStubbingOperation.stubDefaultBaseUrl;
 import static de.ibmix.magkit.test.cms.context.ServerConfigurationStubbingOperation.stubDefaultExtension;
 import static de.ibmix.magkit.test.cms.context.ServerConfigurationStubbingOperation.stubIsAdmin;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Testing ServerConfigurationStubbingOperation.
@@ -43,7 +44,7 @@ public class ServerConfigurationStubbingOperationTest {
 
     private ServerConfiguration _serverConfiguration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         cleanServerConfiguration();
         _serverConfiguration = mockServerConfiguration();
@@ -51,25 +52,25 @@ public class ServerConfigurationStubbingOperationTest {
 
     @Test
     public void testStubbDefaultExtension() {
-        assertThat(_serverConfiguration.getDefaultExtension(), nullValue());
+        assertNull(_serverConfiguration.getDefaultExtension());
 
         stubDefaultExtension("test").of(_serverConfiguration);
-        assertThat(_serverConfiguration.getDefaultExtension(), is("test"));
+        assertEquals("test", _serverConfiguration.getDefaultExtension());
     }
 
     @Test
     public void testStubbDefaultBaseUrl() {
-        assertThat(_serverConfiguration.getDefaultBaseUrl(), nullValue());
+        assertNull(_serverConfiguration.getDefaultBaseUrl());
 
         stubDefaultBaseUrl("test.aperto.de").of(_serverConfiguration);
-        assertThat(_serverConfiguration.getDefaultBaseUrl(), is("test.aperto.de"));
+        assertEquals("test.aperto.de", _serverConfiguration.getDefaultBaseUrl());
     }
 
     @Test
     public void testStubbIsAdmin() {
-        assertThat(_serverConfiguration.isAdmin(), is(false));
+        assertFalse(_serverConfiguration.isAdmin());
 
         stubIsAdmin(true).of(_serverConfiguration);
-        assertThat(_serverConfiguration.isAdmin(), is(true));
+        assertTrue(_serverConfiguration.isAdmin());
     }
 }

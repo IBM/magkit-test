@@ -23,13 +23,14 @@ package de.ibmix.magkit.test.cms.site;
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.imaging.ImagingSupport;
 import info.magnolia.module.site.theme.Theme;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -42,49 +43,49 @@ public class ThemeStubbingOperationTest {
 
     private Theme _theme;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ContextMockUtils.cleanContext();
         _theme = mock(Theme.class);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         ContextMockUtils.cleanContext();
     }
 
     @Test
     public void stubCssFiles() {
-        assertThat(_theme.getCssFiles().isEmpty(), is(true));
+        assertTrue(_theme.getCssFiles().isEmpty());
 
         ThemeStubbingOperation.stubCssFiles("/file-1.css", "/test.css").of(_theme);
-        assertThat(_theme.getCssFiles().size(), is(2));
-        assertThat(_theme.getCssFiles().get(0).getLink(), is("/file-1.css"));
-        assertThat(_theme.getCssFiles().get(0).getMedia(), is(""));
-        assertThat(_theme.getCssFiles().get(0).getConditionalComment(), is(""));
-        assertThat(_theme.getCssFiles().get(1).getLink(), is("/test.css"));
-        assertThat(_theme.getCssFiles().get(1).getMedia(), is(""));
-        assertThat(_theme.getCssFiles().get(1).getConditionalComment(), is(""));
+        assertEquals(2, _theme.getCssFiles().size());
+        assertEquals("/file-1.css", _theme.getCssFiles().get(0).getLink());
+        assertEquals("", _theme.getCssFiles().get(0).getMedia());
+        assertEquals("", _theme.getCssFiles().get(0).getConditionalComment());
+        assertEquals("/test.css", _theme.getCssFiles().get(1).getLink());
+        assertEquals("", _theme.getCssFiles().get(1).getMedia());
+        assertEquals("", _theme.getCssFiles().get(1).getConditionalComment());
     }
 
     @Test
     public void stubJsFiles() {
-        assertThat(_theme.getJsFiles().isEmpty(), is(true));
+        assertTrue(_theme.getJsFiles().isEmpty());
 
         ThemeStubbingOperation.stubJsFiles("/file-1.js", "/test.js").of(_theme);
-        assertThat(_theme.getJsFiles().size(), is(2));
-        assertThat(_theme.getJsFiles().get(0).getLink(), is("/file-1.js"));
-        assertThat(_theme.getJsFiles().get(0).getConditionalComment(), is(""));
-        assertThat(_theme.getJsFiles().get(1).getLink(), is("/test.js"));
-        assertThat(_theme.getJsFiles().get(1).getConditionalComment(), is(""));
+        assertEquals(2, _theme.getJsFiles().size());
+        assertEquals("/file-1.js", _theme.getJsFiles().get(0).getLink());
+        assertEquals("", _theme.getJsFiles().get(0).getConditionalComment());
+        assertEquals("/test.js", _theme.getJsFiles().get(1).getLink());
+        assertEquals("", _theme.getJsFiles().get(1).getConditionalComment());
     }
 
     @Test
     public void stubImagingSupport() {
-        assertThat(_theme.getImaging(), nullValue());
+        assertNull(_theme.getImaging());
 
         ImagingSupport imagingSupport = mock(ImagingSupport.class);
         ThemeStubbingOperation.stubImagingSupport(imagingSupport).of(_theme);
-        assertThat(_theme.getImaging(), is(imagingSupport));
+        assertSame(imagingSupport, _theme.getImaging());
     }
 }

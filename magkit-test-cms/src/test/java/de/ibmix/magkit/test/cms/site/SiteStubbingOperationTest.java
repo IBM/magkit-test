@@ -24,8 +24,8 @@ import info.magnolia.module.site.Domain;
 import info.magnolia.module.site.Site;
 import info.magnolia.module.site.theme.Theme;
 import info.magnolia.module.site.theme.ThemeReference;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 
@@ -35,10 +35,10 @@ import static de.ibmix.magkit.test.cms.site.SiteStubbingOperation.stubDomains;
 import static de.ibmix.magkit.test.cms.site.SiteStubbingOperation.stubName;
 import static de.ibmix.magkit.test.cms.site.SiteStubbingOperation.stubTheme;
 import static de.ibmix.magkit.test.cms.site.SiteStubbingOperation.stubVariation;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -54,7 +54,7 @@ public class SiteStubbingOperationTest {
 
     private Site _site;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         cleanContext();
         _site = mock(Site.class);
@@ -62,85 +62,85 @@ public class SiteStubbingOperationTest {
 
     @Test
     public void testStubName() {
-        assertThat(_site.getName(), nullValue());
+        assertNull(_site.getName());
 
         stubName("test").of(_site);
-        assertThat(_site.getName(), is("test"));
+        assertEquals("test", _site.getName());
 
     }
 
     @Test
     public void testStubDomains() {
-        assertThat(_site.getDomains().size(), is(0));
+        assertEquals(0, _site.getDomains().size());
 
         Domain domain = mock(Domain.class);
         stubDomains(domain).of(_site);
-        assertThat(_site.getDomains(), notNullValue());
-        assertThat(_site.getDomains().size(), is(1));
-        assertThat(_site.getDomains().iterator().next(), is(domain));
+        assertNotNull(_site.getDomains());
+        assertEquals(1, _site.getDomains().size());
+        assertSame(domain, _site.getDomains().iterator().next());
     }
 
     @Test
     public void testStubTheme() {
-        assertThat(_site.getTheme(), nullValue());
+        assertNull(_site.getTheme());
 
         ThemeReference theme = mock(ThemeReference.class);
         stubTheme(theme).of(_site);
-        assertThat(_site.getTheme(), is(theme));
+        assertSame(theme, _site.getTheme());
 
         stubTheme(null).of(_site);
-        assertThat(_site.getTheme(), nullValue());
+        assertNull(_site.getTheme());
     }
 
     @Test
     public void testStubThemeWithName() {
-        assertThat(_site.getTheme(), nullValue());
+        assertNull(_site.getTheme());
 
         ThemeStubbingOperation stubTheme = mock(ThemeStubbingOperation.class);
         stubTheme("myTheme", stubTheme).of(_site);
-        assertThat(_site.getTheme(), notNullValue());
-        assertThat(_site.getTheme().getName(), is("myTheme"));
+        assertNotNull(_site.getTheme());
+        assertEquals("myTheme", _site.getTheme().getName());
         verify(stubTheme, times(1)).of(any(Theme.class));
     }
 
     @Test
     public void stubDomainsTest() {
-        assertThat(_site.getDomains(), notNullValue());
-        assertThat(_site.getDomains().size(), is(0));
+        assertNotNull(_site.getDomains());
+        assertEquals(0, _site.getDomains().size());
 
         Domain d1 = mock(Domain.class);
         Domain d2 = mock(Domain.class);
         Domain d3 = mock(Domain.class);
         stubDomains(d1, d2, d3).of(_site);
-        assertThat(_site.getDomains(), notNullValue());
-        assertThat(_site.getDomains().size(), is(3));
+        assertNotNull(_site.getDomains());
+        assertEquals(3, _site.getDomains().size());
     }
 
     @Test
     public void stubVariationTest() throws RepositoryException {
-        assertThat(_site.getVariations(), notNullValue());
-        assertThat(_site.getVariations().size(), is(0));
+        assertNotNull(_site.getVariations());
+        assertEquals(0, _site.getVariations().size());
 
         Site testVariation = mockSite("test");
         stubVariation(testVariation).of(_site);
 
-        assertThat(_site.getVariations().size(), is(1));
-        assertThat(_site.getVariations().get("test"), notNullValue());
-        assertThat(_site.getVariations().get("test").getName(), is("test"));
+        assertEquals(1, _site.getVariations().size());
+        assertNotNull(_site.getVariations().get("test"));
+        assertEquals("test", _site.getVariations().get("test").getName());
     }
 
     @Test
     public void stubVariationWithNameTest() throws RepositoryException {
-        assertThat(_site.getVariations(), notNullValue());
-        assertThat(_site.getVariations().size(), is(0));
+        assertNotNull(_site.getVariations());
+        assertEquals(0, _site.getVariations().size());
 
         SiteStubbingOperation op = mock(SiteStubbingOperation.class);
         stubVariation("newTest", op).of(_site);
 
-        assertThat(_site.getVariations().size(), is(1));
+        assertEquals(1, _site.getVariations().size());
         Site variation = _site.getVariations().get("newTest");
-        assertThat(variation, notNullValue());
-        assertThat(variation.getName(), is("newTest"));
+        assertNotNull(variation);
+        assertEquals("newTest", variation.getName());
         verify(op, times(1)).of(variation);
         verify(op, times(0)).of(_site);
     }

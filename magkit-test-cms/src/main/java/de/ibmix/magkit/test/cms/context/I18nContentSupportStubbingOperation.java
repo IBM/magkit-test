@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import org.mockito.Mockito;
@@ -30,8 +31,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -76,7 +75,7 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
         return new I18nContentSupportStubbingOperation() {
 
             public void of(I18nContentSupport contentSupport) throws RepositoryException {
-                assertThat(contentSupport, notNullValue());
+                Require.Argument.notNull(contentSupport, "contentSupport should not be null");
                 when(contentSupport.getLocale()).thenReturn(locale);
                 addToLocales(contentSupport, locale);
             }
@@ -93,7 +92,7 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
         return new I18nContentSupportStubbingOperation() {
 
             public void of(I18nContentSupport contentSupport) throws RepositoryException {
-                assertThat(contentSupport, notNullValue());
+                Require.Argument.notNull(contentSupport, "contentSupport should not be null");
                 when(contentSupport.getFallbackLocale()).thenReturn(locale);
                 addToLocales(contentSupport, locale);
             }
@@ -110,7 +109,7 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
         return new I18nContentSupportStubbingOperation() {
 
             public void of(I18nContentSupport contentSupport) throws RepositoryException {
-                assertThat(contentSupport, notNullValue());
+                Require.Argument.notNull(contentSupport, "contentSupport should not be null");
                 when(contentSupport.getDefaultLocale()).thenReturn(locale);
                 addToLocales(contentSupport, locale);
             }
@@ -129,7 +128,7 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
         return new I18nContentSupportStubbingOperation() {
 
             public void of(I18nContentSupport contentSupport) throws RepositoryException {
-                assertThat(contentSupport, notNullValue());
+                Require.Argument.notNull(contentSupport, "contentSupport should not be null");
                 when(contentSupport.determineLocale()).thenReturn(locale);
                 addToLocales(contentSupport, locale);
             }
@@ -147,7 +146,7 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
         return new I18nContentSupportStubbingOperation() {
 
             public void of(I18nContentSupport contentSupport) {
-                assertThat(contentSupport, notNullValue());
+                Require.Argument.notNull(contentSupport, "contentSupport should not be null");
                 when(contentSupport.getLocales()).thenReturn(new ArrayList<>(Arrays.asList(locales)));
             }
         };
@@ -165,7 +164,7 @@ public abstract class I18nContentSupportStubbingOperation implements ExceptionSt
         return new I18nContentSupportStubbingOperation() {
 
             public void of(I18nContentSupport contentSupport) {
-                assertThat(contentSupport, notNullValue());
+                Require.Argument.notNull(contentSupport, "contentSupport should not be null");
                 when(contentSupport.toI18NURI(Mockito.anyString())).thenReturn(value);
             }
         };

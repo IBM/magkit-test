@@ -25,8 +25,8 @@ import info.magnolia.dam.api.Asset;
 import info.magnolia.dam.jcr.AssetNodeTypes;
 import info.magnolia.dam.jcr.JcrAsset;
 import info.magnolia.dam.jcr.metadata.JcrMagnoliaAssetMetadata;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import java.io.InputStream;
@@ -48,9 +48,7 @@ import static de.ibmix.magkit.test.cms.dam.AssetStubbingOperation.stubMimeType;
 import static de.ibmix.magkit.test.cms.dam.AssetStubbingOperation.stubSubject;
 import static de.ibmix.magkit.test.cms.dam.AssetStubbingOperation.stubTitle;
 import static de.ibmix.magkit.test.cms.dam.AssetStubbingOperation.stubWidth;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -64,7 +62,7 @@ public class AssetStubbingOperationTest {
     private Asset _asset;
     private JcrAsset _jcrAsset;
 
-    @Before
+    @BeforeEach
     public void setUp() throws RepositoryException {
         ContextMockUtils.cleanContext();
         _asset = mock(Asset.class);
@@ -75,56 +73,56 @@ public class AssetStubbingOperationTest {
     public void testStubLink() throws RepositoryException {
         stubLink("http://www.migros.ch").of(_asset);
         stubLink("http://www.migros.ch").of(_jcrAsset);
-        assertThat(_asset.getLink(), is("http://www.migros.ch"));
-        assertThat(_jcrAsset.getLink(), is("http://www.migros.ch"));
+        assertEquals("http://www.migros.ch", _asset.getLink());
+        assertEquals("http://www.migros.ch", _jcrAsset.getLink());
     }
 
     @Test
     public void testStubTitle() throws RepositoryException {
         stubTitle("Titel").of(_asset);
         stubTitle("Titel").of(_jcrAsset);
-        assertThat(_asset.getTitle(), is("Titel"));
-        assertThat(_jcrAsset.getTitle(), is("Titel"));
+        assertEquals("Titel", _asset.getTitle());
+        assertEquals("Titel", _jcrAsset.getTitle());
     }
 
     @Test
     public void testStubDescription() throws RepositoryException {
         stubDescription("Description").of(_asset);
         stubDescription("Description").of(_jcrAsset);
-        assertThat(_asset.getDescription(), is("Description"));
-        assertThat(_jcrAsset.getDescription(), is("Description"));
+        assertEquals("Description", _asset.getDescription());
+        assertEquals("Description", _jcrAsset.getDescription());
     }
 
     @Test
     public void testStubCaption() throws RepositoryException {
         stubCaption("Caption").of(_asset);
         stubCaption("Caption").of(_jcrAsset);
-        assertThat(_asset.getCaption(), is("Caption"));
-        assertThat(_jcrAsset.getCaption(), is("Caption"));
+        assertEquals("Caption", _asset.getCaption());
+        assertEquals("Caption", _jcrAsset.getCaption());
     }
 
     @Test
     public void testStubCopyright() throws RepositoryException {
         stubCopyright("Copyright").of(_asset);
         stubCopyright("Copyright").of(_jcrAsset);
-        assertThat(_asset.getCopyright(), is("Copyright"));
-        assertThat(_jcrAsset.getCopyright(), is("Copyright"));
+        assertEquals("Copyright", _asset.getCopyright());
+        assertEquals("Copyright", _jcrAsset.getCopyright());
     }
 
     @Test
     public void testStubLanguage() throws RepositoryException {
         stubLanguage("Language").of(_asset);
         stubLanguage("Language").of(_jcrAsset);
-        assertThat(_asset.getLanguage(), is("Language"));
-        assertThat(_jcrAsset.getLanguage(), is("Language"));
+        assertEquals("Language", _asset.getLanguage());
+        assertEquals("Language", _jcrAsset.getLanguage());
     }
 
     @Test
     public void testStubSubject() throws RepositoryException {
         stubSubject("Subject").of(_asset);
         stubSubject("Subject").of(_jcrAsset);
-        assertThat(_asset.getSubject(), is("Subject"));
-        assertThat(_jcrAsset.getSubject(), is("Subject"));
+        assertEquals("Subject", _asset.getSubject());
+        assertEquals("Subject", _jcrAsset.getSubject());
     }
 
     @Test
@@ -132,32 +130,32 @@ public class AssetStubbingOperationTest {
         Calendar now = Calendar.getInstance();
         stubLastModified(now).of(_asset);
         stubLastModified(now).of(_jcrAsset);
-        assertThat(_asset.getLastModified(), is(now));
-        assertThat(_jcrAsset.getLastModified(), is(now));
+        assertEquals(now, _asset.getLastModified());
+        assertEquals(now, _jcrAsset.getLastModified());
     }
 
     @Test
     public void testStubMimeType() throws RepositoryException {
         stubMimeType("MimeType").of(_asset);
         stubMimeType("MimeType").of(_jcrAsset);
-        assertThat(_asset.getMimeType(), is("MimeType"));
-        assertThat(_jcrAsset.getMimeType(), is("MimeType"));
+        assertEquals("MimeType", _asset.getMimeType());
+        assertEquals("MimeType", _jcrAsset.getMimeType());
     }
 
     @Test
     public void testStubFileSize() throws RepositoryException {
         stubFileSize(123456L).of(_asset);
         stubFileSize(123456L).of(_jcrAsset);
-        assertThat(_asset.getFileSize(), is(123456L));
-        assertThat(_jcrAsset.getFileSize(), is(123456L));
+        assertEquals(123456L, _asset.getFileSize());
+        assertEquals(123456L, _jcrAsset.getFileSize());
     }
 
     @Test
     public void testStubFileName() throws RepositoryException {
         stubFileName("FileName").of(_asset);
         stubFileName("FileName").of(_jcrAsset);
-        assertThat(_asset.getFileName(), is("FileName"));
-        assertThat(_jcrAsset.getFileName(), is("FileName"));
+        assertEquals("FileName", _asset.getFileName());
+        assertEquals("FileName", _jcrAsset.getFileName());
     }
 
     @Test
@@ -165,50 +163,50 @@ public class AssetStubbingOperationTest {
         InputStream stream = mock(InputStream.class);
         stubContentStream(stream).of(_asset);
         stubContentStream(stream).of(_jcrAsset);
-        assertThat(_asset.getContentStream(), is(stream));
-        assertThat(_jcrAsset.getContentStream(), is(stream));
+        assertEquals(stream, _asset.getContentStream());
+        assertEquals(stream, _jcrAsset.getContentStream());
     }
 
     @Test
     public void testStubComment() throws RepositoryException {
-        assertThat(_asset.getComment(), nullValue());
-        assertThat(_jcrAsset.getComment(), is(""));
+        assertNull(_asset.getComment());
+        assertEquals("", _jcrAsset.getComment());
 
         stubComment("comment").of(_asset);
         stubComment("comment").of(_jcrAsset);
-        assertThat(_asset.getComment(), is("comment"));
-        assertThat(_jcrAsset.getComment(), is("comment"));
+        assertEquals("comment", _asset.getComment());
+        assertEquals("comment", _jcrAsset.getComment());
     }
 
     @Test
     public void testStubFileExtension() throws RepositoryException {
-        assertThat(_jcrAsset.getNode().getNode(AssetNodeTypes.AssetResource.RESOURCE_NAME).getProperty("extension"), nullValue());
+        assertNull(_jcrAsset.getNode().getNode(AssetNodeTypes.AssetResource.RESOURCE_NAME).getProperty("extension"));
 
         stubFileExtension("extension").of(_jcrAsset);
         // this is ignored for general assets:
         stubFileExtension("extension").of(_asset);
-        assertThat(_jcrAsset.getNode().getNode(AssetNodeTypes.AssetResource.RESOURCE_NAME).getProperty("extension").getString(), is("extension"));
+        assertEquals("extension", _jcrAsset.getNode().getNode(AssetNodeTypes.AssetResource.RESOURCE_NAME).getProperty("extension").getString());
     }
 
     @Test
     public void testStubWidth() throws RepositoryException {
-        assertThat(_asset.getMetadata(JcrMagnoliaAssetMetadata.class), nullValue());
-        assertThat(_jcrAsset.getMetadata(JcrMagnoliaAssetMetadata.class).getWidth(), is(0L));
+        assertNull(_asset.getMetadata(JcrMagnoliaAssetMetadata.class));
+        assertEquals(0L, _jcrAsset.getMetadata(JcrMagnoliaAssetMetadata.class).getWidth());
 
         stubWidth(123L).of(_asset);
         stubWidth(123L).of(_jcrAsset);
-        assertThat(_asset.getMetadata(JcrMagnoliaAssetMetadata.class), nullValue());
-        assertThat(_jcrAsset.getMetadata(JcrMagnoliaAssetMetadata.class).getWidth(), is(123L));
+        assertNull(_asset.getMetadata(JcrMagnoliaAssetMetadata.class));
+        assertEquals(123L, _jcrAsset.getMetadata(JcrMagnoliaAssetMetadata.class).getWidth());
     }
 
     @Test
     public void testStubHeight() throws RepositoryException {
-        assertThat(_asset.getMetadata(JcrMagnoliaAssetMetadata.class), nullValue());
-        assertThat(_jcrAsset.getMetadata(JcrMagnoliaAssetMetadata.class).getHeight(), is(0L));
+        assertNull(_asset.getMetadata(JcrMagnoliaAssetMetadata.class));
+        assertEquals(0L, _jcrAsset.getMetadata(JcrMagnoliaAssetMetadata.class).getHeight());
 
         stubHeight(123L).of(_asset);
         stubHeight(123L).of(_jcrAsset);
-        assertThat(_asset.getMetadata(JcrMagnoliaAssetMetadata.class), nullValue());
-        assertThat(_jcrAsset.getMetadata(JcrMagnoliaAssetMetadata.class).getHeight(), is(123L));
+        assertNull(_asset.getMetadata(JcrMagnoliaAssetMetadata.class));
+        assertEquals(123L, _jcrAsset.getMetadata(JcrMagnoliaAssetMetadata.class).getHeight());
     }
 }

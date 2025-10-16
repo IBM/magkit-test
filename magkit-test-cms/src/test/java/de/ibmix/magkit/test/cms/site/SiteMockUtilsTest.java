@@ -24,8 +24,8 @@ import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.module.site.Site;
 import info.magnolia.module.site.SiteManager;
 import info.magnolia.test.mock.MockComponentProvider;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -39,10 +39,10 @@ import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockSite;
 import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockSiteManager;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static info.magnolia.objectfactory.Components.getComponentProvider;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +54,8 @@ import static org.mockito.Mockito.verify;
  * @since 2012-05-24
  */
 public class SiteMockUtilsTest {
-    @Before
+
+    @BeforeEach
     public void setUp() throws Exception {
         ContextMockUtils.cleanContext();
     }
@@ -65,17 +66,17 @@ public class SiteMockUtilsTest {
         SiteStubbingOperation op2 = mock(SiteStubbingOperation.class);
 
         Site s1 = mockDefaultSite(op1, op2);
-        assertThat(s1, notNullValue());
-        assertThat(s1.getName(), is("default"));
+        assertNotNull(s1);
+        assertEquals("default", s1.getName());
         verify(op1, times(1)).of(s1);
         verify(op2, times(1)).of(s1);
-        assertThat(s1.getVariations(), notNullValue());
-        assertThat(s1.getVariations().size(), is(0));
-        assertThat(s1.getI18n(), notNullValue());
+        assertNotNull(s1.getVariations());
+        assertEquals(0, s1.getVariations().size());
+        assertNotNull(s1.getI18n());
 
         Site s2 = mockDefaultSite(op1, op2);
-        assertThat(s2, notNullValue());
-        assertThat(s1, is(s2));
+        assertNotNull(s2);
+        assertSame(s1, s2);
     }
 
     @Test
@@ -84,17 +85,17 @@ public class SiteMockUtilsTest {
         SiteStubbingOperation op2 = mock(SiteStubbingOperation.class);
 
         Site s1 = mockCurrentSite("test", op1, op2);
-        assertThat(s1, notNullValue());
-        assertThat(s1.getName(), is("test"));
+        assertNotNull(s1);
+        assertEquals("test", s1.getName());
         verify(op1, times(1)).of(s1);
         verify(op2, times(1)).of(s1);
-        assertThat(s1.getVariations(), notNullValue());
-        assertThat(s1.getVariations().size(), is(0));
-        assertThat(s1.getI18n(), notNullValue());
+        assertNotNull(s1.getVariations());
+        assertEquals(0, s1.getVariations().size());
+        assertNotNull(s1.getI18n());
 
         Site s2 = mockCurrentSite("test", op1, op2);
-        assertThat(s2, notNullValue());
-        assertThat(s1, is(s2));
+        assertNotNull(s2);
+        assertSame(s1, s2);
         // assert that stubbing operations have been executed again:
         verify(op1, times(2)).of(s1);
         verify(op2, times(2)).of(s1);
@@ -111,25 +112,25 @@ public class SiteMockUtilsTest {
         SiteStubbingOperation op2 = mock(SiteStubbingOperation.class);
 
         SiteManager manager = mockPlainSiteManager();
-        assertThat(manager.getAssignedSite(root), nullValue());
-        assertThat(manager.getAssignedSite(section), nullValue());
-        assertThat(manager.getAssignedSite(page), nullValue());
+        assertNull(manager.getAssignedSite(root));
+        assertNull(manager.getAssignedSite(section));
+        assertNull(manager.getAssignedSite(page));
 
         // First call: creates new site and assigns recursively (children already assigned)
         Site site1 = mockAssignedSite(root, "alpha", op1);
-        assertThat(site1, notNullValue());
-        assertThat(site1.getName(), is("alpha"));
+        assertNotNull(site1);
+        assertEquals("alpha", site1.getName());
         verify(op1, times(1)).of(site1);
-        assertThat(manager.getAssignedSite(root), is(site1));
-        assertThat(manager.getAssignedSite(section), is(site1));
-        assertThat(manager.getAssignedSite(page), is(site1));
+        assertSame(site1, manager.getAssignedSite(root));
+        assertSame(site1, manager.getAssignedSite(section));
+        assertSame(site1, manager.getAssignedSite(page));
 
         // Second call: site exists (else branch) reassigns children and applies new stubbing
         Site site2 = mockAssignedSite(root, "alpha", op2);
-        assertThat(site2, is(site1));
+        assertSame(site1, site2);
         verify(op2, times(1)).of(site1);
-        assertThat(manager.getAssignedSite(section), is(site1));
-        assertThat(manager.getAssignedSite(page), is(site1));
+        assertSame(site1, manager.getAssignedSite(section));
+        assertSame(site1, manager.getAssignedSite(page));
     }
 
     @Test
@@ -137,11 +138,11 @@ public class SiteMockUtilsTest {
         SiteStubbingOperation op = mock(SiteStubbingOperation.class);
         // Blank name -> normalized to default
         Site s1 = mockSite("   ", op);
-        assertThat(s1.getName(), is("default"));
+        assertEquals("default", s1.getName());
         verify(op, times(1)).of(s1);
         // Reuse existing site (creation branch skipped) and apply stubbing again
         Site s2 = mockSite("default", op);
-        assertThat(s2, is(s1));
+        assertSame(s2, s1);
         verify(op, times(2)).of(s1);
     }
 
@@ -150,7 +151,7 @@ public class SiteMockUtilsTest {
         SiteManagerStubbingOperation op1 = mock(SiteManagerStubbingOperation.class);
         SiteManagerStubbingOperation op2 = mock(SiteManagerStubbingOperation.class);
         SiteManager sm = mockSiteManager(op1, op2);
-        assertThat(sm, notNullValue());
+        assertNotNull(sm);
         verify(op1, times(1)).of(sm);
         verify(op2, times(1)).of(sm);
     }
@@ -165,14 +166,14 @@ public class SiteMockUtilsTest {
             // ignore
         }
 
-        assertThat(singleton, nullValue());
+        assertNull(singleton);
 
         SiteManager sm = mock(SiteManager.class);
         Object other = new Object();
         cp.setInstance(SiteManager.class, sm);
         cp.setInstance(Object.class, other);
-        assertThat(cp.getSingleton(SiteManager.class), is(sm));
-        assertThat(cp.getSingleton(Object.class), is(other));
+        assertSame(sm, cp.getSingleton(SiteManager.class));
+        assertSame(other, cp.getSingleton(Object.class));
 
         cleanSiteManager();
         try {
@@ -180,7 +181,7 @@ public class SiteMockUtilsTest {
         } catch (Exception e) {
             // ignore
         }
-        assertThat(singleton, nullValue());
-        assertThat(cp.getSingleton(Object.class), is(other));
+        assertNull(singleton);
+        assertSame(other, cp.getSingleton(Object.class));
     }
 }

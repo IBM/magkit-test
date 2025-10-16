@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.templating;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.Registry;
@@ -35,8 +36,6 @@ import java.util.List;
 
 import static de.ibmix.magkit.test.cms.templating.TemplateDefinitionStubbingOperation.stubId;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -108,7 +107,7 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
     @Deprecated
     @SuppressWarnings("deprecation")
     public static ConfiguredTemplateDefinition mockConfiguredTemplateDefinition(String id, TemplateDefinitionStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
         ConfiguredTemplateDefinition result;
         DefinitionProvider<TemplateDefinition> existingProvider = registry.getProvider(id);
@@ -137,7 +136,7 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
      */
     @SuppressWarnings("deprecation")
     public static TemplateDefinition mockTemplateDefinition(String id, TemplateDefinitionStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
         TemplateDefinition result;
         DefinitionProvider<TemplateDefinition> provider = registry.getProvider(id);
@@ -164,7 +163,7 @@ public final class TemplateMockUtils extends ComponentsMockUtils {
      * @return the existing or newly created mock {@link AreaDefinition}
      */
     public static AreaDefinition mockAreaDefinition(String id, AreaDefinitionStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         TemplateDefinitionRegistry registry = mockTemplateDefinitionRegistry();
         AreaDefinition result;
         DefinitionProvider<TemplateDefinition> provider = registry.getProvider(id);

@@ -23,8 +23,8 @@ package de.ibmix.magkit.test.cms.examples;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.mock.jcr.NodeTestUtil;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -32,10 +32,12 @@ import javax.jcr.Session;
 import java.io.IOException;
 
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.cleanContext;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
@@ -45,7 +47,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
  */
 public class MockNodes {
 
-    @After
+    @AfterEach
     public void cleanUp() {
         cleanContext();
     }
@@ -58,63 +60,63 @@ public class MockNodes {
         // What you do: Just mock the node for the desired workspace
         Node child = MagnoliaNodeMockUtils.mockMgnlNode("testWorkspace", "root/parent/child", NodeTypes.ContentNode.NAME);
         Node child2 = MagnoliaNodeMockUtils.mockMgnlNode("testWorkspace", "root/parent/child", NodeTypes.ContentNode.NAME);
-        assertThat(child2, is(child));
-        assertThat(child2.getSession(), is(child.getSession()));
+        assertSame(child, child2);
+        assertSame(child.getSession(), child2.getSession());
 
         // And what you get:
         // basic node properties:
-        assertThat(child.getName(), is("child"));
-        assertThat(child.getPath(), is("/root/parent/child"));
-        assertThat(child.getDepth(), is(3));
-        assertThat(child.hasNodes(), is(false));
+        assertEquals("child", child.getName());
+        assertEquals("/root/parent/child", child.getPath());
+        assertEquals(3, child.getDepth());
+        assertFalse(child.hasNodes());
         // we have one property "jcr:primaryType..."
-        assertThat(child.getProperties().getSize(), is(1L));
-        assertThat(child.hasProperties(), is(true));
+        assertEquals(1L, child.getProperties().getSize());
+        assertTrue(child.hasProperties());
         // ... with the defined value 'mgnl:contentNode' ({http://www.jcp.org/jcr/nt/1.0}base is the default value)
-        assertThat(child.hasProperty("jcr:primaryType"), is(true));
-        assertThat(child.getProperty("jcr:primaryType").getString(), is("mgnl:contentNode"));
-        assertThat(child.getPrimaryNodeType().getName(), is("mgnl:contentNode"));
-        assertThat(child.isNodeType(NodeTypes.ContentNode.NAME), is(true));
+        assertTrue(child.hasProperty("jcr:primaryType"));
+        assertEquals("mgnl:contentNode", child.getProperty("jcr:primaryType").getString());
+        assertEquals("mgnl:contentNode", child.getPrimaryNodeType().getName());
+        assertTrue(child.isNodeType(NodeTypes.ContentNode.NAME));
 
         // Session
         Session session = child.getSession();
-        assertThat(session, notNullValue());
-        assertThat(session.getWorkspace().getName(), is("testWorkspace"));
-        assertThat(session.getNode("/root/parent/child"), is(child));
-        assertThat(session.getProperty("/root/parent/child/jcr:primaryType"), is(child.getProperty("jcr:primaryType")));
+        assertNotNull(session);
+        assertEquals("testWorkspace", session.getWorkspace().getName());
+        assertSame(child, session.getNode("/root/parent/child"));
+        assertSame(child.getProperty("jcr:primaryType"), session.getProperty("/root/parent/child/jcr:primaryType"));
 
         // hierarchy
         Node parent = child.getParent();
-        assertThat(parent, notNullValue());
-        assertThat(parent.getPath(), is("/root/parent"));
-        assertThat(parent.getDepth(), is(2));
-        assertThat(parent.hasNodes(), is(true));
-        assertThat(parent.hasNode("child"), is(true));
-        assertThat(parent.getNode("child"), is(child));
-        assertThat(parent.getProperty("child/jcr:primaryType"), notNullValue());
+        assertNotNull(parent);
+        assertEquals("/root/parent", parent.getPath());
+        assertEquals(2, parent.getDepth());
+        assertTrue(parent.hasNodes());
+        assertTrue(parent.hasNode("child"));
+        assertSame(child, parent.getNode("child"));
+        assertNotNull(parent.getProperty("child/jcr:primaryType"));
 
         Node root = parent.getParent();
-        assertThat(root, notNullValue());
-        assertThat(root.getPath(), is("/root"));
-        assertThat(root.getDepth(), is(1));
-        assertThat(root.hasNodes(), is(true));
-        assertThat(root.hasNode("parent"), is(true));
-        assertThat(root.getNode("parent"), is(parent));
-        assertThat(root.getProperty("parent/jcr:primaryType"), notNullValue());
-        assertThat(root.hasNode("parent/child"), is(true));
-        assertThat(root.getNode("parent/child"), is(child));
-        assertThat(root.getProperty("parent/child/jcr:primaryType"), notNullValue());
+        assertNotNull(root);
+        assertEquals("/root", root.getPath());
+        assertEquals(1, root.getDepth());
+        assertTrue(root.hasNodes());
+        assertTrue(root.hasNode("parent"));
+        assertSame(parent, root.getNode("parent"));
+        assertNotNull(root.getProperty("parent/jcr:primaryType"));
+        assertTrue(root.hasNode("parent/child"));
+        assertSame(child, root.getNode("parent/child"));
+        assertNotNull(root.getProperty("parent/child/jcr:primaryType"));
 
         Node sessionRoot = root.getParent();
-        assertThat(sessionRoot, notNullValue());
-        assertThat(sessionRoot.getPath(), is("/"));
-        assertThat(sessionRoot.getDepth(), is(0));
-        assertThat(sessionRoot.hasNodes(), is(true));
+        assertNotNull(sessionRoot);
+        assertEquals("/", sessionRoot.getPath());
+        assertEquals(0, sessionRoot.getDepth());
+        assertTrue(sessionRoot.hasNodes());
 
-        assertThat(child.getAncestor(3), is(child));
-        assertThat(child.getAncestor(2), is(parent));
-        assertThat(child.getAncestor(1), is(root));
-        assertThat(child.getAncestor(0), is(sessionRoot));
+        assertSame(child, child.getAncestor(3));
+        assertSame(parent, child.getAncestor(2));
+        assertSame(root, child.getAncestor(1));
+        assertSame(sessionRoot, child.getAncestor(0));
     }
 
     /**
@@ -125,65 +127,65 @@ public class MockNodes {
         // What you do: Just mock the node for the desired workspace
         Node child = NodeTestUtil.createNode("/root/parent/child", "testWorkspace", "/root/parent/child");
         Node child2 = NodeTestUtil.createNode("/root/parent/child", "testWorkspace", "/root/parent/child");
-        assertThat(child2, not(is(child)));
-        assertThat(child2.getSession(), not(is(child.getSession())));
+        assertNotSame(child, child2);
+        assertNotSame(child.getSession(), child2.getSession());
 
         // And what ypu get:
         // basic node properties:
-        assertThat(child.getName(), is("child"));
-        assertThat(child.getPath(), is("/root/parent/child"));
-        assertThat(child.getDepth(), is(3));
-        assertThat(child.hasNodes(), is(false));
+        assertEquals("child", child.getName());
+        assertEquals("/root/parent/child", child.getPath());
+        assertEquals(3, child.getDepth());
+        assertFalse(child.hasNodes());
         // Magnolia mocks appear to be inconsistent here: We have one property "jcr:primaryType" but no properties..
         // ... but this may be correct if the magnolia Node implementation filters the node properties.
         //  However, I cannot see anything like this in the jackrabbit Node implementation.
-        assertThat(child.getProperties().getSize(), is(0L));
-        assertThat(child.hasProperties(), is(false));
-        assertThat(child.hasProperty("jcr:primaryType"), is(false));
+        assertEquals(0L, child.getProperties().getSize());
+        assertFalse(child.hasProperties());
+        assertFalse(child.hasProperty("jcr:primaryType"));
         // ... with default value "mgnl:contentNode"
-        assertThat(child.getProperty("jcr:primaryType").getString(), is("mgnl:contentNode"));
-        assertThat(child.getPrimaryNodeType().getName(), is("mgnl:contentNode"));
-        assertThat(child.isNodeType(NodeTypes.ContentNode.NAME), is(true));
+        assertEquals("mgnl:contentNode", child.getProperty("jcr:primaryType").getString());
+        assertEquals("mgnl:contentNode", child.getPrimaryNodeType().getName());
+        assertTrue(child.isNodeType(NodeTypes.ContentNode.NAME));
 
         // Session
         Session session = child.getSession();
-        assertThat(session, notNullValue());
-        assertThat(session.getWorkspace().getName(), is("testWorkspace"));
-        assertThat(session.getNode("/root/parent/child"), is(child));
+        assertNotNull(session);
+        assertEquals("testWorkspace", session.getWorkspace().getName());
+        assertSame(child, session.getNode("/root/parent/child"));
         // We do not get the same instance here, but same values
-        assertThat(session.getProperty("/root/parent/child/jcr:primaryType").getString(), is(child.getProperty("jcr:primaryType").getString()));
+        assertEquals(child.getProperty("jcr:primaryType").getString(), session.getProperty("/root/parent/child/jcr:primaryType").getString());
 
         // hierarchy
         Node parent = child.getParent();
-        assertThat(parent, notNullValue());
-        assertThat(parent.getPath(), is("/root/parent"));
-        assertThat(parent.getDepth(), is(2));
-        assertThat(parent.hasNodes(), is(true));
-        assertThat(parent.hasNode("child"), is(true));
-        assertThat(parent.getNode("child"), is(child));
-        assertThat(parent.getProperty("child/jcr:primaryType"), notNullValue());
+        assertNotNull(parent);
+        assertEquals("/root/parent", parent.getPath());
+        assertEquals(2, parent.getDepth());
+        assertTrue(parent.hasNodes());
+        assertTrue(parent.hasNode("child"));
+        assertSame(child, parent.getNode("child"));
+        assertNotNull(parent.getProperty("child/jcr:primaryType"));
 
         Node root = parent.getParent();
-        assertThat(root, notNullValue());
-        assertThat(root.getPath(), is("/root"));
-        assertThat(root.getDepth(), is(1));
-        assertThat(root.hasNodes(), is(true));
-        assertThat(root.hasNode("parent"), is(true));
-        assertThat(root.getNode("parent"), is(parent));
-        assertThat(root.getProperty("parent/jcr:primaryType"), notNullValue());
-        assertThat(root.hasNode("parent/child"), is(true));
-        assertThat(root.getNode("parent/child"), is(child));
-        assertThat(root.getProperty("parent/child/jcr:primaryType"), notNullValue());
+        assertNotNull(root);
+        assertEquals("/root", root.getPath());
+        assertEquals(1, root.getDepth());
+        assertTrue(root.hasNodes());
+        assertTrue(root.hasNode("parent"));
+        assertSame(parent, root.getNode("parent"));
+        assertNotNull(root.getProperty("parent/jcr:primaryType"));
+        assertTrue(root.hasNode("parent/child"));
+        assertSame(child, root.getNode("parent/child"));
+        assertNotNull(root.getProperty("parent/child/jcr:primaryType"));
 
         Node sessionRoot = root.getParent();
-        assertThat(sessionRoot, notNullValue());
-        assertThat(sessionRoot.getPath(), is("/"));
-        assertThat(sessionRoot.getDepth(), is(0));
-        assertThat(sessionRoot.hasNodes(), is(true));
+        assertNotNull(sessionRoot);
+        assertEquals("/", sessionRoot.getPath());
+        assertEquals(0, sessionRoot.getDepth());
+        assertTrue(sessionRoot.hasNodes());
 
-        assertThat(child.getAncestor(3), is(child));
-        assertThat(child.getAncestor(2), is(parent));
-        assertThat(child.getAncestor(1), is(root));
-        assertThat(child.getAncestor(0), is(sessionRoot));
+        assertSame(child, child.getAncestor(3));
+        assertSame(parent, child.getAncestor(2));
+        assertSame(root, child.getAncestor(1));
+        assertSame(sessionRoot, child.getAncestor(0));
     }
 }

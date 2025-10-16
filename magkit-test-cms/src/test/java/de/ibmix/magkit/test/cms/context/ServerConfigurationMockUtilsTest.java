@@ -21,16 +21,15 @@ package de.ibmix.magkit.test.cms.context;
  */
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.getComponentSingleton;
 import static de.ibmix.magkit.test.cms.context.ServerConfigurationMockUtils.cleanServerConfiguration;
 import static de.ibmix.magkit.test.cms.context.ServerConfigurationMockUtils.mockServerConfiguration;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,32 +41,29 @@ import static org.mockito.Mockito.verify;
  * @since 2012-07-25
  */
 public class ServerConfigurationMockUtilsTest {
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         cleanServerConfiguration();
     }
 
     @Test
     public void testMockServerConfiguration() {
-        assertThat(getComponentSingleton(ServerConfiguration.class), nullValue());
-
+        assertNull(getComponentSingleton(ServerConfiguration.class));
         ServerConfigurationStubbingOperation op1 = mock(ServerConfigurationStubbingOperation.class);
         ServerConfigurationStubbingOperation op2 = mock(ServerConfigurationStubbingOperation.class);
         ServerConfiguration configuration = mockServerConfiguration(op1, op2);
         verify(op1, times(1)).of(configuration);
         verify(op2, times(1)).of(configuration);
-        assertThat(getComponentSingleton(ServerConfiguration.class), notNullValue());
-        assertThat(getComponentSingleton(ServerConfiguration.class), is(configuration));
+        assertNotNull(getComponentSingleton(ServerConfiguration.class));
+        assertEquals(configuration, getComponentSingleton(ServerConfiguration.class));
     }
 
     @Test
     public void testCleanServerConfiguration() {
-        assertThat(getComponentSingleton(ServerConfiguration.class), nullValue());
-
+        assertNull(getComponentSingleton(ServerConfiguration.class));
         ServerConfiguration configuration = mockServerConfiguration();
-        assertThat(getComponentSingleton(ServerConfiguration.class), is(configuration));
-
+        assertEquals(configuration, getComponentSingleton(ServerConfiguration.class));
         cleanServerConfiguration();
-        assertThat(getComponentSingleton(ServerConfiguration.class), nullValue());
+        assertNull(getComponentSingleton(ServerConfiguration.class));
     }
 }

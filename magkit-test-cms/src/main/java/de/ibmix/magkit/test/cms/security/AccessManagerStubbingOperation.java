@@ -20,12 +20,11 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.AccessManager;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -43,7 +42,7 @@ import static org.mockito.Mockito.when;
  * </p>
  * <ul>
  *   <li>All factory methods return non-null operations.</li>
- *   <li>Execution validates required arguments via {@code assertThat} throwing {@link AssertionError} on failure.</li>
+ *   <li>Execution validates required arguments via {@code assertThat} throwing {@link IllegalArgumentException} on failure.</li>
  *   <li>No persistent state is stored in this class; operations are stateless wrappers.</li>
  * </ul>
  * <p>
@@ -72,13 +71,13 @@ public abstract class AccessManagerStubbingOperation implements StubbingOperatio
      * @param permissions bit mask representing permissions
      * @param isGranted   result to return for {@code isGranted(path, permissions)}
      * @return non-null stubbing operation
-     * @throws AssertionError if applied to a null {@link AccessManager}
+     * @throws IllegalArgumentException if applied to a null {@link AccessManager}
      */
     public static AccessManagerStubbingOperation stubPermissions(final String path, final long permissions, final boolean isGranted) {
         return new AccessManagerStubbingOperation() {
             @Override
             public void of(AccessManager am) {
-                assertThat(am, notNullValue());
+                Require.Argument.notNull(am, "accessManager should not be null");
                 String pathKey = isBlank(path) ? anyString() : path;
                 when(am.getPermissions(pathKey)).thenReturn(permissions);
                 when(am.isGranted(eq(pathKey), eq(permissions))).thenReturn(isGranted);

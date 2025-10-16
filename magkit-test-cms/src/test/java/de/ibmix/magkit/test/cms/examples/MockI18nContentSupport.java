@@ -28,8 +28,8 @@ import info.magnolia.objectfactory.MgnlInstantiationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.NodeTestUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -39,9 +39,12 @@ import java.util.Locale;
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportMockUtils.mockI18nContentSupport;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
@@ -52,7 +55,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class MockI18nContentSupport {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
@@ -65,22 +68,22 @@ public class MockI18nContentSupport {
         // 1) Create a I18nContentSupport mock:
         I18nContentSupport i18n = mockI18nContentSupport();
         // This mock is registered as component:
-        assertThat(Components.getComponent(I18nContentSupport.class), is(i18n));
+        assertSame(i18n, Components.getComponent(I18nContentSupport.class));
         // It provides a simple "echo behaviour" ...
-        assertThat(i18n.isEnabled(), is(false));
-        assertThat(i18n.toI18NURI("test"), is("test"));
+        assertFalse(i18n.isEnabled());
+        assertEquals("test", i18n.toI18NURI("test"));
         // ... for properties
         Node node = mockNode("Paul", stubProperty("property", "test"), stubProperty("property_zh", "test-zh"));
-        assertThat(i18n.hasProperty(node, "property"), is(true));
-        assertThat(i18n.getProperty(node, "property"), is(node.getProperty("property")));
-        assertThat(i18n.getProperty(node, "property", Locale.CHINESE), is(node.getProperty("property_zh")));
+        assertTrue(i18n.hasProperty(node, "property"));
+        assertSame(node.getProperty("property"), i18n.getProperty(node, "property"));
+        assertSame(node.getProperty("property_zh"), i18n.getProperty(node, "property", Locale.CHINESE));
     }
 
     @Test
     public void mockI18nContentSupportWithMagkitImplicit() throws RepositoryException {
         // When mocking a WebContext the I18nContentSupport is automatically mocked:
         ContextMockUtils.mockWebContext();
-        assertThat(Components.getComponent(I18nContentSupport.class), notNullValue());
+        assertNotNull(Components.getComponent(I18nContentSupport.class));
     }
 
     /**
@@ -93,19 +96,21 @@ public class MockI18nContentSupport {
         ComponentsTestUtil.setInstance(I18nContentSupport.class, new DefaultI18nContentSupport());
         I18nContentSupport i18n = Components.getComponent(I18nContentSupport.class);
         // You get the standard behaviour out of the box:
-        assertThat(i18n.isEnabled(), is(false));
-        assertThat(i18n.toI18NURI("test"), is("test"));
+        assertFalse(i18n.isEnabled());
+        assertEquals("test", i18n.toI18NURI("test"));
         // Same for properties:
         Node node = NodeTestUtil.createNode("/node", "webapp", "/node.property=test", "/node.property_zh=test_zh");
-        assertThat(i18n.hasProperty(node, "property"), is(true));
-        assertThat(i18n.getProperty(node, "property"), is(node.getProperty("property")));
-        assertThat(i18n.getProperty(node, "property", Locale.CHINESE), is(node.getProperty("property_zh")));
+        assertTrue(i18n.hasProperty(node, "property"));
+        assertSame(node.getProperty("property"), i18n.getProperty(node, "property"));
+        assertSame(node.getProperty("property_zh"), i18n.getProperty(node, "property", Locale.CHINESE));
     }
 
-    @Test(expected = MgnlInstantiationException.class)
+    @Test
     public void mockI18nContentSupportWithMagnoliaImplicit() {
         // When mocking a WebContext magnolia does not create a I18nContentSupport:
-        MockUtil.getMockContext(true);
-        assertThat(Components.getComponent(I18nContentSupport.class), notNullValue());
+        assertThrows(MgnlInstantiationException.class, () -> {
+            MockUtil.getMockContext(true);
+            assertNotNull(Components.getComponent(I18nContentSupport.class));
+        });
     }
 }

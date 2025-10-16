@@ -40,13 +40,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest</artifactId>
-                <version>${version.hamcrest}</version>
-                <scope>test</scope>
-            </dependency>
-
             <!-- provided servlet container libs -->
             <dependency>
                 <groupId>javax.el</groupId>
@@ -60,7 +53,7 @@
                 <artifactId>junit-bom</artifactId>
                 <version>${junitVersion}</version>
                 <type>pom</type>
-                <scope>import</scope>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>

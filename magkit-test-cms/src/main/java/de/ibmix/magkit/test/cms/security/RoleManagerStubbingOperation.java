@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.RoleManager;
@@ -28,8 +29,6 @@ import info.magnolia.cms.security.auth.ACL;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.doReturn;
  * </p>
  * <ul>
  *   <li>All factory methods return non-null operations.</li>
- *   <li>Argument validation via {@code assertThat} produces {@link AssertionError} on failure when executed.</li>
+ *   <li>Argument validation via {@code assertThat} produces {@link IllegalArgumentException} on failure when executed.</li>
  *   <li>Operations only mutate supplied mocks, no shared state retained.</li>
  * </ul>
  * <p>
@@ -68,20 +67,20 @@ public abstract class RoleManagerStubbingOperation implements StubbingOperation<
      *
      * @param role role mock to register (must not be null when executed)
      * @return stubbing operation (never null)
-     * @throws AssertionError if target manager or role (or its name) is null when executed
+     * @throws IllegalArgumentException if target manager or role (or its name) is null when executed
      */
     public static RoleManagerStubbingOperation stubRole(final Role role) {
+        Require.Argument.notNull(role, "role should not be null");
+        Require.Argument.notNull(role.getName(), "role name should not be null");
         return new RoleManagerStubbingOperation() {
             @Override
-            public void of(RoleManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(role, notNullValue());
-                assertThat(role.getName(), notNullValue());
+            public void of(RoleManager roleManager) {
+                Require.Argument.notNull(roleManager, "roleManager should not be null");
                 String name = role.getName();
-                doReturn(role).when(mock).getRole(name);
+                doReturn(role).when(roleManager).getRole(name);
                 String id = role.getId();
                 if (isNotEmpty(id)) {
-                    doReturn(name).when(mock).getRoleNameById(id);
+                    doReturn(name).when(roleManager).getRoleNameById(id);
                 }
             }
         };
@@ -93,15 +92,15 @@ public abstract class RoleManagerStubbingOperation implements StubbingOperation<
      * @param id   role identifier (must not be null when executed)
      * @param name role name to return (may be null if test requires absent mapping)
      * @return stubbing operation
-     * @throws AssertionError if manager or id is null when executed
+     * @throws IllegalArgumentException if manager or id is null when executed
      */
     public static RoleManagerStubbingOperation stubRoleNameById(final String id, final String name) {
+        Require.Argument.notNull(id, "id should not be null");
         return new RoleManagerStubbingOperation() {
             @Override
-            public void of(RoleManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(id, notNullValue());
-                doReturn(name).when(mock).getRoleNameById(id);
+            public void of(RoleManager roleManager) {
+                Require.Argument.notNull(roleManager, "roleManager should not be null");
+                doReturn(name).when(roleManager).getRoleNameById(id);
             }
         };
     }
@@ -113,19 +112,19 @@ public abstract class RoleManagerStubbingOperation implements StubbingOperation<
      * @param role role name
      * @param acl  access control list instance
      * @return stubbing operation
-     * @throws AssertionError if manager, role, acl or acl name are null when executed
+     * @throws IllegalArgumentException if manager, role, acl or acl name are null when executed
      */
     public static RoleManagerStubbingOperation stubAcl(final String role, final ACL acl) {
+        Require.Argument.notNull(role, "role should not be null");
+        Require.Argument.notNull(acl, "acl should not be null");
+        Require.Argument.notNull(acl.getName(), "acl name should not be null");
         return new RoleManagerStubbingOperation() {
             @Override
-            public void of(RoleManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(role, notNullValue());
-                assertThat(acl, notNullValue());
-                assertThat(acl.getName(), notNullValue());
-                Map<String, ACL> acls = mock.getACLs(role);
+            public void of(RoleManager roleManager) {
+                Require.Argument.notNull(roleManager, "roleManager should not be null");
+                Map<String, ACL> acls = roleManager.getACLs(role);
                 acls.put(acl.getName(), acl);
-                doReturn(acls).when(mock).getACLs(role);
+                doReturn(acls).when(roleManager).getACLs(role);
             }
         };
     }

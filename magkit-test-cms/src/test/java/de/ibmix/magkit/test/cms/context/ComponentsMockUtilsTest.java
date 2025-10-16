@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Comparator;
@@ -31,11 +31,10 @@ import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.getComponentP
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.getComponentSingleton;
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.mockComponentFactory;
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.mockComponentInstance;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.internal.util.MockUtil.isMock;
 
 /**
@@ -46,73 +45,65 @@ import static org.mockito.internal.util.MockUtil.isMock;
  */
 public class ComponentsMockUtilsTest {
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() {
         clearComponentProvider();
     }
 
     @Test
-    public void testGetComponentProvider() throws Exception {
-        assertThat(getComponentProvider(), notNullValue());
+    public void testGetComponentProvider() {
+        assertNotNull(getComponentProvider());
     }
 
     @Test
-    public void testMockComponentInstance() throws Exception {
-        // test for concrete class
+    public void testMockComponentInstance() {
         Object instance = mockComponentInstance(Object.class);
-        assertThat(instance, notNullValue());
+        assertNotNull(instance);
         assertTrue(isMock(instance));
         Object instance2 = mockComponentInstance(Object.class);
-        assertThat(instance.equals(instance2), is(true));
-
-        // test for interface
-        assertThat(getComponentSingleton(CharSequence.class), nullValue());
+        assertTrue(instance.equals(instance2));
+        assertNull(getComponentSingleton(CharSequence.class));
         CharSequence interfaceMock = mockComponentInstance(CharSequence.class);
-        assertThat(interfaceMock, notNullValue());
+        assertNotNull(interfaceMock);
         assertTrue(isMock(interfaceMock));
         CharSequence interfaceMock2 = mockComponentInstance(CharSequence.class);
-        assertThat(interfaceMock.equals(interfaceMock2), is(true));
+        assertTrue(interfaceMock.equals(interfaceMock2));
     }
 
     @Test
-    public void testMockComponentFactory() throws Exception {
+    public void testMockComponentFactory() {
         CharSequence instance = Mockito.mock(CharSequence.class);
         mockComponentFactory(CharSequence.class, instance);
-        assertThat(getComponentSingleton(CharSequence.class), is(instance));
-        assertThat(mockComponentInstance(CharSequence.class), is(instance));
+        assertEquals(instance, getComponentSingleton(CharSequence.class));
+        assertEquals(instance, mockComponentInstance(CharSequence.class));
     }
 
     @Test
-    public void testClearComponentProvider() throws Exception {
-        assertThat(getComponentSingleton(CharSequence.class), nullValue());
-        assertThat(getComponentSingleton(Comparator.class), nullValue());
-
+    public void testClearComponentProvider() {
+        assertNull(getComponentSingleton(CharSequence.class));
+        assertNull(getComponentSingleton(Comparator.class));
         CharSequence instance1 = mockComponentInstance(CharSequence.class);
-        Comparator instance2 = mockComponentInstance(Comparator.class);
-        assertThat(getComponentSingleton(CharSequence.class), is(instance1));
-        assertThat(getComponentSingleton(Comparator.class), is(instance2));
-
+        Comparator<?> instance2 = mockComponentInstance(Comparator.class);
+        assertEquals(instance1, getComponentSingleton(CharSequence.class));
+        assertEquals(instance2, getComponentSingleton(Comparator.class));
         clearComponentProvider();
-        assertThat(getComponentSingleton(CharSequence.class), nullValue());
-        assertThat(getComponentSingleton(Comparator.class), nullValue());
+        assertNull(getComponentSingleton(CharSequence.class));
+        assertNull(getComponentSingleton(Comparator.class));
     }
 
     @Test
-    public void testClearComponentProviderForClass() throws Exception {
-        assertThat(getComponentSingleton(CharSequence.class), nullValue());
-        assertThat(getComponentSingleton(Comparator.class), nullValue());
-
+    public void testClearComponentProviderForClass() {
+        assertNull(getComponentSingleton(CharSequence.class));
+        assertNull(getComponentSingleton(Comparator.class));
         CharSequence instance1 = mockComponentInstance(CharSequence.class);
-        Comparator instance2 = mockComponentInstance(Comparator.class);
-        assertThat(getComponentSingleton(CharSequence.class), is(instance1));
-        assertThat(getComponentSingleton(Comparator.class), is(instance2));
-
+        Comparator<?> instance2 = mockComponentInstance(Comparator.class);
+        assertEquals(instance1, getComponentSingleton(CharSequence.class));
+        assertEquals(instance2, getComponentSingleton(Comparator.class));
         clearComponentProvider(CharSequence.class);
-        assertThat(getComponentSingleton(CharSequence.class), nullValue());
-        assertThat(getComponentSingleton(Comparator.class), is(instance2));
-
+        assertNull(getComponentSingleton(CharSequence.class));
+        assertEquals(instance2, getComponentSingleton(Comparator.class));
         clearComponentProvider(Comparator.class);
-        assertThat(getComponentSingleton(CharSequence.class), nullValue());
-        assertThat(getComponentSingleton(Comparator.class), nullValue());
+        assertNull(getComponentSingleton(CharSequence.class));
+        assertNull(getComponentSingleton(Comparator.class));
     }
 }

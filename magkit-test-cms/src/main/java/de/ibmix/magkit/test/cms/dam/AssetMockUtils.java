@@ -21,6 +21,7 @@ package de.ibmix.magkit.test.cms.dam;
  */
 
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
 import info.magnolia.dam.api.Asset;
@@ -49,10 +50,6 @@ import java.util.UUID;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubNode;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -124,7 +121,7 @@ public final class AssetMockUtils extends ComponentsMockUtils {
      * @throws RepositoryException if a JCR API interaction during mock setup signals an error
      */
     public static Asset mockAsset(String path, String providerId, String itemId, AssetStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         String uuid = defaultIfBlank(itemId, UUID.randomUUID().toString());
         String provider = defaultIfBlank(providerId, DamConstants.DEFAULT_JCR_PROVIDER_ID);
         Node assetNode = MagnoliaNodeMockUtils.mockMgnlNode(DamConstants.WORKSPACE, path, AssetNodeTypes.Asset.NAME, stubIdentifier(uuid), stubNode(AssetNodeTypes.AssetResource.RESOURCE_NAME));
@@ -179,10 +176,10 @@ public final class AssetMockUtils extends ComponentsMockUtils {
      *
      * @param providerId non-blank provider identifier
      * @return mocked provider instance
-     * @throws AssertionError if {@code providerId} is blank
+     * @throws IllegalArgumentException if {@code providerId} is blank
      */
     public static AssetProvider mockAssetProvider(String providerId) {
-        assertThat(isNotBlank(providerId), is(true));
+        Require.Argument.notBlank(providerId, "providerId should not be blank");
         AssetProviderRegistry registry = mockAssetProviderRegistry();
         AssetProvider assetProvider = registry.getProviderById(providerId);
         if (assetProvider == null) {
@@ -202,10 +199,10 @@ public final class AssetMockUtils extends ComponentsMockUtils {
      *
      * @param itemKey the item key containing provider id (must be non-null)
      * @return mocked asset provider for the key's provider id
-     * @throws AssertionError if {@code itemKey} is null
+     * @throws IllegalArgumentException if {@code itemKey} is null
      */
     public static AssetProvider mockAssetProvider(ItemKey itemKey) {
-        assertThat(itemKey, notNullValue());
+        Require.Argument.notNull(itemKey, "itemKey should not be null");
         AssetProvider assetProvider = mockAssetProvider(itemKey.getProviderId());
         AssetProviderRegistry registry = mockAssetProviderRegistry();
         when(registry.getProviderFor(itemKey)).thenReturn(assetProvider);
@@ -222,12 +219,12 @@ public final class AssetMockUtils extends ComponentsMockUtils {
      *
      * @param asset the asset whose provider should be mocked (must be non-null and have a non-null item key)
      * @return mocked {@link AssetProvider} serving the given asset
-     * @throws AssertionError if {@code asset} or its item key are null
+     * @throws IllegalArgumentException if {@code asset} or its item key are null
      */
     public static AssetProvider mockAssetProvider(Asset asset) {
-        assertThat(asset, notNullValue());
+        Require.Argument.notNull(asset, "asset should not be null");
         ItemKey itemKey = asset.getItemKey();
-        assertThat(itemKey, notNullValue());
+        Require.Argument.notNull(itemKey, "itemKey should not be null");
         AssetProvider assetProvider = mockAssetProvider(itemKey);
         when(assetProvider.getItem(itemKey)).thenReturn(asset);
         when(assetProvider.getAsset(itemKey)).thenReturn(asset);

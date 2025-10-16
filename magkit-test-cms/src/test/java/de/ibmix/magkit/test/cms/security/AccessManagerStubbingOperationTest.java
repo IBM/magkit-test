@@ -22,16 +22,16 @@ package de.ibmix.magkit.test.cms.security;
 
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.Permission;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 
 import static de.ibmix.magkit.test.cms.security.AccessManagerStubbingOperation.stubPermissions;
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.cleanContext;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockAccessManager;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Testing AccessManagerStubbingOperation.
@@ -41,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class AccessManagerStubbingOperationTest {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cleanContext();
     }
@@ -51,7 +51,7 @@ public class AccessManagerStubbingOperationTest {
         AccessManager am = mockAccessManager();
         stubPermissions("/", Permission.ALL, true).of(am);
 
-        assertThat(am.getPermissions("/"), is(Permission.ALL));
-        assertThat(am.isGranted("/", Permission.ALL), is(true));
+        assertEquals(Permission.ALL, am.getPermissions("/"));
+        assertTrue(am.isGranted("/", Permission.ALL));
     }
 }

@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionStubbingOperation;
 import de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation;
@@ -44,8 +45,6 @@ import java.util.Map;
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -95,7 +94,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 when(context.getLocale()).thenReturn(locale);
             }
         };
@@ -111,7 +110,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 when(context.getAggregationState()).thenReturn(aggState);
             }
         };
@@ -128,7 +127,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 String repository = isBlank(repositoryId) ? WEBSITE : repositoryId;
                 when(context.getAccessManager(repository)).thenReturn(am);
             }
@@ -146,7 +145,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 when(context.getRequest()).thenReturn(request);
             }
         };
@@ -163,7 +162,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 HttpServletRequest request = context.getRequest();
                 if (request == null) {
                     stubRequest(ServletMockUtils.mockHttpServletRequest(stubbings)).of(context);
@@ -187,7 +186,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 WebContextStubbingOperation.stubExistingRequest(HttpServletRequestStubbingOperation.stubParameterMap(parameterMap)).of(context);
             }
         };
@@ -201,11 +200,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
      * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubParameter(final String name, final String... values) {
+        Require.Argument.notNull(name, "name should not be null");
         return new WebContextStubbingOperation() {
             @Override
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
-                assertThat(name, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 stubExistingRequest(HttpServletRequestStubbingOperation.stubParameter(name, values)).of(context);
             }
         };
@@ -233,11 +232,11 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
      * @return operation applying the stubbing
      */
     public static WebContextStubbingOperation stubAttribute(final String name, final Object value, final int scope) {
+        Require.Argument.notNull(name, "name should not be null");
         return new WebContextStubbingOperation() {
             @Override
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
-                assertThat(name, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 if (context.getRequest() == null) {
                     stubExistingRequest().of(context);
                 }
@@ -273,7 +272,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 when(context.getResponse()).thenReturn(response);
             }
         };
@@ -290,7 +289,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 HttpServletResponse response = context.getResponse();
                 if (response == null) {
                     stubResponse(ServletMockUtils.mockHttpServletResponse(stubbings)).of(context);
@@ -327,7 +326,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 HttpServletRequest request = context.getRequest();
                 if (request == null) {
                     stubRequest(ServletMockUtils.mockHttpServletRequest(HttpServletRequestStubbingOperation.stubContextPath(path))).of(context);
@@ -348,7 +347,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
             @Override
             public void of(final WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 when(context.getUser()).thenReturn(user);
             }
         };
@@ -365,7 +364,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 try {
                     when(context.getJCRSession(workspace)).thenReturn(session);
                 } catch (RepositoryException e) {
@@ -387,7 +386,7 @@ public abstract class WebContextStubbingOperation implements StubbingOperation<W
         return new WebContextStubbingOperation() {
 
             public void of(WebContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 try {
                     Session session = context.getJCRSession(workspace);
                     if (session == null) {

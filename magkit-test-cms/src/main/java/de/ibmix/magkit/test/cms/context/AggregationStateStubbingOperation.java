@@ -22,8 +22,6 @@ package de.ibmix.magkit.test.cms.context;
 
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +30,7 @@ import java.util.Locale;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
 import de.ibmix.magkit.test.cms.node.PageNodeStubbingOperation;
@@ -90,7 +89,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
         return new AggregationStateStubbingOperation() {
             @Override
             public void of(final AggregationState state) throws RepositoryException {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getMainContentNode()).thenReturn(value);
                 if (value != null) {
                     stubHandle(value.getPath()).of(state);
@@ -124,7 +123,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
         return new AggregationStateStubbingOperation() {
             @Override
             public void of(final AggregationState state) throws RepositoryException {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getCurrentContentNode()).thenReturn(value);
                 if (value != null) {
                     stubHandle(value.getPath()).of(state);
@@ -159,7 +158,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubSelectors(final String[] selectors) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) throws RepositoryException {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getSelectors()).thenReturn(selectors);
                 if (selectors != null) {
                     for (String selector : selectors) {
@@ -183,7 +182,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubSelector(final String selector) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) throws RepositoryException {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getSelector()).thenReturn(selector);
                 String[] selectors = isNotBlank(selector) ? selector.split("~") : new String[0];
                 stubSelectors(selectors).of(state);
@@ -200,7 +199,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubExtension(final String extension) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getExtension()).thenReturn(extension);
             }
         };
@@ -215,7 +214,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubHandle(final String handle) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getHandle()).thenReturn(handle);
             }
         };
@@ -230,7 +229,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubCharacterEncoding(final String encoding) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getCharacterEncoding()).thenReturn(encoding);
             }
         };
@@ -245,7 +244,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubRepository(final String repository) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getRepository()).thenReturn(repository);
             }
         };
@@ -260,7 +259,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubLocale(final Locale locale) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getLocale()).thenReturn(locale);
             }
         };
@@ -275,7 +274,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubCurrentUri(final String uri) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getCurrentURI()).thenReturn(uri);
             }
         };
@@ -290,7 +289,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubPreviewMode(final boolean value) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.isPreviewMode()).thenReturn(value);
             }
         };
@@ -305,7 +304,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubOriginalBrowserUri(final String value) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getOriginalBrowserURI()).thenReturn(value);
             }
         };
@@ -320,7 +319,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubOriginalBrowserUrl(final String value) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getOriginalBrowserURL()).thenReturn(value);
             }
         };
@@ -335,7 +334,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubOriginalUri(final String value) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getOriginalURI()).thenReturn(value);
             }
         };
@@ -350,7 +349,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
     public static AggregationStateStubbingOperation stubOriginalUrl(final String value) {
         return new AggregationStateStubbingOperation() {
             public void of(AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 when(state.getOriginalURL()).thenReturn(value);
             }
         };
@@ -367,7 +366,7 @@ public abstract class AggregationStateStubbingOperation implements ExceptionStub
         return new AggregationStateStubbingOperation() {
             @Override
             public void of(final AggregationState state) {
-                assertThat(state, notNullValue());
+                Require.Argument.notNull(state, "state should not be null");
                 Channel value = mock(Channel.class);
                 when(value.getName()).thenReturn(channelName);
                 when(state.getChannel()).thenReturn(value);

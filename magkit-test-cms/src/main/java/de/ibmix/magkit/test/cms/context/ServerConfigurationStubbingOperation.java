@@ -20,11 +20,10 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.beans.config.ServerConfiguration;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -83,7 +82,7 @@ public abstract class ServerConfigurationStubbingOperation implements StubbingOp
     public static ServerConfigurationStubbingOperation stubDefaultExtension(final String value) {
         return new ServerConfigurationStubbingOperation() {
             public void of(ServerConfiguration config) {
-                assertThat(config, notNullValue());
+                Require.Argument.notNull(config, "config should not be null");
                 when(config.getDefaultExtension()).thenReturn(value);
             }
         };
@@ -107,7 +106,7 @@ public abstract class ServerConfigurationStubbingOperation implements StubbingOp
     public static ServerConfigurationStubbingOperation stubDefaultBaseUrl(final String value) {
         return new ServerConfigurationStubbingOperation() {
             public void of(ServerConfiguration config) {
-                assertThat(config, notNullValue());
+                Require.Argument.notNull(config, "config should not be null");
                 when(config.getDefaultBaseUrl()).thenReturn(value);
             }
         };
@@ -131,7 +130,7 @@ public abstract class ServerConfigurationStubbingOperation implements StubbingOp
     public static ServerConfigurationStubbingOperation stubIsAdmin(final boolean value) {
         return new ServerConfigurationStubbingOperation() {
             public void of(ServerConfiguration config) {
-                assertThat(config, notNullValue());
+                Require.Argument.notNull(config, "config should not be null");
                 when(config.isAdmin()).thenReturn(value);
             }
         };

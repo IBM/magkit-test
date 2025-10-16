@@ -50,7 +50,6 @@ import info.magnolia.rendering.engine.RenderException;
 import info.magnolia.rendering.engine.RenderExceptionHandler;
 import info.magnolia.rendering.renderer.FreemarkerRenderer;
 import info.magnolia.templating.functions.TemplatingFunctions;
-import org.junit.Before;
 
 import javax.inject.Provider;
 import javax.jcr.Node;
@@ -105,11 +104,11 @@ public abstract class FreemarkerTest {
     /**
      * Set up the environment for a single test.
      * This can be overridden in sub-classes to extend and change behavior.
-     * There is no need to tag the overridden method again with {@link Before}.
+     * There is no need to tag the overridden method again with {@link org.junit.jupiter.api.BeforeEach}.
      *
      * @throws RepositoryException repository exception
      */
-    @Before
+
     public void setupEnvironment() throws RepositoryException {
         _componentProvider = ComponentsMockUtils.getComponentProvider();
 

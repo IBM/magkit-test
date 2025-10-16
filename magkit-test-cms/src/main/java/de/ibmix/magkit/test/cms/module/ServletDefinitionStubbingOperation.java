@@ -20,14 +20,13 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.model.ServletDefinition;
 import info.magnolia.module.model.ServletParameterDefinition;
 
 import java.util.Collection;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -71,9 +70,9 @@ public abstract class ServletDefinitionStubbingOperation implements StubbingOper
     public static ServletDefinitionStubbingOperation stubName(final String name) {
         return new ServletDefinitionStubbingOperation() {
             @Override
-            public void of(ServletDefinition mock) {
-                assertThat(mock, notNullValue());
-                doReturn(name).when(mock).getName();
+            public void of(ServletDefinition servletDefinition) {
+                Require.Argument.notNull(servletDefinition, "servletDefinition should not be null");
+                doReturn(name).when(servletDefinition).getName();
             }
         };
     }
@@ -86,9 +85,9 @@ public abstract class ServletDefinitionStubbingOperation implements StubbingOper
     public static ServletDefinitionStubbingOperation stubClassName(final String name) {
         return new ServletDefinitionStubbingOperation() {
             @Override
-            public void of(ServletDefinition mock) {
-                assertThat(mock, notNullValue());
-                doReturn(name).when(mock).getClassName();
+            public void of(ServletDefinition servletDefinition) {
+                Require.Argument.notNull(servletDefinition, "servletDefinition should not be null");
+                doReturn(name).when(servletDefinition).getClassName();
             }
         };
     }
@@ -101,9 +100,9 @@ public abstract class ServletDefinitionStubbingOperation implements StubbingOper
     public static ServletDefinitionStubbingOperation stubComment(final String value) {
         return new ServletDefinitionStubbingOperation() {
             @Override
-            public void of(ServletDefinition mock) {
-                assertThat(mock, notNullValue());
-                doReturn(value).when(mock).getComment();
+            public void of(ServletDefinition servletDefinition) {
+                Require.Argument.notNull(servletDefinition, "servletDefinition should not be null");
+                doReturn(value).when(servletDefinition).getComment();
             }
         };
     }
@@ -121,11 +120,11 @@ public abstract class ServletDefinitionStubbingOperation implements StubbingOper
     public static ServletDefinitionStubbingOperation stubMapping(final String value) {
         return new ServletDefinitionStubbingOperation() {
             @Override
-            public void of(ServletDefinition mock) {
-                assertThat(mock, notNullValue());
-                Collection<String> mappings = mock.getMappings();
+            public void of(ServletDefinition servletDefinition) {
+                Require.Argument.notNull(servletDefinition, "servletDefinition should not be null");
+                Collection<String> mappings = servletDefinition.getMappings();
                 mappings.add(value);
-                doReturn(mappings).when(mock).getMappings();
+                doReturn(mappings).when(servletDefinition).getMappings();
             }
         };
     }
@@ -136,12 +135,12 @@ public abstract class ServletDefinitionStubbingOperation implements StubbingOper
      * @return operation configuring mappings
      */
     public static ServletDefinitionStubbingOperation stubMappings(final Collection<String> mappings) {
-        assertThat(mappings, notNullValue());
+        Require.Argument.notNull(mappings, "mappings should not be null");
         return new ServletDefinitionStubbingOperation() {
             @Override
-            public void of(ServletDefinition mock) {
-                assertThat(mock, notNullValue());
-                doReturn(mappings).when(mock).getMappings();
+            public void of(ServletDefinition servletDefinition) {
+                Require.Argument.notNull(servletDefinition, "servletDefinition should not be null");
+                doReturn(mappings).when(servletDefinition).getMappings();
             }
         };
     }
@@ -158,17 +157,17 @@ public abstract class ServletDefinitionStubbingOperation implements StubbingOper
      * @return operation adding parameter definition
      */
     public static ServletDefinitionStubbingOperation stubParameter(final String name, final String value) {
-        assertThat(name, notNullValue());
+        Require.Argument.notNull(name, "name should not be null");
         return new ServletDefinitionStubbingOperation() {
             @Override
-            public void of(ServletDefinition mock) {
-                assertThat(mock, notNullValue());
+            public void of(ServletDefinition servletDefinition) {
+                Require.Argument.notNull(servletDefinition, "servletDefinition should not be null");
                 ServletParameterDefinition param = mock(ServletParameterDefinition.class);
                 doReturn(name).when(param).getName();
                 doReturn(value).when(param).getValue();
-                Collection<ServletParameterDefinition> params = mock.getParams();
+                Collection<ServletParameterDefinition> params = servletDefinition.getParams();
                 params.add(param);
-                doReturn(params).when(mock).getParams();
+                doReturn(params).when(servletDefinition).getParams();
             }
         };
     }
@@ -179,12 +178,12 @@ public abstract class ServletDefinitionStubbingOperation implements StubbingOper
      * @return operation configuring parameter definitions
      */
     public static ServletDefinitionStubbingOperation stubParams(final Collection<ServletParameterDefinition> params) {
-        assertThat(params, notNullValue());
+        Require.Argument.notNull(params, "params should not be null");
         return new ServletDefinitionStubbingOperation() {
             @Override
-            public void of(ServletDefinition mock) {
-                assertThat(mock, notNullValue());
-                doReturn(params).when(mock).getParams();
+            public void of(ServletDefinition servletDefinition) {
+                Require.Argument.notNull(servletDefinition, "servletDefinition should not be null");
+                doReturn(params).when(servletDefinition).getParams();
             }
         };
     }

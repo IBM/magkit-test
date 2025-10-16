@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
@@ -31,8 +32,6 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.when;
 
 /**
@@ -48,7 +47,7 @@ import static org.mockito.Mockito.when;
  * </p>
  * <ul>
  *   <li>All public factory methods return non-null operations.</li>
- *   <li>Argument validation relies on {@code assertThat(...)} and therefore raises {@link AssertionError} on failure.</li>
+ *   <li>Argument validation relies on {@code assertThat(...)} and therefore raises {@link IllegalArgumentException} on failure.</li>
  *   <li>Where a user does not yet exist it will be created and registered; existing users are reused.</li>
  *   <li>UUID handling for newly created users is delegated to {@link UserStubbingOperation#stubIdentifier(String)} which may provide defaults.</li>
  * </ul>
@@ -79,20 +78,21 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
      * @param uuid       desired identifier; may be {@code null} or empty to trigger a random generation downstream
      * @param stubbings  optional additional user-level stubbings applied after creation/retrieval (non-null array reference required)
      * @return non-null operation adding or updating the user definition inside a {@link UserManager}
-     * @throws AssertionError if target manager or {@code name} is null when executed
+     * @throws IllegalArgumentException if target manager or {@code name} is null when executed
      */
     public static UserManagerStubbingOperation stubUser(final String name, final String uuid, UserStubbingOperation... stubbings) {
+        Require.Argument.notNull(name, "name should not be null");
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         return new UserManagerStubbingOperation() {
             @Override
-            public void of(UserManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(name, notNullValue());
-                User user = mock.getUser(name);
+            public void of(UserManager userManager) {
+                Require.Argument.notNull(userManager, "userManager should not be null");
+                User user = userManager.getUser(name);
                 if (user == null) {
                     user = Mockito.mock(User.class);
                     UserStubbingOperation.stubName(name).of(user);
                     UserStubbingOperation.stubIdentifier(uuid).of(user);
-                    stubUser(user).of(mock);
+                    stubUser(user).of(userManager);
                 }
                 User finalUser = user;
                 Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalUser));
@@ -107,26 +107,26 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
      *
      * @param user user mock to register (must not be null when executed)
      * @return non-null operation registering the user
-     * @throws AssertionError if target manager or {@code user} is null when executed
+     * @throws IllegalArgumentException if target manager or {@code user} is null when executed
      */
     public static UserManagerStubbingOperation stubUser(final User user) {
+        Require.Argument.notNull(user, "user should not be null");
         return new UserManagerStubbingOperation() {
             @Override
-            public void of(UserManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(user, notNullValue());
-                Collection<User> allUsers = mock.getAllUsers();
+            public void of(UserManager userManager) {
+                Require.Argument.notNull(userManager, "userManager should not be null");
+                Collection<User> allUsers = userManager.getAllUsers();
                 String userName = user.getName();
                 if (isNotEmpty(userName)) {
-                    when(mock.getUser(userName)).thenReturn(user);
+                    when(userManager.getUser(userName)).thenReturn(user);
                 }
                 String uuid = user.getIdentifier();
                 if (isNotEmpty(uuid)) {
-                    User existing = mock.getUserById(uuid);
+                    User existing = userManager.getUserById(uuid);
                     if (existing != null) {
                         allUsers.remove(existing);
                     }
-                    when(mock.getUserById(uuid)).thenReturn(user);
+                    when(userManager.getUserById(uuid)).thenReturn(user);
                 }
                 allUsers.add(user);
             }
@@ -139,19 +139,20 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
      *
      * @param stubbings optional additional user-level stubbings applied after retrieval/creation
      * @return non-null operation providing a system user definition
-     * @throws AssertionError if target manager is null when executed
+     * @throws IllegalArgumentException if target manager is null when executed
      */
     public static UserManagerStubbingOperation stubSystemUser(UserStubbingOperation... stubbings) {
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         return new UserManagerStubbingOperation() {
             @Override
-            public void of(UserManager mock) {
-                assertThat(mock, notNullValue());
-                User systemUser = mock.getSystemUser();
+            public void of(UserManager userManager) {
+                Require.Argument.notNull(userManager, "userManager should not be null");
+                User systemUser = userManager.getSystemUser();
                 if (systemUser == null) {
                     String identifier = UUID.randomUUID().toString();
-                    stubUser(UserManager.SYSTEM_USER, identifier, UserStubbingOperation.stubPassword(UserManager.SYSTEM_USER)).of(mock);
-                    systemUser = mock.getUserById(identifier);
-                    when(mock.getSystemUser()).thenReturn(systemUser);
+                    stubUser(UserManager.SYSTEM_USER, identifier, UserStubbingOperation.stubPassword(UserManager.SYSTEM_USER)).of(userManager);
+                    systemUser = userManager.getUserById(identifier);
+                    when(userManager.getSystemUser()).thenReturn(systemUser);
                 }
                 User finalUser = systemUser;
                 Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalUser));
@@ -165,19 +166,20 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
      *
      * @param stubbings optional user-level stubbings applied after retrieval/creation
      * @return non-null operation providing an anonymous user definition
-     * @throws AssertionError if target manager is null when executed
+     * @throws IllegalArgumentException if target manager is null when executed
      */
     public static UserManagerStubbingOperation stubAnonymousUser(UserStubbingOperation... stubbings) {
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         return new UserManagerStubbingOperation() {
             @Override
-            public void of(UserManager mock) {
-                assertThat(mock, notNullValue());
-                User anonymous = mock.getAnonymousUser();
+            public void of(UserManager userManager) {
+                Require.Argument.notNull(userManager, "userManager should not be null");
+                User anonymous = userManager.getAnonymousUser();
                 if (anonymous == null) {
                     String identifier = UUID.randomUUID().toString();
-                    stubUser(UserManager.ANONYMOUS_USER, identifier).of(mock);
-                    anonymous = mock.getUserById(identifier);
-                    when(mock.getAnonymousUser()).thenReturn(anonymous);
+                    stubUser(UserManager.ANONYMOUS_USER, identifier).of(userManager);
+                    anonymous = userManager.getUserById(identifier);
+                    when(userManager.getAnonymousUser()).thenReturn(anonymous);
                 }
                 User finalUser = anonymous;
                 Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(finalUser));
@@ -192,26 +194,26 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
      *
      * @param allUsers collection of users to become the new user set (may be {@code null} for an empty set)
      * @return non-null operation configuring the complete user set
-     * @throws AssertionError if target manager is null when executed
+     * @throws IllegalArgumentException if target manager is null when executed
      */
     public static UserManagerStubbingOperation stubAllUsers(final Collection<User> allUsers) {
         return new UserManagerStubbingOperation() {
             @Override
-            public void of(UserManager mock) {
-                assertThat(mock, notNullValue());
-                for (User old : mock.getAllUsers()) {
-                    when(mock.getUserById(old.getIdentifier())).thenReturn(null);
-                    when(mock.getUser(old.getName())).thenReturn(null);
+            public void of(UserManager userManager) {
+                Require.Argument.notNull(userManager, "userManager should not be null");
+                for (User old : userManager.getAllUsers()) {
+                    when(userManager.getUserById(old.getIdentifier())).thenReturn(null);
+                    when(userManager.getUser(old.getName())).thenReturn(null);
                 }
                 Collection<User> newUsers = new HashSet<>();
                 if (allUsers != null) {
                     newUsers.addAll(allUsers);
                 }
                 for (User newUser : newUsers) {
-                    when(mock.getUserById(newUser.getIdentifier())).thenReturn(newUser);
-                    when(mock.getUser(newUser.getName())).thenReturn(newUser);
+                    when(userManager.getUserById(newUser.getIdentifier())).thenReturn(newUser);
+                    when(userManager.getUser(newUser.getName())).thenReturn(newUser);
                 }
-                when(mock.getAllUsers()).thenReturn(newUsers);
+                when(userManager.getAllUsers()).thenReturn(newUsers);
             }
         };
     }
@@ -221,14 +223,14 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
      *
      * @param lockTimePeriod lock time period to return
      * @return non-null operation stubbing the lock time period
-     * @throws AssertionError if target manager is null when executed
+     * @throws IllegalArgumentException if target manager is null when executed
      */
     public static UserManagerStubbingOperation stubLockTimePeriod(int lockTimePeriod) {
         return new UserManagerStubbingOperation() {
             @Override
-            public void of(UserManager mock) {
-                assertThat(mock, notNullValue());
-                when(mock.getLockTimePeriod()).thenReturn(lockTimePeriod);
+            public void of(UserManager userManager) {
+                Require.Argument.notNull(userManager, "userManager should not be null");
+                when(userManager.getLockTimePeriod()).thenReturn(lockTimePeriod);
             }
         };
     }
@@ -238,14 +240,14 @@ public abstract class UserManagerStubbingOperation implements StubbingOperation<
      *
      * @param maxFailedLoginAttempts number of failed attempts before lockout
      * @return non-null operation stubbing the max failed login attempts
-     * @throws AssertionError if target manager is null when executed
+     * @throws IllegalArgumentException if target manager is null when executed
      */
     public static UserManagerStubbingOperation stubMaxFailedLoginAttempts(int maxFailedLoginAttempts) {
         return new UserManagerStubbingOperation() {
             @Override
-            public void of(UserManager mock) {
-                assertThat(mock, notNullValue());
-                when(mock.getMaxFailedLoginAttempts()).thenReturn(maxFailedLoginAttempts);
+            public void of(UserManager userManager) {
+                Require.Argument.notNull(userManager, "groupManager should not be null");
+                when(userManager.getMaxFailedLoginAttempts()).thenReturn(maxFailedLoginAttempts);
             }
         };
     }

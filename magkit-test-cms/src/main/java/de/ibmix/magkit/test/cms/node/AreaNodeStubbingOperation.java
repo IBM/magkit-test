@@ -20,15 +20,13 @@ package de.ibmix.magkit.test.cms.node;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation;
 import de.ibmix.magkit.test.cms.templating.TemplateMockUtils;
 import info.magnolia.jcr.util.NodeTypes;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Factory collection for Magnolia area node specific stubbing operations.
@@ -82,7 +80,7 @@ public abstract class AreaNodeStubbingOperation extends MagnoliaNodeStubbingOper
         return new MagnoliaNodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 TemplateMockUtils.mockAreaDefinition(templateId, stubbings);
                 stubProperty(NodeTypes.Renderable.TEMPLATE, templateId).of(node);
             }

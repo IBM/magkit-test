@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.templating;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.rendering.template.TemplateDefinition;
 
@@ -27,8 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -69,7 +68,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(T template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getDeletable();
             }
         };
@@ -85,7 +84,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getDialog();
             }
         };
@@ -101,7 +100,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getEditable();
             }
         };
@@ -117,7 +116,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getMoveable();
             }
         };
@@ -133,7 +132,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getVisible();
             }
         };
@@ -149,7 +148,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getWritable();
             }
         };
@@ -165,7 +164,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getType();
             }
         };
@@ -181,7 +180,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getSubtype();
             }
         };
@@ -201,7 +200,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getI18nBasename();
             }
         };
@@ -217,7 +216,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getDescription();
             }
         };
@@ -233,7 +232,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getId();
             }
         };
@@ -249,7 +248,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getName();
             }
         };
@@ -265,7 +264,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getTitle();
             }
         };
@@ -281,7 +280,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getTemplateScript();
             }
         };
@@ -301,7 +300,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(final TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 if (isNotEmpty(name)) {
                     Map<String, Object> parameters = template.getParameters();
                     if (parameters == null) {
@@ -328,7 +327,7 @@ public abstract class TemplateDefinitionStubbingOperation<T extends TemplateDefi
         return new TemplateDefinitionStubbingOperation<T>() {
             @Override
             public void of(TemplateDefinition template) {
-                assertThat(template, notNullValue());
+                Require.Argument.notNull(template, "areaDefinition should not be null");
                 doReturn(value).when(template).getRenderType();
             }
         };

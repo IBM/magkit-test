@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Node;
@@ -32,7 +33,6 @@ import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubType;
 import static de.ibmix.magkit.test.jcr.RepositoryStubbingOperation.stubLogin;
 import static de.ibmix.magkit.test.jcr.SessionStubbingOperation.stubRootNode;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -106,12 +106,8 @@ public final class SessionMockUtils {
      * @throws IllegalArgumentException if preconditions are violated
      */
     public static Session mockSession(String workspace, SessionStubbingOperation... stubbings) throws RepositoryException {
-        if (!isNotBlank(workspace)) {
-            throw new AssertionError("workspace must not be blank");
-        }
-        if (stubbings == null) {
-            throw new AssertionError("stubbings must not be null");
-        }
+        Require.Argument.notBlank(workspace, "workspace must not be null");
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         Repository repository = RepositoryMockUtils.mockRepository();
         Session result = repository.login(workspace);
         if (result == null) {
