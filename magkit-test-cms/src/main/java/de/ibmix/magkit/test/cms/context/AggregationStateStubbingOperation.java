@@ -30,7 +30,7 @@ import java.util.Locale;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
 import de.ibmix.magkit.test.cms.node.PageNodeStubbingOperation;

@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import org.mockito.Mockito;

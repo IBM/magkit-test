@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
 import de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation;
 import de.ibmix.magkit.test.jcr.query.QueryMockUtils;

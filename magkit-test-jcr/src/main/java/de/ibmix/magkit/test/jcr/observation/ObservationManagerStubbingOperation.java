@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr.observation;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.jackrabbit.commons.iterator.EventListenerIteratorAdapter;

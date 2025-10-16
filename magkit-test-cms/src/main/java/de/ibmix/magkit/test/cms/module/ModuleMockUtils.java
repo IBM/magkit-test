@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;

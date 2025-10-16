@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 
 import static org.mockito.Mockito.when;
 

@@ -21,7 +21,7 @@ package de.ibmix.magkit.test.cms.dam;
  */
 
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
 import info.magnolia.dam.api.Asset;

@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.module.site.CssResourceDefinition;

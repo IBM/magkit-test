@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionStubbingOperation;
 import de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation;

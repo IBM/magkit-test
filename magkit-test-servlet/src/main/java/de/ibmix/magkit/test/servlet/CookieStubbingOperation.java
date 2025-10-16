@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 
 import javax.servlet.http.Cookie;
 
