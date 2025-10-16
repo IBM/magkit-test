@@ -22,9 +22,9 @@ package de.ibmix.magkit.test.cms.node;
 
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.jcr.util.NodeTypes;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
@@ -34,8 +34,7 @@ import java.util.GregorianCalendar;
 
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.*;
 import static de.ibmix.magkit.test.cms.node.UserNodeStubbingOperation.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link UserNodeStubbingOperation} covering all property stubs and reference list behaviors (groups/roles) including overwrites and empty lists.
@@ -45,12 +44,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class UserNodeStubbingOperationTest {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         ContextMockUtils.cleanContext();
     }
@@ -68,15 +67,15 @@ public class UserNodeStubbingOperationTest {
             stubPassword("secret"),
             stubTitle("Editor")
         );
-        assertThat(user.getPrimaryNodeType().getName(), is(NodeTypes.User.NAME));
-        assertThat(user.getProperty("email").getString(), is("john@example.org"));
-        assertThat(user.getProperty("enabled").getBoolean(), is(true));
-        assertThat(user.getProperty("failedLoginAttempts").getLong(), is(5L));
-        assertThat(user.getProperty("language").getString(), is("en"));
-        assertThat(user.getProperty("lastAccess").getDate(), is(lastAccess));
-        assertThat(user.getProperty("name").getString(), is("John Doe"));
-        assertThat(user.getProperty("pswd").getString(), is("secret"));
-        assertThat(user.getProperty("title").getString(), is("Editor"));
+        assertEquals(NodeTypes.User.NAME, user.getPrimaryNodeType().getName());
+        assertEquals("john@example.org", user.getProperty("email").getString());
+        assertTrue(user.getProperty("enabled").getBoolean());
+        assertEquals(5L, user.getProperty("failedLoginAttempts").getLong());
+        assertEquals("en", user.getProperty("language").getString());
+        assertEquals(lastAccess, user.getProperty("lastAccess").getDate());
+        assertEquals("John Doe", user.getProperty("name").getString());
+        assertEquals("secret", user.getProperty("pswd").getString());
+        assertEquals("Editor", user.getProperty("title").getString());
     }
 
     @Test
@@ -88,12 +87,12 @@ public class UserNodeStubbingOperationTest {
             stubName(null),
             stubLastAccess(null)
         );
-        assertThat(user.hasProperty("email"), is(true));
-        assertThat(user.getProperty("email").getString(), nullValue());
-        assertThat(user.getProperty("language").getString(), is("  "));
-        assertThat(user.getProperty("title").getString(), nullValue());
-        assertThat(user.getProperty("name").getString(), nullValue());
-        assertThat(user.getProperty("lastAccess").getDate(), nullValue());
+        assertTrue(user.hasProperty("email"));
+        assertNull(user.getProperty("email").getString());
+        assertEquals("  ", user.getProperty("language").getString());
+        assertNull(user.getProperty("title").getString());
+        assertNull(user.getProperty("name").getString());
+        assertNull(user.getProperty("lastAccess").getDate());
     }
 
     @Test
@@ -104,17 +103,18 @@ public class UserNodeStubbingOperationTest {
         Node g3 = mockGroupNode("groupC");
         stubGroups(g1, g2, g3).of(user);
         Node groups = user.getNode("groups");
-        assertThat(groups.getPrimaryNodeType().getName(), is(NodeTypes.ContentNode.NAME));
-        assertThat(groups.getProperty("00").getString(), is(g1.getIdentifier()));
-        assertThat(groups.getProperty("01").getString(), is(g2.getIdentifier()));
-        assertThat(groups.getProperty("02").getString(), is(g3.getIdentifier()));
+        assertEquals(NodeTypes.ContentNode.NAME, groups.getPrimaryNodeType().getName());
+        assertEquals(g1.getIdentifier(), groups.getProperty("00").getString());
+        assertEquals(g2.getIdentifier(), groups.getProperty("01").getString());
+        assertEquals(g3.getIdentifier(), groups.getProperty("02").getString());
         // overwrite with single
         stubGroups(g2).of(user);
         groups = user.getNode("groups");
-        assertThat(groups.getProperty("00").getString(), is(g2.getIdentifier()));
-        assertThat("Overwritten list should not still reference old first entry", groups.getProperty("00").getString(), not(g1.getIdentifier()));
+        assertEquals(g2.getIdentifier(), groups.getProperty("00").getString());
+        assertNotEquals(g1.getIdentifier(), groups.getProperty("00").getString(), "Overwritten list should not still reference old first entry");
         // ensure no stale higher index referencing g3
-        assertThat("Old index 02 should be gone or changed", !groups.hasProperty("02") || !g3.getIdentifier().equals(groups.getProperty("02").getString()));
+        assertTrue(!groups.hasProperty("02") || !g3.getIdentifier().equals(groups.getProperty("02").getString()),
+            "Old index 02 should be gone or changed");
     }
 
     @Test
@@ -122,7 +122,7 @@ public class UserNodeStubbingOperationTest {
         Node user = mockUserNode("emptyGroupUser");
         stubGroups().of(user);
         Node groups = user.getNode("groups");
-        assertThat(groups, notNullValue());
+        assertNotNull(groups);
         PropertyIterator it = groups.getProperties();
         int listProps = 0;
         while (it.hasNext()) {
@@ -131,7 +131,7 @@ public class UserNodeStubbingOperationTest {
                 listProps++;
             }
         }
-        assertThat(listProps, is(0));
+        assertEquals(0, listProps);
     }
 
     @Test
@@ -140,14 +140,14 @@ public class UserNodeStubbingOperationTest {
         // start empty
         stubRoles().of(user);
         Node roles = user.getNode("roles");
-        assertThat(roles, notNullValue());
+        assertNotNull(roles);
         // add roles
         Node r1 = mockRoleNode("roleA");
         Node r2 = mockRoleNode("roleB");
         stubRoles(r1, r2).of(user);
         roles = user.getNode("roles");
-        assertThat(roles.getProperty("00").getString(), is(r1.getIdentifier()));
-        assertThat(roles.getProperty("01").getString(), is(r2.getIdentifier()));
+        assertEquals(r1.getIdentifier(), roles.getProperty("00").getString());
+        assertEquals(r2.getIdentifier(), roles.getProperty("01").getString());
         // clear again
         stubRoles().of(user);
         roles = user.getNode("roles");
@@ -159,7 +159,7 @@ public class UserNodeStubbingOperationTest {
                 listProps++;
             }
         }
-        assertThat(listProps, is(0));
+        assertEquals(0, listProps);
     }
 }
 

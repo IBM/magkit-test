@@ -20,10 +20,9 @@ package de.ibmix.magkit.test.cms.node;
  * #L%
  */
 
-import javax.jcr.Node;
+import de.ibmix.magkit.assertations.Require;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import javax.jcr.Node;
 
 /**
  * Factory helpers for stubbing Magnolia group node related properties for unit tests.
@@ -68,7 +67,7 @@ public abstract class GroupNodeStubbingOperation extends MagnoliaNodeStubbingOpe
         return new GroupNodeStubbingOperation() {
             @Override
             public void of(Node node) throws javax.jcr.RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("title", title).of(node);
             }
         };
@@ -83,7 +82,7 @@ public abstract class GroupNodeStubbingOperation extends MagnoliaNodeStubbingOpe
         return new GroupNodeStubbingOperation() {
             @Override
             public void of(Node node) throws javax.jcr.RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node should not be null");
                 stubProperty("description", description).of(node);
             }
         };

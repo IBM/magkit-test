@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 import org.mockito.stubbing.Answer;
 
@@ -37,8 +38,6 @@ import java.util.TreeMap;
 
 import static java.util.Collections.enumeration;
 import static org.apache.commons.collections4.IteratorUtils.emptyIterator;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -53,7 +52,7 @@ import static org.mockito.Mockito.when;
  * can focus only on the behavior under test and override ("stubbings") the defaults where
  * required. Additional behavior can be supplied through dedicated *StubbingOperation strategies
  * passed as varargs. Passing no stubbing operations yields the documented defaults. Passing
- * {@code null} triggers an {@link AssertionError}. If you want only defaults simply call the
+ * {@code null} triggers an {@link IllegalArgumentException}. If you want only defaults simply call the
  * method without arguments.
  * </p>
  * <p>
@@ -92,12 +91,12 @@ public final class ServletMockUtils {
      *
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured request mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see HttpServletRequestStubbingOperation
      * @since 2011-03-04
      */
     public static HttpServletRequest mockHttpServletRequest(HttpServletRequestStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
         when(request.getParameterMap()).thenReturn(new TreeMap<>());
@@ -125,12 +124,12 @@ public final class ServletMockUtils {
      *
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured response mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see HttpServletResponseStubbingOperation
      * @since 2011-03-04
      */
     public static HttpServletResponse mockHttpServletResponse(HttpServletResponseStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         HttpServletResponse response = mock(HttpServletResponse.class);
         try {
             PrintWriter writer = mock(PrintWriter.class);
@@ -158,12 +157,12 @@ public final class ServletMockUtils {
      *
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured servlet context mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see ServletContextStubbingOperation
      * @since 2011-03-04
      */
     public static ServletContext mockServletContext(ServletContextStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         ServletContext context = mock(ServletContext.class);
         when(context.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
         when(context.getInitParameterNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));
@@ -185,12 +184,12 @@ public final class ServletMockUtils {
      *
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured page context mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see PageContextStubbingOperation
      * @since 2011-03-04
      */
     public static PageContext mockPageContext(PageContextStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         PageContext context = mock(PageContext.class);
         PageContextStubbingOperation.stubHttpServletRequest().of(context);
         PageContextStubbingOperation.stubHttpServletResponse().of(context);
@@ -214,12 +213,12 @@ public final class ServletMockUtils {
      * @param id session identifier to be returned by {@link HttpSession#getId()}
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured session mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see HttpSessionStubbingOperation
      * @since 2011-03-04
      */
     public static HttpSession mockHttpSession(String id, HttpSessionStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         HttpSession session = mock(HttpSession.class);
         when(session.getId()).thenReturn(id);
         when(session.getAttributeNames()).thenReturn(new IteratorEnumeration<>(emptyIterator()));

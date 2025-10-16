@@ -22,8 +22,8 @@ package de.ibmix.magkit.test.jcr.query;
 
 import de.ibmix.magkit.test.jcr.RowStubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -37,9 +37,7 @@ import javax.jcr.query.RowIterator;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -53,7 +51,7 @@ import static org.mockito.Mockito.verify;
  */
 public class QueryMockUtilsTest {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         SessionMockUtils.cleanSession();
     }
@@ -61,86 +59,86 @@ public class QueryMockUtilsTest {
     @Test
     public void mockQueryManager() throws RepositoryException {
         QueryManager qm = QueryMockUtils.mockQueryManager();
-        assertThat(mockSession("website").getWorkspace().getQueryManager(), is(qm));
+        assertEquals(qm, mockSession("website").getWorkspace().getQueryManager());
     }
 
     @Test
     public void mockQueryManagerForWorkspace() throws RepositoryException {
         QueryManager qm = QueryMockUtils.mockQueryManager("  ");
-        assertThat(mockSession("website").getWorkspace().getQueryManager(), is(qm));
+        assertEquals(qm, mockSession("website").getWorkspace().getQueryManager());
 
         qm = QueryMockUtils.mockQueryManager("test");
-        assertThat(mockSession("test").getWorkspace().getQueryManager(), is(qm));
-        assertThat(qm.createQuery("anyLanguage", "anyStatement").execute(), notNullValue());
+        assertEquals(qm, mockSession("test").getWorkspace().getQueryManager());
+        assertNotNull(qm.createQuery("anyLanguage", "anyStatement").execute());
     }
 
-    @Test(expected = AssertionError.class)
-    public void testMockQueryForNull() throws RepositoryException {
-        QueryMockUtils.mockQuery("de", "statement", (QueryStubbingOperation[]) null);
+    @Test
+    public void testMockQueryForNull() {
+        assertThrows(IllegalArgumentException.class, () -> QueryMockUtils.mockQuery("de", "statement", (QueryStubbingOperation[]) null));
     }
 
     @Test
     public void testMockQuery() throws RepositoryException {
         QueryStubbingOperation op = mock(QueryStubbingOperation.class);
         Query q = QueryMockUtils.mockQuery("de", "statement", op);
-        assertThat(q, notNullValue());
-        assertThat(q.getLanguage(), is("de"));
-        assertThat(q.getStatement(), is("statement"));
+        assertNotNull(q);
+        assertEquals("de", q.getLanguage());
+        assertEquals("statement", q.getStatement());
         verify(op, times(1)).of(any(Query.class));
     }
 
     @Test
     public void mockQueryWithManager() throws RepositoryException {
         Query q = QueryMockUtils.mockQueryWithManager("myWorkspace", "myQueryLanguage", "myStatement");
-        assertThat(q.getLanguage(), is("myQueryLanguage"));
-        assertThat(q.getStatement(), is("myStatement"));
-        assertThat(mockSession("myWorkspace").getWorkspace().getQueryManager().createQuery("myStatement", "myQueryLanguage"), is(q));
+        assertEquals("myQueryLanguage", q.getLanguage());
+        assertEquals("myStatement", q.getStatement());
+        assertEquals(q, mockSession("myWorkspace").getWorkspace().getQueryManager().createQuery("myStatement", "myQueryLanguage"));
     }
 
     @Test
     public void mockEmptyQueryResult() throws RepositoryException {
         QueryResult qr = QueryMockUtils.mockEmptyQueryResult();
-        assertThat(qr, notNullValue());
-        assertThat(qr.getNodes().hasNext(), is(false));
-        assertThat(qr.getRows().hasNext(), is(false));
+        assertNotNull(qr);
+        assertFalse(qr.getNodes().hasNext());
+        assertFalse(qr.getRows().hasNext());
     }
 
     @Test
     public void mockNodeQueryResult() throws RepositoryException {
         Node result = mockNode("test", stubProperty("key", "value"));
         QueryResult qr = QueryMockUtils.mockQueryResult(result);
-        assertThat(qr.getNodes().nextNode(), is(result));
-        assertThat(qr.getRows().nextRow().getNode(), is(result));
-        assertThat(qr.getRows().nextRow().getValue("key").getString(), is("value"));
+        assertEquals(result, qr.getNodes().nextNode());
+        assertEquals(result, qr.getRows().nextRow().getNode());
+        assertEquals("value", qr.getRows().nextRow().getValue("key").getString());
     }
 
     @Test
     public void mockRowQueryResult() throws RepositoryException {
         Row result = QueryMockUtils.mockRow(0.5, RowStubbingOperation.stubValue("name", "value"));
         QueryResult qr = QueryMockUtils.mockRowQueryResult(result);
-        assertThat(qr.getNodes().hasNext(), is(false));
-        assertThat(qr.getRows().nextRow().getValue("name").getString(), is("value"));
+        assertFalse(qr.getNodes().hasNext());
+        assertEquals("value", qr.getRows().nextRow().getValue("name").getString());
     }
 
-    @Test(expected = AssertionError.class)
-    public void testMockQueryResultForNull() throws RepositoryException {
-        QueryMockUtils.mockQueryResult((Node[]) null);
+    @Test
+    public void testMockQueryResultForNull() {
+        assertThrows(IllegalArgumentException.class, () -> QueryMockUtils.mockQueryResult((javax.jcr.Node[]) null));
     }
 
     @Test
     public void testMockQueryResult() throws RepositoryException {
         Node c = mockNode();
         QueryResult qr = QueryMockUtils.mockQueryResult(c);
-        assertThat(qr, notNullValue());
-        assertThat(qr.getNodes(), notNullValue());
-        assertThat(qr.getNodes().next(), is(c));
-        assertThat(qr.getRows(), notNullValue());
-        assertThat(qr.getRows().nextRow().getNode(), is(c));
+        assertNotNull(qr);
+        assertNotNull(qr.getNodes());
+        assertEquals(c, qr.getNodes().next());
+        assertNotNull(qr.getRows());
+        assertEquals(c, qr.getRows().nextRow().getNode());
 
         qr = QueryMockUtils.mockQueryResult();
-        assertThat(qr, notNullValue());
-        assertThat(qr.getNodes(), notNullValue());
-        assertThat(qr.getNodes().hasNext(), is(false));
+        assertNotNull(qr);
+        assertNotNull(qr.getNodes());
+        assertFalse(qr.getNodes().hasNext());
     }
 
     @Test
@@ -148,25 +146,25 @@ public class QueryMockUtilsTest {
         Node c = mockNode();
         QueryMockUtils.mockQueryWithManager("repository", "xpath", "statement", QueryStubbingOperation.stubResult(c));
         QueryManager queryManager = mockSession("repository").getWorkspace().getQueryManager();
-        assertThat(queryManager, notNullValue());
-        assertThat(queryManager.createQuery("statement", "xpath"), notNullValue());
-        assertThat(queryManager.createQuery("statement", "xpath").getLanguage(), is("xpath"));
-        assertThat(queryManager.createQuery("statement", "xpath").getStatement(), is("statement"));
-        assertThat(queryManager.createQuery("statement", "xpath").execute(), notNullValue());
-        assertThat(queryManager.createQuery("statement", "xpath").execute().getNodes(), notNullValue());
-        assertThat((Node) queryManager.createQuery("statement", "xpath").execute().getNodes().next(), is(c));
+        assertNotNull(queryManager);
+        assertNotNull(queryManager.createQuery("statement", "xpath"));
+        assertEquals("xpath", queryManager.createQuery("statement", "xpath").getLanguage());
+        assertEquals("statement", queryManager.createQuery("statement", "xpath").getStatement());
+        assertNotNull(queryManager.createQuery("statement", "xpath").execute());
+        assertNotNull(queryManager.createQuery("statement", "xpath").execute().getNodes());
+        assertEquals(c, queryManager.createQuery("statement", "xpath").execute().getNodes().next());
     }
 
     @Test
     public void mockNodeQueryResultForWorkspace() throws RepositoryException {
         Node c = mockNode();
         QueryResult qr = QueryMockUtils.mockQueryResult("test", "myQueryLang", "myStatement", c);
-        assertThat(qr.getNodes().nextNode(), is(c));
+        assertEquals(c, qr.getNodes().nextNode());
         QueryManager queryManager = mockSession("test").getWorkspace().getQueryManager();
-        assertThat(queryManager.createQuery("myStatement", "myQueryLang").getLanguage(), is("myQueryLang"));
-        assertThat(queryManager.createQuery("myStatement", "myQueryLang").getStatement(), is("myStatement"));
-        assertThat(queryManager.createQuery("myStatement", "myQueryLang").execute(), is(qr));
-        assertThat(queryManager.createQuery("myStatement", "myQueryLang").execute().getNodes().nextNode(), is(c));
+        assertEquals("myQueryLang", queryManager.createQuery("myStatement", "myQueryLang").getLanguage());
+        assertEquals("myStatement", queryManager.createQuery("myStatement", "myQueryLang").getStatement());
+        assertEquals(qr, queryManager.createQuery("myStatement", "myQueryLang").execute());
+        assertEquals(c, queryManager.createQuery("myStatement", "myQueryLang").execute().getNodes().nextNode());
     }
 
     @Test
@@ -174,10 +172,10 @@ public class QueryMockUtilsTest {
         Row c = QueryMockUtils.mockRow(0.3);
         QueryResult qr = QueryMockUtils.mockRowQueryResult("test", "myQueryLang", "myStatement", c);
         QueryManager queryManager = mockSession("test").getWorkspace().getQueryManager();
-        assertThat(queryManager.createQuery("myStatement", "myQueryLang").getLanguage(), is("myQueryLang"));
-        assertThat(queryManager.createQuery("myStatement", "myQueryLang").getStatement(), is("myStatement"));
-        assertThat(queryManager.createQuery("myStatement", "myQueryLang").execute(), is(qr));
-        assertThat(queryManager.createQuery("myStatement", "myQueryLang").execute().getRows().nextRow(), is(c));
+        assertEquals("myQueryLang", queryManager.createQuery("myStatement", "myQueryLang").getLanguage());
+        assertEquals("myStatement", queryManager.createQuery("myStatement", "myQueryLang").getStatement());
+        assertEquals(qr, queryManager.createQuery("myStatement", "myQueryLang").execute());
+        assertEquals(c, queryManager.createQuery("myStatement", "myQueryLang").execute().getRows().nextRow());
     }
 
     @Test
@@ -185,31 +183,31 @@ public class QueryMockUtilsTest {
         Node root = mockNode("root", stubProperty("test", "root-test"));
         Node node = mockNode("root/node", stubProperty("test", "node-test"));
         Row row = QueryMockUtils.toRow(root);
-        assertThat(row.getNode(), is(root));
-        assertThat(row.getValue("test").getString(), is("root-test"));
-        assertThat(row.getPath(), is("/root"));
-        assertThat(row.getScore(), is(0.0));
-        assertThat(row.getValues(), notNullValue());
+        assertEquals(row.getNode(), root);
+        assertEquals("root-test", row.getValue("test").getString());
+        assertEquals("/root", row.getPath());
+        assertEquals(0.0, row.getScore());
+        assertNotNull(row.getValues());
 
-        assertThat(row.getNode("node"), is(node));
-        assertThat(row.getValue("node/test").getString(), is("node-test"));
-        assertThat(row.getPath("node"), is("/root/node"));
-        assertThat(row.getScore("node"), is(0.0));
+        assertEquals(node, row.getNode("node"));
+        assertEquals("node-test", row.getValue("node/test").getString());
+        assertEquals("/root/node", row.getPath("node"));
+        assertEquals(0.0, row.getScore("node"));
     }
 
     @Test
     public void mockRow() throws RepositoryException {
         Row row = QueryMockUtils.mockRow(0.0);
-        assertThat(row, notNullValue());
-        assertThat(row.getScore(), is(0.0));
-        assertThat(row.getValues(), notNullValue());
+        assertNotNull(row);
+        assertEquals(0.0, row.getScore());
+        assertNotNull(row.getValues());
     }
 
     @Test
     public void mockQueryManagerWithStubbingOperations() throws RepositoryException {
         QueryManagerStubbingOperation stubbing = mock(QueryManagerStubbingOperation.class);
         QueryManager qm = QueryMockUtils.mockQueryManager(stubbing);
-        assertThat(qm, notNullValue());
+        assertNotNull(qm);
         verify(stubbing, times(1)).of(qm);
     }
 
@@ -219,7 +217,7 @@ public class QueryMockUtilsTest {
         QueryManagerStubbingOperation stubbing2 = mock(QueryManagerStubbingOperation.class);
 
         QueryManager qm = QueryMockUtils.mockQueryManager("testWorkspace", stubbing1, stubbing2);
-        assertThat(qm, notNullValue());
+        assertNotNull(qm);
 
         verify(stubbing1, times(1)).of(qm);
         verify(stubbing2, times(1)).of(qm);
@@ -233,36 +231,36 @@ public class QueryMockUtilsTest {
         // Get QueryManager again for same workspace - should return the same instance
         QueryManager qm2 = QueryMockUtils.mockQueryManager("reuseTest");
 
-        assertThat(qm1, is(qm2));
+        assertEquals(qm1, qm2);
     }
 
     @Test
     public void mockQueryManagerWithNullWorkspace() throws RepositoryException {
         QueryManager qm = QueryMockUtils.mockQueryManager((String) null);
-        assertThat(mockSession("website").getWorkspace().getQueryManager(), is(qm));
+        assertEquals(qm, mockSession("website").getWorkspace().getQueryManager());
     }
 
     @Test
     public void mockQueryManagerWithEmptyWorkspace() throws RepositoryException {
         QueryManager qm = QueryMockUtils.mockQueryManager("");
-        assertThat(mockSession("website").getWorkspace().getQueryManager(), is(qm));
+        assertEquals(qm, mockSession("website").getWorkspace().getQueryManager());
     }
 
     @Test
     public void mockQueryManagerWithBlankWorkspace() throws RepositoryException {
         QueryManager qm = QueryMockUtils.mockQueryManager("   ");
-        assertThat(mockSession("website").getWorkspace().getQueryManager(), is(qm));
+        assertEquals(qm, mockSession("website").getWorkspace().getQueryManager());
     }
 
     @Test
     public void mockQueryWithManagerWithoutAdditionalStubbings() throws RepositoryException {
         Query q = QueryMockUtils.mockQueryWithManager("simpleWorkspace", "SQL-2", "SELECT * FROM [nt:base]");
 
-        assertThat(q.getLanguage(), is("SQL-2"));
-        assertThat(q.getStatement(), is("SELECT * FROM [nt:base]"));
+        assertEquals("SQL-2", q.getLanguage());
+        assertEquals("SELECT * FROM [nt:base]", q.getStatement());
 
         QueryManager qm = mockSession("simpleWorkspace").getWorkspace().getQueryManager();
-        assertThat(qm.createQuery("SELECT * FROM [nt:base]", "SQL-2"), is(q));
+        assertEquals(qm.createQuery("SELECT * FROM [nt:base]", "SQL-2"), q);
     }
 
     @Test
@@ -274,24 +272,20 @@ public class QueryMockUtilsTest {
         Query q = QueryMockUtils.mockQueryWithManager("multiStubWorkspace", "XPATH", "//element(*,nt:base)",
                 stubbing1, stubbing2);
 
-        assertThat(q.getLanguage(), is("XPATH"));
-        assertThat(q.getStatement(), is("//element(*,nt:base)"));
-        assertThat(q.execute().getNodes().nextNode(), is(resultNode));
+        assertEquals("XPATH", q.getLanguage());
+        assertEquals("//element(*,nt:base)", q.getStatement());
+        assertEquals(resultNode, q.execute().getNodes().nextNode());
 
         verify(stubbing2, times(1)).of(q);
     }
 
-    @Test(expected = AssertionError.class)
-    public void testMockRowQueryResultForNull() throws RepositoryException {
-        QueryMockUtils.mockRowQueryResult((Row[]) null);
-    }
 
     @Test
     public void mockEmptyRowQueryResult() throws RepositoryException {
         QueryResult qr = QueryMockUtils.mockRowQueryResult();
-        assertThat(qr, notNullValue());
-        assertThat(qr.getRows().hasNext(), is(false));
-        assertThat(qr.getNodes().hasNext(), is(false));
+        assertNotNull(qr);
+        assertFalse(qr.getRows().hasNext());
+        assertFalse(qr.getNodes().hasNext());
     }
 
     @Test
@@ -301,21 +295,21 @@ public class QueryMockUtilsTest {
 
         Row row = QueryMockUtils.mockRow(0.8, stubbing1, stubbing2);
 
-        assertThat(row.getScore(), is(0.8));
-        assertThat(row.getValue("prop1").getString(), is("value1"));
-        assertThat(row.getValue("prop2").getString(), is("value2"));
-        assertThat(row.getValues(), notNullValue());
+        assertEquals(0.8, row.getScore());
+        assertEquals("value1", row.getValue("prop1").getString());
+        assertEquals("value2", row.getValue("prop2").getString());
+        assertNotNull(row.getValues());
         // Default empty values array
-        assertThat(row.getValues().length, is(0));
+        assertEquals(0, row.getValues().length);
     }
 
     @Test
     public void mockRowWithNoStubbingOperations() throws RepositoryException {
         Row row = QueryMockUtils.mockRow(0.5);
 
-        assertThat(row.getScore(), is(0.5));
-        assertThat(row.getValues(), notNullValue());
-        assertThat(row.getValues().length, is(0));
+        assertEquals(0.5, row.getScore());
+        assertNotNull(row.getValues());
+        assertEquals(0, row.getValues().length);
     }
 
     @Test
@@ -328,18 +322,18 @@ public class QueryMockUtilsTest {
 
         // Test nodes iterator
         NodeIterator results = qr.getNodes();
-        assertThat(results.nextNode(), is(node1));
-        assertThat(results.nextNode(), is(node2));
-        assertThat(results.nextNode(), is(node3));
-        assertThat(results.hasNext(), is(false));
+        assertEquals(node1, results.nextNode());
+        assertEquals(node2, results.nextNode());
+        assertEquals(node3, results.nextNode());
+        assertFalse(results.hasNext());
 
         // Test rows iterator
         RowIterator rows = qr.getRows();
-        assertThat(rows, notNullValue());
-        assertThat(rows.nextRow().getNode(), is(node1));
-        assertThat(rows.nextRow().getNode(), is(node2));
-        assertThat(rows.nextRow().getNode(), is(node3));
-        assertThat(rows.hasNext(), is(false));
+        assertNotNull(rows);
+        assertEquals(node1, rows.nextRow().getNode());
+        assertEquals(node2, rows.nextRow().getNode());
+        assertEquals(node3, rows.nextRow().getNode());
+        assertFalse(rows.hasNext());
     }
 
     @Test
@@ -350,22 +344,22 @@ public class QueryMockUtilsTest {
 
         Row row = QueryMockUtils.toRow(parentNode);
 
-        assertThat(row.getNode(), is(parentNode));
-        assertThat(row.getValue("parentProp").getString(), is("parentValue"));
-        assertThat(row.getPath(), is("/parent"));
-        assertThat(row.getScore(), is(0.0));
+        assertEquals(row.getNode(), parentNode);
+        assertEquals("parentValue", row.getValue("parentProp").getString());
+        assertEquals("/parent", row.getPath());
+        assertEquals(0.0, row.getScore());
 
         // Test access to child nodes through row
-        assertThat(row.getNode("child"), is(childNode));
-        assertThat(row.getValue("child/childProp").getString(), is("childValue"));
-        assertThat(row.getPath("child"), is("/parent/child"));
-        assertThat(row.getScore("child"), is(0.0));
+        assertEquals(childNode, row.getNode("child"));
+        assertEquals("childValue", row.getValue("child/childProp").getString());
+        assertEquals("/parent/child", row.getPath("child"));
+        assertEquals(0.0, row.getScore("child"));
 
         // Test access to grandchild nodes through row
-        assertThat(row.getNode("child/grandchild"), is(grandChildNode));
-        assertThat(row.getValue("child/grandchild/grandChildProp").getString(), is("grandChildValue"));
-        assertThat(row.getPath("child/grandchild"), is("/parent/child/grandchild"));
-        assertThat(row.getScore("child/grandchild"), is(0.0));
+        assertEquals(grandChildNode, row.getNode("child/grandchild"));
+        assertEquals("grandChildValue", row.getValue("child/grandchild/grandChildProp").getString());
+        assertEquals("/parent/child/grandchild", row.getPath("child/grandchild"));
+        assertEquals(0.0, row.getScore("child/grandchild"));
     }
 
     @Test
@@ -377,24 +371,24 @@ public class QueryMockUtilsTest {
 
         // Verify NODES_ANSWER functionality through multiple iterations
         NodeIterator results = qr.getNodes();
-        assertThat(results.nextNode(), is(node1));
-        assertThat(results.nextNode(), is(node2));
-        assertThat(results.hasNext(), is(false));
+        assertEquals(node1, results.nextNode());
+        assertEquals(node2, results.nextNode());
+        assertFalse(results.hasNext());
 
         // Reset and test again to ensure Answer works consistently
         results = qr.getNodes();
-        assertThat(results.nextNode(), is(node1));
-        assertThat(results.nextNode(), is(node2));
+        assertEquals(node1, results.nextNode());
+        assertEquals(node2, results.nextNode());
 
         // Verify ROWS_ANSWER functionality
         RowIterator rows = qr.getRows();
         Row row1 = rows.nextRow();
         Row row2 = rows.nextRow();
 
-        assertThat(row1.getNode(), is(node1));
-        assertThat(row1.getValue("test").getString(), is("value1"));
-        assertThat(row2.getNode(), is(node2));
-        assertThat(row2.getValue("test").getString(), is("value2"));
+        assertEquals(node1, row1.getNode());
+        assertEquals("value1", row1.getValue("test").getString());
+        assertEquals(node2, row2.getNode());
+        assertEquals("value2", row2.getValue("test").getString());
     }
 
     @Test
@@ -406,15 +400,14 @@ public class QueryMockUtilsTest {
         QueryResult qr = QueryMockUtils.mockRowQueryResult("multiRowTest", "SQL-2", "SELECT * FROM [nt:base]", row1, row2, row3);
 
         QueryManager qm = mockSession("multiRowTest").getWorkspace().getQueryManager();
-        assertThat(qm.createQuery("SELECT * FROM [nt:base]", "SQL-2").execute(), is(qr));
+        assertSame(qr, qm.createQuery("SELECT * FROM [nt:base]", "SQL-2").execute());
 
-        // Verify all rows are returned in correct order
-        assertThat(qr.getRows().nextRow(), is(row1));
-        assertThat(qr.getRows().nextRow(), is(row2));
-        assertThat(qr.getRows().nextRow(), is(row3));
-        assertThat(qr.getRows().hasNext(), is(false));
+        RowIterator rows = qr.getRows();
+        assertSame(row1, rows.nextRow());
+        assertSame(row2, rows.nextRow());
+        assertSame(row3, rows.nextRow());
+        assertFalse(rows.hasNext());
 
-        // Nodes should be empty for row-only result
-        assertThat(qr.getNodes().hasNext(), is(false));
+        assertFalse(qr.getNodes().hasNext());
     }
 }

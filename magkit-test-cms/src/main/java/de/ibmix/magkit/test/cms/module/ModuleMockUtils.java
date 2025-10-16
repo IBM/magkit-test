@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
@@ -30,8 +31,6 @@ import java.util.Arrays;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.clearComponentProvider;
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.mockComponentInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -86,7 +85,7 @@ public abstract class ModuleMockUtils {
      * @see InstallContextStubbingOperation
      */
     public static InstallContext mockInstallContext(final InstallContextStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         InstallContext result = mockComponentInstance(InstallContext.class);
         Arrays.stream(stubbings).forEach(stubbing -> {
             try {
@@ -115,7 +114,7 @@ public abstract class ModuleMockUtils {
      * @see ModuleRegistryStubbingOperation
      */
     public static ModuleRegistry mockModuleRegistry(final ModuleRegistryStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         ModuleRegistry registry = mockComponentInstance(ModuleRegistry.class);
         Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(registry));
         return registry;
@@ -164,7 +163,7 @@ public abstract class ModuleMockUtils {
      * @see ModuleRegistryStubbingOperation
      */
     public static ModuleDefinition mockModuleDefinition(final String name, final ModuleDefinitionStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         ModuleDefinition result = mockModuleRegistry().getDefinition(name);
         if (result == null) {
             result = mock(ModuleDefinition.class);
@@ -195,7 +194,7 @@ public abstract class ModuleMockUtils {
      * @see ServletDefinitionStubbingOperation
      */
     public static ServletDefinition mockServletDefinition(final String name, final ServletDefinitionStubbingOperation... stubbings) {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         ServletDefinition result = mock(ServletDefinition.class);
         doReturn(name).when(result).getName();
         Arrays.stream(stubbings).forEach(stubbing -> stubbing.of(result));

@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr.query;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Node;
@@ -28,8 +29,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +65,7 @@ public abstract class QueryManagerStubbingOperation implements ExceptionStubbing
         return new QueryManagerStubbingOperation() {
 
             public void of(QueryManager manager) throws RepositoryException {
-                assertThat(manager, notNullValue());
+                Require.Argument.notNull(manager, "manager must not be null");
                 if (isEmpty(query.getStatement())) {
                     when(manager.createQuery(anyString(), anyString())).thenReturn(query);
                 } else {
@@ -111,7 +110,7 @@ public abstract class QueryManagerStubbingOperation implements ExceptionStubbing
         return new QueryManagerStubbingOperation() {
 
             public void of(QueryManager manager) throws RepositoryException {
-                assertThat(manager, notNullValue());
+                Require.Argument.notNull(manager, "manager must not be null");
                 when(manager.getQuery(node)).thenReturn(query);
             }
         };
@@ -130,7 +129,7 @@ public abstract class QueryManagerStubbingOperation implements ExceptionStubbing
         return new QueryManagerStubbingOperation() {
 
             public void of(QueryManager manager) throws RepositoryException {
-                assertThat(manager, notNullValue());
+                Require.Argument.notNull(manager, "manager must not be null");
                 when(manager.getSupportedQueryLanguages()).thenReturn(languages);
             }
         };

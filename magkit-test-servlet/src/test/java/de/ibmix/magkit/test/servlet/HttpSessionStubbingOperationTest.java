@@ -20,18 +20,19 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpSession;
 
 import static de.ibmix.magkit.test.servlet.HttpSessionStubbingOperation.stubAttribute;
 import static de.ibmix.magkit.test.servlet.HttpSessionStubbingOperation.stubServletContext;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpSession;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,85 +47,85 @@ public class HttpSessionStubbingOperationTest {
 
     private HttpSession _session;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         _session = mockHttpSession("id");
     }
 
     @Test
     public void testStubServletContext() {
-        assertThat(_session.getServletContext(), notNullValue());
+        assertNotNull(_session.getServletContext());
 
         ServletContextStubbingOperation op1 = mock(ServletContextStubbingOperation.class);
         ServletContextStubbingOperation op2 = mock(ServletContextStubbingOperation.class);
         stubServletContext(op1, op2).of(_session);
 
-        assertThat(_session.getServletContext(), notNullValue());
+        assertNotNull(_session.getServletContext());
         verify(op1, times(1)).of(_session.getServletContext());
         verify(op2, times(1)).of(_session.getServletContext());
     }
 
     @Test
     public void testStubAttribute() {
-        assertThat(_session.getAttribute("name_1"), nullValue());
-        assertThat(_session.getAttributeNames(), notNullValue());
-        assertThat(_session.getAttributeNames().hasMoreElements(), is(false));
+        assertNull(_session.getAttribute("name_1"));
+        assertNotNull(_session.getAttributeNames());
+        assertFalse(_session.getAttributeNames().hasMoreElements());
 
         Object value1 = "value_1";
         Object value2 = "value_2";
         stubAttribute("name_1", value1).of(_session);
-        assertThat(_session.getAttribute("not_existing"), nullValue());
-        assertThat(_session.getAttribute("name_1"), is(value1));
-        assertThat(_session.getAttributeNames(), notNullValue());
-        assertThat(_session.getAttributeNames().hasMoreElements(), is(true));
-        assertThat(_session.getAttributeNames().nextElement(), is("name_1"));
-        assertThat(_session.getAttributeNames().hasMoreElements(), is(false));
+        assertNull(_session.getAttribute("not_existing"));
+        assertEquals(value1, _session.getAttribute("name_1"));
+        assertNotNull(_session.getAttributeNames());
+        assertTrue(_session.getAttributeNames().hasMoreElements());
+        assertEquals("name_1", _session.getAttributeNames().nextElement());
+        assertFalse(_session.getAttributeNames().hasMoreElements());
 
         stubAttribute("name_2", value2).of(_session);
-        assertThat(_session.getAttribute("name_1"), is(value1));
-        assertThat(_session.getAttribute("name_2"), is(value2));
-        assertThat(_session.getAttributeNames(), notNullValue());
-        assertThat(_session.getAttributeNames().hasMoreElements(), is(true));
-        assertThat(_session.getAttributeNames().nextElement(), is("name_1"));
-        assertThat(_session.getAttributeNames().hasMoreElements(), is(true));
-        assertThat(_session.getAttributeNames().nextElement(), is("name_2"));
-        assertThat(_session.getAttributeNames().hasMoreElements(), is(false));
+        assertEquals(value1, _session.getAttribute("name_1"));
+        assertEquals(value2, _session.getAttribute("name_2"));
+        assertNotNull(_session.getAttributeNames());
+        assertTrue(_session.getAttributeNames().hasMoreElements());
+        assertEquals("name_1", _session.getAttributeNames().nextElement());
+        assertTrue(_session.getAttributeNames().hasMoreElements());
+        assertEquals("name_2", _session.getAttributeNames().nextElement());
+        assertFalse(_session.getAttributeNames().hasMoreElements());
 
         stubAttribute("name_2", null).of(_session);
-        assertThat(_session.getAttribute("name_1"), is(value1));
-        assertThat(_session.getAttribute("name_2"), nullValue());
-        assertThat(_session.getAttributeNames(), notNullValue());
-        assertThat(_session.getAttributeNames().hasMoreElements(), is(true));
-        assertThat(_session.getAttributeNames().nextElement(), is("name_1"));
-        assertThat(_session.getAttributeNames().hasMoreElements(), is(false));
+        assertEquals(value1, _session.getAttribute("name_1"));
+        assertNull(_session.getAttribute("name_2"));
+        assertNotNull(_session.getAttributeNames());
+        assertTrue(_session.getAttributeNames().hasMoreElements());
+        assertEquals("name_1", _session.getAttributeNames().nextElement());
+        assertFalse(_session.getAttributeNames().hasMoreElements());
     }
 
     @Test
     public void stubLastAccessedTimeTest() {
-        assertThat(_session.getLastAccessedTime(), is(0L));
+        assertEquals(0L, _session.getLastAccessedTime());
 
         long time = System.currentTimeMillis();
         HttpSessionStubbingOperation.stubLastAccessedTime(time).of(_session);
 
-        assertThat(_session.getLastAccessedTime(), is(time));
+        assertEquals(time, _session.getLastAccessedTime());
     }
 
     @Test
     public void stubCreationTimeTest() {
-        assertThat(_session.getCreationTime(), is(0L));
+        assertEquals(0L, _session.getCreationTime());
 
         long time = System.currentTimeMillis();
         HttpSessionStubbingOperation.stubCreationTime(time).of(_session);
 
-        assertThat(_session.getCreationTime(), is(time));
+        assertEquals(time, _session.getCreationTime());
     }
 
     @Test
     public void stubIsNewTest() {
-        assertThat(_session.isNew(), is(false));
+        assertFalse(_session.isNew());
 
         HttpSessionStubbingOperation.stubIsNew(true).of(_session);
 
-        assertThat(_session.isNew(), is(true));
+        assertTrue(_session.isNew());
     }
 }

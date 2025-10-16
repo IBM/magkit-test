@@ -23,64 +23,59 @@ package de.ibmix.magkit.test.cms.context;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.context.SystemContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.Locale;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
 public class SystemContextStubbingOperationTest {
 
     private SystemContext _context;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         _context = mock(SystemContext.class);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
     @Test
     public void stubLocale() {
-        assertThat(_context.getLocale(), nullValue());
-
+        assertNull(_context.getLocale());
         SystemContextStubbingOperation.stubLocale(Locale.FRENCH).of(_context);
-        assertThat(_context.getLocale(), is(Locale.FRENCH));
+        assertEquals(Locale.FRENCH, _context.getLocale());
     }
 
     @Test
     public void stubAccessManager() {
-        assertThat(_context.getAccessManager("repository"), nullValue());
-
+        assertNull(_context.getAccessManager("repository"));
         AccessManager am = mock(AccessManager.class);
         SystemContextStubbingOperation.stubAccessManager("repository", am).of(_context);
-        assertThat(_context.getAccessManager("repository"), is(am));
+        assertEquals(am, _context.getAccessManager("repository"));
     }
 
     @Test
     public void stubJcrSession() throws RepositoryException {
-        assertThat(_context.getJCRSession("repository"), nullValue());
-
+        assertNull(_context.getJCRSession("repository"));
         Session session = mock(Session.class);
         SystemContextStubbingOperation.stubJcrSession("repository", session).of(_context);
-        assertThat(_context.getJCRSession("repository"), is(session));
+        assertEquals(session, _context.getJCRSession("repository"));
     }
 
     @Test
     public void testStubJcrSession() throws RepositoryException {
-        assertThat(_context.getJCRSession("repository"), nullValue());
-
+        assertNull(_context.getJCRSession("repository"));
         SystemContextStubbingOperation.stubJcrSession("repository").of(_context);
         Session session = SessionMockUtils.mockSession("repository");
-        assertThat(_context.getJCRSession("repository"), is(session));
+        assertEquals(session, _context.getJCRSession("repository"));
     }
 }

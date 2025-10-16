@@ -23,18 +23,17 @@ package de.ibmix.magkit.test.cms.security;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Set;
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,14 +42,14 @@ public class UserManagerStubbingOperationTest {
 
     private UserManager _userManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // be paranoid
         ComponentsMockUtils.clearComponentProvider();
         _userManager = SecurityMockUtils.mockUserManager("test");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         // be polite
         ComponentsMockUtils.clearComponentProvider();
@@ -58,8 +57,8 @@ public class UserManagerStubbingOperationTest {
 
     @Test
     public void stubUser() {
-        assertThat(_userManager.getUser("test"), nullValue());
-        assertThat(_userManager.getAllUsers().size(), is(0));
+        assertNull(_userManager.getUser("test"));
+        assertEquals(0, _userManager.getAllUsers().size());
 
         UserStubbingOperation op1 = mock(UserStubbingOperation.class);
         UserStubbingOperation op2 = mock(UserStubbingOperation.class);
@@ -67,18 +66,18 @@ public class UserManagerStubbingOperationTest {
         User test = _userManager.getUser("test");
         verify(op1, Mockito.times(1)).of(test);
         verify(op2, Mockito.times(1)).of(test);
-        assertThat(test, notNullValue());
-        assertThat(test.getName(), is("test"));
-        assertThat(test.getPassword(), nullValue());
-        assertThat(_userManager.getAllUsers().size(), is(1));
-        assertThat(_userManager.getAllUsers().iterator().next(), is(test));
-        assertThat(_userManager.getUserById(test.getIdentifier()), is(test));
+        assertNotNull(test);
+        assertEquals("test", test.getName());
+        assertNull(test.getPassword());
+        assertEquals(1, _userManager.getAllUsers().size());
+        assertEquals(test, _userManager.getAllUsers().iterator().next());
+        assertEquals(test, _userManager.getUserById(test.getIdentifier()));
     }
 
     @Test
     public void stubSystemUser() {
-        assertThat(_userManager.getUser(UserManager.SYSTEM_USER), nullValue());
-        assertThat(_userManager.getAllUsers().size(), is(0));
+        assertNull(_userManager.getUser(UserManager.SYSTEM_USER));
+        assertEquals(0, _userManager.getAllUsers().size());
 
         UserStubbingOperation op1 = mock(UserStubbingOperation.class);
         UserStubbingOperation op2 = mock(UserStubbingOperation.class);
@@ -86,18 +85,18 @@ public class UserManagerStubbingOperationTest {
         User superuser = _userManager.getSystemUser();
         verify(op1, Mockito.times(1)).of(superuser);
         verify(op2, Mockito.times(1)).of(superuser);
-        assertThat(superuser, notNullValue());
-        assertThat(superuser.getName(), is(UserManager.SYSTEM_USER));
-        assertThat(superuser.getPassword(), is(UserManager.SYSTEM_USER));
-        assertThat(_userManager.getAllUsers().size(), is(1));
-        assertThat(_userManager.getAllUsers().iterator().next(), is(superuser));
-        assertThat(_userManager.getUserById(superuser.getIdentifier()), is(superuser));
+        assertNotNull(superuser);
+        assertEquals(UserManager.SYSTEM_USER, superuser.getName());
+        assertEquals(UserManager.SYSTEM_USER, superuser.getPassword());
+        assertEquals(1, _userManager.getAllUsers().size());
+        assertEquals(superuser, _userManager.getAllUsers().iterator().next());
+        assertEquals(superuser, _userManager.getUserById(superuser.getIdentifier()));
     }
 
     @Test
     public void stubAnonymousUser() {
-        assertThat(_userManager.getUser(UserManager.ANONYMOUS_USER), nullValue());
-        assertThat(_userManager.getAllUsers().size(), is(0));
+        assertNull(_userManager.getUser(UserManager.ANONYMOUS_USER));
+        assertEquals(0, _userManager.getAllUsers().size());
 
         UserStubbingOperation op1 = mock(UserStubbingOperation.class);
         UserStubbingOperation op2 = mock(UserStubbingOperation.class);
@@ -105,77 +104,77 @@ public class UserManagerStubbingOperationTest {
         User anonymous = _userManager.getAnonymousUser();
         verify(op1, Mockito.times(1)).of(anonymous);
         verify(op2, Mockito.times(1)).of(anonymous);
-        assertThat(anonymous, notNullValue());
-        assertThat(anonymous.getName(), is(UserManager.ANONYMOUS_USER));
-        assertThat(anonymous.getPassword(), nullValue());
-        assertThat(_userManager.getAllUsers().size(), is(1));
-        assertThat(_userManager.getAllUsers().iterator().next(), is(anonymous));
-        assertThat(_userManager.getUserById(anonymous.getIdentifier()), is(anonymous));
+        assertNotNull(anonymous);
+        assertEquals(UserManager.ANONYMOUS_USER, anonymous.getName());
+        assertNull(anonymous.getPassword());
+        assertEquals(1, _userManager.getAllUsers().size());
+        assertEquals(anonymous, _userManager.getAllUsers().iterator().next());
+        assertEquals(anonymous, _userManager.getUserById(anonymous.getIdentifier()));
     }
 
     @Test
     public void stubMultipleUsers() {
-        assertThat(_userManager.getAllUsers().size(), is(0));
+        assertEquals(0, _userManager.getAllUsers().size());
 
         UserManagerStubbingOperation.stubAnonymousUser().of(_userManager);
-        assertThat(_userManager.getAllUsers().size(), is(1));
+        assertEquals(1, _userManager.getAllUsers().size());
 
         UserManagerStubbingOperation.stubSystemUser().of(_userManager);
-        assertThat(_userManager.getAllUsers().size(), is(2));
+        assertEquals(2, _userManager.getAllUsers().size());
 
         UserManagerStubbingOperation.stubUser("Tom", null).of(_userManager);
-        assertThat(_userManager.getAllUsers().size(), is(3));
+        assertEquals(3, _userManager.getAllUsers().size());
 
         // test for no dublettes in user set
         UserManagerStubbingOperation.stubUser("Tom", null).of(_userManager);
-        assertThat(_userManager.getAllUsers().size(), is(3));
+        assertEquals(3, _userManager.getAllUsers().size());
     }
 
     @Test
     public void stubAllUsers() {
-        assertThat(_userManager.getAllUsers().size(), is(0));
+        assertEquals(0, _userManager.getAllUsers().size());
 
         User tom = createPlainUserMock("Tom", UUID.randomUUID().toString());
         User huck = createPlainUserMock("Huck", UUID.randomUUID().toString());
         User betty = createPlainUserMock("Betty", UUID.randomUUID().toString());
         UserManagerStubbingOperation.stubAllUsers(Set.of(tom, huck, betty)).of(_userManager);
-        assertThat(_userManager.getAllUsers().size(), is(3));
-        assertThat(_userManager.getUser("Tom"), is(tom));
-        assertThat(_userManager.getUser("Huck"), is(huck));
-        assertThat(_userManager.getUser("Betty"), is(betty));
-        assertThat(_userManager.getUserById(tom.getIdentifier()), is(tom));
-        assertThat(_userManager.getUserById(huck.getIdentifier()), is(huck));
-        assertThat(_userManager.getUserById(betty.getIdentifier()), is(betty));
+        assertEquals(3, _userManager.getAllUsers().size());
+        assertEquals(tom, _userManager.getUser("Tom"));
+        assertEquals(huck, _userManager.getUser("Huck"));
+        assertEquals(betty, _userManager.getUser("Betty"));
+        assertEquals(tom, _userManager.getUserById(tom.getIdentifier()));
+        assertEquals(huck, _userManager.getUserById(huck.getIdentifier()));
+        assertEquals(betty, _userManager.getUserById(betty.getIdentifier()));
 
         User newTom = createPlainUserMock("Tom", UUID.randomUUID().toString());
         User jerry = createPlainUserMock("Jerry", UUID.randomUUID().toString());
         UserManagerStubbingOperation.stubAllUsers(Set.of(newTom, jerry)).of(_userManager);
-        assertThat(_userManager.getAllUsers().size(), is(2));
-        assertThat(_userManager.getUser("Tom"), is(newTom));
-        assertThat(_userManager.getUser("Huck"), nullValue());
-        assertThat(_userManager.getUser("Betty"), nullValue());
-        assertThat(_userManager.getUser("Jerry"), is(jerry));
-        assertThat(_userManager.getUserById(tom.getIdentifier()), nullValue());
-        assertThat(_userManager.getUserById(huck.getIdentifier()), nullValue());
-        assertThat(_userManager.getUserById(betty.getIdentifier()), nullValue());
-        assertThat(_userManager.getUserById(newTom.getIdentifier()), is(newTom));
-        assertThat(_userManager.getUserById(jerry.getIdentifier()), is(jerry));
+        assertEquals(2, _userManager.getAllUsers().size());
+        assertEquals(newTom, _userManager.getUser("Tom"));
+        assertNull(_userManager.getUser("Huck"));
+        assertNull(_userManager.getUser("Betty"));
+        assertEquals(jerry, _userManager.getUser("Jerry"));
+        assertNull(_userManager.getUserById(tom.getIdentifier()));
+        assertNull(_userManager.getUserById(huck.getIdentifier()));
+        assertNull(_userManager.getUserById(betty.getIdentifier()));
+        assertEquals(newTom, _userManager.getUserById(newTom.getIdentifier()));
+        assertEquals(jerry, _userManager.getUserById(jerry.getIdentifier()));
     }
 
     @Test
     public void stubLockTimePeriod() {
-        assertThat(_userManager.getLockTimePeriod(), is(0));
+        assertEquals(0, _userManager.getLockTimePeriod());
 
         UserManagerStubbingOperation.stubLockTimePeriod(12).of(_userManager);
-        assertThat(_userManager.getLockTimePeriod(), is(12));
+        assertEquals(12, _userManager.getLockTimePeriod());
     }
 
     @Test
     public void stubMaxFailedLoginAttempts() {
-        assertThat(_userManager.getMaxFailedLoginAttempts(), is(0));
+        assertEquals(0, _userManager.getMaxFailedLoginAttempts());
 
         UserManagerStubbingOperation.stubMaxFailedLoginAttempts(3).of(_userManager);
-        assertThat(_userManager.getMaxFailedLoginAttempts(), is(3));
+        assertEquals(3, _userManager.getMaxFailedLoginAttempts());
     }
 
     private User createPlainUserMock(String name, String identifier) {

@@ -36,9 +36,9 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.NodeTestUtil;
 import org.apache.jackrabbit.util.ISO8601;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
@@ -54,9 +54,10 @@ import static de.ibmix.magkit.test.cms.context.ServerConfigurationStubbingOperat
 import static de.ibmix.magkit.test.cms.context.ServerConfigurationStubbingOperation.stubDefaultExtension;
 import static de.ibmix.magkit.test.cms.context.WebContextStubbingOperation.stubContextPath;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Compare Magnolia JCR Mock-Objects with this API.
@@ -67,12 +68,12 @@ import static org.junit.Assert.fail;
 //CHECKSTYLE:OFF
 public class MockProperties {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         ComponentsTestUtil.clear();
         SystemProperty.clear();
@@ -100,62 +101,62 @@ public class MockProperties {
         stubProperty("calendar", now).of(testNode);
 
         // ... and what you get:
-        assertThat(testNode.hasProperties(), is(true));
-        assertThat(testNode.getProperties().getSize(), is(7L));
+        assertTrue(testNode.hasProperties());
+        assertEquals(7L, testNode.getProperties().getSize());
 
-        assertThat(testNode.hasProperty("string"), is(true));
-        assertThat(testNode.getProperty("string").getType(), is(PropertyType.STRING));
-        assertThat(testNode.getProperty("string").getString(), is("testString"));
-        assertThat(testNode.getProperty("string").getValue().getString(), is("testString"));
+        assertTrue(testNode.hasProperty("string"));
+        assertEquals(PropertyType.STRING, testNode.getProperty("string").getType());
+        assertEquals("testString", testNode.getProperty("string").getString());
+        assertEquals("testString", testNode.getProperty("string").getValue().getString());
         // We can read String properties as boolean:
-        assertThat(testNode.getProperty("string").getBoolean(), is(false));
+        assertFalse(testNode.getProperty("string").getBoolean());
         // Accessing String property values as date, double or long results in a ValueFormatException:
         assertValueFormatExceptionForDate(testNode, "string");
         assertValueFormatExceptionForDouble(testNode, "string");
         assertValueFormatExceptionForLong(testNode, "string");
 
-        assertThat(testNode.hasProperty("boolean"), is(true));
-        assertThat(testNode.getProperty("boolean").getType(), is(PropertyType.BOOLEAN));
-        assertThat(testNode.getProperty("boolean").getString(), is("true"));
-        assertThat(testNode.getProperty("boolean").getBoolean(), is(true));
+        assertTrue(testNode.hasProperty("boolean"));
+        assertEquals(PropertyType.BOOLEAN, testNode.getProperty("boolean").getType());
+        assertEquals("true", testNode.getProperty("boolean").getString());
+        assertTrue(testNode.getProperty("boolean").getBoolean());
         // Accessing Boolean property values as date, double or long results in a ValueFormatException:
         assertValueFormatExceptionForDate(testNode, "boolean");
         assertValueFormatExceptionForDouble(testNode, "boolean");
         assertValueFormatExceptionForLong(testNode, "boolean");
 
-        assertThat(testNode.hasProperty("double"), is(true));
-        assertThat(testNode.getProperty("double").getType(), is(PropertyType.DOUBLE));
-        assertThat(testNode.getProperty("double").getString(), is("1.25"));
-        assertThat(testNode.getProperty("double").getDouble(), is(1.25D));
+        assertTrue(testNode.hasProperty("double"));
+        assertEquals(PropertyType.DOUBLE, testNode.getProperty("double").getType());
+        assertEquals("1.25", testNode.getProperty("double").getString());
+        assertEquals(1.25D, testNode.getProperty("double").getDouble());
         // We can read Double properties as long, boolean and date:
-        assertThat(testNode.getProperty("double").getLong(), is(1L));
-        assertThat(testNode.getProperty("double").getBoolean(), is(false));
-        assertThat(testNode.getProperty("double").getDate().getTimeInMillis(), is(1L));
+        assertEquals(1L, testNode.getProperty("double").getLong());
+        assertFalse(testNode.getProperty("double").getBoolean());
+        assertEquals(1L, testNode.getProperty("double").getDate().getTimeInMillis());
 
-        assertThat(testNode.hasProperty("long"), is(true));
-        assertThat(testNode.getProperty("long").getType(), is(PropertyType.LONG));
-        assertThat(testNode.getProperty("long").getString(), is("123456"));
-        assertThat(testNode.getProperty("long").getLong(), is(123456L));
+        assertTrue(testNode.hasProperty("long"));
+        assertEquals(PropertyType.LONG, testNode.getProperty("long").getType());
+        assertEquals("123456", testNode.getProperty("long").getString());
+        assertEquals(123456L, testNode.getProperty("long").getLong());
         // We can read Long properties as double, boolean and date:
-        assertThat(testNode.getProperty("long").getDouble(), is(123456D));
-        assertThat(testNode.getProperty("long").getBoolean(), is(false));
-        assertThat(testNode.getProperty("long").getDate().getTimeInMillis(), is(123456L));
+        assertEquals(123456D, testNode.getProperty("long").getDouble());
+        assertFalse(testNode.getProperty("long").getBoolean());
+        assertEquals(123456L, testNode.getProperty("long").getDate().getTimeInMillis());
 
-        assertThat(testNode.hasProperty("binary"), is(true));
-        assertThat(testNode.getProperty("binary").getType(), is(PropertyType.BINARY));
-        assertThat(testNode.getProperty("binary").getString(), is("test bytes"));
+        assertTrue(testNode.hasProperty("binary"));
+        assertEquals(PropertyType.BINARY, testNode.getProperty("binary").getType());
+        assertEquals("test bytes", testNode.getProperty("binary").getString());
         // Accessing Binary property values as date, double or long result in a ValueFormatException.
         assertValueFormatExceptionForDate(testNode, "binary");
         assertValueFormatExceptionForDouble(testNode, "binary");
         assertValueFormatExceptionForLong(testNode, "binary");
 
-        assertThat(testNode.hasProperty("calendar"), is(true));
-        assertThat(testNode.getProperty("calendar").getType(), is(PropertyType.DATE));
-        assertThat(testNode.getProperty("calendar").getString(), is(ISO8601.format(now)));
-        assertThat(testNode.getProperty("calendar").getDate(), is(now));
+        assertTrue(testNode.hasProperty("calendar"));
+        assertEquals(PropertyType.DATE, testNode.getProperty("calendar").getType());
+        assertEquals(ISO8601.format(now), testNode.getProperty("calendar").getString());
+        assertEquals(now, testNode.getProperty("calendar").getDate());
         // We can read Date properties as double and long:
-        assertThat(testNode.getProperty("calendar").getLong(), is(now.getTimeInMillis()));
-        assertThat(testNode.getProperty("calendar").getDouble(), is(((Long) now.getTimeInMillis()).doubleValue()));
+        assertEquals(now.getTimeInMillis(), testNode.getProperty("calendar").getLong());
+        assertEquals(((Long) now.getTimeInMillis()).doubleValue(), testNode.getProperty("calendar").getDouble());
         // Accessing Date property values as boolean results in a ValueFormatException:
         assertValueFormatExceptionForBoolean(testNode, "calendar");
 
@@ -182,14 +183,14 @@ public class MockProperties {
         testNode.setProperty("calendar", now);
 
         // ... and what you get:
-        assertThat(testNode.hasProperties(), is(true));
+        assertTrue(testNode.hasProperties());
         // Here we have one Property less than expected!
-        assertThat(testNode.getProperties().getSize(), is(6L));
+        assertEquals(6L, testNode.getProperties().getSize());
 
-        assertThat(testNode.hasProperty("string"), is(true));
-        assertThat(testNode.getProperty("string").getType(), is(PropertyType.STRING));
-        assertThat(testNode.getProperty("string").getString(), is("testString"));
-        assertThat(testNode.getProperty("string").getValue().getString(), is("testString"));
+        assertTrue(testNode.hasProperty("string"));
+        assertEquals(PropertyType.STRING, testNode.getProperty("string").getType());
+        assertEquals("testString", testNode.getProperty("string").getString());
+        assertEquals("testString", testNode.getProperty("string").getValue().getString());
         // Accessing String property values as boolean results in a ValueFormatException:
         assertValueFormatExceptionForBoolean(testNode, "string");
         // Accessing String property values as date, double or long results in a ValueFormatException:
@@ -197,45 +198,45 @@ public class MockProperties {
         assertValueFormatExceptionForDouble(testNode, "string");
         assertValueFormatExceptionForLong(testNode, "string");
 
-        assertThat(testNode.hasProperty("boolean"), is(true));
-        assertThat(testNode.getProperty("boolean").getType(), is(PropertyType.BOOLEAN));
-        assertThat(testNode.getProperty("boolean").getString(), is("true"));
-        assertThat(testNode.getProperty("boolean").getBoolean(), is(true));
+        assertTrue(testNode.hasProperty("boolean"));
+        assertEquals(PropertyType.BOOLEAN, testNode.getProperty("boolean").getType());
+        assertEquals("true", testNode.getProperty("boolean").getString());
+        assertTrue(testNode.getProperty("boolean").getBoolean());
         // Accessing Boolean property values as date, double or long results in a ValueFormatException:
         assertValueFormatExceptionForDate(testNode, "boolean");
         assertValueFormatExceptionForDouble(testNode, "boolean");
         assertValueFormatExceptionForLong(testNode, "boolean");
 
-        assertThat(testNode.hasProperty("double"), is(true));
-        assertThat(testNode.getProperty("double").getType(), is(PropertyType.DOUBLE));
-        assertThat(testNode.getProperty("double").getString(), is("1.25"));
-        assertThat(testNode.getProperty("double").getDouble(), is(1.25D));
+        assertTrue(testNode.hasProperty("double"));
+        assertEquals(PropertyType.DOUBLE, testNode.getProperty("double").getType());
+        assertEquals("1.25", testNode.getProperty("double").getString());
+        assertEquals(1.25D, testNode.getProperty("double").getDouble());
         // Accessing Double property values as boolean, long or date results in a ValueFormatException:
         assertValueFormatExceptionForDate(testNode, "double");
         assertValueFormatExceptionForBoolean(testNode, "double");
         assertValueFormatExceptionForLong(testNode, "double");
 
-        assertThat(testNode.hasProperty("long"), is(true));
-        assertThat(testNode.getProperty("long").getType(), is(PropertyType.LONG));
-        assertThat(testNode.getProperty("long").getString(), is("123456"));
-        assertThat(testNode.getProperty("long").getLong(), is(123456L));
+        assertTrue(testNode.hasProperty("long"));
+        assertEquals(PropertyType.LONG, testNode.getProperty("long").getType());
+        assertEquals("123456", testNode.getProperty("long").getString());
+        assertEquals(123456L, testNode.getProperty("long").getLong());
         // Accessing Long property values as boolean, double or date results in a ValueFormatException:
         assertValueFormatExceptionForDate(testNode, "long");
         assertValueFormatExceptionForBoolean(testNode, "long");
         assertValueFormatExceptionForDouble(testNode, "long");
 
-        assertThat(testNode.hasProperty("binary"), is(true));
-        assertThat(testNode.getProperty("binary").getType(), is(PropertyType.BINARY));
-        assertThat(testNode.getProperty("binary").getString(), is("test bytes"));
+        assertTrue(testNode.hasProperty("binary"));
+        assertEquals(PropertyType.BINARY, testNode.getProperty("binary").getType());
+        assertEquals("test bytes", testNode.getProperty("binary").getString());
         // Accessing Binary property values as date, double or long result in a ValueFormatException.
         assertValueFormatExceptionForDate(testNode, "binary");
         assertValueFormatExceptionForDouble(testNode, "binary");
         assertValueFormatExceptionForLong(testNode, "binary");
 
-        assertThat(testNode.hasProperty("calendar"), is(true));
-        assertThat(testNode.getProperty("calendar").getType(), is(PropertyType.DATE));
-        assertThat(testNode.getProperty("calendar").getString(), is(ISO8601.format(now)));
-        assertThat(testNode.getProperty("calendar").getDate(), is(now));
+        assertTrue(testNode.hasProperty("calendar"));
+        assertEquals(PropertyType.DATE, testNode.getProperty("calendar").getType());
+        assertEquals(ISO8601.format(now), testNode.getProperty("calendar").getString());
+        assertEquals(now, testNode.getProperty("calendar").getDate());
         // Accessing Date property values as boolean, double or long results in a ValueFormatException:
         assertValueFormatExceptionForBoolean(testNode, "calendar");
         assertValueFormatExceptionForDouble(testNode, "calendar");
@@ -285,20 +286,20 @@ public class MockProperties {
         );
 
         // ... and what you get:
-        assertThat(testNode.hasProperties(), is(true));
-        assertThat(testNode.getProperties().getSize(), is(2L));
+        assertTrue(testNode.hasProperties());
+        assertEquals(2L, testNode.getProperties().getSize());
 
-        assertThat(testNode.hasProperty("string"), is(true));
-        assertThat(testNode.getProperty("string").getType(), is(PropertyType.STRING));
+        assertTrue(testNode.hasProperty("string"));
+        assertEquals(PropertyType.STRING, testNode.getProperty("string").getType());
         // We get the first value when calling property.getString() - jcr behaviour now would be an ValueFormatException
-        assertThat(testNode.getProperty("string").getString(), is("value1"));
-        assertThat(testNode.getProperty("string").getValue().getString(), is("value1"));
+        assertEquals("value1", testNode.getProperty("string").getString());
+        assertEquals("value1", testNode.getProperty("string").getValue().getString());
         // We have correct multi value settings
-        assertThat(testNode.getProperty("string").isMultiple(), is(true));
-        assertThat(testNode.getProperty("string").getValues().length, is(3));
-        assertThat(testNode.getProperty("string").getValues()[0].getString(), is("value1"));
-        assertThat(testNode.getProperty("string").getValues()[1].getString(), is("value2"));
-        assertThat(testNode.getProperty("string").getValues()[2].getString(), is("value3"));
+        assertTrue(testNode.getProperty("string").isMultiple());
+        assertEquals(3, testNode.getProperty("string").getValues().length);
+        assertEquals("value1", testNode.getProperty("string").getValues()[0].getString());
+        assertEquals("value2", testNode.getProperty("string").getValues()[1].getString());
+        assertEquals("value3", testNode.getProperty("string").getValues()[2].getString());
     }
 
     @Test
@@ -307,30 +308,30 @@ public class MockProperties {
         PropertyUtil.setProperty(testNode, "string", Arrays.asList("value1", "value2", "value3"));
 
         // ... and what you get:
-        assertThat(testNode.hasProperties(), is(true));
-        assertThat(testNode.getProperties().getSize(), is(1L));
+        assertTrue(testNode.hasProperties());
+        assertEquals(1L, testNode.getProperties().getSize());
 
-        assertThat(testNode.hasProperty("string"), is(true));
-        assertThat(testNode.getProperty("string").getType(), is(PropertyType.STRING));
+        assertTrue(testNode.hasProperty("string"));
+        assertEquals(PropertyType.STRING, testNode.getProperty("string").getType());
         // We get an ValueFormatException when calling property.getString() or property.getValue()
         try {
-            assertThat(testNode.getProperty("string").getString(), is("value1"));
+            assertEquals("value1", testNode.getProperty("string").getString());
             fail();
         } catch (ValueFormatException e) {
             // ignore
         }
         try {
-            assertThat(testNode.getProperty("string").getValue().getString(), is("value1"));
+            assertEquals("value1", testNode.getProperty("string").getValue().getString());
             fail();
         } catch (ValueFormatException e) {
             // ignore
         }
         // We have correct multi value settings
-        assertThat(testNode.getProperty("string").isMultiple(), is(true));
-        assertThat(testNode.getProperty("string").getValues().length, is(3));
-        assertThat(testNode.getProperty("string").getValues()[0].getString(), is("value1"));
-        assertThat(testNode.getProperty("string").getValues()[1].getString(), is("value2"));
-        assertThat(testNode.getProperty("string").getValues()[2].getString(), is("value3"));
+        assertTrue(testNode.getProperty("string").isMultiple());
+        assertEquals(3, testNode.getProperty("string").getValues().length);
+        assertEquals("value1", testNode.getProperty("string").getValues()[0].getString());
+        assertEquals("value2", testNode.getProperty("string").getValues()[1].getString());
+        assertEquals("value3", testNode.getProperty("string").getValues()[2].getString());
     }
 
     // Scenario: Es soll Code getestet werden, der LinkUtil verwendet, um die URL für einen Node zu erzeugen.
@@ -343,9 +344,9 @@ public class MockProperties {
         // ... und ggf einen Context-Pfat für absolute Links:
         ContextMockUtils.mockWebContext(stubContextPath("/author"));
 
-        assertThat(LinkUtil.createLink(linkTarget), is("/linkTarget.html"));
-        assertThat(LinkUtil.createAbsoluteLink(linkTarget), is("/author/linkTarget.html"));
-        assertThat(LinkUtil.createExternalLink(linkTarget), is("http://test.aperto.de/linkTarget.html"));
+        assertEquals("/linkTarget.html", LinkUtil.createLink(linkTarget));
+        assertEquals("/author/linkTarget.html", LinkUtil.createAbsoluteLink(linkTarget));
+        assertEquals("http://test.aperto.de/linkTarget.html", LinkUtil.createExternalLink(linkTarget));
     }
 
     @Test
@@ -362,8 +363,8 @@ public class MockProperties {
         // Und wir benötigen noch einen I18nContentSupport:
         ComponentsTestUtil.setInstance(I18nContentSupport.class, new DefaultI18nContentSupport());
 
-        assertThat(LinkUtil.createLink(linkTarget), is("/linkTarget.html"));
-        assertThat(LinkUtil.createAbsoluteLink(linkTarget), is("/author/linkTarget.html"));
-        assertThat(LinkUtil.createExternalLink(linkTarget), is("http://test.aperto.de/linkTarget.html"));
+        assertEquals("/linkTarget.html", LinkUtil.createLink(linkTarget));
+        assertEquals("/author/linkTarget.html", LinkUtil.createAbsoluteLink(linkTarget));
+        assertEquals("http://test.aperto.de/linkTarget.html", LinkUtil.createExternalLink(linkTarget));
     }
 }

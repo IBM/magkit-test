@@ -20,12 +20,12 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
 
 import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubName;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -93,10 +93,11 @@ public final class WorkspaceMockUtils {
      * @param stubbings optional additional stubbing operations; may be empty but never {@code null}
      * @return the configured {@link Workspace} mock (never {@code null})
      * @throws RepositoryException if any stubbing operation throws it
-     * @throws AssertionError if {@code name} is blank
+     * @throws IllegalArgumentException if {@code name} is blank
      */
     public static Workspace mockWorkspace(String name, WorkspaceStubbingOperation... stubbings) throws RepositoryException {
-        assertTrue(isNotBlank(name));
+        Require.Argument.notBlank(name, "name must not be blank");
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         Workspace result = mock(Workspace.class);
         stubName(name).of(result);
         for (WorkspaceStubbingOperation stub : stubbings) {

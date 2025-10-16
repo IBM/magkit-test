@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.cms.security.Group;
@@ -28,8 +29,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.doReturn;
  * </p>
  * <ul>
  *   <li>All methods return non-null operations.</li>
- *   <li>Each operation asserts a non-null target group when executed (throwing {@link AssertionError} if violated).</li>
+ *   <li>Each operation asserts a non-null target group when executed (throwing {@link IllegalArgumentException} if violated).</li>
  *   <li>Operations are stateless and side-effect only on the supplied mock.</li>
  * </ul>
  * <p>
@@ -67,13 +66,13 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
      *
      * @param name name value (may be null)
      * @return stubbing operation
-     * @throws AssertionError if executed with null group
+     * @throws IllegalArgumentException if executed with null group
      */
     public static GroupStubbingOperation stubName(final String name) {
         return new GroupStubbingOperation() {
             @Override
             public void of(Group group) {
-                assertThat(group, notNullValue());
+                Require.Argument.notNull(group, "group should not be null");
                 doReturn(name).when(group).getName();
             }
         };
@@ -84,13 +83,13 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
      *
      * @param uuid group identifier (may be null)
      * @return stubbing operation
-     * @throws AssertionError if executed with null group
+     * @throws IllegalArgumentException if executed with null group
      */
     public static GroupStubbingOperation stubId(final String uuid) {
         return new GroupStubbingOperation() {
             @Override
             public void of(Group group) {
-                assertThat(group, notNullValue());
+                Require.Argument.notNull(group, "group should not be null");
                 doReturn(uuid).when(group).getId();
             }
         };
@@ -102,14 +101,14 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
      * @param name  property key (must not be null when executed)
      * @param value property value
      * @return stubbing operation
-     * @throws AssertionError if executed with null group or null name
+     * @throws IllegalArgumentException if executed with null group or null name
      */
     public static GroupStubbingOperation stubProperty(final String name, final String value) {
+        Require.Argument.notNull(name, "name should not be null");
         return new GroupStubbingOperation() {
             @Override
             public void of(Group group) {
-                assertThat(group, notNullValue());
-                assertThat(name, notNullValue());
+                Require.Argument.notNull(group, "group should not be null");
                 doReturn(value).when(group).getProperty(name);
             }
         };
@@ -120,13 +119,13 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
      *
      * @param groupNames subgroup names (nullable array -> empty list)
      * @return stubbing operation
-     * @throws AssertionError if executed with null group
+     * @throws IllegalArgumentException if executed with null group
      */
     public static GroupStubbingOperation stubGroups(final String... groupNames) {
         return new GroupStubbingOperation() {
             @Override
             public void of(Group group) {
-                assertThat(group, notNullValue());
+                Require.Argument.notNull(group, "group should not be null");
                 Collection<String> groupList = groupNames == null ? Collections.emptyList() : Arrays.asList(groupNames);
                 doReturn(groupList).when(group).getGroups();
             }
@@ -138,13 +137,13 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
      *
      * @param groupNames group names (nullable array -> empty list)
      * @return stubbing operation
-     * @throws AssertionError if executed with null group
+     * @throws IllegalArgumentException if executed with null group
      */
     public static GroupStubbingOperation stubAllGroups(final String... groupNames) {
         return new GroupStubbingOperation() {
             @Override
             public void of(Group group) {
-                assertThat(group, notNullValue());
+                Require.Argument.notNull(group, "group should not be null");
                 Collection<String> groupList = groupNames == null ? Collections.emptyList() : Arrays.asList(groupNames);
                 doReturn(groupList).when(group).getAllGroups();
             }
@@ -158,13 +157,13 @@ public abstract class GroupStubbingOperation implements StubbingOperation<Group>
      *
      * @param roleNames role names (nullable array -> empty list)
      * @return stubbing operation
-     * @throws AssertionError if executed with null group
+     * @throws IllegalArgumentException if executed with null group
      */
     public static GroupStubbingOperation stubRoles(final String... roleNames) {
         return new GroupStubbingOperation() {
             @Override
             public void of(Group group) {
-                assertThat(group, notNullValue());
+                Require.Argument.notNull(group, "group should not be null");
                 Collection<String> roleList = roleNames == null ? Collections.emptyList() : Arrays.asList(roleNames);
                 doReturn(roleList).when(group).getRoles();
                 roleList.forEach(role -> {

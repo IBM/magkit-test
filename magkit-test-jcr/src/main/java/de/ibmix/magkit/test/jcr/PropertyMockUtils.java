@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import org.mockito.Answers;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -38,8 +39,6 @@ import java.util.stream.Collectors;
 
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubNode;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubValues;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -217,7 +216,7 @@ public final class PropertyMockUtils {
      * @throws RepositoryException if internal stubbing fails
      */
     public static Property mockProperty(final String name) throws RepositoryException {
-        assertThat(name, notNullValue());
+        Require.Argument.notNull(name, "property name must not be null");
         TestProperty property = Mockito.mock(TestProperty.class);
         when(property.getName()).thenReturn(name);
         when(property.getString()).thenAnswer(STRING_ANSWER);

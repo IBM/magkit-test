@@ -21,9 +21,8 @@ package de.ibmix.magkit.test.jcr;
  */
 
 import org.apache.jackrabbit.util.ISO8601;
-import org.hamcrest.MatcherAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -38,10 +37,12 @@ import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import java.util.Calendar;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ import static org.mockito.Mockito.verify;
  */
 public class NodeMockUtilsTest {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         SessionMockUtils.cleanSession();
     }
@@ -64,17 +65,17 @@ public class NodeMockUtilsTest {
         NodeStubbingOperation op1 = mock(NodeStubbingOperation.class);
         NodeStubbingOperation op2 = mock(NodeStubbingOperation.class);
         Node node = NodeMockUtils.mockNode(op1, op2);
-        assertThat(node, notNullValue());
-        assertThat(node.getNodes(), notNullValue());
-        assertThat(node.getNodes().hasNext(), is(false));
-        assertThat(node.hasNodes(), is(false));
-        assertThat(node.getProperties(), notNullValue());
+        assertNotNull(node);
+        assertNotNull(node.getNodes());
+        assertFalse(node.getNodes().hasNext());
+        assertFalse(node.hasNodes());
+        assertNotNull(node.getProperties());
         // we have one property "jcr:primaryType"
-        assertThat(node.getProperties().hasNext(), is(true));
-        assertThat(node.hasProperties(), is(true));
-        assertThat(node.isNodeType(NodeType.NT_BASE), is(true));
-        assertThat(node.getMixinNodeTypes().length, is(0));
-        assertThat(node.toString(), is("/untitled id:" + node.getIdentifier()));
+        assertTrue(node.getProperties().hasNext());
+        assertTrue(node.hasProperties());
+        assertTrue(node.isNodeType(NodeType.NT_BASE));
+        assertEquals(0, node.getMixinNodeTypes().length);
+        assertEquals("/untitled id:" + node.getIdentifier(), node.toString());
         verify(op1, times(1)).of(node);
         verify(op2, times(1)).of(node);
 
@@ -106,10 +107,10 @@ public class NodeMockUtilsTest {
         Node section = NodeMockUtils.mockNode("section", NodeStubbingOperation.stubProperty("sectionProp", "sectionValue"));
         Node page = NodeMockUtils.mockNode("page", NodeStubbingOperation.stubProperty("pageProp", "pageValue"));
         // assert that hierarchy is flat -> all node are child of session root
-        assertThat(sessionRoot.hasNode("section"), is(true));
-        assertThat(sessionRoot.getNode("section"), is(section));
-        assertThat(sessionRoot.hasNode("page"), is(true));
-        assertThat(sessionRoot.getNode("page"), is(page));
+        assertTrue(sessionRoot.hasNode("section"));
+        assertEquals(section, sessionRoot.getNode("section"));
+        assertTrue(sessionRoot.hasNode("page"));
+        assertEquals(page, sessionRoot.getNode("page"));
 
         // build nested node hierarchy
         NodeStubbingOperation.stubNode(page).of(section);
@@ -124,133 +125,133 @@ public class NodeMockUtilsTest {
 
     private void verifyNodeHierarchyForRoot(Node sessionRoot, Node root, Node section, Node page) throws RepositoryException {
         // verify node hierarchy for root
-        assertThat(root, notNullValue());
-        assertThat(root.isNode(), is(true));
-        assertThat(root.getName(), is("root"));
-        assertThat(root.getPath(), is("/root"));
-        assertThat(root.getDepth(), is(1));
-        assertThat(root.getParent(), is(sessionRoot));
-        assertThat(root.getNodes(), notNullValue());
-        assertThat(root.getNodes().hasNext(), is(true));
-        assertThat((Node) root.getNodes().next(), is(section));
-        assertThat(root.getAncestor(0), is(sessionRoot));
-        assertThat(root.getAncestor(1), is(root));
-        assertThat(root.hasProperty("rootProp"), is(true));
-        assertThat(root.getProperty("rootProp").getString(), is("rootValue"));
-        assertThat(root.hasNode("section"), is(true));
-        assertThat(root.getNode("section"), is(section));
-        assertThat(root.hasNode("section/page"), is(true));
-        assertThat(root.getNode("section/page"), is(page));
+        assertNotNull(root);
+        assertTrue(root.isNode());
+        assertEquals("root", root.getName());
+        assertEquals("/root", root.getPath());
+        assertEquals(1, root.getDepth());
+        assertEquals(sessionRoot, root.getParent());
+        assertNotNull(root.getNodes());
+        assertTrue(root.getNodes().hasNext());
+        assertEquals(section, (Node) root.getNodes().next());
+        assertEquals(sessionRoot, root.getAncestor(0));
+        assertEquals(root, root.getAncestor(1));
+        assertTrue(root.hasProperty("rootProp"));
+        assertEquals("rootValue", root.getProperty("rootProp").getString());
+        assertTrue(root.hasNode("section"));
+        assertEquals(section, root.getNode("section"));
+        assertTrue(root.hasNode("section/page"));
+        assertEquals(page, root.getNode("section/page"));
     }
 
     private void verifyNodeHierarchyForSection(Node sessionRoot, Node root, Node section, Node page) throws RepositoryException {
         // verify node hierarchy for section
-        assertThat(section, notNullValue());
-        assertThat(section.isNode(), is(true));
-        assertThat(section.getName(), is("section"));
-        assertThat(section.getPath(), is("/root/section"));
-        assertThat(section.getDepth(), is(2));
-        assertThat(section.getParent(), is(root));
-        assertThat(section.getNodes(), notNullValue());
-        assertThat(section.getNodes().hasNext(), is(true));
-        assertThat((Node) section.getNodes().next(), is(page));
-        assertThat(section.getAncestor(0), is(sessionRoot));
-        assertThat(section.getAncestor(1), is(root));
-        assertThat(section.getAncestor(2), is(section));
-        assertThat(section.hasProperty("sectionProp"), is(true));
-        assertThat(section.getProperty("sectionProp").getString(), is("sectionValue"));
-        assertThat(section.hasNode("page"), is(true));
-        assertThat(section.getNode("page"), is(page));
+        assertNotNull(section);
+        assertTrue(section.isNode());
+        assertEquals("section", section.getName());
+        assertEquals("/root/section", section.getPath());
+        assertEquals(2, section.getDepth());
+        assertEquals(root, section.getParent());
+        assertNotNull(section.getNodes());
+        assertTrue(section.getNodes().hasNext());
+        assertEquals(page, (Node) section.getNodes().next());
+        assertEquals(sessionRoot, section.getAncestor(0));
+        assertEquals(root, section.getAncestor(1));
+        assertEquals(section, section.getAncestor(2));
+        assertTrue(section.hasProperty("sectionProp"));
+        assertEquals("sectionValue", section.getProperty("sectionProp").getString());
+        assertTrue(section.hasNode("page"));
+        assertEquals(page, section.getNode("page"));
     }
 
     private void verifyNodeHierarchyForPage(Node sessionRoot, Node root, Node section, Node page) throws RepositoryException {
         // verify node hierarchy for page
-        assertThat(page, notNullValue());
-        assertThat(page.isNode(), is(true));
-        assertThat(page.getName(), is("page"));
-        assertThat(page.getPath(), is("/root/section/page"));
-        assertThat(page.getDepth(), is(3));
-        assertThat(page.getParent(), is(section));
-        assertThat(page.getNodes(), notNullValue());
-        assertThat(page.getNodes().hasNext(), is(false));
-        assertThat(page.getAncestor(0), is(sessionRoot));
-        assertThat(page.getAncestor(1), is(root));
-        assertThat(page.getAncestor(2), is(section));
-        assertThat(page.getAncestor(3), is(page));
-        assertThat(page.hasProperty("pageProp"), is(true));
-        assertThat(page.getProperty("pageProp").getString(), is("pageValue"));
+        assertNotNull(page);
+        assertTrue(page.isNode());
+        assertEquals("page", page.getName());
+        assertEquals("/root/section/page", page.getPath());
+        assertEquals(3, page.getDepth());
+        assertEquals(section, page.getParent());
+        assertNotNull(page.getNodes());
+        assertFalse(page.getNodes().hasNext());
+        assertEquals(sessionRoot, page.getAncestor(0));
+        assertEquals(root, page.getAncestor(1));
+        assertEquals(section, page.getAncestor(2));
+        assertEquals(page, page.getAncestor(3));
+        assertTrue(page.hasProperty("pageProp"));
+        assertEquals("pageValue", page.getProperty("pageProp").getString());
     }
 
     private void verifyNodeHierarchyForSessionRoot(Node sessionRoot, Node root, Node section, Node page) throws RepositoryException {
         // verify node hierarchy for session root
-        assertThat(sessionRoot.hasNode("root"), is(true));
-        assertThat(sessionRoot.getNode("root"), is(root));
-        assertThat(sessionRoot.hasNode("root/section"), is(true));
-        assertThat(sessionRoot.getNode("root/section"), is(section));
-        assertThat(sessionRoot.hasNode("root/section/page"), is(true));
-        assertThat(sessionRoot.getNode("root/section/page"), is(page));
-        assertThat(sessionRoot.hasProperty("root/rootProp"), is(true));
-        assertThat(sessionRoot.getProperty("root/rootProp"), is(root.getProperty("rootProp")));
-        assertThat(sessionRoot.hasProperty("root/section/sectionProp"), is(true));
-        assertThat(sessionRoot.getProperty("root/section/sectionProp"), is(section.getProperty("sectionProp")));
-        assertThat(sessionRoot.hasProperty("root/section/page/pageProp"), is(true));
-        assertThat(sessionRoot.getProperty("root/section/page/pageProp"), is(page.getProperty("pageProp")));
+        assertTrue(sessionRoot.hasNode("root"));
+        assertEquals(root, sessionRoot.getNode("root"));
+        assertTrue(sessionRoot.hasNode("root/section"));
+        assertEquals(section, sessionRoot.getNode("root/section"));
+        assertTrue(sessionRoot.hasNode("root/section/page"));
+        assertEquals(page, sessionRoot.getNode("root/section/page"));
+        assertTrue(sessionRoot.hasProperty("root/rootProp"));
+        assertEquals(root.getProperty("rootProp"), sessionRoot.getProperty("root/rootProp"));
+        assertTrue(sessionRoot.hasProperty("root/section/sectionProp"));
+        assertEquals(section.getProperty("sectionProp"), sessionRoot.getProperty("root/section/sectionProp"));
+        assertTrue(sessionRoot.hasProperty("root/section/page/pageProp"));
+        assertEquals(page.getProperty("pageProp"), sessionRoot.getProperty("root/section/page/pageProp"));
     }
 
     private void verifyNoLeftoversOfFlatStructure(Node sessionRoot, Node root) throws RepositoryException {
         // verify that no leftovers of flat structure exist
-        assertThat(sessionRoot.hasNode("section"), is(false));
-        assertThat(sessionRoot.getNode("section"), nullValue());
-        assertThat(sessionRoot.hasNode("page"), is(false));
-        assertThat(sessionRoot.getNode("page"), nullValue());
-        assertThat(sessionRoot.hasNode("section/page"), is(false));
-        assertThat(sessionRoot.getNode("section/page"), nullValue());
+        assertFalse(sessionRoot.hasNode("section"));
+        assertNull(sessionRoot.getNode("section"));
+        assertFalse(sessionRoot.hasNode("page"));
+        assertNull(sessionRoot.getNode("page"));
+        assertFalse(sessionRoot.hasNode("section/page"));
+        assertNull(sessionRoot.getNode("section/page"));
 
-        assertThat(root.hasNode("page"), is(false));
-        assertThat(root.getNode("page"), nullValue());
+        assertFalse(root.hasNode("page"));
+        assertNull(root.getNode("page"));
     }
 
 
     @Test
     public void mockNodeTestSession() throws RepositoryException {
         Session session = SessionMockUtils.mockSession("website");
-        assertThat(session.getRootNode(), notNullValue());
+        assertNotNull(session.getRootNode());
         // for now we don't need the workspace
-        assertThat(session.getWorkspace(), notNullValue());
-        assertThat(session.getWorkspace().getName(), is("website"));
-        assertThat(session.getItem("/root"), nullValue());
-        assertThat(session.getItem("/root/section"), nullValue());
-        assertThat(session.getItem("/root/section/page"), nullValue());
-        assertThat(session.itemExists("/root"), is(false));
-        assertThat(session.itemExists("/root/section"), is(false));
-        assertThat(session.itemExists("/root/section/page"), is(false));
+        assertNotNull(session.getWorkspace());
+        assertEquals("website", session.getWorkspace().getName());
+        assertNull(session.getItem("/root"));
+        assertNull(session.getItem("/root/section"));
+        assertNull(session.getItem("/root/section/page"));
+        assertFalse(session.itemExists("/root"));
+        assertFalse(session.itemExists("/root/section"));
+        assertFalse(session.itemExists("/root/section/page"));
 
         Item root = NodeMockUtils.mockNode("root/");
-        assertThat(root.getSession(), is(session));
-        assertThat(session.getItem("/root"), is(root));
-        assertThat(session.getItem("/root/section"), nullValue());
-        assertThat(session.getItem("/root/section/page"), nullValue());
-        assertThat(session.itemExists("/root"), is(true));
-        assertThat(session.itemExists("/root/section"), is(false));
-        assertThat(session.itemExists("/root/section/page"), is(false));
+        assertEquals(session, root.getSession());
+        assertEquals(root, session.getItem("/root"));
+        assertNull(session.getItem("/root/section"));
+        assertNull(session.getItem("/root/section/page"));
+        assertTrue(session.itemExists("/root"));
+        assertFalse(session.itemExists("/root/section"));
+        assertFalse(session.itemExists("/root/section/page"));
 
         Item section = NodeMockUtils.mockNode("root/section");
-        assertThat(section.getSession(), is(session));
-        assertThat(session.getItem("/root"), is(root));
-        assertThat(session.getItem("/root/section"), is(section));
-        assertThat(session.getItem("/root/section/page"), nullValue());
-        assertThat(session.itemExists("/root"), is(true));
-        assertThat(session.itemExists("/root/section"), is(true));
-        assertThat(session.itemExists("/root/section/page"), is(false));
+        assertEquals(session, section.getSession());
+        assertEquals(root, session.getItem("/root"));
+        assertEquals(section, session.getItem("/root/section"));
+        assertNull(session.getItem("/root/section/page"));
+        assertTrue(session.itemExists("/root"));
+        assertTrue(session.itemExists("/root/section"));
+        assertFalse(session.itemExists("/root/section/page"));
 
         Item page = NodeMockUtils.mockNode("root/section/page");
-        assertThat(page.getSession(), is(session));
-        assertThat(session.getItem("/root"), is(root));
-        assertThat(session.getItem("/root/section"), is(section));
-        assertThat(session.getItem("/root/section/page"), is(page));
-        assertThat(session.itemExists("/root"), is(true));
-        assertThat(session.itemExists("/root/section"), is(true));
-        assertThat(session.itemExists("/root/section/page"), is(true));
+        assertEquals(session, page.getSession());
+        assertEquals(root, session.getItem("/root"));
+        assertEquals(section, session.getItem("/root/section"));
+        assertEquals(page, session.getItem("/root/section/page"));
+        assertTrue(session.itemExists("/root"));
+        assertTrue(session.itemExists("/root/section"));
+        assertTrue(session.itemExists("/root/section/page"));
     }
 
     @Test
@@ -259,23 +260,23 @@ public class NodeMockUtilsTest {
         Node node2 = NodeMockUtils.mockNode("level4", NodeStubbingOperation.stubParent(node1));
         Node node3 = NodeMockUtils.mockNode("level5", NodeStubbingOperation.stubParent(node2));
 
-        assertThat(node3.getPath(), is("/root/level1/level2/level3/level4/level5"));
-        assertThat(node1.getNode("level4/level5"), is(node3));
+        assertEquals("/root/level1/level2/level3/level4/level5", node3.getPath());
+        assertEquals(node3, node1.getNode("level4/level5"));
 
         Session session = SessionMockUtils.mockSession("website");
         Node root = session.getNode("/root");
 
-        assertThat(root.getPath(), is("/root"));
-        assertThat(root, notNullValue());
-        assertThat(root.getNode("level1/level2/level3/level4/level5"), is(node3));
+        assertEquals("/root", root.getPath());
+        assertNotNull(root);
+        assertEquals(node3, root.getNode("level1/level2/level3/level4/level5"));
 
     }
 
     @Test
     public void testNestedNodesWithSameName() throws RepositoryException {
         Node node = NodeMockUtils.mockNode("0/0/0/0");
-        assertThat(node.getDepth(), is(4));
-        assertThat(node.getPath(), is("/0/0/0/0"));
+        assertEquals(4, node.getDepth());
+        assertEquals("/0/0/0/0", node.getPath());
     }
 
     @Test
@@ -286,234 +287,233 @@ public class NodeMockUtilsTest {
     @Test
     public void mockNodeFromXmlTest() throws RepositoryException {
         Node node = NodeMockUtils.mockNodeFromXml("testRepo", getClass().getResourceAsStream("website.aha.de.rezeptseiten.streusselkuchen.xml"));
-        assertThat(node, notNullValue());
+        assertNotNull(node);
 
-        assertThat(node.getSession(), notNullValue());
-        assertThat(node.getSession().getWorkspace().getName(), is("testRepo"));
-        MatcherAssert.assertThat(SessionMockUtils.mockSession("testRepo").getNode("/aprikosen-streuselkuchen"), is(node));
+        assertNotNull(node.getSession());
+        assertEquals("testRepo", node.getSession().getWorkspace().getName());
+        assertEquals(node, SessionMockUtils.mockSession("testRepo").getNode("/aprikosen-streuselkuchen"));
 
-        assertThat(node.getName(), is("aprikosen-streuselkuchen"));
-        assertThat(node.getPath(), is("/aprikosen-streuselkuchen"));
-        assertThat(node.getIdentifier(), is("5a7c0215-fdbe-4ef7-8cc6-dbffded7ae2b"));
+        assertEquals("aprikosen-streuselkuchen", node.getName());
+        assertEquals("/aprikosen-streuselkuchen", node.getPath());
+        assertEquals("5a7c0215-fdbe-4ef7-8cc6-dbffded7ae2b", node.getIdentifier());
 
-        assertThat(node.getProperty("jcr:primaryType").getType(), is(PropertyType.NAME));
-        assertThat(node.getProperty("jcr:primaryType").getString(), is("mgnl:page"));
+        assertEquals(PropertyType.NAME, node.getProperty("jcr:primaryType").getType());
+        assertEquals("mgnl:page", node.getProperty("jcr:primaryType").getString());
 
-        assertThat(node.getProperty("contentCategory").getType(), is(PropertyType.STRING));
-        assertThat(node.getProperty("contentCategory").getString(), is("recipe"));
-        assertThat(node.getProperty("contentCategory").getValue().getString(), is("recipe"));
-        assertThat(node.getProperty("contentCategory").getValues().length, is(1));
+        assertEquals(PropertyType.STRING, node.getProperty("contentCategory").getType());
+        assertEquals("recipe", node.getProperty("contentCategory").getString());
+        assertEquals("recipe", node.getProperty("contentCategory").getValue().getString());
+        assertEquals(1, node.getProperty("contentCategory").getValues().length);
 
-        assertThat(node.getProperty("inheritContext").getType(), is(PropertyType.BOOLEAN));
-        assertThat(node.getProperty("inheritContext").getString(), is("true"));
-        assertThat(node.getProperty("inheritContext").getBoolean(), is(true));
-        assertThat(node.getProperty("inheritContext").getValue().getString(), is("true"));
+        assertEquals(PropertyType.BOOLEAN, node.getProperty("inheritContext").getType());
+        assertEquals("true", node.getProperty("inheritContext").getString());
+        assertTrue(node.getProperty("inheritContext").getBoolean());
+        assertEquals("true", node.getProperty("inheritContext").getValue().getString());
 
-        assertThat(node.getProperty("mgnl:created").getType(), is(PropertyType.DATE));
-        assertThat(node.getProperty("mgnl:created").getString(), is("2014-11-21T16:50:16.228+01:00"));
-        assertThat(node.getProperty("mgnl:created").getDate(), is(ISO8601.parse("2014-11-21T16:50:16.228+01:00")));
-        assertThat(node.getProperty("mgnl:created").getValue().getString(), is("2014-11-21T16:50:16.228+01:00"));
+        assertEquals(PropertyType.DATE, node.getProperty("mgnl:created").getType());
+        assertEquals("2014-11-21T16:50:16.228+01:00", node.getProperty("mgnl:created").getString());
+        assertEquals(ISO8601.parse("2014-11-21T16:50:16.228+01:00"), node.getProperty("mgnl:created").getDate());
+        assertEquals("2014-11-21T16:50:16.228+01:00", node.getProperty("mgnl:created").getValue().getString());
 
         Node nested = node.getNode("content/01/layouts/0/slides/0");
-        assertThat(nested, notNullValue());
+        assertNotNull(nested);
 
-        assertThat(nested.getSession(), notNullValue());
-        assertThat(nested.getSession().getWorkspace().getName(), is("testRepo"));
-        MatcherAssert.assertThat(SessionMockUtils.mockSession("testRepo").getNode("/aprikosen-streuselkuchen/content/01/layouts/0/slides/0"), is(nested));
+        assertNotNull(nested.getSession());
+        assertEquals("testRepo", nested.getSession().getWorkspace().getName());
+        assertEquals(nested, SessionMockUtils.mockSession("testRepo").getNode("/aprikosen-streuselkuchen/content/01/layouts/0/slides/0"));
 
-        assertThat(nested.getName(), is("0"));
-        assertThat(nested.getPath(), is("/aprikosen-streuselkuchen/content/01/layouts/0/slides/0"));
-        assertThat(nested.getDepth(), is(7));
-        assertThat(nested.getAncestor(1).getName(), is("aprikosen-streuselkuchen"));
-        assertThat(nested.getProperty("jcr:primaryType").getType(), is(PropertyType.NAME));
-        assertThat(nested.getProperty("jcr:primaryType").getString(), is("mgnl:component"));
-        assertThat(nested.getIdentifier(), is("f344504f-2636-4894-974c-9f44f44fcfe0"));
-        assertThat(nested.getProperty("mgnl:template").getType(), is(PropertyType.STRING));
-        assertThat(nested.getProperty("mgnl:template").getString(), is("m5-tk-campaign:components/contents/sliderTeaser"));
+        assertEquals("0", nested.getName());
+        assertEquals("/aprikosen-streuselkuchen/content/01/layouts/0/slides/0", nested.getPath());
+        assertEquals(7, nested.getDepth());
+        assertEquals("aprikosen-streuselkuchen", nested.getAncestor(1).getName());
+        assertEquals(PropertyType.NAME, nested.getProperty("jcr:primaryType").getType());
+        assertEquals("mgnl:component", nested.getProperty("jcr:primaryType").getString());
+        assertEquals("f344504f-2636-4894-974c-9f44f44fcfe0", nested.getIdentifier());
+        assertEquals(PropertyType.STRING, nested.getProperty("mgnl:template").getType());
+        assertEquals("m5-tk-campaign:components/contents/sliderTeaser", nested.getProperty("mgnl:template").getString());
     }
 
     @Test
     public void addNodeTest() throws RepositoryException {
         Node node = NodeMockUtils.mockNode("some/node");
-        assertThat(node.hasNodes(), is(false));
+        assertFalse(node.hasNodes());
 
         Node grandChild = node.addNode("grand/child");
-        assertThat(node.hasNodes(), is(true));
-        assertThat(node.getNode("grand"), notNullValue());
-        assertThat(node.getNode("grand").hasNodes(), is(true));
-        assertThat(node.getNode("grand").getPath(), is("/some/node/grand"));
-        assertThat(node.getNode("grand").getNode("child"), notNullValue());
+        assertTrue(node.hasNodes());
+        assertNotNull(node.getNode("grand"));
+        assertTrue(node.getNode("grand").hasNodes());
+        assertEquals("/some/node/grand", node.getNode("grand").getPath());
+        assertNotNull(node.getNode("grand").getNode("child"));
 
-        assertThat(node.getNode("grand/child"), is(grandChild));
-        assertThat(node.getNode("grand/child").getPath(), is("/some/node/grand/child"));
+        assertEquals(grandChild, node.getNode("grand/child"));
+        assertEquals("/some/node/grand/child", node.getNode("grand/child").getPath());
     }
 
     @Test
     public void addNodeWithType() throws RepositoryException {
         Node node = NodeMockUtils.mockNode("some/node");
-        assertThat(node.hasNodes(), is(false));
+        assertFalse(node.hasNodes());
 
         Node grandChild = node.addNode("grand/child", "test:Type");
-        assertThat(grandChild.getPrimaryNodeType().getName(), is("test:Type"));
-        assertThat(node.hasNodes(), is(true));
-        assertThat(node.getNode("grand"), notNullValue());
-        assertThat(node.getNode("grand").hasNodes(), is(true));
-        assertThat(node.getNode("grand").getPath(), is("/some/node/grand"));
-        assertThat(node.getNode("grand").getNode("child"), is(grandChild));
+        assertEquals("test:Type", grandChild.getPrimaryNodeType().getName());
+        assertTrue(node.hasNodes());
+        assertNotNull(node.getNode("grand"));
+        assertTrue(node.getNode("grand").hasNodes());
+        assertEquals("/some/node/grand", node.getNode("grand").getPath());
+        assertEquals(grandChild, node.getNode("grand").getNode("child"));
 
-        assertThat(node.getNode("grand/child"), is(grandChild));
-        assertThat(node.getNode("grand/child").getPath(), is("/some/node/grand/child"));
-        assertThat(node.getNode("grand/child").getPrimaryNodeType().getName(), is("test:Type"));
+        assertEquals(grandChild, node.getNode("grand/child"));
+        assertEquals("/some/node/grand/child", node.getNode("grand/child").getPath());
+        assertEquals("test:Type", node.getNode("grand/child").getPrimaryNodeType().getName());
     }
 
     @Test
     public void removeTest() throws RepositoryException {
         Node child = NodeMockUtils.mockNode("some/node/child");
         Session session = child.getSession();
-        assertThat(session.getNode("/some"), notNullValue());
-        assertThat(session.getNode("/some").hasNodes(), is(true));
-        assertThat(session.getNode("/some/node"), notNullValue());
-        assertThat(session.getNode("/some/node/child"), notNullValue());
+        assertNotNull(session.getNode("/some"));
+        assertTrue(session.getNode("/some").hasNodes());
+        assertNotNull(session.getNode("/some/node"));
+        assertNotNull(session.getNode("/some/node/child"));
 
         Node node = child.getParent();
         node.remove();
-        assertThat(session.getNode("/some"), notNullValue());
-        assertThat(session.getNode("/some").hasNodes(), is(false));
-        assertThat(session.getNode("/some").getNode("node"), nullValue());
-        assertThat(session.getNode("/some/node"), nullValue());
-        assertThat(session.getNode("/some/node/child"), nullValue());
+        assertNotNull(session.getNode("/some"));
+        assertFalse(session.getNode("/some").hasNodes());
+        assertNull(session.getNode("/some").getNode("node"));
+        assertNull(session.getNode("/some/node"));
+        assertNull(session.getNode("/some/node/child"));
     }
 
     @Test
     public void setPropertyTestBinary() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("binary"), nullValue());
+        assertNull(node.getProperty("binary"));
         Binary bin = mock(Binary.class);
         Property p = node.setProperty("binary", bin);
         assertPropertyBasics(node, "binary", p, PropertyType.BINARY);
-        assertThat(p.getBinary(), is(bin));
+        assertEquals(bin, p.getBinary());
     }
 
     @Test
     public void setPropertyTestBoolean() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("boolean"), nullValue());
+        assertNull(node.getProperty("boolean"));
         Property p = node.setProperty("boolean", true);
         assertPropertyBasics(node, "boolean", p, PropertyType.BOOLEAN);
-        assertThat(p.getBoolean(), is(true));
+        assertTrue(p.getBoolean());
     }
 
     @Test
     public void setPropertyTestCalendar() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("calendar"), nullValue());
+        assertNull(node.getProperty("calendar"));
         Calendar now = Calendar.getInstance();
         Property p = node.setProperty("calendar", now);
         assertPropertyBasics(node, "calendar", p, PropertyType.DATE);
-        assertThat(p.getDate(), is(now));
+        assertEquals(now, p.getDate());
     }
 
     @Test
     public void setPropertyTestDouble() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("double"), nullValue());
+        assertNull(node.getProperty("double"));
         Property p = node.setProperty("double", 1.2D);
         assertPropertyBasics(node, "double", p, PropertyType.DOUBLE);
-        assertThat(p.getDouble(), is(1.2D));
+        assertEquals(1.2D, p.getDouble());
     }
 
     @Test
     public void setPropertyTestLong() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("long"), nullValue());
+        assertNull(node.getProperty("long"));
         Property p = node.setProperty("long", 1L);
         assertPropertyBasics(node, "long", p, PropertyType.LONG);
-        assertThat(p.getLong(), is(1L));
+        assertEquals(1L, p.getLong());
     }
 
     @Test
     public void setPropertyTestString() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("string"), nullValue());
+        assertNull(node.getProperty("string"));
         Property p = node.setProperty("string", "value");
         assertPropertyBasics(node, "string", p, PropertyType.STRING);
-        assertThat(p.getString(), is("value"));
+        assertEquals("value", p.getString());
     }
 
     @Test
     public void setPropertyTestStrings() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("string"), nullValue());
+        assertNull(node.getProperty("string"));
         Property p = node.setProperty("string", new String[]{"value1", "value2", "value3"});
         assertPropertyBasics(node, "string", p, PropertyType.STRING);
-        assertThat(p.getString(), is("value1"));
-        assertThat(p.getValues().length, is(3));
-        assertThat(p.getValues()[2].getString(), is("value3"));
+        assertEquals("value1", p.getString());
+        assertEquals(3, p.getValues().length);
+        assertEquals("value3", p.getValues()[2].getString());
     }
 
     @Test
     public void setPropertyTestNode() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
         Node child = NodeMockUtils.mockNode("other");
-        assertThat(node.getProperty("link"), nullValue());
+        assertNull(node.getProperty("link"));
         Property p = node.setProperty("link", child);
         assertPropertyBasics(node, "link", p, PropertyType.REFERENCE);
-        assertThat(p.getString(), is(child.getIdentifier()));
+        assertEquals(child.getIdentifier(), p.getString());
     }
 
     @Test
     public void setPropertyTestValue() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("value"), nullValue());
+        assertNull(node.getProperty("value"));
         Value value = mock(Value.class);
         Property p = node.setProperty("value", value);
         assertPropertyBasics(node, "value", p, PropertyType.UNDEFINED);
-        assertThat(p.getValue(), is(value));
+        assertEquals(value, p.getValue());
     }
 
     @Test
     public void setPropertyTestValues() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
-        assertThat(node.getProperty("values"), nullValue());
+        assertNull(node.getProperty("values"));
         Value v1 = mock(Value.class);
         Value v2 = mock(Value.class);
         Property p = node.setProperty("values", new Value[] {v1, v2});
         assertPropertyBasics(node, "values", p, PropertyType.UNDEFINED);
-        assertThat(p.getValues().length, is(2));
-        assertThat(p.getValues()[0], is(v1));
-        assertThat(p.getValues()[1], is(v2));
+        assertEquals(2, p.getValues().length);
+        assertEquals(v1, p.getValues()[0]);
+        assertEquals(v2, p.getValues()[1]);
     }
 
     @Test
     public void sanitizeHandle() {
-        assertThat(NodeMockUtils.sanitizeHandle(null), is("/untitled"));
-        assertThat(NodeMockUtils.sanitizeHandle(""), is("/untitled"));
-        assertThat(NodeMockUtils.sanitizeHandle("  \n \t "), is("/untitled"));
-        assertThat(NodeMockUtils.sanitizeHandle("  \n handle \t "), is("handle"));
-        assertThat(NodeMockUtils.sanitizeHandle("  \\some\\path "), is("/some/path"));
+        assertEquals("/untitled", NodeMockUtils.sanitizeHandle(null));
+        assertEquals("/untitled", NodeMockUtils.sanitizeHandle(""));
+        assertEquals("/untitled", NodeMockUtils.sanitizeHandle("  \n \t "));
+        assertEquals("handle", NodeMockUtils.sanitizeHandle("  \n handle \t "));
+        assertEquals("/some/path", NodeMockUtils.sanitizeHandle("  \\some\\path "));
     }
 
-    @Test(expected = ItemNotFoundException.class)
+    @Test
     public void getAncestorForNegativeIndex() throws RepositoryException {
         Node node = NodeMockUtils.mockNode("some/node");
-        node.getAncestor(-1);
+        assertThrows(ItemNotFoundException.class, () -> node.getAncestor(-1));
     }
 
-    @Test(expected = ItemNotFoundException.class)
+    @Test
     public void getAncestorForLargeIndex() throws RepositoryException {
         Node node = NodeMockUtils.mockNode("some/node");
-        assertThat(node.getAncestor(0).getPath(), is("/"));
-        assertThat(node.getAncestor(1).getPath(), is("/some"));
-        assertThat(node.getAncestor(2).getPath(), is("/some/node"));
-        // expect ItemNotFoundException
-        node.getAncestor(3);
+        assertEquals("/", node.getAncestor(0).getPath());
+        assertEquals("/some", node.getAncestor(1).getPath());
+        assertEquals("/some/node", node.getAncestor(2).getPath());
+        assertThrows(ItemNotFoundException.class, () -> node.getAncestor(3));
     }
 
     @Test
     public void mockNodeBlankPathDefaultsUntitled() throws RepositoryException {
         Node node = NodeMockUtils.mockNode("");
-        assertThat(node.getName(), is("untitled"));
-        assertThat(node.getPath(), is("/untitled"));
+        assertEquals("untitled", node.getName());
+        assertEquals("/untitled", node.getPath());
     }
 
     /**
@@ -523,9 +523,9 @@ public class NodeMockUtilsTest {
     public void mockNodeRepositoryExistingNodeReused() throws RepositoryException {
         Node first = NodeMockUtils.mockNode("repoA", "/reuse/path", NodeStubbingOperation.stubProperty("p1", "v1"));
         Node second = NodeMockUtils.mockNode("repoA", "/reuse/path", NodeStubbingOperation.stubProperty("p2", "v2"));
-        assertThat(first == second, is(true));
-        assertThat(second.getProperty("p1").getString(), is("v1"));
-        assertThat(second.getProperty("p2").getString(), is("v2"));
+        assertTrue(first == second);
+        assertEquals("v1", second.getProperty("p1").getString());
+        assertEquals("v2", second.getProperty("p2").getString());
     }
 
     /**
@@ -534,10 +534,10 @@ public class NodeMockUtilsTest {
     @Test
     public void addNodeBlankNameReturnsNull() throws RepositoryException {
         Node parent = NodeMockUtils.mockNode("some/node");
-        assertThat(parent.hasNodes(), is(false));
+        assertFalse(parent.hasNodes());
         Node added = parent.addNode("");
-        assertThat(added, nullValue());
-        assertThat(parent.hasNodes(), is(false));
+        assertNull(added);
+        assertFalse(parent.hasNodes());
     }
 
     /**
@@ -547,7 +547,7 @@ public class NodeMockUtilsTest {
     public void addNodeBlankTypeKeepsDefaultPrimaryType() throws RepositoryException {
         Node parent = NodeMockUtils.mockNode("type/test");
         Node child = parent.addNode("child", "");
-        assertThat(child.getPrimaryNodeType().getName(), is(NodeType.NT_BASE));
+        assertEquals(NodeType.NT_BASE, child.getPrimaryNodeType().getName());
     }
 
     /**
@@ -557,26 +557,26 @@ public class NodeMockUtilsTest {
     public void setPropertyVariantsWithTypeParameter() throws RepositoryException {
         Node node = NodeMockUtils.mockNode();
         Property p1 = node.setProperty("s1", "value", PropertyType.STRING);
-        assertThat(p1.getType(), is(PropertyType.STRING));
-        assertThat(node.getProperty("s1").getString(), is("value"));
+        assertEquals(PropertyType.STRING, p1.getType());
+        assertEquals("value", node.getProperty("s1").getString());
 
         Property p2 = node.setProperty("s2", new String[]{"a", "b"}, PropertyType.STRING);
-        assertThat(p2.getType(), is(PropertyType.STRING));
-        assertThat(node.getProperty("s2").getValues().length, is(2));
-        assertThat(node.getProperty("s2").getValues()[1].getString(), is("b"));
+        assertEquals(PropertyType.STRING, p2.getType());
+        assertEquals(2, node.getProperty("s2").getValues().length);
+        assertEquals("b", node.getProperty("s2").getValues()[1].getString());
 
         Value v = mock(Value.class);
         Property p3 = node.setProperty("s3", v, PropertyType.UNDEFINED);
-        assertThat(p3.getType(), is(PropertyType.UNDEFINED));
-        assertThat(node.getProperty("s3").getValue(), is(v));
+        assertEquals(PropertyType.UNDEFINED, p3.getType());
+        assertEquals(v, node.getProperty("s3").getValue());
 
         Value v1 = mock(Value.class);
         Value v2 = mock(Value.class);
         Property p4 = node.setProperty("s4", new Value[]{v1, v2}, PropertyType.UNDEFINED);
-        assertThat(p4.getValues().length, is(2));
-        assertThat(node.getProperty("s4").getValues()[0], is(v1));
-        assertThat(node.getProperty("s4").getValues()[1], is(v2));
-        assertThat(p4.getType(), is(PropertyType.UNDEFINED));
+        assertEquals(2, p4.getValues().length);
+        assertEquals(v1, node.getProperty("s4").getValues()[0]);
+        assertEquals(v2, node.getProperty("s4").getValues()[1]);
+        assertEquals(PropertyType.UNDEFINED, p4.getType());
     }
 
     /**
@@ -587,20 +587,20 @@ public class NodeMockUtilsTest {
         Node node = NodeMockUtils.mockNode("id/test");
         Session session = node.getSession();
         String oldId = node.getIdentifier();
-        assertThat(session.getNodeByIdentifier(oldId), is(node));
+        assertEquals(node, session.getNodeByIdentifier(oldId));
         NodeStubbingOperation.stubIdentifier("new-identifier-123").of(node);
-        assertThat(node.getIdentifier(), is("new-identifier-123"));
-        assertThat(session.getNodeByIdentifier("new-identifier-123"), is(node));
-        assertThat(session.getNodeByIdentifier(oldId), nullValue());
+        assertEquals("new-identifier-123", node.getIdentifier());
+        assertEquals(node, session.getNodeByIdentifier("new-identifier-123"));
+        assertNull(session.getNodeByIdentifier(oldId));
     }
 
     /**
      * Invalid XML should throw a RuntimeException in mockNodeFromXml.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void mockNodeFromXmlInvalidInputThrows() {
         java.io.InputStream is = new java.io.ByteArrayInputStream("<not><valid>".getBytes(java.nio.charset.StandardCharsets.UTF_8));
-        NodeMockUtils.mockNodeFromXml("badRepo", is);
+        assertThrows(RuntimeException.class, () -> NodeMockUtils.mockNodeFromXml("badRepo", is));
     }
 
     /**
@@ -608,11 +608,11 @@ public class NodeMockUtilsTest {
      */
     @Test
     public void getPathForParentNullReturnsRoot() throws RepositoryException {
-        assertThat(NodeMockUtils.getPathForParent(null, "anything"), is("/"));
+        assertEquals("/", NodeMockUtils.getPathForParent(null, "anything"));
     }
 
     private void assertPropertyBasics(Node node, String name, Property property, int type) throws RepositoryException {
-        assertThat(property.getType(), is(type));
-        assertThat(node.getProperty(name), is(property));
+        assertEquals(type, property.getType());
+        assertEquals(property, node.getProperty(name));
     }
 }

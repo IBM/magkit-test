@@ -21,9 +21,9 @@ package de.ibmix.magkit.test.cms.node;
  */
 
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -31,10 +31,7 @@ import javax.jcr.RepositoryException;
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockRoleNode;
 import static de.ibmix.magkit.test.cms.node.RoleNodeStubbingOperation.stubDescription;
 import static de.ibmix.magkit.test.cms.node.RoleNodeStubbingOperation.stubTitle;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link RoleNodeStubbingOperation} covering stubbing of title and description including null / overwrite scenarios.
@@ -44,12 +41,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class RoleNodeStubbingOperationTest {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         ContextMockUtils.cleanContext();
     }
@@ -57,32 +54,31 @@ public class RoleNodeStubbingOperationTest {
     @Test
     public void stubTitleAndDescription() throws RepositoryException {
         Node role = mockRoleNode("editor-role", stubTitle("Editor"), stubDescription("Grants editorial permissions"));
-        assertThat(role, notNullValue());
-        assertThat(role.hasProperty("title"), is(true));
-        assertThat(role.getProperty("title").getString(), is("Editor"));
-        assertThat(role.hasProperty("description"), is(true));
-        assertThat(role.getProperty("description").getString(), is("Grants editorial permissions"));
+        assertNotNull(role);
+        assertTrue(role.hasProperty("title"));
+        assertEquals("Editor", role.getProperty("title").getString());
+        assertTrue(role.hasProperty("description"));
+        assertEquals("Grants editorial permissions", role.getProperty("description").getString());
     }
 
     @Test
     public void stubTitleNullValue() throws RepositoryException {
         Node role = mockRoleNode("null-title-role", stubTitle(null));
-        assertThat(role.hasProperty("title"), is(true));
-        assertThat("Null title should produce a property with null string value", role.getProperty("title").getString(), nullValue());
+        assertTrue(role.hasProperty("title"));
+        assertNull(role.getProperty("title").getString(), "Null title should produce a property with null string value");
     }
 
     @Test
     public void overwriteTitleWithNull() throws RepositoryException {
         Node role = mockRoleNode("overwrite-role", stubTitle("Initial"), stubTitle(null));
-        assertThat(role.hasProperty("title"), is(true));
-        assertThat(role.getProperty("title").getString(), nullValue());
+        assertTrue(role.hasProperty("title"));
+        assertNull(role.getProperty("title").getString());
     }
 
     @Test
     public void stubDescriptionNullBlankAndOverwrite() throws RepositoryException {
         Node role = mockRoleNode("desc-role", stubDescription("  "), stubDescription(null));
-        assertThat(role.hasProperty("description"), is(true));
-        assertThat(role.getProperty("description").getString(), nullValue());
+        assertTrue(role.hasProperty("description"));
+        assertNull(role.getProperty("description").getString());
     }
 }
-

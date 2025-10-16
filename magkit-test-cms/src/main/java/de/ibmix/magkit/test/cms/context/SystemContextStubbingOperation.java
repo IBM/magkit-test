@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
 import info.magnolia.cms.security.AccessManager;
@@ -31,8 +32,6 @@ import java.util.Locale;
 
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -82,7 +81,7 @@ public abstract class SystemContextStubbingOperation implements StubbingOperatio
 
             @Override
             public void of(SystemContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 when(context.getLocale()).thenReturn(locale);
             }
         };
@@ -101,7 +100,7 @@ public abstract class SystemContextStubbingOperation implements StubbingOperatio
         return new SystemContextStubbingOperation() {
 
             public void of(SystemContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 String repository = isBlank(repositoryId) ? WEBSITE : repositoryId;
                 when(context.getAccessManager(repository)).thenReturn(am);
             }
@@ -121,7 +120,7 @@ public abstract class SystemContextStubbingOperation implements StubbingOperatio
         return new SystemContextStubbingOperation() {
 
             public void of(SystemContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 String repository = isBlank(repositoryId) ? WEBSITE : repositoryId;
                 try {
                     when(context.getJCRSession(repository)).thenReturn(session);
@@ -144,7 +143,7 @@ public abstract class SystemContextStubbingOperation implements StubbingOperatio
         return new SystemContextStubbingOperation() {
 
             public void of(SystemContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context should not be null");
                 String repository = isBlank(repositoryId) ? WEBSITE : repositoryId;
                 try {
                     Session session = SessionMockUtils.mockSession(repository);

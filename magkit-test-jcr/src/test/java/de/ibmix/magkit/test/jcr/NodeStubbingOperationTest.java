@@ -21,8 +21,8 @@ package de.ibmix.magkit.test.jcr;
  */
 
 import org.apache.jackrabbit.JcrConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
@@ -35,10 +35,11 @@ import java.util.Calendar;
 
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubMixinNodeTypes;
 import static org.apache.commons.collections4.IteratorUtils.toList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -54,7 +55,7 @@ public class NodeStubbingOperationTest {
 
     private Node _node;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         SessionMockUtils.cleanSession();
         _node = NodeMockUtils.mockNode();
@@ -64,104 +65,104 @@ public class NodeStubbingOperationTest {
     public void testStubJcrSession() throws Exception {
         Session session = mock(Session.class);
         NodeStubbingOperation.stubJcrSession(session).of(_node);
-        assertThat(_node.getSession(), is(session));
-        assertThat(session.getNode("/untitled"), is(_node));
+        assertEquals(session, _node.getSession());
+        assertEquals(_node, session.getNode("/untitled"));
     }
 
     @Test
     public void testStubType() throws Exception {
         NodeStubbingOperation.stubType("testType").of(_node);
-        assertThat(_node.getPrimaryNodeType(), notNullValue());
-        assertThat(_node.getPrimaryNodeType().getName(), is("testType"));
-        assertThat(_node.getPrimaryNodeType().isNodeType("testType"), is(true));
-        assertThat(_node.getPrimaryNodeType().isNodeType("other"), is(false));
-        assertThat(_node.getProperty(JcrConstants.JCR_PRIMARYTYPE), notNullValue());
-        assertThat(_node.getProperty(JcrConstants.JCR_PRIMARYTYPE).getString(), is("testType"));
+        assertNotNull(_node.getPrimaryNodeType());
+        assertEquals("testType", _node.getPrimaryNodeType().getName());
+        assertTrue(_node.getPrimaryNodeType().isNodeType("testType"));
+        assertFalse(_node.getPrimaryNodeType().isNodeType("other"));
+        assertNotNull(_node.getProperty(JcrConstants.JCR_PRIMARYTYPE));
+        assertEquals("testType", _node.getProperty(JcrConstants.JCR_PRIMARYTYPE).getString());
     }
 
     @Test
     public void testStubTitle() throws Exception {
         NodeStubbingOperation.stubTitle("testTitle").of(_node);
-        assertThat(_node.getProperty(NodeStubbingOperation.PROPNAME_TITLE), notNullValue());
-        assertThat(_node.getProperty(NodeStubbingOperation.PROPNAME_TITLE).getString(), is("testTitle"));
+        assertNotNull(_node.getProperty(NodeStubbingOperation.PROPNAME_TITLE));
+        assertEquals("testTitle", _node.getProperty(NodeStubbingOperation.PROPNAME_TITLE).getString());
     }
 
     @Test
     public void testStubProperty() throws Exception {
         // each node always has a nodeType property:
-        assertThat(_node.hasProperties(), is(true));
-        assertThat(toList(_node.getProperties()).size(), is(1));
-        assertThat(_node.getProperties().nextProperty().getString(), is("{http://www.jcp.org/jcr/nt/1.0}base"));
-        assertThat(_node.hasProperty("string"), is(false));
+        assertTrue(_node.hasProperties());
+        assertEquals(1, toList(_node.getProperties()).size());
+        assertEquals("{http://www.jcp.org/jcr/nt/1.0}base", _node.getProperties().nextProperty().getString());
+        assertFalse(_node.hasProperty("string"));
 
         NodeStubbingOperation.stubProperty("string", "Hallo Wolf").of(_node);
 
-        assertThat(_node.hasProperty("string"), is(true));
-        assertThat(_node.getProperty("string"), notNullValue());
-        assertThat(_node.getProperty("string").getType(), is(PropertyType.STRING));
-        assertThat(_node.getProperty("string").getString(), is("Hallo Wolf"));
-        assertThat(_node.hasProperties(), is(true));
-        assertThat(_node.getProperties(), notNullValue());
-        assertThat(toList(_node.getProperties()).size(), is(2));
-//        assert that we get a not empty Iterator in subsequent calls of getProperties:
-        assertThat(toList(_node.getProperties()).size(), is(2));
-        assertThat(((Property) toList(_node.getProperties()).get(1)).getString(), is("Hallo Wolf"));
+        assertTrue(_node.hasProperty("string"));
+        assertNotNull(_node.getProperty("string"));
+        assertEquals(PropertyType.STRING, _node.getProperty("string").getType());
+        assertEquals("Hallo Wolf", _node.getProperty("string").getString());
+        assertTrue(_node.hasProperties());
+        assertNotNull(_node.getProperties());
+        assertEquals(2, toList(_node.getProperties()).size());
+        //        assert that we get a not empty Iterator in subsequent calls of getProperties:
+        assertEquals(2, toList(_node.getProperties()).size());
+        assertEquals("Hallo Wolf", ((Property) toList(_node.getProperties()).get(1)).getString());
     }
 
     @Test
     public void stubSameNamePropertiesTest() throws RepositoryException {
         // each node always has a nodeType property:
-        assertThat(_node.hasProperties(), is(true));
-        assertThat(toList(_node.getProperties()).size(), is(1));
+        assertTrue(_node.hasProperties());
+        assertEquals(1, toList(_node.getProperties()).size());
 
         NodeStubbingOperation.stubProperty("string", "Hallo Wolf").of(_node);
-        assertThat(toList(_node.getProperties()).size(), is(2));
-        assertThat(_node.getProperty("string").getString(), is("Hallo Wolf"));
+        assertEquals(2, toList(_node.getProperties()).size());
+        assertEquals("Hallo Wolf", _node.getProperty("string").getString());
 
         NodeStubbingOperation.stubProperty("string", "Hallo Test").of(_node);
         // same name properties should not accumulate in properties list of node mock:
-        assertThat(toList(_node.getProperties()).size(), is(2));
-        assertThat(_node.getProperty("string").getString(), is("Hallo Test"));
-        assertThat(_node.getProperties().nextProperty().getString(), is("{http://www.jcp.org/jcr/nt/1.0}base"));
+        assertEquals(2, toList(_node.getProperties()).size());
+        assertEquals("Hallo Test", _node.getProperty("string").getString());
+        assertEquals("{http://www.jcp.org/jcr/nt/1.0}base", _node.getProperties().nextProperty().getString());
     }
 
     @Test
     public void testStubLong() throws Exception {
         NodeStubbingOperation.stubProperty("long", 1L).of(_node);
-        assertThat(_node.getProperty("long").getType(), is(PropertyType.LONG));
-        assertThat(_node.getProperty("long").getLong(), is(1L));
-        assertThat(toList(_node.getProperties()).size(), is(2));
+        assertEquals(PropertyType.LONG, _node.getProperty("long").getType());
+        assertEquals(1L, _node.getProperty("long").getLong());
+        assertEquals(2, toList(_node.getProperties()).size());
     }
 
     @Test
     public void testStubBoolean() throws Exception {
         NodeStubbingOperation.stubProperty("boolean", Boolean.TRUE).of(_node);
-        assertThat(_node.getProperty("boolean").getType(), is(PropertyType.BOOLEAN));
-        assertThat(_node.getProperty("boolean").getBoolean(), is(Boolean.TRUE));
+        assertEquals(PropertyType.BOOLEAN, _node.getProperty("boolean").getType());
+        assertTrue(_node.getProperty("boolean").getBoolean());
 
     }
 
     @Test
     public void testStubDouble() throws Exception {
         NodeStubbingOperation.stubProperty("double", 12345D).of(_node);
-        assertThat(_node.getProperty("double").getType(), is(PropertyType.DOUBLE));
-        assertThat(_node.getProperty("double").getDouble(), is(12345D));
+        assertEquals(PropertyType.DOUBLE, _node.getProperty("double").getType());
+        assertEquals(12345D, _node.getProperty("double").getDouble());
     }
 
     @Test
     public void testStubCalendar() throws Exception {
         Calendar now = Calendar.getInstance();
         NodeStubbingOperation.stubProperty("calendar", now).of(_node);
-        assertThat(_node.getProperty("calendar").getType(), is(PropertyType.DATE));
-        assertThat(_node.getProperty("calendar").getDate(), is(now));
+        assertEquals(PropertyType.DATE, _node.getProperty("calendar").getType());
+        assertEquals(now, _node.getProperty("calendar").getDate());
     }
 
     @Test
     public void testStubBinary() throws Exception {
         Binary binary = mock(Binary.class);
         NodeStubbingOperation.stubProperty("binary", binary).of(_node);
-        assertThat(_node.getProperty("binary").getType(), is(PropertyType.BINARY));
-        assertThat(_node.getProperty("binary").getBinary(), is(binary));
+        assertEquals(PropertyType.BINARY, _node.getProperty("binary").getType());
+        assertEquals(binary, _node.getProperty("binary").getBinary());
     }
 
     @Test
@@ -169,64 +170,64 @@ public class NodeStubbingOperationTest {
         Node ref = mock(Node.class);
         NodeStubbingOperation.stubIdentifier("uuid-1").of(ref);
         NodeStubbingOperation.stubProperty("ref", ref).of(_node);
-        assertThat(_node.getProperty("ref").getType(), is(PropertyType.REFERENCE));
-        assertThat(_node.getProperty("ref").getNode(), is(ref));
-        assertThat(toList(_node.getProperties()).size(), is(2));
+        assertEquals(PropertyType.REFERENCE, _node.getProperty("ref").getType());
+        assertEquals(ref, _node.getProperty("ref").getNode());
+        assertEquals(2, toList(_node.getProperties()).size());
     }
 
     @Test
     @SuppressWarnings("deprecation")
     public void testStubIdentifier() throws Exception {
         NodeStubbingOperation.stubIdentifier("uuid-1").of(_node);
-        assertThat(_node.getIdentifier(), is("uuid-1"));
-        assertThat(_node.getUUID(), is("uuid-1"));
+        assertEquals("uuid-1", _node.getIdentifier());
+        assertEquals("uuid-1", _node.getUUID());
 
         Session session = mock(Session.class);
         NodeStubbingOperation.stubJcrSession(session).of(_node);
         NodeStubbingOperation.stubIdentifier("uuid-2").of(_node);
-        assertThat(_node.getUUID(), is("uuid-2"));
-        assertThat(session.getNodeByUUID("uuid-1"), nullValue());
-        assertThat(session.getNodeByUUID("uuid-2"), is(_node));
+        assertEquals("uuid-2", _node.getUUID());
+        assertNull(session.getNodeByUUID("uuid-1"));
+        assertEquals(_node, session.getNodeByUUID("uuid-2"));
 
         NodeStubbingOperation.stubIdentifier("uuid-3").of(_node);
-        assertThat(_node.getUUID(), is("uuid-3"));
-        assertThat(session.getNodeByUUID("uuid-2"), nullValue());
-        assertThat(session.getNodeByUUID("uuid-3"), is(_node));
+        assertEquals("uuid-3", _node.getUUID());
+        assertNull(session.getNodeByUUID("uuid-2"));
+        assertEquals(_node, session.getNodeByUUID("uuid-3"));
     }
 
     @Test
     public void testStubParent() throws Exception {
         Node parent = NodeMockUtils.mockNode("Hans");
         NodeStubbingOperation.stubParent(parent).of(_node);
-        assertThat(_node.getName(), is("untitled"));
-        assertThat(_node.getPath(), is("/Hans/untitled"));
-        assertThat(_node.getDepth(), is(2));
+        assertEquals("untitled", _node.getName());
+        assertEquals("/Hans/untitled", _node.getPath());
+        assertEquals(2, _node.getDepth());
     }
 
     @Test
     public void testStubNode() throws RepositoryException {
-        assertThat(_node.getNode("child"), nullValue());
-        assertThat(_node.hasNode("child"), is(false));
-        assertThat(_node.hasNodes(), is(false));
+        assertNull(_node.getNode("child"));
+        assertFalse(_node.hasNode("child"));
+        assertFalse(_node.hasNodes());
 
         Node child = NodeMockUtils.mockPlainNode("child");
         NodeStubbingOperation.stubNode(child).of(_node);
-        assertThat(_node.getNode("child"), is(child));
-        assertThat(child.getParent(), is(_node));
-        assertThat(_node.hasNode("child"), is(true));
-        assertThat(_node.hasNodes(), is(true));
+        assertEquals(child, _node.getNode("child"));
+        assertEquals(_node, child.getParent());
+        assertTrue(_node.hasNode("child"));
+        assertTrue(_node.hasNodes());
     }
 
     @Test
     public void stubNodeWithName() throws RepositoryException {
-        assertThat(_node.getNode("child"), nullValue());
+        assertNull(_node.getNode("child"));
 
         NodeStubbingOperation op = mock(NodeStubbingOperation.class);
         NodeStubbingOperation.stubNode("child", op).of(_node);
-        assertThat(_node.hasNode("child"), is(true));
-        assertThat(_node.hasNodes(), is(true));
-        assertThat(_node.getNode("child"), notNullValue());
-        assertThat(_node.getNode("child").getName(), is("child"));
+        assertTrue(_node.hasNode("child"));
+        assertTrue(_node.hasNodes());
+        assertNotNull(_node.getNode("child"));
+        assertEquals("child", _node.getNode("child").getName());
         verify(op, times(1)).of(_node.getNode("child"));
     }
 
@@ -241,47 +242,47 @@ public class NodeStubbingOperationTest {
 
         NodeStubbingOperation.stubProperty(property).of(_node);
 
-        assertThat((Node) session.getItem("/untitled"), is(_node));
-        assertThat(session.getNode("/untitled"), is(_node));
-        assertThat((Property) session.getItem("/untitled/property"), is(property));
-        assertThat(session.getProperty("/untitled/property"), is(property));
+        assertEquals(_node, (Node) session.getItem("/untitled"));
+        assertEquals(_node, session.getNode("/untitled"));
+        assertEquals(property, (Property) session.getItem("/untitled/property"));
+        assertEquals(property, session.getProperty("/untitled/property"));
 
         Node parent = NodeMockUtils.mockNode("Hans");
         NodeStubbingOperation.stubParent(parent).of(_node);
-        assertThat(_node.getName(), is("untitled"));
-        assertThat(_node.getPath(), is("/Hans/untitled"));
-        assertThat(_node.getDepth(), is(2));
+        assertEquals("untitled", _node.getName());
+        assertEquals("/Hans/untitled", _node.getPath());
+        assertEquals(2, _node.getDepth());
 
-        assertThat(session.getItem("/untitled"), is(nullValue()));
-        assertThat(session.getNode("/untitled"), is(nullValue()));
-        assertThat(session.getItem("/untitled/property"), is(nullValue()));
-        assertThat(session.getProperty("/untitled/property"), is(nullValue()));
+        assertNull(session.getItem("/untitled"));
+        assertNull(session.getNode("/untitled"));
+        assertNull(session.getItem("/untitled/property"));
+        assertNull(session.getProperty("/untitled/property"));
 
-        assertThat((Node) session.getItem("/Hans/untitled"), is(_node));
-        assertThat(session.getNode("/Hans/untitled"), is(_node));
-        assertThat((Property) session.getItem("/Hans/untitled/property"), is(property));
-        assertThat(session.getProperty("/Hans/untitled/property"), is(property));
+        assertEquals(_node, (Node) session.getItem("/Hans/untitled"));
+        assertEquals(_node, session.getNode("/Hans/untitled"));
+        assertEquals(property, (Property) session.getItem("/Hans/untitled/property"));
+        assertEquals(property, session.getProperty("/Hans/untitled/property"));
     }
 
     @Test
     public void testStubMixinNodeTypes() throws RepositoryException {
         Node node = NodeMockUtils.mockNode("node");
-        assertThat(node.getMixinNodeTypes(), notNullValue());
-        assertThat(node.getMixinNodeTypes().length, is(0));
+        assertNotNull(node.getMixinNodeTypes());
+        assertEquals(0, node.getMixinNodeTypes().length);
 
         stubMixinNodeTypes(mock(NodeType.class), mock(NodeType.class)).of(node);
-        assertThat(node.getMixinNodeTypes().length, is(2));
+        assertEquals(2, node.getMixinNodeTypes().length);
 
         stubMixinNodeTypes().of(node);
-        assertThat(node.getMixinNodeTypes().length, is(0));
+        assertEquals(0, node.getMixinNodeTypes().length);
     }
 
     @Test
     public void testPropertyStubbingOfPlainNode() throws RepositoryException {
         Node node  = mock(Node.class);
-        assertThat(node.getProperty("test"), nullValue());
+        assertNull(node.getProperty("test"));
         NodeStubbingOperation.stubProperty("test", "value").of(node);
-        assertThat(node.getProperty("test"), notNullValue());
+        assertNotNull(node.getProperty("test"));
     }
 
     @Test
@@ -289,11 +290,11 @@ public class NodeStubbingOperationTest {
         Node child  = mock(Node.class);
         doReturn("child").when(child).getName();
         Node parent  = mock(Node.class);
-        assertThat(parent.getNode("child"), nullValue());
-        assertThat(child.getParent(), nullValue());
+        assertNull(parent.getNode("child"));
+        assertNull(child.getParent());
 
         NodeStubbingOperation.stubNode(child).of(parent);
-        assertThat(parent.getNode("child"), is(child));
-        assertThat(child.getParent(), is(parent));
+        assertEquals(child, parent.getNode("child"));
+        assertEquals(parent, child.getParent());
     }
 }

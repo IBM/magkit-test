@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import info.magnolia.module.site.DefaultSiteManager;
 import info.magnolia.module.site.Site;
@@ -32,8 +33,6 @@ import java.util.HashMap;
 
 import static de.ibmix.magkit.test.cms.site.SiteManagerStubbingOperation.stubSite;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +52,7 @@ import static org.mockito.Mockito.when;
  *   <li>The first invocation creating a site ensures the site is registered with the manager via {@link SiteManagerStubbingOperation#stubSite(Site)}.</li>
  * </ul>
  * <p>Thread-safety: ComponentProvider is backed by ThreadLocal and therefore thread-safe; intended for multithreaded test initialization code.</p>
- * <p>Error handling: Uses Hamcrest {@code assertThat} for defensive null checks on stubbing arrays. Failing assertions raise {@link AssertionError}.</p>
+ * <p>Error handling: Uses Hamcrest {@code assertThat} for defensive null checks on stubbing arrays. Failing assertions raise {@link IllegalArgumentException}.</p>
  * <p>Typical usage:</p>
  * <pre>{@code
  * Site site = SiteMockUtils.mockSite("corporate",
@@ -88,10 +87,10 @@ public final class SiteMockUtils extends ComponentsMockUtils {
      * @param stubbings non-null vararg of site stubbing operations (may be empty)
      * @return current site mock (existing or newly created)
      * @throws RepositoryException if underlying site creation or stubbing throws
-     * @throws AssertionError if {@code stubbings} is null
+     * @throws IllegalArgumentException if {@code stubbings} is null
      */
     public static Site mockCurrentSite(String name, SiteStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         SiteManager siteManager = mockPlainSiteManager();
         Site site = siteManager.getCurrentSite();
         if (site == null) {
@@ -123,6 +122,7 @@ public final class SiteMockUtils extends ComponentsMockUtils {
      * @throws RepositoryException if site creation or i18n stubbing raises it
      */
     public static Site mockSite(String name, SiteStubbingOperation... stubbings) throws RepositoryException {
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         String siteName = isBlank(name) ? "default" : name;
         SiteManager siteManager = mockPlainSiteManager();
         Site result = siteManager.getSite(siteName);
@@ -147,10 +147,10 @@ public final class SiteMockUtils extends ComponentsMockUtils {
      * @param stubbings non-null vararg of site stubbing operations (may be empty)
      * @return default site mock
      * @throws RepositoryException if creation or stubbing fails
-     * @throws AssertionError if {@code stubbings} is null
+     * @throws IllegalArgumentException if {@code stubbings} is null
      */
     public static Site mockDefaultSite(SiteStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         SiteManager siteManager = mockPlainSiteManager();
         Site site = siteManager.getDefaultSite();
         if (site == null) {
@@ -177,10 +177,10 @@ public final class SiteMockUtils extends ComponentsMockUtils {
      * @param stubbings non-null vararg of site stubbing operations
      * @return assigned site mock
      * @throws RepositoryException if node iteration or site creation fails
-     * @throws AssertionError if {@code stubbings} is null
+     * @throws IllegalArgumentException if {@code stubbings} is null
      */
     public static Site mockAssignedSite(Node c, String id, SiteStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         SiteManager siteManager = mockPlainSiteManager();
         Site site = siteManager.getAssignedSite(c);
         if (site == null) {
@@ -206,10 +206,10 @@ public final class SiteMockUtils extends ComponentsMockUtils {
      * @param stubbings non-null vararg of site manager stubbing operations
      * @return site manager mock
      * @throws RepositoryException if a stubbing operation throws it
-     * @throws AssertionError if {@code stubbings} is null
+     * @throws IllegalArgumentException if {@code stubbings} is null
      */
-    public static SiteManager mockSiteManager(SiteManagerStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+    public static SiteManager mockSiteManager(SiteManagerStubbingOperation... stubbings) {
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         SiteManager siteManager = mockPlainSiteManager();
         for (SiteManagerStubbingOperation stubbing : stubbings) {
             stubbing.of(siteManager);

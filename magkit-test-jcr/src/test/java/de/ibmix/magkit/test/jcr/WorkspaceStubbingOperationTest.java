@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -31,10 +31,9 @@ import javax.jcr.query.QueryManager;
 
 import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubObservationManager;
 import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -50,7 +49,7 @@ public class WorkspaceStubbingOperationTest {
 
     private Workspace _ws;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         RepositoryMockUtils.cleanRepository();
         _ws = mock(Workspace.class);
@@ -62,49 +61,46 @@ public class WorkspaceStubbingOperationTest {
      */
     @Test
     public void testStubSession() throws RepositoryException {
-        assertThat(_ws.getSession(), nullValue());
+        assertNull(_ws.getSession());
         Session s = SessionMockUtils.mockSession("repo");
         WorkspaceStubbingOperation.stubSession(s).of(_ws);
-        assertThat(_ws.getSession(), is(s));
-        assertThat(s.getWorkspace(), is(_ws));
+        assertEquals(s, _ws.getSession());
+        assertEquals(_ws, s.getWorkspace());
     }
 
     @Test
     public void testStubSessionWithOperations() throws RepositoryException {
-        assertThat(_ws.getSession(), nullValue());
+        assertNull(_ws.getSession());
         SessionStubbingOperation op1 = mock(SessionStubbingOperation.class);
         SessionStubbingOperation op2 = mock(SessionStubbingOperation.class);
         WorkspaceStubbingOperation.stubSession(op1, op2).of(_ws);
         Session s = _ws.getSession();
-        assertThat(s, notNullValue());
-        assertThat(s.getWorkspace(), is(_ws));
+        assertNotNull(s);
+        assertEquals(_ws, s.getWorkspace());
         verify(op1, times(1)).of(s);
         verify(op2, times(1)).of(s);
-
         SessionStubbingOperation op3 = mock(SessionStubbingOperation.class);
         SessionStubbingOperation op4 = mock(SessionStubbingOperation.class);
         WorkspaceStubbingOperation.stubSession(op3, op4).of(_ws);
-        assertThat(_ws.getSession(), is(s));
-        assertThat(s.getWorkspace(), is(_ws));
+        assertEquals(s, _ws.getSession());
+        assertEquals(_ws, s.getWorkspace());
         verify(op3, times(1)).of(s);
         verify(op4, times(1)).of(s);
     }
 
     @Test
     public void testStubQueryManager() throws RepositoryException {
-        assertThat(_ws.getQueryManager(), nullValue());
-
+        assertNull(_ws.getQueryManager());
         QueryManager qm = mock(QueryManager.class);
         stubQueryManager(qm).of(_ws);
-        assertThat(_ws.getQueryManager(), is(qm));
+        assertEquals(qm, _ws.getQueryManager());
     }
 
     @Test
     public void testStubObservationManager() throws RepositoryException {
-        assertThat(_ws.getObservationManager(), nullValue());
-
+        assertNull(_ws.getObservationManager());
         ObservationManager om = mock(ObservationManager.class);
         stubObservationManager(om).of(_ws);
-        assertThat(_ws.getObservationManager(), is(om));
+        assertEquals(om, _ws.getObservationManager());
     }
 }

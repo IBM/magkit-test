@@ -23,7 +23,7 @@ package de.ibmix.magkit.test.cms.templating;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.ComponentAvailability;
 import info.magnolia.rendering.template.InheritanceConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,11 +36,12 @@ import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperatio
 import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubMaxComponents;
 import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubOptional;
 import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubType;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -76,15 +77,16 @@ public class AreaDefinitionStubbingOperationTest {
         stubOptional(Boolean.TRUE).of(area);
         stubType("main").of(area);
 
-        assertThat(area.getAvailableComponents(), is(components));
-        assertThat(area.getAvailableComponents(), hasEntry("compA", availability));
-        assertThat(area.getContentStructure(), is("grid/12"));
-        assertThat(area.getCreateAreaNode(), is(Boolean.TRUE));
-        assertThat(area.getEnabled(), is(Boolean.FALSE));
-        assertThat(area.getInheritance(), is(inheritance));
-        assertThat(area.getMaxComponents(), is(7));
-        assertThat(area.getOptional(), is(Boolean.TRUE));
-        assertThat(area.getType(), is("main"));
+        assertEquals(components, area.getAvailableComponents());
+        assertTrue(area.getAvailableComponents().containsKey("compA"));
+        assertSame(availability, area.getAvailableComponents().get("compA"));
+        assertEquals("grid/12", area.getContentStructure());
+        assertEquals(Boolean.TRUE, area.getCreateAreaNode());
+        assertEquals(Boolean.FALSE, area.getEnabled());
+        assertEquals(inheritance, area.getInheritance());
+        assertEquals(7, area.getMaxComponents());
+        assertEquals(Boolean.TRUE, area.getOptional());
+        assertEquals("main", area.getType());
     }
 
     /**
@@ -96,12 +98,12 @@ public class AreaDefinitionStubbingOperationTest {
         stubInheritance(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE).of(area);
 
         InheritanceConfiguration cfg = area.getInheritance();
-        assertThat(cfg, notNullValue());
-        assertThat(cfg.isEnabled(), is(Boolean.TRUE));
-        assertThat(cfg.isInheritsProperties(), is(Boolean.FALSE));
-        assertThat(cfg.isInheritsComponents(), is(Boolean.TRUE));
-        assertThat(cfg.getComponentPredicate(), notNullValue());
-        assertThat(cfg.getComponentComparator(), notNullValue());
+        assertNotNull(cfg);
+        assertEquals(Boolean.TRUE, cfg.isEnabled());
+        assertEquals(Boolean.FALSE, cfg.isInheritsProperties());
+        assertEquals(Boolean.TRUE, cfg.isInheritsComponents());
+        assertNotNull(cfg.getComponentPredicate());
+        assertNotNull(cfg.getComponentComparator());
     }
 
     /**
@@ -114,26 +116,26 @@ public class AreaDefinitionStubbingOperationTest {
         stubContentStructure(null).of(area);
         stubCreateAreaNode(null).of(area);
         stubEnabled(null).of(area);
-        stubInheritance((InheritanceConfiguration) null).of(area);
+        stubInheritance(null).of(area);
         stubMaxComponents(null).of(area);
         stubOptional(null).of(area);
         stubType(null).of(area);
 
-        assertThat(area.getAvailableComponents(), nullValue());
-        assertThat(area.getContentStructure(), nullValue());
-        assertThat(area.getCreateAreaNode(), nullValue());
-        assertThat(area.getEnabled(), nullValue());
-        assertThat(area.getInheritance(), nullValue());
-        assertThat(area.getMaxComponents(), nullValue());
-        assertThat(area.getOptional(), nullValue());
-        assertThat(area.getType(), nullValue());
+        assertNull(area.getAvailableComponents());
+        assertNull(area.getContentStructure());
+        assertNull(area.getCreateAreaNode());
+        assertNull(area.getEnabled());
+        assertNull(area.getInheritance());
+        assertNull(area.getMaxComponents());
+        assertNull(area.getOptional());
+        assertNull(area.getType());
     }
 
     /**
      * Verifies assertion failure (Hamcrest) when a null AreaDefinition is supplied.
      */
-    @Test(expected = AssertionError.class)
+    @Test
     public void shouldFailOnNullArea() {
-        stubEnabled(true).of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubEnabled(true).of(null));
     }
 }

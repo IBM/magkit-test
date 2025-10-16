@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.dam;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
 import info.magnolia.dam.api.Asset;
@@ -34,8 +35,6 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -83,7 +82,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 when(asset.getLink()).thenReturn(value);
             }
         };
@@ -99,7 +98,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     NodeStubbingOperation.stubTitle(value).of(((JcrAsset) asset).getNode());
                 } else {
@@ -118,7 +117,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.Asset.DESCRIPTION, value).of(((JcrAsset) asset).getNode());
                 } else {
@@ -137,7 +136,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.Asset.CAPTION, value).of(((JcrAsset) asset).getNode());
                 } else {
@@ -156,7 +155,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.Asset.COMMENT, value).of(((JcrAsset) asset).getNode());
                 } else {
@@ -175,7 +174,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.Asset.COPYRIGHT, value).of(((JcrAsset) asset).getNode());
                 } else {
@@ -194,7 +193,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.Asset.LANGUAGE, value).of(((JcrAsset) asset).getNode());
                 } else {
@@ -213,7 +212,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.Asset.SUBJECT, value).of(((JcrAsset) asset).getNode());
                 } else {
@@ -232,7 +231,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(NodeTypes.LastModified.LAST_MODIFIED, value).of(((JcrAsset) asset).getNode());
                 } else {
@@ -256,7 +255,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.AssetResource.MIMETYPE, value).of(getResourceNode((JcrAsset) asset));
                 } else {
@@ -275,7 +274,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.AssetResource.SIZE, value).of(getResourceNode((JcrAsset) asset));
                 } else {
@@ -294,7 +293,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.AssetResource.FILENAME, value).of(getResourceNode((JcrAsset) asset));
                 } else {
@@ -313,7 +312,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.AssetResource.EXTENSION, value).of(getResourceNode((JcrAsset) asset));
                 }
@@ -330,7 +329,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.AssetResource.WIDTH, value).of(getResourceNode((JcrAsset) asset));
                 }
@@ -347,7 +346,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     stubProperty(AssetNodeTypes.AssetResource.HEIGHT, value).of(getResourceNode((JcrAsset) asset));
                 }
@@ -365,7 +364,7 @@ public abstract class AssetStubbingOperation implements ExceptionStubbingOperati
         return new AssetStubbingOperation() {
             @Override
             public void of(Asset asset) throws RepositoryException {
-                assertThat(asset, notNullValue());
+                Require.Argument.notNull(asset, "asset should not be null");
                 if (asset instanceof JcrAsset) {
                     Binary binary = mock(Binary.class);
                     when(binary.getStream()).thenReturn(value);

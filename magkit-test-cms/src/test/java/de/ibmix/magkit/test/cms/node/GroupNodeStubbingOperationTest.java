@@ -22,9 +22,9 @@ package de.ibmix.magkit.test.cms.node;
 
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.jcr.util.NodeTypes;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
@@ -38,8 +38,7 @@ import static de.ibmix.magkit.test.cms.node.GroupNodeStubbingOperation.stubRoles
 import static de.ibmix.magkit.test.cms.node.GroupNodeStubbingOperation.stubTitle;
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockGroupNode;
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockRoleNode;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link GroupNodeStubbingOperation} covering title/description and reference list (groups/roles) stubbing.
@@ -50,12 +49,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class GroupNodeStubbingOperationTest {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         ContextMockUtils.cleanContext();
     }
@@ -63,11 +62,11 @@ public class GroupNodeStubbingOperationTest {
     @Test
     public void stubTitleAndDescription() throws RepositoryException {
         Node group = mockGroupNode("editors", stubTitle("Editors"), stubDescription("Editorial users"));
-        assertThat(group.getPrimaryNodeType().getName(), is(NodeTypes.Group.NAME));
-        assertThat(group.hasProperty("title"), is(true));
-        assertThat(group.getProperty("title").getString(), is("Editors"));
-        assertThat(group.hasProperty("description"), is(true));
-        assertThat(group.getProperty("description").getString(), is("Editorial users"));
+        assertEquals(NodeTypes.Group.NAME, group.getPrimaryNodeType().getName());
+        assertTrue(group.hasProperty("title"));
+        assertEquals("Editors", group.getProperty("title").getString());
+        assertTrue(group.hasProperty("description"));
+        assertEquals("Editorial users", group.getProperty("description").getString());
     }
 
     @Test
@@ -77,12 +76,12 @@ public class GroupNodeStubbingOperationTest {
         Node child2 = mockGroupNode("childB");
         stubGroups(child1, child2).of(parent);
         Node groups = parent.getNode("groups");
-        assertThat(groups, notNullValue());
-        assertThat(groups.getPrimaryNodeType().getName(), is(NodeTypes.ContentNode.NAME));
-        assertThat(groups.hasProperty("00"), is(true));
-        assertThat(groups.getProperty("00").getString(), is(child1.getIdentifier()));
-        assertThat(groups.hasProperty("01"), is(true));
-        assertThat(groups.getProperty("01").getString(), is(child2.getIdentifier()));
+        assertNotNull(groups);
+        assertEquals(NodeTypes.ContentNode.NAME, groups.getPrimaryNodeType().getName());
+        assertTrue(groups.hasProperty("00"));
+        assertEquals(child1.getIdentifier(), groups.getProperty("00").getString());
+        assertTrue(groups.hasProperty("01"));
+        assertEquals(child2.getIdentifier(), groups.getProperty("01").getString());
     }
 
     @Test
@@ -90,7 +89,7 @@ public class GroupNodeStubbingOperationTest {
         Node parent = mockGroupNode("parent-empty");
         stubGroups().of(parent);
         Node groups = parent.getNode("groups");
-        assertThat(groups, notNullValue());
+        assertNotNull(groups);
         PropertyIterator it = groups.getProperties();
         // collect only real numeric list properties (exclude jcr:primaryType etc.)
         Set<String> listPropNames = new HashSet<>();
@@ -100,7 +99,7 @@ public class GroupNodeStubbingOperationTest {
                 listPropNames.add(name);
             }
         }
-        assertThat(listPropNames.isEmpty(), is(true));
+        assertTrue(listPropNames.isEmpty());
     }
 
     @Test
@@ -113,10 +112,10 @@ public class GroupNodeStubbingOperationTest {
         // overwrite with single entry
         stubGroups(child2).of(parent);
         Node groups = parent.getNode("groups");
-        assertThat(groups.hasProperty("00"), is(true));
-        assertThat(groups.getProperty("00").getString(), is(child2.getIdentifier()));
-        // previous higher index properties should no longer match childC identifier
-        assertThat("Old property 01 should not reference childC anymore", !groups.hasProperty("01") || !child3.getIdentifier().equals(groups.getProperty("01").getString()));
+        assertTrue(groups.hasProperty("00"));
+        assertEquals(child2.getIdentifier(), groups.getProperty("00").getString());
+        assertTrue(!groups.hasProperty("01") || !child3.getIdentifier().equals(groups.getProperty("01").getString()),
+            "Old property 01 should not reference childC anymore");
     }
 
     @Test
@@ -126,13 +125,12 @@ public class GroupNodeStubbingOperationTest {
         Node role2 = mockRoleNode("roleB");
         stubRoles(role1, role2).of(parent);
         Node roles = parent.getNode("roles");
-        assertThat(roles.getProperty("00").getString(), is(role1.getIdentifier()));
-        assertThat(roles.getProperty("01").getString(), is(role2.getIdentifier()));
+        assertEquals(role1.getIdentifier(), roles.getProperty("00").getString());
+        assertEquals(role2.getIdentifier(), roles.getProperty("01").getString());
         // overwrite with empty list
         stubRoles().of(parent);
         roles = parent.getNode("roles");
-        assertThat(roles.hasProperty("00"), is(false));
-        assertThat(roles.hasProperty("01"), is(false));
+        assertFalse(roles.hasProperty("00"));
+        assertFalse(roles.hasProperty("01"));
     }
 }
-

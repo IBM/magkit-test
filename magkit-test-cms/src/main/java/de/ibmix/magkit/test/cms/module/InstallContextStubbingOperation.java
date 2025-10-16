@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.module;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
@@ -38,10 +39,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -99,7 +96,7 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
         return new InstallContextStubbingOperation() {
             @Override
             public void of(InstallContext ic) {
-                assertThat(ic, notNullValue());
+                Require.Argument.notNull(ic, "installContext should not be null");
                 when(ic.getCurrentModuleDefinition()).thenReturn(md);
             }
         };
@@ -126,9 +123,9 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
         return new InstallContextStubbingOperation() {
             @Override
             public void of(InstallContext ic) throws RepositoryException {
-                assertThat(ic, notNullValue());
-                assertThat(session, notNullValue());
-                assertThat(session.getWorkspace(), notNullValue());
+                Require.Argument.notNull(ic, "installContext should not be null");
+                Require.State.notNull(session, "session should not be null");
+                Require.State.notNull(session.getWorkspace(), "session must have a workspace");
                 String workspace = session.getWorkspace().getName();
                 doReturn(session).when(ic).getJCRSession(workspace);
                 if (RepositoryConstants.CONFIG.equals(workspace)) {
@@ -192,9 +189,9 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
     public static InstallContextStubbingOperation stubStatus(final InstallStatus status) {
         return new InstallContextStubbingOperation() {
             @Override
-            public void of(InstallContext mock) {
-                assertThat(mock, notNullValue());
-                doReturn(status).when(mock).getStatus();
+            public void of(InstallContext ic) {
+                Require.Argument.notNull(ic, "installContext should not be null");
+                doReturn(status).when(ic).getStatus();
             }
         };
     }
@@ -210,11 +207,11 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
     public static InstallContextStubbingOperation stubModulesNode() {
         return new InstallContextStubbingOperation() {
             @Override
-            public void of(InstallContext mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+            public void of(InstallContext installContext) throws RepositoryException {
+                Require.Argument.notNull(installContext, "installContext should not be null");
                 Node modules = MagnoliaNodeMockUtils.mockContentNode(RepositoryConstants.CONFIG, "modules");
-                doReturn(modules).when(mock).getModulesNode();
-                doReturn(true).when(mock).hasModulesNode();
+                doReturn(modules).when(installContext).getModulesNode();
+                doReturn(true).when(installContext).hasModulesNode();
             }
         };
     }
@@ -227,18 +224,18 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
      *
      * @param moduleName name of the target module; must be non blank
      * @return stubbing operation configuring current module node access
-     * @throws AssertionError if {@code moduleName} is blank
+     * @throws IllegalArgumentException if {@code moduleName} is blank
      */
     public static InstallContextStubbingOperation stubGetOrCreateCurrentModuleNode(final String moduleName) {
-        assertTrue(isNotBlank(moduleName));
+        Require.Argument.notNull(moduleName, "moduleName should not be null");
         return new InstallContextStubbingOperation() {
             @Override
-            public void of(InstallContext mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+            public void of(InstallContext installContext) throws RepositoryException {
+                Require.Argument.notNull(installContext, "installContext should not be null");
                 Node module = MagnoliaNodeMockUtils.mockContentNode(RepositoryConstants.CONFIG, "modules" + '/' + moduleName);
-                doReturn(module).when(mock).getOrCreateCurrentModuleNode();
-                doReturn(true).when(mock).isModuleRegistered(moduleName);
-                doReturn(true).when(mock).hasModulesNode();
+                doReturn(module).when(installContext).getOrCreateCurrentModuleNode();
+                doReturn(true).when(installContext).isModuleRegistered(moduleName);
+                doReturn(true).when(installContext).hasModulesNode();
             }
         };
     }
@@ -252,18 +249,18 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
      *
      * @param moduleName name of the target module; must be non blank
      * @return stubbing operation configuring current module config node access
-     * @throws AssertionError if {@code moduleName} is blank
+     * @throws IllegalArgumentException if {@code moduleName} is blank
      */
     public static InstallContextStubbingOperation stubGetOrCreateCurrentModuleConfigNode(final String moduleName) {
-        assertTrue(isNotBlank(moduleName));
+        Require.Argument.notNull(moduleName, "moduleName should not be null");
         return new InstallContextStubbingOperation() {
             @Override
-            public void of(InstallContext mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+            public void of(InstallContext installContext) throws RepositoryException {
+                Require.Argument.notNull(installContext, "installContext should not be null");
                 Node moduleConfig = MagnoliaNodeMockUtils.mockContentNode(RepositoryConstants.CONFIG, "modules" + '/' + moduleName + "/config");
-                doReturn(moduleConfig).when(mock).getOrCreateCurrentModuleConfigNode();
-                doReturn(true).when(mock).isModuleRegistered(moduleName);
-                doReturn(true).when(mock).hasModulesNode();
+                doReturn(moduleConfig).when(installContext).getOrCreateCurrentModuleConfigNode();
+                doReturn(true).when(installContext).isModuleRegistered(moduleName);
+                doReturn(true).when(installContext).hasModulesNode();
             }
         };
     }
@@ -295,10 +292,13 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
      * @return stubbing operation adding the message
      */
     public static InstallContextStubbingOperation stubMessage(final String moduleName, final String message, final String details, final Date timestamp, final InstallContext.MessagePriority priority) {
+        Require.Argument.notNull(moduleName, "moduleName should not be null");
         return new InstallContextStubbingOperation() {
             @Override
-            public void of(InstallContext mock) {
-                Map<String, List<InstallContext.Message>> messages = mock.getMessages();
+            public void of(InstallContext installContext) {
+                Require.Argument.notNull(installContext, "installContext should not be null");
+                Map<String, List<InstallContext.Message>> messages = installContext.getMessages();
+                Require.State.notNull(messages, "messages should not be null");
                 List<InstallContext.Message> moduleMessages = messages.getOrDefault(moduleName, new ArrayList<>());
                 InstallContext.Message newMessage = mock(InstallContext.Message.class);
                 doReturn(message).when(newMessage).getMessage();
@@ -307,7 +307,7 @@ public abstract class InstallContextStubbingOperation implements ExceptionStubbi
                 doReturn(priority).when(newMessage).getPriority();
                 moduleMessages.add(newMessage);
                 messages.put(moduleName, moduleMessages);
-                doReturn(messages).when(mock).getMessages();
+                doReturn(messages).when(installContext).getMessages();
             }
         };
     }

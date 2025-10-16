@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -38,9 +38,8 @@ import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletRespo
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpSession;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockPageContext;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockServletContext;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -56,7 +55,7 @@ public class PageContextStubbingOperationTest {
 
     private PageContext _pageContext;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         _pageContext = mockPageContext();
     }
@@ -65,7 +64,7 @@ public class PageContextStubbingOperationTest {
     public void testStubServletContext() {
         ServletContext context = mockServletContext();
         stubServletContext(context).of(_pageContext);
-        assertThat(_pageContext.getServletContext(), is(context));
+        assertEquals(context, _pageContext.getServletContext());
     }
 
     @Test
@@ -75,7 +74,7 @@ public class PageContextStubbingOperationTest {
         stubServletContext(op1, op2).of(_pageContext);
 
         ServletContext context = _pageContext.getServletContext();
-        assertThat(context, notNullValue());
+        assertNotNull(context);
         verify(op1, times(1)).of(context);
         verify(op2, times(1)).of(context);
     }
@@ -84,13 +83,13 @@ public class PageContextStubbingOperationTest {
     public void testStubHttpSession() {
         HttpSession session = mockHttpSession("id");
         stubHttpSession(session).of(_pageContext);
-        assertThat(_pageContext.getSession(), is(session));
-        assertThat(_pageContext.getServletContext(), is(session.getServletContext()));
+        assertEquals(session, _pageContext.getSession());
+        assertEquals(session.getServletContext(), _pageContext.getServletContext());
 
         HttpSession session2 = mockHttpSession("id2");
         stubHttpSession(session2).of(_pageContext);
-        assertThat(_pageContext.getSession(), is(session2));
-        assertThat(session2.getServletContext(), is(_pageContext.getServletContext()));
+        assertEquals(session2, _pageContext.getSession());
+        assertEquals(_pageContext.getServletContext(), session2.getServletContext());
     }
 
     @Test
@@ -100,7 +99,7 @@ public class PageContextStubbingOperationTest {
 
         stubHttpSession("id", op1, op2).of(_pageContext);
         HttpSession session = _pageContext.getSession();
-        assertThat(session, notNullValue());
+        assertNotNull(session);
         verify(op1, times(1)).of(session);
         verify(op2, times(1)).of(session);
     }
@@ -109,19 +108,17 @@ public class PageContextStubbingOperationTest {
     public void testStubHttpServletRequest() {
         HttpServletRequest request = mockHttpServletRequest();
         stubHttpServletRequest(request).of(_pageContext);
-        assertThat(_pageContext.getRequest(), is(request));
+        assertEquals(request, _pageContext.getRequest());
 
-        // test that the session provided with the request will be set to page context:
         HttpServletRequestStubbingOperation.stubHttpSession("id").of(request);
         stubHttpServletRequest(request).of(_pageContext);
-        assertThat(_pageContext.getSession(), notNullValue());
-        assertThat(_pageContext.getSession().getId(), is("id"));
+        assertNotNull(_pageContext.getSession());
+        assertEquals("id", _pageContext.getSession().getId());
 
-        //test that the session set to pageContext will be set to request if it has no session
         HttpServletRequest request2 = mockHttpServletRequest();
         stubHttpServletRequest(request2).of(_pageContext);
-        assertThat(request2.getSession(), notNullValue());
-        assertThat(request2.getSession().getId(), is("test"));
+        assertNotNull(request2.getSession());
+        assertEquals("test", request2.getSession().getId());
     }
 
     @Test
@@ -131,7 +128,7 @@ public class PageContextStubbingOperationTest {
 
         stubHttpServletRequest(op1, op2).of(_pageContext);
         HttpServletRequest request = (HttpServletRequest) _pageContext.getRequest();
-        assertThat(request, notNullValue());
+        assertNotNull(request);
         verify(op1, times(1)).of(request);
         verify(op2, times(1)).of(request);
     }
@@ -140,7 +137,7 @@ public class PageContextStubbingOperationTest {
     public void testStubHttpServletResponse() {
         HttpServletResponse response = mockHttpServletResponse();
         stubHttpServletResponse(response).of(_pageContext);
-        assertThat(_pageContext.getResponse(), is(response));
+        assertEquals(response, _pageContext.getResponse());
     }
 
     @Test
@@ -150,14 +147,13 @@ public class PageContextStubbingOperationTest {
 
         stubHttpServletResponse(op1, op2).of(_pageContext);
         HttpServletResponse response = (HttpServletResponse) _pageContext.getResponse();
-        assertThat(response, notNullValue());
+        assertNotNull(response);
         verify(op1, times(1)).of(response);
         verify(op2, times(1)).of(response);
     }
 
     @Test
     public void testStubHttpServletRequestCreatesNewWhenAbsent() {
-        // raw mock: getRequest() returns null
         PageContext pc = mock(PageContext.class);
         HttpServletRequestStubbingOperation op1 = mock(HttpServletRequestStubbingOperation.class);
         HttpServletRequestStubbingOperation op2 = mock(HttpServletRequestStubbingOperation.class);
@@ -165,60 +161,51 @@ public class PageContextStubbingOperationTest {
         stubHttpServletRequest(op1, op2).of(pc);
 
         HttpServletRequest created = (HttpServletRequest) pc.getRequest();
-        assertThat("Request should be created and set on page context", created, notNullValue());
-        // operations executed exactly once during mockHttpServletRequest()
+        assertNotNull(created, "Request should be created and set on page context");
         verify(op1, times(1)).of(created);
         verify(op2, times(1)).of(created);
     }
 
     @Test
     public void testStubHttpServletResponseCreatesNewWhenAbsent() {
-        // getResponse() returns null
         PageContext pc = mock(PageContext.class);
         HttpServletResponseStubbingOperation op = mock(HttpServletResponseStubbingOperation.class);
 
         stubHttpServletResponse(op).of(pc);
 
         HttpServletResponse created = (HttpServletResponse) pc.getResponse();
-        assertThat("Response should be created and set on page context", created, notNullValue());
-        // applied once inside mock factory
+        assertNotNull(created, "Response should be created and set on page context");
         verify(op, times(1)).of(created);
     }
 
     @Test
     public void testStubHttpSessionCreatesSessionWhenAbsent() {
-        // getSession() returns null
         PageContext pc = mock(PageContext.class);
         HttpSessionStubbingOperation op = mock(HttpSessionStubbingOperation.class);
 
         stubHttpSession("newSession", op).of(pc);
 
-        // getSession() on raw mock still null (operation only ensured a request+session exists on the request)
-        // therefore inspect the created request
         HttpServletRequest req = (HttpServletRequest) pc.getRequest();
-        assertThat("Request should be created", req, notNullValue());
+        assertNotNull(req, "Request should be created");
         HttpSession session = req.getSession();
-        assertThat("Session should be created on request", session, notNullValue());
-        assertThat("Session id should match", session.getId(), is("newSession"));
+        assertNotNull(session, "Session should be created on request");
+        assertEquals("newSession", session.getId(), "Session id should match");
         verify(op, times(1)).of(session);
     }
 
     @Test
     public void testStubServletContextCreatesContextWhenAbsent() {
-        // getServletContext() returns null
         PageContext pc = mock(PageContext.class);
         ServletContextStubbingOperation op1 = mock(ServletContextStubbingOperation.class);
         ServletContextStubbingOperation op2 = mock(ServletContextStubbingOperation.class);
 
         stubServletContext(op1, op2).of(pc);
 
-        // PageContext#getServletContext still null (not wired because raw mock), verify ops executed with some ServletContext
         verify(op1, times(1)).of(any(ServletContext.class));
         verify(op2, times(1)).of(any(ServletContext.class));
-        // ensure a request + session were created indirectly
         HttpServletRequest req = (HttpServletRequest) pc.getRequest();
-        assertThat(req, notNullValue());
-        assertThat(req.getSession(), notNullValue());
+        assertNotNull(req);
+        assertNotNull(req.getSession());
     }
 
     @Test
@@ -229,9 +216,9 @@ public class PageContextStubbingOperationTest {
         stubServletContext(provided).of(pc);
 
         HttpServletRequest req = (HttpServletRequest) pc.getRequest();
-        assertThat("Request should be created", req, notNullValue());
+        assertNotNull(req, "Request should be created");
         HttpSession session = req.getSession();
-        assertThat("Session should be created", session, notNullValue());
-        assertThat("ServletContext of session should be the provided one", session.getServletContext(), is(provided));
+        assertNotNull(session, "Session should be created");
+        assertEquals(provided, session.getServletContext(), "ServletContext of session should be the provided one");
     }
 }

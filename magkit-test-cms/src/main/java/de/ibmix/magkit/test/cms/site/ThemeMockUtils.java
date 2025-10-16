@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.module.site.CssResourceDefinition;
@@ -68,6 +69,7 @@ public final class ThemeMockUtils {
      * @see #mockTheme(String, ThemeStubbingOperation...)
      */
     public static ThemeReference mockThemeReference(String name, ThemeStubbingOperation... stubbings) {
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         ThemeReference result = mock(ThemeReference.class);
         doReturn(name).when(result).getName();
         mockTheme(name, stubbings);
@@ -92,6 +94,7 @@ public final class ThemeMockUtils {
      */
     @SuppressWarnings("unchecked")
     public static Theme mockTheme(String name, ThemeStubbingOperation... stubbings) {
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         ThemeRegistry themeRegistry = ComponentsMockUtils.mockComponentInstance(ThemeRegistry.class);
         DefinitionProvider<Theme> definitionProvider = themeRegistry.getProvider(name);
         Theme theme;

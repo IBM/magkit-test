@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.ServletContext;
 
@@ -29,10 +29,12 @@ import static de.ibmix.magkit.test.servlet.ServletContextStubbingOperation.stubA
 import static de.ibmix.magkit.test.servlet.ServletContextStubbingOperation.stubContextPath;
 import static de.ibmix.magkit.test.servlet.ServletContextStubbingOperation.stubInitParameter;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockServletContext;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Testing ServletContextStubbingOperation.
@@ -44,7 +46,7 @@ public class ServletContextStubbingOperationTest {
 
     private ServletContext _context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         _context = mockServletContext();
     }
@@ -52,61 +54,61 @@ public class ServletContextStubbingOperationTest {
     @Test
     public void testStubContextPath() {
         stubContextPath("path").of(_context);
-        assertThat(_context.getContextPath(), is("path"));
+        assertEquals("path", _context.getContextPath());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubContextPathForNull() {
-        stubContextPath("path").of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubContextPath("path").of(null));
     }
 
     @Test
     public void stubAttributeTest() {
         Object value1 = new Object();
         Object value2 = new Object();
-        assertThat(_context.getAttribute("name_1"), nullValue());
-        assertThat(_context.getAttribute("name_2"), nullValue());
-        assertThat(_context.getAttributeNames().hasMoreElements(), is(false));
+        assertNull(_context.getAttribute("name_1"));
+        assertNull(_context.getAttribute("name_2"));
+        assertFalse(_context.getAttributeNames().hasMoreElements());
 
         stubAttribute("name_1", value1).of(_context);
-        assertThat(_context.getAttribute("name_1"), is(value1));
-        assertThat(_context.getAttributeNames(), notNullValue());
-        assertThat(_context.getAttributeNames().hasMoreElements(), is(true));
-        assertThat(_context.getAttributeNames().nextElement(), is("name_1"));
-        assertThat(_context.getAttributeNames().hasMoreElements(), is(false));
+        assertEquals(value1, _context.getAttribute("name_1"));
+        assertNotNull(_context.getAttributeNames());
+        assertTrue(_context.getAttributeNames().hasMoreElements());
+        assertEquals("name_1", _context.getAttributeNames().nextElement());
+        assertFalse(_context.getAttributeNames().hasMoreElements());
 
         stubAttribute("name_2", value2).of(_context);
-        assertThat(_context.getAttribute("name_2"), is(value2));
-        assertThat(_context.getAttributeNames(), notNullValue());
-        assertThat(_context.getAttributeNames().hasMoreElements(), is(true));
-        assertThat(_context.getAttributeNames().nextElement(), is("name_1"));
-        assertThat(_context.getAttributeNames().hasMoreElements(), is(true));
-        assertThat(_context.getAttributeNames().nextElement(), is("name_2"));
-        assertThat(_context.getAttributeNames().hasMoreElements(), is(false));
+        assertEquals(value2, _context.getAttribute("name_2"));
+        assertNotNull(_context.getAttributeNames());
+        assertTrue(_context.getAttributeNames().hasMoreElements());
+        assertEquals("name_1", _context.getAttributeNames().nextElement());
+        assertTrue(_context.getAttributeNames().hasMoreElements());
+        assertEquals("name_2", _context.getAttributeNames().nextElement());
+        assertFalse(_context.getAttributeNames().hasMoreElements());
     }
 
     @Test
     public void stubInitParameterTest() {
         String value1 = "value_1";
         String value2 = "value_2";
-        assertThat(_context.getInitParameter("name_1"), nullValue());
-        assertThat(_context.getInitParameter("name_2"), nullValue());
-        assertThat(_context.getInitParameterNames().hasMoreElements(), is(false));
+        assertNull(_context.getInitParameter("name_1"));
+        assertNull(_context.getInitParameter("name_2"));
+        assertFalse(_context.getInitParameterNames().hasMoreElements());
 
         stubInitParameter("name_1", value1).of(_context);
-        assertThat(_context.getInitParameter("name_1"), is(value1));
-        assertThat(_context.getInitParameterNames(), notNullValue());
-        assertThat(_context.getInitParameterNames().hasMoreElements(), is(true));
-        assertThat(_context.getInitParameterNames().nextElement(), is("name_1"));
-        assertThat(_context.getInitParameterNames().hasMoreElements(), is(false));
+        assertEquals(value1, _context.getInitParameter("name_1"));
+        assertNotNull(_context.getInitParameterNames());
+        assertTrue(_context.getInitParameterNames().hasMoreElements());
+        assertEquals("name_1", _context.getInitParameterNames().nextElement());
+        assertFalse(_context.getInitParameterNames().hasMoreElements());
 
         stubInitParameter("name_2", value2).of(_context);
-        assertThat(_context.getInitParameter("name_2"), is(value2));
-        assertThat(_context.getInitParameterNames(), notNullValue());
-        assertThat(_context.getInitParameterNames().hasMoreElements(), is(true));
-        assertThat(_context.getInitParameterNames().nextElement(), is("name_1"));
-        assertThat(_context.getInitParameterNames().hasMoreElements(), is(true));
-        assertThat(_context.getInitParameterNames().nextElement(), is("name_2"));
-        assertThat(_context.getInitParameterNames().hasMoreElements(), is(false));
+        assertEquals(value2, _context.getInitParameter("name_2"));
+        assertNotNull(_context.getInitParameterNames());
+        assertTrue(_context.getInitParameterNames().hasMoreElements());
+        assertEquals("name_1", _context.getInitParameterNames().nextElement());
+        assertTrue(_context.getInitParameterNames().hasMoreElements());
+        assertEquals("name_2", _context.getInitParameterNames().nextElement());
+        assertFalse(_context.getInitParameterNames().hasMoreElements());
     }
 }

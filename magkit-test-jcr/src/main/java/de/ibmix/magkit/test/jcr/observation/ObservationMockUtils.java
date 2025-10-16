@@ -20,12 +20,12 @@ package de.ibmix.magkit.test.jcr.observation;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.ObservationManager;
 
 import static de.ibmix.magkit.test.jcr.observation.ObservationManagerStubbingOperation.stubRegisteredEventListeners;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -138,7 +138,7 @@ public abstract class ObservationMockUtils {
      * @return a new Mockito mock of ObservationManager configured with the specified stubbing operations
      * @throws RepositoryException never thrown in the current implementation, but declared to match
      *                           the JCR API signature for consistency with real ObservationManager usage
-     * @throws AssertionError if the stubbings parameter is null
+     * @throws IllegalArgumentException if the stubbings parameter is null
      *
      * @see ObservationManagerStubbingOperation
      * @see javax.jcr.observation.ObservationManager#addEventListener(javax.jcr.observation.EventListener, int, String, boolean, String[], String[], boolean)
@@ -146,7 +146,7 @@ public abstract class ObservationMockUtils {
      * @see javax.jcr.observation.ObservationManager#getRegisteredEventListeners()
      */
     public static ObservationManager mockObservationManager(ObservationManagerStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings must not be null");
         final ObservationManager observationManager = mock(ObservationManager.class);
         stubRegisteredEventListeners().of(observationManager);
         for (ObservationManagerStubbingOperation stubbing : stubbings) {

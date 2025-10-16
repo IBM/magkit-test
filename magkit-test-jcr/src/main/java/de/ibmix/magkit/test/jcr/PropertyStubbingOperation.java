@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.mockito.stubbing.Answer;
 
@@ -34,8 +35,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -88,8 +87,8 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                assertThat(property, notNullValue());
-                assertThat(values, notNullValue());
+                Require.Argument.notNull(property, "property must not be null");
+                Require.Argument.notNull(values, "values must not be null");
                 Value v = values.length > 0 ? values[0] : null;
                 when(property.getValue()).thenReturn(v);
                 when(property.getValues()).thenReturn(values);
@@ -120,7 +119,7 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                assertThat(values, notNullValue());
+                Require.Argument.notNull(values, "values must not be null");
                 List<Value> valueList = new ArrayList<>(values.length);
                 for (String value : values) {
                     valueList.add(ValueMockUtils.mockValue(value, type));
@@ -140,7 +139,7 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                assertThat(values, notNullValue());
+                Require.Argument.notNull(values, "values must not be null");
                 List<Value> valueList = new ArrayList<>(values.length);
                 for (Long value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
@@ -160,7 +159,7 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                assertThat(values, notNullValue());
+                Require.Argument.notNull(values, "values must not be null");
                 List<Value> valueList = new ArrayList<>(values.length);
                 for (Double value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
@@ -180,7 +179,7 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                assertThat(values, notNullValue());
+                Require.Argument.notNull(values, "values must not be null");
                 List<Value> valueList = new ArrayList<>(values.length);
                 for (Calendar value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
@@ -200,7 +199,7 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                assertThat(values, notNullValue());
+                Require.Argument.notNull(values, "values must not be null");
                 List<Value> valueList = new ArrayList<>(values.length);
                 for (Boolean value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
@@ -220,7 +219,7 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                assertThat(values, notNullValue());
+                Require.Argument.notNull(values, "values must not be null");
                 List<Value> valueList = new ArrayList<>(values.length);
                 for (Binary value : values) {
                     valueList.add(ValueMockUtils.mockValue(value));
@@ -243,7 +242,7 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
         return new PropertyStubbingOperation() {
             @Override
             public void of(final Property property) throws RepositoryException {
-                assertThat(property, notNullValue());
+                Require.Argument.notNull(property, "property must not be null");
                 when(property.getNode()).thenReturn(value);
                 String reference = null;
                 if (value != null) {
@@ -256,7 +255,6 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
                             break;
                         default:
                             throw new IllegalArgumentException("Unsupported PropertyType for Node references: " + propertyType);
-
                     }
                 }
                 stubValues(propertyType, reference).of(property);

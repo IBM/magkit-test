@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -35,8 +36,6 @@ import javax.jcr.ValueFactory;
 import javax.jcr.Workspace;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -93,7 +92,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
         return new SessionStubbingOperation() {
             @Override
             public void of(Session session) {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getAttribute(name)).thenReturn(value);
                 String[] names = ArrayUtils.add(session.getAttributeNames(), name);
                 when(session.getAttributeNames()).thenReturn(names);
@@ -123,7 +122,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
         return new SessionStubbingOperation() {
             @Override
             public void of(Session session) throws RepositoryException {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getItem(item.getPath())).thenReturn(item);
                 when(session.itemExists(item.getPath())).thenReturn(true);
                 if (item.isNode()) {
@@ -163,7 +162,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
         return new SessionStubbingOperation() {
             @Override
             public void of(Session session) throws RepositoryException {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getItem(item.getPath())).thenReturn(null);
                 when(session.itemExists(item.getPath())).thenReturn(false);
                 if (item.isNode()) {
@@ -201,7 +200,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
         return new SessionStubbingOperation() {
             @Override
             public void of(Session session) throws RepositoryException {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 doReturn(node).when(session).getRootNode();
                 doReturn(session).when(node).getSession();
                 stubItem(node).of(session);
@@ -219,7 +218,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
         return new SessionStubbingOperation() {
             @Override
             public void of(Session session) {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getRepository()).thenReturn(value);
             }
         };
@@ -236,7 +235,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
         return new SessionStubbingOperation() {
             @Override
             public void of(Session session) {
-                assertThat(session, notNullValue());
+                Require.Argument.notNull(session, "session must not be null");
                 when(session.getWorkspace()).thenReturn(value);
             }
         };
@@ -255,7 +254,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
         return new SessionStubbingOperation() {
             @Override
             public void of(final Session context) throws RepositoryException {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "session must not be null");
                 when(context.getValueFactory()).thenReturn(valueFactory);
             }
         };
@@ -279,7 +278,7 @@ public abstract class SessionStubbingOperation implements ExceptionStubbingOpera
         return new SessionStubbingOperation() {
             @Override
             public void of(final Session context) throws RepositoryException {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "session must not be null");
                 ValueFactory factory = context.getValueFactory();
                 if (factory == null) {
                     factory = ValueFactoryMockUtils.mockValueFactory(stubbings);

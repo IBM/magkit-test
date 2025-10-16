@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr.query;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Node;
@@ -27,8 +28,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -65,7 +64,7 @@ public abstract class QueryStubbingOperation implements ExceptionStubbingOperati
         return new QueryStubbingOperation() {
 
             public void of(Query query) {
-                assertThat(query, notNullValue());
+                Require.Argument.notNull(query, "query must not be null");
                 when(query.getLanguage()).thenReturn(value);
             }
         };
@@ -84,7 +83,7 @@ public abstract class QueryStubbingOperation implements ExceptionStubbingOperati
         return new QueryStubbingOperation() {
 
             public void of(Query query) {
-                assertThat(query, notNullValue());
+                Require.Argument.notNull(query, "query must not be null");
                 when(query.getStatement()).thenReturn(value);
             }
         };
@@ -123,7 +122,7 @@ public abstract class QueryStubbingOperation implements ExceptionStubbingOperati
         return new QueryStubbingOperation() {
 
             public void of(Query query) throws RepositoryException {
-                assertThat(query, notNullValue());
+                Require.Argument.notNull(query, "query must not be null");
                 when(query.execute()).thenReturn(result);
             }
         };
@@ -143,7 +142,7 @@ public abstract class QueryStubbingOperation implements ExceptionStubbingOperati
         return new QueryStubbingOperation() {
 
             public void of(Query query) throws RepositoryException {
-                assertThat(query, notNullValue());
+                Require.Argument.notNull(query, "query must not be null");
                 when(query.getStoredQueryPath()).thenReturn(value);
             }
         };

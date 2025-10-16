@@ -20,11 +20,10 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.Role;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -39,7 +38,7 @@ import static org.mockito.Mockito.doReturn;
  * </p>
  * <ul>
  *   <li>All methods return non-null operations.</li>
- *   <li>Operations assert non-null target roles at execution time (throwing {@link AssertionError} if violated).</li>
+ *   <li>Operations assert non-null target roles at execution time (throwing {@link IllegalArgumentException} if violated).</li>
  *   <li>Stateless – no shared mutable data.</li>
  * </ul>
  * <p>
@@ -61,13 +60,13 @@ public abstract class RoleStubbingOperation implements StubbingOperation<Role> {
      *
      * @param name name to return (may be null)
      * @return stubbing operation
-     * @throws AssertionError if executed with null role
+     * @throws IllegalArgumentException if executed with null role
      */
     public static RoleStubbingOperation stubName(final String name) {
         return new RoleStubbingOperation() {
             @Override
             public void of(Role role) {
-                assertThat(role, notNullValue());
+                Require.Argument.notNull(role, "role should not be null");
                 doReturn(name).when(role).getName();
             }
         };
@@ -78,13 +77,13 @@ public abstract class RoleStubbingOperation implements StubbingOperation<Role> {
      *
      * @param uuid id / identifier (may be null)
      * @return stubbing operation
-     * @throws AssertionError if executed with null role
+     * @throws IllegalArgumentException if executed with null role
      */
     public static RoleStubbingOperation stubId(final String uuid) {
         return new RoleStubbingOperation() {
             @Override
             public void of(Role role) {
-                assertThat(role, notNullValue());
+                Require.Argument.notNull(role, "role should not be null");
                 doReturn(uuid).when(role).getId();
             }
         };

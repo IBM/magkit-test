@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.site.Site;
 import info.magnolia.module.site.SiteManager;
@@ -32,8 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static de.ibmix.magkit.test.cms.site.SiteMockUtils.mockSite;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -59,8 +58,7 @@ import static org.mockito.Mockito.when;
  * SiteManagerStubbingOperation.stubCurrentSite("corporate",
  *     SiteStubbingOperation.stubTheme("corp-theme")
  * ).of(manager);
- * }
- * </pre>
+ * }</pre>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2010-11-17
@@ -94,7 +92,7 @@ public abstract class SiteManagerStubbingOperation implements StubbingOperation<
         return new SiteManagerStubbingOperation() {
             @Override
             public void of(SiteManager manager) {
-                assertThat(manager, notNullValue());
+                Require.Argument.notNull(manager, "manager should not be null");
                 when(manager.getCurrentSite()).thenReturn(site);
                 stubSite(site).of(manager);
             }
@@ -125,7 +123,7 @@ public abstract class SiteManagerStubbingOperation implements StubbingOperation<
         return new SiteManagerStubbingOperation() {
             @Override
             public void of(SiteManager manager) {
-                assertThat(manager, notNullValue());
+                Require.Argument.notNull(manager, "manager should not be null");
                 when(manager.getDefaultSite()).thenReturn(site);
                 stubSite(site).of(manager);
             }
@@ -158,7 +156,7 @@ public abstract class SiteManagerStubbingOperation implements StubbingOperation<
         return new SiteManagerStubbingOperation() {
             @Override
             public void of(SiteManager manager) {
-                assertThat(manager, notNullValue());
+                Require.Argument.notNull(manager, "manager should not be null");
                 when(manager.getAssignedSite(content)).thenReturn(site);
                 stubSite(site).of(manager);
                 try {
@@ -201,7 +199,7 @@ public abstract class SiteManagerStubbingOperation implements StubbingOperation<
         return new SiteManagerStubbingOperation() {
             @Override
             public void of(SiteManager manager) {
-                assertThat(manager, notNullValue());
+                Require.Argument.notNull(manager, "manager should not be null");
                 when(manager.getAssignedSite(domain, uri)).thenReturn(site);
                 stubSite(site).of(manager);
             }
@@ -232,8 +230,8 @@ public abstract class SiteManagerStubbingOperation implements StubbingOperation<
     public static SiteManagerStubbingOperation stubSite(final Site site) {
         return new SiteManagerStubbingOperation() {
             @Override
-            public void of(final SiteManager manager) {
-                assertThat(manager, notNullValue());
+            public void of(SiteManager manager) {
+                Require.Argument.notNull(manager, "manager should not be null");
                 if (site != null) {
                     when(manager.getSite(site.getName())).thenReturn(site);
                     Collection<Site> sites = manager.getSites();

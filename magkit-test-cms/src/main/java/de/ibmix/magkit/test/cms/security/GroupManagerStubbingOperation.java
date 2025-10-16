@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.cms.security.Group;
@@ -30,8 +31,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -45,7 +44,7 @@ import static org.mockito.Mockito.doReturn;
  * </p>
  * <ul>
  *   <li>All factory methods return non-null operations.</li>
- *   <li>Argument validation uses {@code assertThat} and throws {@link AssertionError} upon failure when executed.</li>
+ *   <li>Argument validation uses {@code assertThat} and throws {@link IllegalArgumentException} upon failure when executed.</li>
  *   <li>Operations mutate only the passed mock; no shared state.</li>
  * </ul>
  * <p>
@@ -70,21 +69,21 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
      *
      * @param group group mock to register (must not be null when executed)
      * @return stubbing operation (never null)
-     * @throws AssertionError if target manager or group is null when executed
+     * @throws IllegalArgumentException if target manager or group is null when executed
      */
     public static GroupManagerStubbingOperation stubGroup(final Group group) {
+        Require.Argument.notNull(group, "group should not be null");
         return new GroupManagerStubbingOperation() {
             @Override
-            public void of(GroupManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(group, notNullValue());
+            public void of(GroupManager groupManager) {
+                Require.Argument.notNull(groupManager, "groupManager should not be null");
                 String name = group.getName();
                 try {
-                    doReturn(group).when(mock).getGroup(name);
-                    Collection<Group> allGroups = mock.getAllGroups();
+                    doReturn(group).when(groupManager).getGroup(name);
+                    Collection<Group> allGroups = groupManager.getAllGroups();
                     if (!allGroups.contains(group)) {
                         allGroups.add(group);
-                        doReturn(allGroups).when(mock).getAllGroups();
+                        doReturn(allGroups).when(groupManager).getAllGroups();
                     }
                 } catch (AccessDeniedException e) {
                     // ignored for mocks
@@ -98,15 +97,15 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
      *
      * @param groups groups to register (array reference must not be null when executed; elements may be null-safe tested downstream)
      * @return stubbing operation aggregating registrations
-     * @throws AssertionError if target manager or {@code groups} is null when executed
+     * @throws IllegalArgumentException if target manager or {@code groups} is null when executed
      */
     public static GroupManagerStubbingOperation stubAllGroups(final Group... groups) {
+        Require.Argument.notNull(groups, "groups should not be null");
         return new GroupManagerStubbingOperation() {
             @Override
-            public void of(GroupManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(groups, notNullValue());
-                Arrays.stream(groups).forEach(group -> stubGroup(group).of(mock));
+            public void of(GroupManager groupManager) {
+                Require.Argument.notNull(groupManager, "groupManager should not be null");
+                Arrays.stream(groups).forEach(group -> stubGroup(group).of(groupManager));
             }
         };
     }
@@ -117,16 +116,16 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
      * @param groupName target group name
      * @param groups    super groups to return
      * @return stubbing operation
-     * @throws AssertionError if manager, group array or groupName are null when executed
+     * @throws IllegalArgumentException if manager, group array or groupName are null when executed
      */
     public static GroupManagerStubbingOperation stubAllSuperGroups(final String groupName, final Group... groups) {
+        Require.Argument.notNull(groups, "groups should not be null");
+        Require.Argument.notNull(groupName, "groupName should not be null");
         return new GroupManagerStubbingOperation() {
             @Override
-            public void of(GroupManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(groups, notNullValue());
-                assertThat(groupName, notNullValue());
-                doReturn(Arrays.asList(groups)).when(mock).getAllSuperGroups(groupName);
+            public void of(GroupManager groupManager) {
+                Require.Argument.notNull(groupManager, "groupManager should not be null");
+                doReturn(Arrays.asList(groups)).when(groupManager).getAllSuperGroups(groupName);
             }
         };
     }
@@ -137,16 +136,16 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
      * @param groupName target group name
      * @param groups    sub groups to return
      * @return stubbing operation
-     * @throws AssertionError if manager, group array or groupName are null when executed
+     * @throws IllegalArgumentException if manager, group array or groupName are null when executed
      */
     public static GroupManagerStubbingOperation stubAllSubGroups(final String groupName, final Group... groups) {
+        Require.Argument.notNull(groups, "groups should not be null");
+        Require.Argument.notNull(groupName, "groupName should not be null");
         return new GroupManagerStubbingOperation() {
             @Override
-            public void of(GroupManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(groups, notNullValue());
-                assertThat(groupName, notNullValue());
-                doReturn(Arrays.asList(groups)).when(mock).getAllSubGroups(groupName);
+            public void of(GroupManager groupManager) {
+                Require.Argument.notNull(groupManager, "groupManager should not be null");
+                doReturn(Arrays.asList(groups)).when(groupManager).getAllSubGroups(groupName);
             }
         };
     }
@@ -157,16 +156,16 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
      * @param groupName group whose direct sub groups are requested
      * @param groups    direct sub groups
      * @return stubbing operation
-     * @throws AssertionError if manager, group array or groupName are null when executed
+     * @throws IllegalArgumentException if manager, group array or groupName are null when executed
      */
     public static GroupManagerStubbingOperation stubDirectSubGroups(final String groupName, final Group... groups) {
+        Require.Argument.notNull(groups, "groups should not be null");
+        Require.Argument.notNull(groupName, "groupName should not be null");
         return new GroupManagerStubbingOperation() {
             @Override
-            public void of(GroupManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(groups, notNullValue());
-                assertThat(groupName, notNullValue());
-                doReturn(Arrays.asList(groups)).when(mock).getDirectSubGroups(groupName);
+            public void of(GroupManager groupManager) {
+                Require.Argument.notNull(groupManager, "groupManager should not be null");
+                doReturn(Arrays.asList(groups)).when(groupManager).getDirectSubGroups(groupName);
             }
         };
     }
@@ -177,16 +176,16 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
      * @param groupName group whose direct super groups are requested
      * @param groups    direct super groups
      * @return stubbing operation
-     * @throws AssertionError if manager, group array or groupName are null when executed
+     * @throws IllegalArgumentException if manager, group array or groupName are null when executed
      */
     public static GroupManagerStubbingOperation stubDirectSuperGroups(final String groupName, final Group... groups) {
+        Require.Argument.notNull(groups, "groups should not be null");
+        Require.Argument.notNull(groupName, "groupName should not be null");
         return new GroupManagerStubbingOperation() {
             @Override
-            public void of(GroupManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(groups, notNullValue());
-                assertThat(groupName, notNullValue());
-                doReturn(Arrays.asList(groups)).when(mock).getDirectSuperGroups(groupName);
+            public void of(GroupManager groupManager) {
+                Require.Argument.notNull(groupManager, "groupManager should not be null");
+                doReturn(Arrays.asList(groups)).when(groupManager).getDirectSuperGroups(groupName);
             }
         };
     }
@@ -197,16 +196,16 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
      * @param roleName role name
      * @param groups   groups owning the role
      * @return stubbing operation
-     * @throws AssertionError if manager, group array or roleName are null when executed
+     * @throws IllegalArgumentException if manager, group array or roleName are null when executed
      */
     public static GroupManagerStubbingOperation stubGroupsWithRole(final String roleName, final Group... groups) {
+        Require.Argument.notNull(groups, "groups should not be null");
+        Require.Argument.notNull(roleName, "roleName should not be null");
         return new GroupManagerStubbingOperation() {
             @Override
-            public void of(GroupManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(groups, notNullValue());
-                assertThat(roleName, notNullValue());
-                doReturn(Arrays.asList(groups)).when(mock).getGroupsWithRole(roleName);
+            public void of(GroupManager groupManager) {
+                Require.Argument.notNull(groupManager, "groupManager should not be null");
+                doReturn(Arrays.asList(groups)).when(groupManager).getGroupsWithRole(roleName);
             }
         };
     }
@@ -218,19 +217,19 @@ public abstract class GroupManagerStubbingOperation implements StubbingOperation
      * @param groupName group name
      * @param acl       access control list definition
      * @return stubbing operation
-     * @throws AssertionError if manager, groupName, acl or acl name are null when executed
+     * @throws IllegalArgumentException if manager, groupName, acl or acl name are null when executed
      */
     public static GroupManagerStubbingOperation stubAcl(final String groupName, ACL acl) {
+        Require.Argument.notNull(groupName, "groupName should not be null");
+        Require.Argument.notNull(acl, "acl should not be null");
+        Require.Argument.notNull(acl.getName(), "acl name should not be null");
         return new GroupManagerStubbingOperation() {
             @Override
-            public void of(GroupManager mock) {
-                assertThat(mock, notNullValue());
-                assertThat(acl, notNullValue());
-                assertThat(acl.getName(), notNullValue());
-                assertThat(groupName, notNullValue());
-                Map<String, ACL> acls = mock.getACLs(groupName);
+            public void of(GroupManager groupManager) {
+                Require.Argument.notNull(groupManager, "groupManager should not be null");
+                Map<String, ACL> acls = groupManager.getACLs(groupName);
                 acls.put(acl.getName(), acl);
-                doReturn(acls).when(mock).getACLs(groupName);
+                doReturn(acls).when(groupManager).getACLs(groupName);
             }
         };
     }

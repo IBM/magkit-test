@@ -20,10 +20,10 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
+
 import javax.servlet.http.Cookie;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -35,6 +35,11 @@ import static org.mockito.Mockito.when;
  * @since 2014-02-11
  */
 public abstract class CookieStubbingOperation {
+    /**
+     * Apply this stubbing operation to the supplied cookie mock.
+     *
+     * @param context cookie mock; must not be null
+     */
     public abstract void of(Cookie context);
 
     /**
@@ -48,7 +53,7 @@ public abstract class CookieStubbingOperation {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getDomain()).thenReturn(value);
             }
         };
@@ -65,7 +70,7 @@ public abstract class CookieStubbingOperation {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getComment()).thenReturn(value);
             }
         };
@@ -82,7 +87,7 @@ public abstract class CookieStubbingOperation {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getMaxAge()).thenReturn(value);
             }
         };
@@ -99,7 +104,7 @@ public abstract class CookieStubbingOperation {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getPath()).thenReturn(value);
             }
         };
@@ -116,7 +121,7 @@ public abstract class CookieStubbingOperation {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getSecure()).thenReturn(value);
             }
         };
@@ -133,7 +138,7 @@ public abstract class CookieStubbingOperation {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getVersion()).thenReturn(value);
             }
         };

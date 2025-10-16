@@ -21,8 +21,8 @@ package de.ibmix.magkit.test.cms.context;
  */
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import java.util.Locale;
@@ -32,9 +32,8 @@ import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperati
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubFallbackLocale;
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubLocale;
 import static de.ibmix.magkit.test.cms.context.I18nContentSupportStubbingOperation.stubToI18nUri;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Testing I18nContentSupportStubbingOperation.
@@ -46,7 +45,7 @@ public class I18nContentSupportStubbingOperationTest {
 
     private I18nContentSupport _i18nContentSupport;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         I18nContentSupportMockUtils.clearComponentProvider();
         _i18nContentSupport = I18nContentSupportMockUtils.mockI18nContentSupport();
@@ -54,69 +53,69 @@ public class I18nContentSupportStubbingOperationTest {
 
     @Test
     public void testStubLocale() throws Exception {
-        assertThat(_i18nContentSupport.getLocale(), nullValue());
-        assertThat(_i18nContentSupport.getLocales().size(), is(0));
+        assertNull(_i18nContentSupport.getLocale());
+        assertEquals(0, _i18nContentSupport.getLocales().size());
 
         stubLocale(Locale.JAPAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getLocale(), is(Locale.JAPAN));
-        assertThat(_i18nContentSupport.getLocales().size(), is(1));
+        assertEquals(Locale.JAPAN, _i18nContentSupport.getLocale());
+        assertEquals(1, _i18nContentSupport.getLocales().size());
 
         stubLocale(Locale.GERMAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getLocales().size(), is(2));
+        assertEquals(2, _i18nContentSupport.getLocales().size());
 
         stubLocale(Locale.JAPAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getLocales().size(), is(2));
+        assertEquals(2, _i18nContentSupport.getLocales().size());
     }
 
     @Test
     public void testStubDefaultLocale() throws Exception {
-        assertThat(_i18nContentSupport.getDefaultLocale(), nullValue());
-        assertThat(_i18nContentSupport.getLocales().size(), is(0));
+        assertNull(_i18nContentSupport.getDefaultLocale());
+        assertEquals(0, _i18nContentSupport.getLocales().size());
 
         stubDefaultLocale(Locale.JAPAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getDefaultLocale(), is(Locale.JAPAN));
-        assertThat(_i18nContentSupport.getLocales().size(), is(1));
+        assertEquals(Locale.JAPAN, _i18nContentSupport.getDefaultLocale());
+        assertEquals(1, _i18nContentSupport.getLocales().size());
 
         stubDefaultLocale(Locale.GERMAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getLocales().size(), is(2));
+        assertEquals(2, _i18nContentSupport.getLocales().size());
 
         stubDefaultLocale(Locale.JAPAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getLocales().size(), is(2));
+        assertEquals(2, _i18nContentSupport.getLocales().size());
     }
 
     @Test
     public void testStubFallbackLocale() throws Exception {
-        assertThat(_i18nContentSupport.getFallbackLocale(), nullValue());
-        assertThat(_i18nContentSupport.getLocales().size(), is(0));
+        assertNull(_i18nContentSupport.getFallbackLocale());
+        assertEquals(0, _i18nContentSupport.getLocales().size());
 
         stubFallbackLocale(Locale.JAPAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getFallbackLocale(), is(Locale.JAPAN));
-        assertThat(_i18nContentSupport.getLocales().size(), is(1));
+        assertEquals(Locale.JAPAN, _i18nContentSupport.getFallbackLocale());
+        assertEquals(1, _i18nContentSupport.getLocales().size());
 
         stubFallbackLocale(Locale.GERMAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getLocales().size(), is(2));
+        assertEquals(2, _i18nContentSupport.getLocales().size());
 
         stubFallbackLocale(Locale.JAPAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.getLocales().size(), is(2));
+        assertEquals(2, _i18nContentSupport.getLocales().size());
     }
 
     @Test
     public void testStubbToI18nUri() throws Exception {
-        assertThat(_i18nContentSupport.toI18NURI("test.aperto.de"), is("test.aperto.de"));
-        assertThat(_i18nContentSupport.toI18NURI("any string"), is("any string"));
+        assertEquals("test.aperto.de", _i18nContentSupport.toI18NURI("test.aperto.de"));
+        assertEquals("any string", _i18nContentSupport.toI18NURI("any string"));
 
         stubToI18nUri("test.aperto.jp").of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.toI18NURI("test.aperto.de"), is("test.aperto.jp"));
-        assertThat(_i18nContentSupport.toI18NURI("any string"), is("test.aperto.jp"));
+        assertEquals("test.aperto.jp", _i18nContentSupport.toI18NURI("test.aperto.de"));
+        assertEquals("test.aperto.jp", _i18nContentSupport.toI18NURI("any string"));
     }
 
     @Test
     public void testStubDetermineLocale() throws RepositoryException {
-        assertThat(_i18nContentSupport.determineLocale(), nullValue());
-        assertThat(_i18nContentSupport.getLocales().size(), is(0));
+        assertNull(_i18nContentSupport.determineLocale());
+        assertEquals(0, _i18nContentSupport.getLocales().size());
 
         stubDetermineLocale(Locale.ITALIAN).of(_i18nContentSupport);
-        assertThat(_i18nContentSupport.determineLocale(), is(Locale.ITALIAN));
-        assertThat(_i18nContentSupport.getLocales().size(), is(1));
+        assertEquals(Locale.ITALIAN, _i18nContentSupport.determineLocale());
+        assertEquals(1, _i18nContentSupport.getLocales().size());
     }
 }

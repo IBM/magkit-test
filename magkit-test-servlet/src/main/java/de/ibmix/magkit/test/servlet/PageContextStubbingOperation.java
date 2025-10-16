@@ -20,6 +20,8 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +31,6 @@ import javax.servlet.jsp.PageContext;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletRequest;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletResponse;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockServletContext;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -83,10 +83,9 @@ public abstract class PageContextStubbingOperation {
      */
     public static PageContextStubbingOperation stubHttpServletRequest(final HttpServletRequest request) {
         return new PageContextStubbingOperation() {
-
             @Override
             public void of(PageContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 when(context.getRequest()).thenReturn(request);
             }
         };
@@ -102,10 +101,9 @@ public abstract class PageContextStubbingOperation {
      */
     public static PageContextStubbingOperation stubHttpServletRequest(final HttpServletRequestStubbingOperation... stubbings) {
         return new PageContextStubbingOperation() {
-
             @Override
             public void of(PageContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 HttpServletRequest request = (HttpServletRequest) context.getRequest();
                 if (request == null) {
                     request = mockHttpServletRequest(stubbings);
@@ -128,10 +126,9 @@ public abstract class PageContextStubbingOperation {
      */
     public static PageContextStubbingOperation stubHttpServletResponse(final HttpServletResponse response) {
         return new PageContextStubbingOperation() {
-
             @Override
             public void of(PageContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 when(context.getResponse()).thenReturn(response);
             }
         };
@@ -146,10 +143,9 @@ public abstract class PageContextStubbingOperation {
      */
     public static PageContextStubbingOperation stubHttpServletResponse(final HttpServletResponseStubbingOperation... stubbings) {
         return new PageContextStubbingOperation() {
-
             @Override
             public void of(PageContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 HttpServletResponse response = (HttpServletResponse) context.getResponse();
                 if (response == null) {
                     stubHttpServletResponse(mockHttpServletResponse(stubbings)).of(context);
@@ -158,7 +154,6 @@ public abstract class PageContextStubbingOperation {
                         stubbing.of(response);
                     }
                 }
-
             }
         };
     }
@@ -183,10 +178,9 @@ public abstract class PageContextStubbingOperation {
      */
     public static PageContextStubbingOperation stubServletContext(final ServletContextStubbingOperation... stubbings) {
         return new PageContextStubbingOperation() {
-
             @Override
             public void of(PageContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 ServletContext servletContext = context.getServletContext();
                 if (servletContext == null) {
                     servletContext = mockServletContext(stubbings);
@@ -223,7 +217,7 @@ public abstract class PageContextStubbingOperation {
         return new PageContextStubbingOperation() {
             @Override
             public void of(PageContext context) {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "context must not be null");
                 HttpSession session = context.getSession();
                 if (session == null) {
                     stubHttpServletRequest(HttpServletRequestStubbingOperation.stubHttpSession(id, stubbings)).of(context);

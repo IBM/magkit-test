@@ -26,8 +26,8 @@ import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,17 +36,13 @@ import java.util.List;
 import static de.ibmix.magkit.test.cms.templating.TemplateDefinitionStubbingOperation.stubDescription;
 import static de.ibmix.magkit.test.cms.templating.TemplateDefinitionStubbingOperation.stubId;
 import static de.ibmix.magkit.test.cms.templating.TemplateDefinitionStubbingOperation.stubTitle;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -60,7 +56,7 @@ import static org.mockito.Mockito.when;
  */
 public class TemplateMockUtilsTest {
 
-    @Before
+    @BeforeEach
     public void reset() {
         TemplateMockUtils.cleanTemplateManager();
     }
@@ -77,9 +73,9 @@ public class TemplateMockUtilsTest {
         int beforeSize = beforeList.size();
         AreaDefinition area = TemplateMockUtils.mockAreaDefinition("mod:shared/id", AreaDefinitionStubbingOperation.stubEnabled(true));
         List<TemplateDefinition> afterList = new ArrayList<>(registry.getAllDefinitions());
-        assertThat(afterList, hasSize(beforeSize + 1));
-        assertThat(area, not(sameInstance(generic)));
-        assertThat(area.getEnabled(), is(Boolean.TRUE));
+        assertEquals(beforeSize + 1, afterList.size());
+        assertNotSame(generic, area);
+        assertEquals(Boolean.TRUE, area.getEnabled());
     }
 
     /**
@@ -91,10 +87,10 @@ public class TemplateMockUtilsTest {
         AreaDefinition first = TemplateMockUtils.mockAreaDefinition("mod:areas/body", AreaDefinitionStubbingOperation.stubEnabled(true));
         int before = registry.getAllDefinitions().size();
         AreaDefinition second = TemplateMockUtils.mockAreaDefinition("mod:areas/body", AreaDefinitionStubbingOperation.stubMaxComponents(3));
-        assertThat(second, sameInstance(first));
-        assertThat(second.getEnabled(), is(Boolean.TRUE));
-        assertThat(second.getMaxComponents(), is(3));
-        assertThat(registry.getAllDefinitions().size(), is(before));
+        assertSame(first, second);
+        assertEquals(Boolean.TRUE, second.getEnabled());
+        assertEquals(3, second.getMaxComponents());
+        assertEquals(before, registry.getAllDefinitions().size());
     }
 
     /**
@@ -107,7 +103,7 @@ public class TemplateMockUtilsTest {
         @SuppressWarnings("unchecked") DefinitionProvider<TemplateDefinition> provider = mock(DefinitionProvider.class);
         TemplateMockUtils.register("", provider);
         verify(provider, never()).get();
-        assertThat(registry.getAllDefinitions().size(), is(before));
+        assertEquals(before, registry.getAllDefinitions().size());
     }
 
     /**
@@ -120,7 +116,7 @@ public class TemplateMockUtilsTest {
         TemplateDefinition def = mock(TemplateDefinition.class);
         stubId("").of(def);
         TemplateMockUtils.register("", def);
-        assertThat(registry.getAllDefinitions().size(), is(before));
+        assertEquals(before, registry.getAllDefinitions().size());
     }
 
     /**
@@ -131,28 +127,30 @@ public class TemplateMockUtilsTest {
         TemplateDefinitionRegistry registry = TemplateMockUtils.mockTemplateDefinitionRegistry();
         TemplateDefinition generic = TemplateMockUtils.mockTemplateDefinition("mod:dual/id", stubTitle("G"));
         AreaDefinition area = TemplateMockUtils.mockAreaDefinition("mod:dual/id", AreaDefinitionStubbingOperation.stubEnabled(true));
-        assertThat(registry.getAllDefinitions(), hasSize(2));
-        assertThat(registry.getAllDefinitions(), containsInAnyOrder(generic, area));
+        Collection<TemplateDefinition> defs = registry.getAllDefinitions();
+        assertEquals(2, defs.size());
+        assertTrue(defs.contains(generic));
+        assertTrue(defs.contains(area));
     }
 
     @Test
     public void shouldInitRegistryAndAddDefinition() {
         TemplateDefinitionRegistry registry = TemplateMockUtils.mockTemplateDefinitionRegistry();
         Collection<TemplateDefinition> initial = registry.getAllDefinitions();
-        assertThat(initial.isEmpty(), is(true));
+        assertTrue(initial.isEmpty());
         TemplateDefinition def = TemplateMockUtils.mockTemplateDefinition("m:pages/a", stubTitle("A"));
-        assertThat(def.getTitle(), is("A"));
-        assertThat(registry.getAllDefinitions().size(), is(1));
-        assertThat(registry.getAllDefinitions().contains(def), is(true));
+        assertEquals("A", def.getTitle());
+        assertEquals(1, registry.getAllDefinitions().size());
+        assertTrue(registry.getAllDefinitions().contains(def));
     }
 
     @Test
     public void shouldReuseTemplateAndOverride() {
         TemplateDefinition first = TemplateMockUtils.mockTemplateDefinition("m:pages/b", stubTitle("T1"));
         TemplateDefinition second = TemplateMockUtils.mockTemplateDefinition("m:pages/b", stubDescription("Desc"), stubTitle("T2"));
-        assertThat(first, sameInstance(second));
-        assertThat(second.getTitle(), is("T2"));
-        assertThat(second.getDescription(), is("Desc"));
+        assertSame(first, second);
+        assertEquals("T2", second.getTitle());
+        assertEquals("Desc", second.getDescription());
     }
 
     @Test
@@ -160,8 +158,8 @@ public class TemplateMockUtilsTest {
     public void shouldReuseConfiguredTemplate() {
         ConfiguredTemplateDefinition a = TemplateMockUtils.mockConfiguredTemplateDefinition("m:pages/c", stubTitle("X"));
         ConfiguredTemplateDefinition b = TemplateMockUtils.mockConfiguredTemplateDefinition("m:pages/c", stubTitle("Y"));
-        assertThat(a, sameInstance(b));
-        assertThat(b.getTitle(), is("Y"));
+        assertSame(a, b);
+        assertEquals("Y", b.getTitle());
     }
 
     @Test
@@ -171,20 +169,21 @@ public class TemplateMockUtilsTest {
         TemplateDefinition generic = TemplateMockUtils.mockTemplateDefinition("m:pages/d", stubTitle("G"));
         int before = registry.getAllDefinitions().size();
         ConfiguredTemplateDefinition configured = TemplateMockUtils.mockConfiguredTemplateDefinition("m:pages/d", stubTitle("C"));
-        assertThat(configured, instanceOf(ConfiguredTemplateDefinition.class));
-        assertThat(configured.getTitle(), is("C"));
+        assertInstanceOf(ConfiguredTemplateDefinition.class, configured);
+        assertEquals("C", configured.getTitle());
         Collection<TemplateDefinition> defs = registry.getAllDefinitions();
-        assertThat(defs.size(), is(before + 1));
-        assertThat(defs, hasItems(generic, configured));
+        assertEquals(before + 1, defs.size());
+        assertTrue(defs.contains(generic));
+        assertTrue(defs.contains(configured));
     }
 
     @Test
     public void shouldReuseArea() {
         AreaDefinition a = TemplateMockUtils.mockAreaDefinition("m:areas/header", AreaDefinitionStubbingOperation.stubEnabled(true));
         AreaDefinition b = TemplateMockUtils.mockAreaDefinition("m:areas/header", AreaDefinitionStubbingOperation.stubMaxComponents(9));
-        assertThat(a, sameInstance(b));
-        assertThat(b.getEnabled(), is(Boolean.TRUE));
-        assertThat(b.getMaxComponents(), is(9));
+        assertSame(a, b);
+        assertEquals(Boolean.TRUE, b.getEnabled());
+        assertEquals(9, b.getMaxComponents());
     }
 
     @Test
@@ -192,8 +191,8 @@ public class TemplateMockUtilsTest {
         TemplateDefinitionRegistry registry = TemplateMockUtils.mockTemplateDefinitionRegistry();
         int before = registry.getAllDefinitions().size();
         TemplateDefinition t = TemplateMockUtils.mockTemplateDefinition("", stubTitle("NoReg"));
-        assertThat(t.getTitle(), is("NoReg"));
-        assertThat(registry.getAllDefinitions().size(), is(before));
+        assertEquals("NoReg", t.getTitle());
+        assertEquals(before, registry.getAllDefinitions().size());
     }
 
     @Test
@@ -204,8 +203,8 @@ public class TemplateMockUtilsTest {
         when(two.getId()).thenReturn("m:pages/f");
         DefinitionProvider<TemplateDefinition> provider = TemplateMockUtils.mockDefinitionProvider(two, true, 99L);
         TemplateMockUtils.register("m:pages/f", provider);
-        assertThat(registry.getAllDefinitions().contains(two), is(true));
-        assertThat(registry.getAllDefinitions().size(), is(2));
+        assertTrue(registry.getAllDefinitions().contains(two));
+        assertEquals(2, registry.getAllDefinitions().size());
     }
 
     @Test
@@ -214,10 +213,12 @@ public class TemplateMockUtilsTest {
         when(def.getId()).thenReturn("m:pages/g");
         long start = System.currentTimeMillis();
         DefinitionProvider<TemplateDefinition> p = TemplateMockUtils.mockDefinitionProvider(def);
-        assertThat(p.get(), is(def));
-        assertThat(p.isValid(), is(true));
-        assertThat(p.getLastModified(), greaterThanOrEqualTo(start));
-        assertThat(p.getLastModified(), lessThanOrEqualTo(System.currentTimeMillis() + 5));
+        assertEquals(def, p.get());
+        assertTrue(p.isValid());
+        assertTrue(p.getLastModified() >= start);
+        // tolerate minimal clock drift
+        long endTime = System.currentTimeMillis() + 5;
+        assertTrue(p.getLastModified() <= endTime);
     }
 
     @Test
@@ -225,37 +226,35 @@ public class TemplateMockUtilsTest {
         TemplateDefinition def = mock(TemplateDefinition.class);
         when(def.getId()).thenReturn("m:pages/h");
         DefinitionProvider<TemplateDefinition> p = TemplateMockUtils.mockDefinitionProvider(def, false, 123L);
-        assertThat(p.isValid(), is(false));
-        assertThat(p.getLastModified(), is(123L));
+        assertFalse(p.isValid());
+        assertEquals(123L, p.getLastModified());
     }
 
     @Test
     public void shouldCleanRegistry() {
         TemplateDefinitionRegistry r1 = TemplateMockUtils.mockTemplateDefinitionRegistry();
         TemplateMockUtils.mockTemplateDefinition("m:pages/i", stubTitle("I"));
-        assertThat(r1.getAllDefinitions().size(), is(1));
+        assertEquals(1, r1.getAllDefinitions().size());
         TemplateMockUtils.cleanTemplateManager();
         TemplateDefinitionRegistry r2 = TemplateMockUtils.mockTemplateDefinitionRegistry();
-        assertThat(r2, not(sameInstance(r1)));
-        assertThat(r2.getAllDefinitions().isEmpty(), is(true));
+        assertNotSame(r1, r2);
+        assertTrue(r2.getAllDefinitions().isEmpty());
     }
 
-    @Test(expected = AssertionError.class)
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Test
     public void shouldFailNullTemplateStubbings() {
-        TemplateMockUtils.mockTemplateDefinition("m:pages/j", (TemplateDefinitionStubbingOperation[]) null);
+        assertThrows(IllegalArgumentException.class, () -> TemplateMockUtils.mockTemplateDefinition("m:pages/j", (TemplateDefinitionStubbingOperation[]) null));
     }
 
-    @Test(expected = AssertionError.class)
-    @SuppressWarnings({"deprecation", "rawtypes", "unchecked"})
+    @Test
+    @SuppressWarnings("deprecation")
     public void shouldFailNullConfiguredTemplateStubbings() {
-        TemplateMockUtils.mockConfiguredTemplateDefinition("m:pages/k", (TemplateDefinitionStubbingOperation[]) null);
+        assertThrows(IllegalArgumentException.class, () -> TemplateMockUtils.mockConfiguredTemplateDefinition("m:pages/k", (TemplateDefinitionStubbingOperation[]) null));
     }
 
-    @Test(expected = AssertionError.class)
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Test
     public void shouldFailNullAreaStubbings() {
-        TemplateMockUtils.mockAreaDefinition("m:areas/l", (AreaDefinitionStubbingOperation[]) null);
+        assertThrows(IllegalArgumentException.class, () -> TemplateMockUtils.mockAreaDefinition("m:areas/l", (AreaDefinitionStubbingOperation[]) null));
     }
 
     @Test
@@ -264,7 +263,7 @@ public class TemplateMockUtilsTest {
         TemplateDefinition def = mock(TemplateDefinition.class);
         stubId("m:pages/m").of(def);
         TemplateMockUtils.register("m:pages/m", def);
-        assertThat(registry.getAllDefinitions().contains(def), is(true));
+        assertTrue(registry.getAllDefinitions().contains(def));
     }
 
     @Test
@@ -274,7 +273,7 @@ public class TemplateMockUtilsTest {
         TemplateDefinition def = mock(TemplateDefinition.class);
         DefinitionProvider<TemplateDefinition> p = TemplateMockUtils.mockDefinitionProvider(def, true, 1L);
         TemplateMockUtils.register("", p);
-        assertThat(registry.getAllDefinitions().size(), is(before));
+        assertEquals(before, registry.getAllDefinitions().size());
     }
 
     @Test
@@ -284,15 +283,15 @@ public class TemplateMockUtilsTest {
         TemplateDefinition def = mock(TemplateDefinition.class);
         stubId("").of(def);
         TemplateMockUtils.register("", def);
-        assertThat(registry.getAllDefinitions().size(), is(before));
+        assertEquals(before, registry.getAllDefinitions().size());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     @SuppressWarnings("deprecation")
     public void shouldWrapRegistrationException() {
         DefinitionProvider<TemplateDefinition> bad = TemplateMockUtils.mockDefinitionProvider(null);
         when(bad.get()).thenThrow(new Registry.InvalidDefinitionException("boom"));
-        TemplateMockUtils.register("m:pages/ex", bad);
+        assertThrows(IllegalStateException.class, () -> TemplateMockUtils.register("m:pages/ex", bad));
     }
 
     @Test
@@ -301,6 +300,6 @@ public class TemplateMockUtilsTest {
         TemplateMockUtils.mockTemplateDefinition("m:pages/reuse", stubTitle("R"));
         int sizeAfterAdd = first.getAllDefinitions().size();
         TemplateDefinitionRegistry second = TemplateMockUtils.mockTemplateDefinitionRegistry();
-        assertThat(second.getAllDefinitions().size(), equalTo(sizeAfterAdd));
+        assertEquals(sizeAfterAdd, second.getAllDefinitions().size());
     }
 }

@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.templating;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.ComponentAvailability;
@@ -29,8 +30,6 @@ import javax.jcr.Node;
 import java.util.Comparator;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -66,9 +65,9 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(AreaDefinition template) {
-                assertThat(template, notNullValue());
-                doReturn(value).when(template).getAvailableComponents();
+            public void of(AreaDefinition areaDefinition) {
+                Require.Argument.notNull(areaDefinition, "areaDefinition should not be null");
+                doReturn(value).when(areaDefinition).getAvailableComponents();
             }
         };
     }
@@ -83,9 +82,9 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(AreaDefinition template) {
-                assertThat(template, notNullValue());
-                doReturn(value).when(template).getContentStructure();
+            public void of(AreaDefinition areaDefinition) {
+                Require.Argument.notNull(areaDefinition, "areaDefinition should not be null");
+                doReturn(value).when(areaDefinition).getContentStructure();
             }
         };
     }
@@ -100,9 +99,9 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(AreaDefinition template) {
-                assertThat(template, notNullValue());
-                doReturn(value).when(template).getCreateAreaNode();
+            public void of(AreaDefinition areaDefinition) {
+                Require.Argument.notNull(areaDefinition, "areaDefinition should not be null");
+                doReturn(value).when(areaDefinition).getCreateAreaNode();
             }
         };
     }
@@ -117,9 +116,9 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(AreaDefinition template) {
-                assertThat(template, notNullValue());
-                doReturn(value).when(template).getEnabled();
+            public void of(AreaDefinition areaDefinition) {
+                Require.Argument.notNull(areaDefinition, "areaDefinition should not be null");
+                doReturn(value).when(areaDefinition).getEnabled();
             }
         };
     }
@@ -134,9 +133,9 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(AreaDefinition template) {
-                assertThat(template, notNullValue());
-                doReturn(value).when(template).getInheritance();
+            public void of(AreaDefinition areaDefinition) {
+                Require.Argument.notNull(areaDefinition, "areaDefinition should not be null");
+                doReturn(value).when(areaDefinition).getInheritance();
             }
         };
     }
@@ -174,9 +173,9 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(AreaDefinition template) {
-                assertThat(template, notNullValue());
-                doReturn(value).when(template).getMaxComponents();
+            public void of(AreaDefinition areaDefinition) {
+                Require.Argument.notNull(areaDefinition, "areaDefinition should not be null");
+                doReturn(value).when(areaDefinition).getMaxComponents();
             }
         };
     }
@@ -191,9 +190,9 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(AreaDefinition template) {
-                assertThat(template, notNullValue());
-                doReturn(value).when(template).getOptional();
+            public void of(AreaDefinition areaDefinition) {
+                Require.Argument.notNull(areaDefinition, "areaDefinition should not be null");
+                doReturn(value).when(areaDefinition).getOptional();
             }
         };
     }
@@ -208,9 +207,9 @@ public abstract class AreaDefinitionStubbingOperation extends TemplateDefinition
         return new AreaDefinitionStubbingOperation() {
 
             @Override
-            public void of(AreaDefinition template) {
-                assertThat(template, notNullValue());
-                doReturn(value).when(template).getType();
+            public void of(AreaDefinition areaDefinition) {
+                Require.Argument.notNull(areaDefinition, "areaDefinition should not be null");
+                doReturn(value).when(areaDefinition).getType();
             }
         };
     }

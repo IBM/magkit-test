@@ -24,12 +24,12 @@ import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.GroupManager;
 import info.magnolia.cms.security.auth.ACL;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -41,109 +41,108 @@ import static org.mockito.Mockito.mock;
  */
 public class GroupManagerStubbingOperationTest {
 
-
     private GroupManager _groupManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         _groupManager = mock(GroupManager.class);
     }
 
     @Test
     public void stubGroup() throws AccessDeniedException {
-        assertThat(_groupManager.getGroup("test"), nullValue());
-        assertThat(_groupManager.getAllGroups().size(), is(0));
+        assertNull(_groupManager.getGroup("test"));
+        assertEquals(0, _groupManager.getAllGroups().size());
 
         Group group = mock(Group.class);
         doReturn("test").when(group).getName();
         GroupManagerStubbingOperation.stubGroup(group).of(_groupManager);
-        assertThat(_groupManager.getGroup("test"), is(group));
-        assertThat(_groupManager.getAllGroups().size(), is(1));
+        assertEquals(group, _groupManager.getGroup("test"));
+        assertEquals(1, _groupManager.getAllGroups().size());
 
         doReturn("test-id").when(group).getId();
         GroupManagerStubbingOperation.stubGroup(group).of(_groupManager);
-        assertThat(_groupManager.getGroup("test"), is(group));
+        assertEquals(group, _groupManager.getGroup("test"));
         // do not add group twice
-        assertThat(_groupManager.getAllGroups().size(), is(1));
+        assertEquals(1, _groupManager.getAllGroups().size());
     }
 
     @Test
     public void stubAllGroups() throws AccessDeniedException {
-        assertThat(_groupManager.getAllGroups().size(), is(0));
+        assertEquals(0, _groupManager.getAllGroups().size());
 
         Group g1  = mock(Group.class);
         doReturn("g1").when(g1).getName();
         Group g2  = mock(Group.class);
         doReturn("g2").when(g2).getName();
         GroupManagerStubbingOperation.stubAllGroups(g1, g2).of(_groupManager);
-        assertThat(_groupManager.getAllGroups().size(), is(2));
-        assertThat(_groupManager.getGroup("g1"), is(g1));
-        assertThat(_groupManager.getGroup("g2"), is(g2));
+        assertEquals(2, _groupManager.getAllGroups().size());
+        assertEquals(g1, _groupManager.getGroup("g1"));
+        assertEquals(g2, _groupManager.getGroup("g2"));
     }
 
     @Test
     public void stubAllSuperGroups() {
-        assertThat(_groupManager.getAllSuperGroups("group").size(), is(0));
+        assertEquals(0, _groupManager.getAllSuperGroups("group").size());
 
         Group g1  = mock(Group.class);
         Group g2  = mock(Group.class);
         GroupManagerStubbingOperation.stubAllSuperGroups("group", g1, g2).of(_groupManager);
-        assertThat(_groupManager.getAllSuperGroups("group").size(), is(2));
+        assertEquals(2, _groupManager.getAllSuperGroups("group").size());
     }
 
     @Test
     public void stubAllSubGroups() {
-        assertThat(_groupManager.getAllSubGroups("group").size(), is(0));
+        assertEquals(0, _groupManager.getAllSubGroups("group").size());
 
         Group g1  = mock(Group.class);
         Group g2  = mock(Group.class);
         GroupManagerStubbingOperation.stubAllSubGroups("group", g1, g2).of(_groupManager);
-        assertThat(_groupManager.getAllSubGroups("group").size(), is(2));
+        assertEquals(2, _groupManager.getAllSubGroups("group").size());
     }
 
     @Test
     public void stubDirectSubGroups() {
-        assertThat(_groupManager.getDirectSubGroups("group").size(), is(0));
+        assertEquals(0, _groupManager.getDirectSubGroups("group").size());
 
         Group g1  = mock(Group.class);
         Group g2  = mock(Group.class);
         GroupManagerStubbingOperation.stubDirectSubGroups("group", g1, g2).of(_groupManager);
-        assertThat(_groupManager.getDirectSubGroups("group").size(), is(2));
+        assertEquals(2, _groupManager.getDirectSubGroups("group").size());
     }
 
     @Test
     public void stubDirectSuperGroups() {
-        assertThat(_groupManager.getDirectSuperGroups("group").size(), is(0));
+        assertEquals(0, _groupManager.getDirectSuperGroups("group").size());
 
         Group g1  = mock(Group.class);
         Group g2  = mock(Group.class);
         GroupManagerStubbingOperation.stubDirectSuperGroups("group", g1, g2).of(_groupManager);
-        assertThat(_groupManager.getDirectSuperGroups("group").size(), is(2));
+        assertEquals(2, _groupManager.getDirectSuperGroups("group").size());
     }
 
     @Test
     public void stubGroupsWithRole() {
-        assertThat(_groupManager.getGroupsWithRole("role").size(), is(0));
+        assertEquals(0, _groupManager.getGroupsWithRole("role").size());
 
         Group g1  = mock(Group.class);
         Group g2  = mock(Group.class);
         GroupManagerStubbingOperation.stubGroupsWithRole("role", g1, g2).of(_groupManager);
-        assertThat(_groupManager.getGroupsWithRole("role").size(), is(2));
+        assertEquals(2, _groupManager.getGroupsWithRole("role").size());
     }
 
     @Test
     public void stubAcl() {
-        assertThat(_groupManager.getACLs("test").isEmpty(), is(true));
+        assertTrue(_groupManager.getACLs("test").isEmpty());
 
         ACL acl = mock(ACL.class);
         doReturn("test-acl").when(acl).getName();
         GroupManagerStubbingOperation.stubAcl("test", acl).of(_groupManager);
-        assertThat(_groupManager.getACLs("test").size(), is(1));
-        assertThat(_groupManager.getACLs("test").get("test-acl"), is(acl));
+        assertEquals(1, _groupManager.getACLs("test").size());
+        assertEquals(acl, _groupManager.getACLs("test").get("test-acl"));
 
         ACL acl2 = mock(ACL.class);
         doReturn("test-acl2").when(acl2).getName();
         GroupManagerStubbingOperation.stubAcl("test", acl2).of(_groupManager);
-        assertThat(_groupManager.getACLs("test").size(), is(2));
+        assertEquals(2, _groupManager.getACLs("test").size());
     }
 }
