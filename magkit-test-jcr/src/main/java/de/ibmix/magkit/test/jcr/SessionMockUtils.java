@@ -33,9 +33,6 @@ import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubType;
 import static de.ibmix.magkit.test.jcr.RepositoryStubbingOperation.stubLogin;
 import static de.ibmix.magkit.test.jcr.SessionStubbingOperation.stubRootNode;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -93,7 +90,7 @@ public final class SessionMockUtils {
      * <p>
      * Behaviour:
      * <ol>
-     *     <li>Asserts that {@code workspace} is not blank and {@code stubbings} is not {@code null}.</li>
+     *     <li>Validates that {@code workspace} is not blank and {@code stubbings} is not {@code null}.</li>
      *     <li>Obtains (or creates) a mocked {@link Repository} via {@link RepositoryMockUtils#mockRepository(RepositoryStubbingOperation...)}.</li>
      *     <li>Performs a repository login. If the login yields {@code null}, a new plain session is created via
      *     {@link #mockPlainSession()}, a matching workspace is mocked and login stubbing is installed.</li>
@@ -106,12 +103,15 @@ public final class SessionMockUtils {
      * @return the prepared session mock (never {@code null}).
      * @throws RepositoryException if underlying repository operations throw (rare for mocks unless user provided
      *                             stubbings escalate exceptions).
-     * @see #mockPlainSession()
-     * @see #cleanSession()
+     * @throws IllegalArgumentException if preconditions are violated
      */
     public static Session mockSession(String workspace, SessionStubbingOperation... stubbings) throws RepositoryException {
-        assertTrue(isNotBlank(workspace));
-        assertThat(stubbings, notNullValue());
+        if (!isNotBlank(workspace)) {
+            throw new AssertionError("workspace must not be blank");
+        }
+        if (stubbings == null) {
+            throw new AssertionError("stubbings must not be null");
+        }
         Repository repository = RepositoryMockUtils.mockRepository();
         Session result = repository.login(workspace);
         if (result == null) {

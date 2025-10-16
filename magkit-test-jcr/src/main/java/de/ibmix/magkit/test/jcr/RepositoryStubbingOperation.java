@@ -19,14 +19,13 @@ package de.ibmix.magkit.test.jcr;
  * limitations under the License.
  * #L% */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -102,7 +101,7 @@ public abstract class RepositoryStubbingOperation implements ExceptionStubbingOp
         return new RepositoryStubbingOperation() {
             @Override
             public void of(final Repository repository) throws RepositoryException {
-                assertThat(repository, notNullValue());
+                Require.Argument.notNull(repository, "repository must not be null");
                 when(repository.login()).thenReturn(session);
                 if (session != null) {
                     when(session.getRepository()).thenReturn(repository);

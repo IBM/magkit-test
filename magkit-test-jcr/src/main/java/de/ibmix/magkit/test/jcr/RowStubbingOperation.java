@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Node;
@@ -28,8 +29,6 @@ import javax.jcr.Value;
 import javax.jcr.query.Row;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -70,7 +69,7 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
         return new RowStubbingOperation() {
             @Override
             public void of(final Row mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "row must not be null");
                 doReturn(score).when(mock).getScore();
             }
         };
@@ -85,11 +84,11 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
      * @return a non-null stubbing operation
      */
     public static RowStubbingOperation stubScore(final String selector, final double score) {
-        assertThat(selector, notNullValue());
+        Require.Argument.notNull(selector, "selector must not be null");
         return new RowStubbingOperation() {
             @Override
             public void of(final Row mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "row must not be null");
                 if (isNotEmpty(selector)) {
                     doReturn(score).when(mock).getScore(selector);
                 } else {
@@ -109,11 +108,11 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
      * @return a non-null stubbing operation
      */
     public static RowStubbingOperation stubValue(final String selector, Value value) {
-        assertThat(selector, notNullValue());
+        Require.Argument.notNull(selector, "selector must not be null");
         return new RowStubbingOperation() {
             @Override
             public void of(final Row mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "row must not be null");
                 if (isNotEmpty(selector)) {
                     doReturn(value).when(mock).getValue(selector);
                 }
@@ -141,11 +140,11 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
      * @return a non-null stubbing operation
      */
     public static RowStubbingOperation stubValues(final Value... values) {
-        assertThat(values, notNullValue());
+        Require.Argument.notNull(values, "values must not be null");
         return new RowStubbingOperation() {
             @Override
             public void of(final Row mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "row must not be null");
                 doReturn(values).when(mock).getValues();
             }
         };
@@ -161,7 +160,7 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
         return new RowStubbingOperation() {
             @Override
             public void of(final Row mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "row must not be null");
                 doReturn(path).when(mock).getPath();
             }
         };
@@ -179,7 +178,7 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
         return new RowStubbingOperation() {
             @Override
             public void of(final Row mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "row must not be null");
                 if (isNotEmpty(selector)) {
                     doReturn(path).when(mock).getPath(selector);
                 } else {
@@ -211,8 +210,8 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
         return new RowStubbingOperation() {
             @Override
             public void of(final Row mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(mock, "row must not be null");
+                Require.Argument.notNull(node, "node must not be null");
                 doReturn(node).when(mock).getNode();
                 doReturn(node.getPath()).when(mock).getPath();
                 doAnswer(invocation -> {

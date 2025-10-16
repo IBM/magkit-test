@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
@@ -30,10 +30,9 @@ import javax.jcr.ValueFactory;
 import java.util.Calendar;
 
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,7 +54,7 @@ public class ValueFactoryMockUtilsTest {
         ValueFactoryStubbingOperation op2 = mock(ValueFactoryStubbingOperation.class);
 
         ValueFactory factory = ValueFactoryMockUtils.mockValueFactory(op1, op2);
-        assertThat(factory, notNullValue());
+        assertNotNull(factory);
         verify(op1, times(1)).of(factory);
         verify(op2, times(1)).of(factory);
 

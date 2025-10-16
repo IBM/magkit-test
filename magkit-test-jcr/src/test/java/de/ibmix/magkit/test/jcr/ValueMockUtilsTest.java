@@ -21,7 +21,7 @@ package de.ibmix.magkit.test.jcr;
  */
 
 import org.apache.jackrabbit.util.ISO8601;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.jcr.Binary;
@@ -33,11 +33,12 @@ import javax.jcr.ValueFormatException;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Testing ValueMockUtils.
@@ -61,36 +62,36 @@ public class ValueMockUtilsTest {
     @Test
     public void testMockValueWithString() throws RepositoryException {
         Value v = ValueMockUtils.mockValue("test");
-        assertThat(v.getString(), is("test"));
-        assertThat(v.getType(), is(PropertyType.STRING));
-        assertThat(v.toString(), is("test"));
+        assertEquals("test", v.getString());
+        assertEquals(PropertyType.STRING, v.getType());
+        assertEquals("test", v.toString());
 
         Value numeric = ValueMockUtils.mockValue("5.9");
-        assertThat(numeric.getString(), is("5.9"));
-        assertThat(numeric.getLong(), is(6L));
-        assertThat(numeric.getDouble(), is(5.9D));
-        assertThat(numeric.getDecimal(), is(new BigDecimal("5.9")));
-        assertThat(numeric.getType(), is(PropertyType.STRING));
+        assertEquals("5.9", numeric.getString());
+        assertEquals(6L, numeric.getLong());
+        assertEquals(5.9D, numeric.getDouble());
+        assertEquals(new BigDecimal("5.9"), numeric.getDecimal());
+        assertEquals(PropertyType.STRING, numeric.getType());
 
         Value nullString = ValueMockUtils.mockValue((String) null);
-        assertThat(nullString.getString(), nullValue());
-        assertThat(nullString.getLong(), is(0L));
-        assertThat(nullString.getDouble(), is(0.0D));
-        assertThat(nullString.getBoolean(), is(false));
+        assertNull(nullString.getString());
+        assertEquals(0L, nullString.getLong());
+        assertEquals(0.0D, nullString.getDouble());
+        assertFalse(nullString.getBoolean());
 
         Value nonNumeric = ValueMockUtils.mockValue("abc");
-        assertThat(nonNumeric.getString(), is("abc"));
+        assertEquals("abc", nonNumeric.getString());
         expectValueFormatException("non-numeric#getLong()", nonNumeric::getLong);
         expectValueFormatException("non-numeric#getDouble()", nonNumeric::getDouble);
         expectValueFormatException("non-numeric#getDecimal()", nonNumeric::getDecimal);
         expectValueFormatException("non-numeric#getDate()", nonNumeric::getDate);
-        assertThat(nonNumeric.getBoolean(), is(false));
+        assertFalse(nonNumeric.getBoolean());
 
         for (String b : new String[]{"true", "false"}) {
-            assertThat(ValueMockUtils.mockValue(b).getBoolean(), is(Boolean.valueOf(b)));
+            assertEquals(Boolean.valueOf(b), ValueMockUtils.mockValue(b).getBoolean());
         }
         // Non boolean numeric string -> Boolean.valueOf("1") = false
-        assertThat(ValueMockUtils.mockValue("1").getBoolean(), is(false));
+        assertFalse(ValueMockUtils.mockValue("1").getBoolean());
     }
 
     /**
@@ -102,22 +103,22 @@ public class ValueMockUtilsTest {
         long[] expectedLong = {5L, 6L, 5L, -5L};
         for (int i = 0; i < samples.length; i++) {
             Value v = ValueMockUtils.mockValue(samples[i]);
-            assertThat(v.getLong(), is(expectedLong[i]));
-            assertThat(v.getDate().getTimeInMillis(), is(expectedLong[i]));
+            assertEquals(expectedLong[i], v.getLong());
+            assertEquals(expectedLong[i], v.getDate().getTimeInMillis());
         }
-        assertThat(ValueMockUtils.mockValue("-5.2").getDecimal(), is(new BigDecimal("-5.2")));
+        assertEquals(new BigDecimal("-5.2"), ValueMockUtils.mockValue("-5.2").getDecimal());
     }
 
     @Test
     public void testMockValueWithIsoDateString() throws RepositoryException {
         String iso = "2025-10-09T12:34:56.000Z";
         Value v = ValueMockUtils.mockValue(iso);
-        assertThat(v.getDate(), notNullValue());
+        assertNotNull(v.getDate());
         expectValueFormatException("iso#getLong()", v::getLong);
         expectValueFormatException("iso#getDouble()", v::getDouble);
         expectValueFormatException("iso#getDecimal()", v::getDecimal);
-        assertThat(v.getBoolean(), is(false));
-        assertThat(v.toString(), is(iso));
+        assertFalse(v.getBoolean());
+        assertEquals(iso, v.toString());
     }
 
     @Test
@@ -126,84 +127,84 @@ public class ValueMockUtilsTest {
         Value v = ValueMockUtils.mockValue(cal);
         expectValueFormatException("calendar#getBoolean()", v::getBoolean);
         expectValueFormatException("calendar#getBinary()", v::getBinary);
-        assertThat(v.getDecimal(), is(new BigDecimal(cal.getTimeInMillis())));
+        assertEquals(new BigDecimal(cal.getTimeInMillis()), v.getDecimal());
     }
 
     @Test
     public void testMockValueWithDoubleDecimalAccessor() throws RepositoryException {
-        assertThat(ValueMockUtils.mockValue(1D).getDecimal(), is(new BigDecimal("1.0")));
+        assertEquals(new BigDecimal("1.0"), ValueMockUtils.mockValue(1D).getDecimal());
     }
 
     @Test
     public void testMockValueWithLongDecimalAccessor() throws RepositoryException {
-        assertThat(ValueMockUtils.mockValue(1L).getDecimal(), is(new BigDecimal("1")));
+        assertEquals(new BigDecimal("1"), ValueMockUtils.mockValue(1L).getDecimal());
     }
 
     @Test
     public void testMockValueWithBoolean() throws RepositoryException {
         Value v = ValueMockUtils.mockValue(true);
-        assertThat(v.getType(), is(PropertyType.BOOLEAN));
-        assertThat(v.getBoolean(), is(true));
-        assertThat(v.getString(), is("true"));
-        assertThat(v.toString(), is("true"));
+        assertEquals(PropertyType.BOOLEAN, v.getType());
+        assertTrue(v.getBoolean());
+        assertEquals("true", v.getString());
+        assertEquals("true", v.toString());
     }
 
     @Test
     public void testMockValueWithCalendar() throws RepositoryException {
         Calendar value = Calendar.getInstance();
         Value v = ValueMockUtils.mockValue(value);
-        assertThat(v.getDate(), is(value));
-        assertThat(v.getLong(), is(value.getTimeInMillis()));
-        assertThat(v.getDouble(), is((double) value.getTimeInMillis()));
-        assertThat(v.getString(), is(ISO8601.format(value)));
-        assertThat(v.getType(), is(PropertyType.DATE));
-        assertThat(v.toString(), is(ISO8601.format(value)));
+        assertEquals(value, v.getDate());
+        assertEquals(value.getTimeInMillis(), v.getLong());
+        assertEquals((double) value.getTimeInMillis(), v.getDouble());
+        assertEquals(ISO8601.format(value), v.getString());
+        assertEquals(PropertyType.DATE, v.getType());
+        assertEquals(ISO8601.format(value), v.toString());
 
         v = ValueMockUtils.mockValue((Calendar) null);
-        assertThat(v.getString(), nullValue());
-        assertThat(v.getLong(), is(0L));
-        assertThat(v.getDouble(), is(0.0D));
-        assertThat(v.getDate(), nullValue());
-        assertThat(v.getType(), is(PropertyType.DATE));
-        assertThat(v.toString(), is("NULL"));
+        assertNull(v.getString());
+        assertEquals(0L, v.getLong());
+        assertEquals(0.0D, v.getDouble());
+        assertNull(v.getDate());
+        assertEquals(PropertyType.DATE, v.getType());
+        assertEquals("NULL", v.toString());
     }
 
     @Test
     public void testMockValueWithDouble() throws RepositoryException {
         Value v = ValueMockUtils.mockValue(1D);
-        assertThat(v.getDouble(), is(1D));
-        assertThat(v.getString(), is("1.0"));
-        assertThat(v.getLong(), is(1L));
-        assertThat(v.getDate().getTimeInMillis(), is(1L));
-        assertThat(v.getType(), is(PropertyType.DOUBLE));
-        assertThat(v.toString(), is("1.0"));
+        assertEquals(1D, v.getDouble());
+        assertEquals("1.0", v.getString());
+        assertEquals(1L, v.getLong());
+        assertEquals(1L, v.getDate().getTimeInMillis());
+        assertEquals(PropertyType.DOUBLE, v.getType());
+        assertEquals("1.0", v.toString());
     }
 
     @Test
     public void testMockValueWithLong() throws RepositoryException {
         Value v = ValueMockUtils.mockValue(1L);
-        assertThat(v.getLong(), is(1L));
-        assertThat(v.getDouble(), is(1D));
-        assertThat(v.getString(), is("1"));
-        assertThat(v.getDate().getTimeInMillis(), is(1L));
-        assertThat(v.getType(), is(PropertyType.LONG));
-        assertThat(v.toString(), is("1"));
+        assertEquals(1L, v.getLong());
+        assertEquals(1D, v.getDouble());
+        assertEquals("1", v.getString());
+        assertEquals(1L, v.getDate().getTimeInMillis());
+        assertEquals(PropertyType.LONG, v.getType());
+        assertEquals("1", v.toString());
     }
 
     @Test
     public void testMockValueWithInputStream() throws RepositoryException {
         Value empty = ValueMockUtils.mockValue(ValueMockUtils.mockBinary(""));
-        assertThat(empty.getBinary().getSize(), is(0L));
-        assertThat(empty.getString(), is(""));
+        assertEquals(0L, empty.getBinary().getSize());
+        assertEquals("", empty.getString());
 
         Value filled = ValueMockUtils.mockValue(ValueMockUtils.mockBinary("Hallo Wolf"));
-        assertThat(filled.getBinary().getSize(), is(10L));
-        assertThat(filled.getString(), is("Hallo Wolf"));
-        assertThat(filled.toString(), is("Hallo Wolf"));
+        assertEquals(10L, filled.getBinary().getSize());
+        assertEquals("Hallo Wolf", filled.getString());
+        assertEquals("Hallo Wolf", filled.toString());
 
         Value v2 = ValueMockUtils.mockValue(ValueMockUtils.mockBinary("Testdata"));
-        assertThat(v2.getBinary().getSize(), is(8L));
-        assertThat(v2.getString(), is("Testdata"));
+        assertEquals(8L, v2.getBinary().getSize());
+        assertEquals("Testdata", v2.getString());
 
         assertAllNumericConversionsThrow(filled);
     }
@@ -211,23 +212,23 @@ public class ValueMockUtilsTest {
     @Test
     public void testMockValueWithNullBinary() throws RepositoryException {
         Value v = ValueMockUtils.mockValue((Binary) null);
-        assertThat(v.getBinary(), nullValue());
-        assertThat(v.getStream(), nullValue());
-        assertThat(v.getString(), nullValue());
-        assertThat(v.toString(), is("NULL"));
+        assertNull(v.getBinary());
+        assertNull(v.getStream());
+        assertNull(v.getString());
+        assertEquals("NULL", v.toString());
         assertAllNumericConversionsThrow(v);
     }
 
     @Test
     public void testMockValueReferenceNullNode() throws RepositoryException {
         Value v = ValueMockUtils.mockValue((Node) null);
-        assertThat(v.getType(), is(PropertyType.REFERENCE));
-        assertThat(v.getString(), nullValue());
-        assertThat(v.getLong(), is(0L));
-        assertThat(v.getDouble(), is(0.0D));
-        assertThat(v.getDate(), nullValue());
-        assertThat(v.getBoolean(), is(false));
-        assertThat(v.toString(), is("NULL"));
+        assertEquals(PropertyType.REFERENCE, v.getType());
+        assertNull(v.getString());
+        assertEquals(0L, v.getLong());
+        assertEquals(0.0D, v.getDouble());
+        assertNull(v.getDate());
+        assertFalse(v.getBoolean());
+        assertEquals("NULL", v.toString());
     }
 
     @Test
@@ -235,24 +236,24 @@ public class ValueMockUtilsTest {
         Node node = Mockito.mock(Node.class);
         NodeStubbingOperation.stubIdentifier("uuid-1").of(node);
         Value v = ValueMockUtils.mockValue(node);
-        assertThat(v.getString(), is("uuid-1"));
-        assertThat(v.getType(), is(PropertyType.REFERENCE));
-        assertThat(v.toString(), is("uuid-1"));
+        assertEquals("uuid-1", v.getString());
+        assertEquals(PropertyType.REFERENCE, v.getType());
+        assertEquals("uuid-1", v.toString());
     }
 
     @Test
     public void testMockBinaryNull() throws RepositoryException {
         Binary b = ValueMockUtils.mockBinary(null);
-        assertThat(b, notNullValue());
-        assertThat(b.toString(), notNullValue());
-        assertThat(b.getStream(), nullValue());
-        assertThat(b.getSize(), is(0L));
+        assertNotNull(b);
+        assertNotNull(b.toString());
+        assertNull(b.getStream());
+        assertEquals(0L, b.getSize());
     }
 
     @Test
     public void testValueGetStreamAnswerWithBinary() throws RepositoryException {
         Value v = ValueMockUtils.mockValue(ValueMockUtils.mockBinary("stream-test"));
-        assertThat(v.getStream(), notNullValue());
+        assertNotNull(v.getStream());
     }
 
     @Test
@@ -271,11 +272,11 @@ public class ValueMockUtilsTest {
         Node node = Mockito.mock(Node.class);
         NodeStubbingOperation.stubIdentifier("42").of(node);
         Value v = ValueMockUtils.mockValue(node);
-        assertThat(v.getString(), is("42"));
-        assertThat(v.getLong(), is(42L));
-        assertThat(v.getDouble(), is(42D));
-        assertThat(v.getDecimal(), is(new BigDecimal("42")));
-        assertThat(v.getDate().getTimeInMillis(), is(42L));
+        assertEquals("42", v.getString());
+        assertEquals(42L, v.getLong());
+        assertEquals(42D, v.getDouble());
+        assertEquals(new BigDecimal("42"), v.getDecimal());
+        assertEquals(42L, v.getDate().getTimeInMillis());
     }
 
     @Test

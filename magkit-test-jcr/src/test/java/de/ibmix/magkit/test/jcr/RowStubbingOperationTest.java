@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -28,9 +28,16 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Row;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link RowStubbingOperation}. These tests exercise all factory methods and the conditional
@@ -50,7 +57,7 @@ public class RowStubbingOperationTest {
     public void stubScoreDefaultSelector() throws RepositoryException {
         Row row = mock(Row.class);
         RowStubbingOperation.stubScore(0.75d).of(row);
-        assertThat(row.getScore(), is(closeTo(0.75d, 0.0001)));
+        assertEquals(0.75d, row.getScore(), 0.0001);
     }
 
     /**
@@ -60,9 +67,9 @@ public class RowStubbingOperationTest {
     public void stubScoreNamedSelector() throws RepositoryException {
         Row row = mock(Row.class);
         RowStubbingOperation.stubScore("mySelector", 1.23d).of(row);
-        assertThat(row.getScore("mySelector"), is(closeTo(1.23d, 0.0001)));
+        assertEquals(1.23d, row.getScore("mySelector"), 0.0001);
         // default selector not stubbed
-        assertThat(row.getScore(), is(closeTo(0.0d, 0.0001)));
+        assertEquals(0.0d, row.getScore(), 0.0001);
     }
 
     /**
@@ -72,17 +79,17 @@ public class RowStubbingOperationTest {
     public void stubScoreEmptySelectorFallsBack() throws RepositoryException {
         Row row = mock(Row.class);
         RowStubbingOperation.stubScore("", 2.5d).of(row);
-        assertThat(row.getScore(), is(closeTo(2.5d, 0.0001)));
+        assertEquals(2.5d, row.getScore(), 0.0001);
         // row.getScore("") is not stubbed -> Mockito default
-        assertThat(row.getScore(""), is(closeTo(0.0d, 0.0001)));
+        assertEquals(0.0d, row.getScore(""), 0.0001);
     }
 
     /**
-     * Null selector must trigger assertion (Hamcrest) in factory method.
+     * Null selector must trigger assertion in factory method.
      */
-    @Test(expected = AssertionError.class)
+    @Test
     public void stubScoreNullSelectorFailsFast() {
-        RowStubbingOperation.stubScore(null, 0.1d);
+        assertThrows(IllegalArgumentException.class, () -> RowStubbingOperation.stubScore(null, 0.1d));
     }
 
     /**
@@ -93,8 +100,8 @@ public class RowStubbingOperationTest {
         Row row = mock(Row.class);
         Value value = ValueMockUtils.mockValue("textValue");
         RowStubbingOperation.stubValue("prop", value).of(row);
-        assertThat(row.getValue("prop"), is(sameInstance(value)));
-        assertThat(row.getValue("other"), is(nullValue()));
+        assertSame(value, row.getValue("prop"));
+        assertNull(row.getValue("other"));
     }
 
     /**
@@ -105,15 +112,15 @@ public class RowStubbingOperationTest {
         Row row = mock(Row.class);
         Value value = ValueMockUtils.mockValue("x");
         RowStubbingOperation.stubValue("", value).of(row);
-        assertThat(row.getValue(""), is(nullValue()));
+        assertNull(row.getValue(""));
     }
 
     /**
      * Null selector fails fast.
      */
-    @Test(expected = AssertionError.class)
+    @Test
     public void stubValueNullSelectorFailsFast() throws RepositoryException {
-        RowStubbingOperation.stubValue((String) null, ValueMockUtils.mockValue("x"));
+        assertThrows(IllegalArgumentException.class, () -> RowStubbingOperation.stubValue((String) null, ValueMockUtils.mockValue("x")));
     }
 
     /**
@@ -124,8 +131,8 @@ public class RowStubbingOperationTest {
         Row row = mock(Row.class);
         RowStubbingOperation.stubValue("title", "Hello World").of(row);
         Value v = row.getValue("title");
-        assertThat(v, is(notNullValue()));
-        assertThat(v.getString(), is("Hello World"));
+        assertNotNull(v);
+        assertEquals("Hello World", v.getString());
     }
 
     /**
@@ -138,8 +145,8 @@ public class RowStubbingOperationTest {
         Value v2 = ValueMockUtils.mockValue("two");
         RowStubbingOperation.stubValues(v1, v2).of(row);
         Value[] result = row.getValues();
-        assertThat(result, arrayWithSize(2));
-        assertThat(result, arrayContaining(v1, v2));
+        assertEquals(2, result.length);
+        assertArrayEquals(new Value[]{v1, v2}, result);
     }
 
     /**
@@ -150,8 +157,8 @@ public class RowStubbingOperationTest {
         Row row = mock(Row.class);
         RowStubbingOperation.stubValues().of(row);
         Value[] result = row.getValues();
-        assertThat(result, is(notNullValue()));
-        assertThat(result.length, is(0));
+        assertNotNull(result);
+        assertEquals(0, result.length);
     }
 
     /**
@@ -161,7 +168,7 @@ public class RowStubbingOperationTest {
     public void stubPathDefault() throws RepositoryException {
         Row row = mock(Row.class);
         RowStubbingOperation.stubPath("/content/sample").of(row);
-        assertThat(row.getPath(), is("/content/sample"));
+        assertEquals("/content/sample", row.getPath());
     }
 
     /**
@@ -171,7 +178,7 @@ public class RowStubbingOperationTest {
     public void stubPathDefaultNullPath() throws RepositoryException {
         Row row = mock(Row.class);
         RowStubbingOperation.stubPath((String) null).of(row);
-        assertThat(row.getPath(), is(nullValue()));
+        assertNull(row.getPath());
     }
 
     /**
@@ -181,8 +188,8 @@ public class RowStubbingOperationTest {
     public void stubPathNamedSelector() throws RepositoryException {
         Row row = mock(Row.class);
         RowStubbingOperation.stubPath("s", "/content/sel").of(row);
-        assertThat(row.getPath("s"), is("/content/sel"));
-        assertThat(row.getPath(), is(nullValue()));
+        assertEquals("/content/sel", row.getPath("s"));
+        assertNull(row.getPath());
     }
 
     /**
@@ -192,8 +199,8 @@ public class RowStubbingOperationTest {
     public void stubPathEmptySelectorFallsBack() throws RepositoryException {
         Row row = mock(Row.class);
         RowStubbingOperation.stubPath("", "/content/default").of(row);
-        assertThat(row.getPath(), is("/content/default"));
-        assertThat(row.getPath(""), is(nullValue()));
+        assertEquals("/content/default", row.getPath());
+        assertNull(row.getPath(""));
     }
 
     /**
@@ -216,14 +223,14 @@ public class RowStubbingOperationTest {
         RowStubbingOperation.stubNode(backing).of(row);
 
         // default node and path
-        assertThat(row.getNode(), is(sameInstance(backing)));
-        assertThat(row.getPath(), is("/content/parent"));
+        assertSame(backing, row.getNode());
+        assertEquals("/content/parent", row.getPath());
         // relative child lookup delegated to backing
-        assertThat(row.getNode("child"), is(sameInstance(child)));
-        assertThat(row.getPath("child"), is("/content/parent/child"));
+        assertSame(child, row.getNode("child"));
+        assertEquals("/content/parent/child", row.getPath("child"));
         // property lookup forwarded
         Value resolved = row.getValue("myProp");
-        assertThat(resolved, is(sameInstance(propValue)));
+        assertSame(propValue, resolved);
 
         // verify delegation occurred (child node accessed twice: once for getNode, once for getPath)
         verify(backing, times(2)).getNode("child");
@@ -237,15 +244,15 @@ public class RowStubbingOperationTest {
     public void stubValueNonEmptySelectorWithNullValue() throws RepositoryException {
         Row row = mock(Row.class);
         RowStubbingOperation.stubValue("prop", (Value) null).of(row);
-        assertThat(row.getValue("prop"), is(nullValue()));
+        assertNull(row.getValue("prop"));
     }
 
     /**
      * Null node must fail fast.
      */
-    @Test(expected = AssertionError.class)
+    @Test
     public void stubNodeNullFailsFast() throws RepositoryException {
         Row row = mock(Row.class);
-        RowStubbingOperation.stubNode(null).of(row);
+        assertThrows(IllegalArgumentException.class, () -> RowStubbingOperation.stubNode(null).of(row));
     }
 }

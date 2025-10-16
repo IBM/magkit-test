@@ -20,16 +20,14 @@ package de.ibmix.magkit.test.jcr.query;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -39,36 +37,31 @@ import static org.mockito.Mockito.mock;
  * @since 2013-05-29
  */
 public class QueryStubbingOperationTest {
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
     @Test
     public void testStubbLanguage() throws RepositoryException {
         Query q = mock(Query.class);
         QueryStubbingOperation op = QueryStubbingOperation.stubLanguage("sql");
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         op.of(q);
-        assertThat(q.getLanguage(), is("sql"));
+        assertEquals("sql", q.getLanguage());
     }
 
     @Test
     public void testStubbStatement() throws RepositoryException {
         Query q = mock(Query.class);
         QueryStubbingOperation op = QueryStubbingOperation.stubStatement("statement");
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         op.of(q);
-        assertThat(q.getStatement(), is("statement"));
+        assertEquals("statement", q.getStatement());
     }
 
     @Test
     public void testStubbResult() throws RepositoryException {
         Query q = mock(Query.class);
         QueryStubbingOperation op = QueryStubbingOperation.stubResult();
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         op.of(q);
-        assertThat(q.execute(), notNullValue());
+        assertNotNull(q.execute());
     }
 
     @Test
@@ -76,17 +69,17 @@ public class QueryStubbingOperationTest {
         Query q = mock(Query.class);
         QueryResult qr = mock(QueryResult.class);
         QueryStubbingOperation op = QueryStubbingOperation.stubResult(qr);
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         op.of(q);
-        assertThat(q.execute(), notNullValue());
+        assertNotNull(q.execute());
     }
 
     @Test
     public void testStubbStoredQueryPath() throws RepositoryException {
         Query q = mock(Query.class);
         QueryStubbingOperation op = QueryStubbingOperation.stubStoredQueryPath("path");
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         op.of(q);
-        assertThat(q.getStoredQueryPath(), is("path"));
+        assertEquals("path", q.getStoredQueryPath());
     }
 }

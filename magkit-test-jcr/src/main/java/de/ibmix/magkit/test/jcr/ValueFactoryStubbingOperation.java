@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Binary;
@@ -28,8 +29,6 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import java.util.Calendar;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -69,7 +68,7 @@ public abstract class ValueFactoryStubbingOperation implements ExceptionStubbing
         return new ValueFactoryStubbingOperation() {
             @Override
             public void of(final ValueFactory valueFactory) throws RepositoryException {
-                assertThat(valueFactory, notNullValue());
+                Require.Argument.notNull(valueFactory, "valueFactory must not be null");
                 Value valueObj = ValueMockUtils.mockValue(value);
                 when(valueFactory.createValue(value)).thenReturn(valueObj);
             }
@@ -86,7 +85,7 @@ public abstract class ValueFactoryStubbingOperation implements ExceptionStubbing
         return new ValueFactoryStubbingOperation() {
             @Override
             public void of(final ValueFactory valueFactory) throws RepositoryException {
-                assertThat(valueFactory, notNullValue());
+                Require.Argument.notNull(valueFactory, "valueFactory must not be null");
                 Value valueObj = ValueMockUtils.mockValue(value);
                 when(valueFactory.createValue(value)).thenReturn(valueObj);
             }
@@ -103,7 +102,7 @@ public abstract class ValueFactoryStubbingOperation implements ExceptionStubbing
         return new ValueFactoryStubbingOperation() {
             @Override
             public void of(final ValueFactory valueFactory) throws RepositoryException {
-                assertThat(valueFactory, notNullValue());
+                Require.Argument.notNull(valueFactory, "valueFactory must not be null");
                 Value valueObj = ValueMockUtils.mockValue(value);
                 when(valueFactory.createValue(value)).thenReturn(valueObj);
             }
@@ -120,7 +119,7 @@ public abstract class ValueFactoryStubbingOperation implements ExceptionStubbing
         return new ValueFactoryStubbingOperation() {
             @Override
             public void of(final ValueFactory valueFactory) throws RepositoryException {
-                assertThat(valueFactory, notNullValue());
+                Require.Argument.notNull(valueFactory, "valueFactory must not be null");
                 Value valueObj = ValueMockUtils.mockValue(value);
                 when(valueFactory.createValue(value)).thenReturn(valueObj);
             }
@@ -137,7 +136,7 @@ public abstract class ValueFactoryStubbingOperation implements ExceptionStubbing
         return new ValueFactoryStubbingOperation() {
             @Override
             public void of(final ValueFactory valueFactory) throws RepositoryException {
-                assertThat(valueFactory, notNullValue());
+                Require.Argument.notNull(valueFactory, "valueFactory must not be null");
                 Value valueObj = ValueMockUtils.mockValue(value);
                 when(valueFactory.createValue(value)).thenReturn(valueObj);
             }
@@ -154,7 +153,7 @@ public abstract class ValueFactoryStubbingOperation implements ExceptionStubbing
         return new ValueFactoryStubbingOperation() {
             @Override
             public void of(final ValueFactory valueFactory) throws RepositoryException {
-                assertThat(valueFactory, notNullValue());
+                Require.Argument.notNull(valueFactory, "valueFactory must not be null");
                 Value valueObj = ValueMockUtils.mockValue(value);
                 when(valueFactory.createValue(value)).thenReturn(valueObj);
             }

@@ -21,6 +21,7 @@ package de.ibmix.magkit.test.jcr;
  */
 
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.RepositoryException;
@@ -30,8 +31,6 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.QueryManager;
 
 import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -92,7 +91,7 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
         return new WorkspaceStubbingOperation() {
             @Override
             public void of(final Workspace ws) {
-                assertThat(ws, notNullValue());
+                Require.Argument.notNull(ws, "workspace must not be null");
                 when(ws.getName()).thenReturn(name);
             }
         };
@@ -118,7 +117,7 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
         return new WorkspaceStubbingOperation() {
             @Override
             public void of(final Workspace ws) {
-                assertThat(ws, notNullValue());
+                Require.Argument.notNull(ws, "workspace must not be null");
                 when(ws.getSession()).thenReturn(session);
                 when(session.getWorkspace()).thenReturn(ws);
             }
@@ -149,7 +148,7 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
         return new WorkspaceStubbingOperation() {
             @Override
             public void of(final Workspace context) throws RepositoryException {
-                assertThat(context, notNullValue());
+                Require.Argument.notNull(context, "workspace must not be null");
                 Session s = context.getSession();
                 if (s == null) {
                     s = mockSession(context.getName(), stubbings);
@@ -175,7 +174,7 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
         return new WorkspaceStubbingOperation() {
             @Override
             public void of(final Workspace ws) throws RepositoryException {
-                assertThat(ws, notNullValue());
+                Require.Argument.notNull(ws, "workspace must not be null");
                 when(ws.getQueryManager()).thenReturn(queryManager);
             }
         };
@@ -197,7 +196,7 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
         return new WorkspaceStubbingOperation() {
             @Override
             public void of(Workspace ws) throws RepositoryException {
-                assertThat(ws, notNullValue());
+                Require.Argument.notNull(ws, "workspace must not be null");
                 doReturn(observationManager).when(ws).getObservationManager();
             }
         };

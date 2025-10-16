@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -31,10 +31,9 @@ import javax.jcr.Session;
 import javax.jcr.ValueFactory;
 import javax.jcr.Workspace;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,7 +49,7 @@ public class SessionStubbingOperationTest {
 
     private Session _session;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         _session = mock(Session.class);
     }
@@ -60,23 +59,23 @@ public class SessionStubbingOperationTest {
      */
     @Test
     public void testStubAttribute() throws RepositoryException {
-        assertThat(_session.getAttribute("name1"), nullValue());
-        assertThat(_session.getAttributeNames(), nullValue());
+        assertNull(_session.getAttribute("name1"));
+        assertNull(_session.getAttributeNames());
 
         Object value1 = new Object();
         SessionStubbingOperation.stubAttribute("name1", value1).of(_session);
-        assertThat(_session.getAttribute("name1"), is(value1));
-        assertThat(_session.getAttributeNames(), notNullValue());
-        assertThat(_session.getAttributeNames().length, is(1));
-        assertThat(_session.getAttributeNames()[0], is("name1"));
+        assertEquals(value1, _session.getAttribute("name1"));
+        assertNotNull(_session.getAttributeNames());
+        assertEquals(1, _session.getAttributeNames().length);
+        assertEquals("name1", _session.getAttributeNames()[0]);
 
         Object value2 = new Object();
         SessionStubbingOperation.stubAttribute("name2", value2).of(_session);
-        assertThat(_session.getAttribute("name2"), is(value2));
-        assertThat(_session.getAttributeNames(), notNullValue());
-        assertThat(_session.getAttributeNames().length, is(2));
-        assertThat(_session.getAttributeNames()[0], is("name1"));
-        assertThat(_session.getAttributeNames()[1], is("name2"));
+        assertEquals(value2, _session.getAttribute("name2"));
+        assertNotNull(_session.getAttributeNames());
+        assertEquals(2, _session.getAttributeNames().length);
+        assertEquals("name1", _session.getAttributeNames()[0]);
+        assertEquals("name2", _session.getAttributeNames()[1]);
     }
 
     /**
@@ -84,14 +83,14 @@ public class SessionStubbingOperationTest {
      */
     @Test
     public void testStubItem() throws RepositoryException {
-        assertThat(_session.getItem("path/name1"), nullValue());
-        assertThat(_session.getNodeByIdentifier("uuid-1"), nullValue());
+        assertNull(_session.getItem("path/name1"));
+        assertNull(_session.getNodeByIdentifier("uuid-1"));
 
         Item item = mock(Item.class);
         when(item.getPath()).thenReturn("path/name1");
         SessionStubbingOperation.stubItem(item).of(_session);
-        assertThat(_session.getItem("path/name1"), is(item));
-        assertThat(_session.getNodeByIdentifier("uuid-1"), nullValue());
+        assertEquals(item, _session.getItem("path/name1"));
+        assertNull(_session.getNodeByIdentifier("uuid-1"));
 
         Node node = mock(Node.class);
         when(node.getUUID()).thenReturn("uuid-2");
@@ -99,8 +98,8 @@ public class SessionStubbingOperationTest {
         when(node.isNode()).thenReturn(Boolean.TRUE);
         when(node.getPath()).thenReturn("path/name2");
         SessionStubbingOperation.stubItem(node).of(_session);
-        assertThat(_session.getItem("path/name2"), is(node));
-        assertThat(_session.getNodeByIdentifier("uuid-2"), is(node));
+        assertEquals(node, _session.getItem("path/name2"));
+        assertEquals(node, _session.getNodeByIdentifier("uuid-2"));
     }
 
     /**
@@ -108,11 +107,11 @@ public class SessionStubbingOperationTest {
      */
     @Test
     public void testStubRootNode() throws RepositoryException {
-        assertThat(_session.getRootNode(), nullValue());
+        assertNull(_session.getRootNode());
 
         Node node = mock(Node.class);
         SessionStubbingOperation.stubRootNode(node).of(_session);
-        assertThat(_session.getRootNode(), is(node));
+        assertEquals(node, _session.getRootNode());
     }
 
     /**
@@ -120,11 +119,11 @@ public class SessionStubbingOperationTest {
      */
     @Test
     public void testStubRepository() throws RepositoryException {
-        assertThat(_session.getRepository(), nullValue());
+        assertNull(_session.getRepository());
 
         Repository value = mock(Repository.class);
         SessionStubbingOperation.stubRepository(value).of(_session);
-        assertThat(_session.getRepository(), is(value));
+        assertEquals(value, _session.getRepository());
     }
 
     /**
@@ -132,36 +131,36 @@ public class SessionStubbingOperationTest {
      */
     @Test
     public void testStubWorkspace() throws RepositoryException {
-        assertThat(_session.getWorkspace(), nullValue());
+        assertNull(_session.getWorkspace());
 
         Workspace value = mock(Workspace.class);
         SessionStubbingOperation.stubWorkspace(value).of(_session);
-        assertThat(_session.getWorkspace(), is(value));
+        assertEquals(value, _session.getWorkspace());
     }
 
     @Test
     public void testStubValueFactory() throws RepositoryException {
-        assertThat(_session.getValueFactory(), nullValue());
+        assertNull(_session.getValueFactory());
         ValueFactory factory = ValueFactoryMockUtils.mockValueFactory();
         SessionStubbingOperation.stubValueFactory(factory).of(_session);
-        assertThat(_session.getValueFactory(), is(factory));
+        assertEquals(factory, _session.getValueFactory());
     }
 
     @Test
     public void testStubValueFactoryWithOperations() throws RepositoryException {
-        assertThat(_session.getValueFactory(), nullValue());
+        assertNull(_session.getValueFactory());
         ValueFactoryStubbingOperation op1 = mock(ValueFactoryStubbingOperation.class);
         ValueFactoryStubbingOperation op2 = mock(ValueFactoryStubbingOperation.class);
         SessionStubbingOperation.stubValueFactory(op1, op2).of(_session);
         ValueFactory factory = _session.getValueFactory();
-        assertThat(factory, notNullValue());
+        assertNotNull(factory);
         verify(op1, times(1)).of(factory);
         verify(op2, times(1)).of(factory);
 
         ValueFactoryStubbingOperation op3 = mock(ValueFactoryStubbingOperation.class);
         ValueFactoryStubbingOperation op4 = mock(ValueFactoryStubbingOperation.class);
         SessionStubbingOperation.stubValueFactory(op3, op4).of(_session);
-        assertThat(_session.getValueFactory(), is(factory));
+        assertEquals(factory, _session.getValueFactory());
         verify(op3, times(1)).of(factory);
         verify(op4, times(1)).of(factory);
     }

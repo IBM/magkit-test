@@ -23,9 +23,10 @@ package de.ibmix.magkit.test.jcr;
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests for {@link WorkspaceMockUtils} covering default behavior, custom name support
@@ -54,18 +55,18 @@ public class WorkspaceMockUtilsTest {
     }
 
     /**
-     * Expect an AssertionError for a blank name (documented behavior).
+     * Expect an IllegalArgumentException for a blank name (documented behavior).
      */
-    @Test(expected = AssertionError.class)
-    public void createWorkspaceWithBlankNameThrowsAssertionError() throws RepositoryException {
-        WorkspaceMockUtils.mockWorkspace(" ");
+    @Test
+    public void createWorkspaceWithBlankNameThrowsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> WorkspaceMockUtils.mockWorkspace(" "));
     }
 
     /**
-     * Expect an AssertionError also for null input (defensive behavior consistent with blank check).
+     * Expect an IllegalArgumentException also for null input (defensive behavior consistent with blank check).
      */
-    @Test(expected = AssertionError.class)
-    public void createWorkspaceWithNullNameThrowsAssertionError() throws RepositoryException {
-        WorkspaceMockUtils.mockWorkspace((String) null);
+    @Test
+    public void createWorkspaceWithNullNameThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> WorkspaceMockUtils.mockWorkspace((String) null));
     }
 }

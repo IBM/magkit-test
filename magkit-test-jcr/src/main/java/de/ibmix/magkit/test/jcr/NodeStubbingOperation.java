@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.apache.jackrabbit.JcrConstants;
 
@@ -40,10 +41,6 @@ import static de.ibmix.magkit.test.jcr.SessionStubbingOperation.stubItem;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -96,7 +93,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     public static NodeStubbingOperation stubJcrSession(final Session session) {
         return new NodeStubbingOperation() {
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node must not be null");
                 doReturn(session).when(node).getSession();
                 stubItem(node).of(session);
             }
@@ -113,8 +110,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     public static NodeStubbingOperation stubType(final String typeName) {
         return new NodeStubbingOperation() {
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
-                // TODO: consider providing a default base type instead of null if needed by callers.
+                Require.Argument.notNull(node, "node must not be null");
                 NodeType nodeType = null;
                 if (typeName != null) {
                     nodeType = mock(NodeType.class);
@@ -137,7 +133,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         return new NodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node must not be null");
                 stubProperty(PROPNAME_TITLE, value).of(node);
             }
         };
@@ -257,7 +253,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         return new NodeStubbingOperation() {
             @Override
             public void of(final Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node must not be null");
                 Property p = PropertyMockUtils.mockProperty(name, value, PropertyType.REFERENCE);
                 stubProperty(p).of(node);
             }
@@ -275,7 +271,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         return new NodeStubbingOperation() {
             @Override
             public void of(final Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node must not be null");
                 Property p = PropertyMockUtils.mockProperty(name, value);
                 stubProperty(p).of(node);
             }
@@ -293,7 +289,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         return new NodeStubbingOperation() {
             @Override
             public void of(final Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node must not be null");
                 when(property.getParent()).thenReturn(node);
                 if (node instanceof NodeMockUtils.TestNode) {
                     NodeMockUtils.TestNode testNode = (NodeMockUtils.TestNode) node;
@@ -341,7 +337,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         return new NodeStubbingOperation() {
             @Override
             public void of(final Node parent) throws RepositoryException {
-                assertThat(parent, notNullValue());
+                Require.Argument.notNull(parent, "parent must not be null");
                 if (parent instanceof NodeMockUtils.TestNode) {
                     Collection<Node> nodes = ((NodeMockUtils.TestNode) parent).getNodeCollection();
                     nodes.add(child);
@@ -365,7 +361,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     public static NodeStubbingOperation stubName(final String value) {
         return new NodeStubbingOperation() {
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node must not be null");
                 String name = isBlank(value) ? UNTITLED : value;
                 doReturn(name).when(node).getName();
             }
@@ -382,8 +378,8 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     public static NodeStubbingOperation stubIdentifier(final String identifier) {
         return new NodeStubbingOperation() {
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
-                assertThat(isNotBlank(identifier), is(true));
+                Require.Argument.notNull(node, "node must not be null");
+                Require.Argument.notEmpty(identifier, "identifier must not be blank");
                 if (node.getSession() != null) {
                     if (isNotBlank(node.getUUID())) {
                         when(node.getSession().getNodeByUUID(node.getUUID())).thenReturn(null);
@@ -408,8 +404,8 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     public static NodeStubbingOperation stubParent(final Node parent) {
         return new NodeStubbingOperation() {
             public void of(Node child) throws RepositoryException {
-                assertThat(child, notNullValue());
-                assertThat("Illegal attempt to set a node as its parent: " + child.getPath(), child, not(is(parent)));
+                Require.Argument.notNull(child, "child must not be null");
+                Require.Argument.reject(parent::equals, child, "Illegal attempt to set a node as its parent: " + child.getPath());
                 Session s = child.getSession();
                 if (s != null) {
                     SessionStubbingOperation.stubRemoveItem(child).of(s);
@@ -430,7 +426,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
         return new NodeStubbingOperation() {
             @Override
             public void of(Node node) throws RepositoryException {
-                assertThat(node, notNullValue());
+                Require.Argument.notNull(node, "node must not be null");
                 doReturn(mixins).when(node).getMixinNodeTypes();
             }
         };

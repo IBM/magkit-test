@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr.query;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.jcr.RowStubbingOperation;
 import org.apache.jackrabbit.api.query.JackrabbitQueryResult;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
@@ -48,8 +49,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -124,7 +123,7 @@ public final class QueryMockUtils {
      * @throws RepositoryException declared exception from node api but never thrown
      */
     public static QueryManager mockQueryManager(final String workspace, QueryManagerStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null.");
         Session session = mockSession(defaultIfBlank(workspace, "website"));
         QueryManager qm = session.getWorkspace().getQueryManager();
         if (qm == null) {
@@ -150,7 +149,7 @@ public final class QueryMockUtils {
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static Query mockQuery(final String language, final String statement, QueryStubbingOperation... stubbings) throws RepositoryException {
-        assertThat("stubbings should not be null.", stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null.");
         Query q = mock(Query.class);
         stubLanguage(language).of(q);
         stubStatement(statement).of(q);
@@ -194,7 +193,7 @@ public final class QueryMockUtils {
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static JackrabbitQueryResult mockQueryResult(final Node... results) throws RepositoryException {
-        assertThat(results, notNullValue());
+        Require.Argument.notNull(results, "results must not be null");
         return mockQueryResult(asList(results));
     }
 
@@ -206,7 +205,7 @@ public final class QueryMockUtils {
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static JackrabbitQueryResult mockRowQueryResult(final Row... results) throws RepositoryException {
-        assertThat(results, notNullValue());
+        Require.Argument.notNull(results, "results must not be null");
         JackrabbitQueryResult result = mockEmptyQueryResult();
         doReturn(new RowIteratorAdapter(asList(results))).when(result).getRows();
         return result;

@@ -20,9 +20,9 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.junit.After;
-import org.junit.Test;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -32,10 +32,12 @@ import javax.jcr.Workspace;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +70,7 @@ public class RepositoryMockUtilsTest {
         };
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         RepositoryMockUtils.cleanRepository();
     }
@@ -77,14 +79,14 @@ public class RepositoryMockUtilsTest {
     public void firstCallCreatesNewMock() throws RepositoryException {
         RepositoryMockUtils.cleanRepository();
         Repository repository = RepositoryMockUtils.mockRepository();
-        assertThat("Repository mock should be created.", repository, notNullValue());
+        assertNotNull(repository, "Repository mock should be created.");
     }
 
     @Test
     public void subsequentCallsReuseSameInstance() throws RepositoryException {
         Repository first = RepositoryMockUtils.mockRepository();
         Repository second = RepositoryMockUtils.mockRepository();
-        assertThat("Repository mock should be reused within the same thread.", first == second, is(true));
+        assertTrue(first == second, "Repository mock should be reused within the same thread.");
     }
 
     @Test
@@ -92,13 +94,13 @@ public class RepositoryMockUtilsTest {
         Repository first = RepositoryMockUtils.mockRepository();
         RepositoryMockUtils.cleanRepository();
         Repository second = RepositoryMockUtils.mockRepository();
-        assertThat("Repository mock should be recreated after cleanRepository().", first == second, is(false));
+        assertFalse(first == second, "Repository mock should be recreated after cleanRepository().");
     }
 
     @Test
     public void customStubbingOperationApplied() throws RepositoryException {
         Repository repository = RepositoryMockUtils.mockRepository(stubDescriptor("foo", "bar"));
-        assertThat(repository.getDescriptor("foo"), is("bar"));
+        assertEquals("bar", repository.getDescriptor("foo"));
     }
 
     @Test
@@ -106,9 +108,9 @@ public class RepositoryMockUtilsTest {
         RepositoryMockUtils.cleanRepository();
         Repository first = RepositoryMockUtils.mockRepository(stubDescriptor("a", "1"));
         Repository second = RepositoryMockUtils.mockRepository(stubDescriptor("b", "2"));
-        assertThat("Same instance expected while accumulating stubbings.", first == second, is(true));
-        assertThat(second.getDescriptor("a"), is("1"));
-        assertThat(second.getDescriptor("b"), is("2"));
+        assertTrue(first == second, "Same instance expected while accumulating stubbings.");
+        assertEquals("1", second.getDescriptor("a"));
+        assertEquals("2", second.getDescriptor("b"));
     }
 
     @Test
@@ -118,8 +120,8 @@ public class RepositoryMockUtilsTest {
             stubDescriptor("x", "X"),
             stubDescriptor("y", "Y")
         );
-        assertThat(repository.getDescriptor("x"), is("X"));
-        assertThat(repository.getDescriptor("y"), is("Y"));
+        assertEquals("X", repository.getDescriptor("x"));
+        assertEquals("Y", repository.getDescriptor("y"));
     }
 
     @Test
@@ -131,31 +133,31 @@ public class RepositoryMockUtilsTest {
             try {
                 otherThreadRepo.set(RepositoryMockUtils.mockRepository());
             } catch (RepositoryException e) {
-                Assert.fail("RepositoryException should not occur in other thread: " + e.getMessage());
+                Assertions.fail("RepositoryException should not occur in other thread: " + e.getMessage());
             } finally {
                 latch.countDown();
             }
         });
         t.start();
         latch.await();
-        assertThat(otherThreadRepo.get(), notNullValue());
-        assertThat("Repository mocks must differ across threads.", mainThreadRepo == otherThreadRepo.get(), is(false));
+        assertNotNull(otherThreadRepo.get());
+        assertFalse(mainThreadRepo == otherThreadRepo.get(), "Repository mocks must differ across threads.");
     }
 
     @Test
     public void stubLoginNullSession() throws RepositoryException {
         Repository repository = RepositoryMockUtils.mockRepository(RepositoryStubbingOperation.stubLogin(null));
-        assertThat(repository.login(), nullValue());
-        assertThat(repository.login("anyWorkspace"), nullValue());
+        assertNull(repository.login());
+        assertNull(repository.login("anyWorkspace"));
     }
 
     @Test
     public void stubLoginSessionWithoutWorkspace() throws RepositoryException {
         Session session = mock(Session.class);
         Repository repository = RepositoryMockUtils.mockRepository(RepositoryStubbingOperation.stubLogin(session));
-        assertThat(repository.login(), is(session));
-        assertThat(session.getRepository(), is(repository));
-        assertThat(repository.login("ws"), nullValue());
+        assertEquals(session, repository.login());
+        assertEquals(repository, session.getRepository());
+        assertNull(repository.login("ws"));
     }
 
     @Test
@@ -165,29 +167,26 @@ public class RepositoryMockUtilsTest {
         when(workspace.getName()).thenReturn("myWorkspace");
         when(session.getWorkspace()).thenReturn(workspace);
         Repository repository = RepositoryMockUtils.mockRepository(RepositoryStubbingOperation.stubLogin(session));
-        assertThat(repository.login(), is(session));
-        assertThat(session.getRepository(), is(repository));
-        assertThat(repository.login("myWorkspace"), is(session));
+        assertEquals(session, repository.login());
+        assertEquals(repository, session.getRepository());
+        assertEquals(session, repository.login("myWorkspace"));
     }
 
     @Test
     public void exceptionPropagation() {
         RepositoryMockUtils.cleanRepository();
-        try {
+        assertThrows(javax.jcr.RepositoryException.class, () ->
             RepositoryMockUtils.mockRepository(new RepositoryStubbingOperation() {
                 @Override
-                public void of(final Repository repo) throws RepositoryException {
-                    throw new RepositoryException("boom");
+                public void of(final javax.jcr.Repository repo) throws javax.jcr.RepositoryException {
+                    throw new javax.jcr.RepositoryException("boom");
                 }
-            });
-            Assert.fail("Expected RepositoryException not thrown.");
-        } catch (RepositoryException e) {
-            assertThat(e.getMessage(), is("boom"));
-        }
+            })
+        );
         try {
-            assertThat(RepositoryMockUtils.mockRepository(), notNullValue());
-        } catch (RepositoryException e) {
-            Assert.fail("Unexpected exception after failed stubbing: " + e.getMessage());
+            assertNotNull(RepositoryMockUtils.mockRepository());
+        } catch (javax.jcr.RepositoryException e) {
+            Assertions.fail("Unexpected exception after failed stubbing: " + e.getMessage());
         }
     }
 }

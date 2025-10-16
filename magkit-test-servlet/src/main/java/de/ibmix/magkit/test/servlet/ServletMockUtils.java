@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
  * can focus only on the behavior under test and override ("stubbings") the defaults where
  * required. Additional behavior can be supplied through dedicated *StubbingOperation strategies
  * passed as varargs. Passing no stubbing operations yields the documented defaults. Passing
- * {@code null} triggers an {@link AssertionError}. If you want only defaults simply call the
+ * {@code null} triggers an {@link IllegalArgumentException}. If you want only defaults simply call the
  * method without arguments.
  * </p>
  * <p>
@@ -91,7 +91,7 @@ public final class ServletMockUtils {
      *
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured request mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see HttpServletRequestStubbingOperation
      * @since 2011-03-04
      */
@@ -124,7 +124,7 @@ public final class ServletMockUtils {
      *
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured response mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see HttpServletResponseStubbingOperation
      * @since 2011-03-04
      */
@@ -157,7 +157,7 @@ public final class ServletMockUtils {
      *
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured servlet context mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see ServletContextStubbingOperation
      * @since 2011-03-04
      */
@@ -184,7 +184,7 @@ public final class ServletMockUtils {
      *
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured page context mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see PageContextStubbingOperation
      * @since 2011-03-04
      */
@@ -213,7 +213,7 @@ public final class ServletMockUtils {
      * @param id session identifier to be returned by {@link HttpSession#getId()}
      * @param stubbings additional stubbing operations (must not be {@code null})
      * @return configured session mock
-     * @throws AssertionError if {@code stubbings} is {@code null}
+     * @throws IllegalArgumentException if {@code stubbings} is {@code null}
      * @see HttpSessionStubbingOperation
      * @since 2011-03-04
      */

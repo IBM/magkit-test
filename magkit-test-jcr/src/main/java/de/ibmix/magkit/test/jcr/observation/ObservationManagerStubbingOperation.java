@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr.observation;
  * #L%
  */
 
+import de.ibmix.magkit.assertations.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.jackrabbit.commons.iterator.EventListenerIteratorAdapter;
@@ -34,8 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -147,7 +146,7 @@ public abstract class ObservationManagerStubbingOperation implements ExceptionSt
         return new ObservationManagerStubbingOperation() {
             @Override
             public void of(ObservationManager mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "observationManager must not be null");
                 EventListenerIterator listenerIterator = mock.getRegisteredEventListeners();
                 List<EventListener> listenerList = new ArrayList<>();
                 if (listenerIterator != null) {
@@ -204,7 +203,7 @@ public abstract class ObservationManagerStubbingOperation implements ExceptionSt
         return new ObservationManagerStubbingOperation() {
             @Override
             public void of(ObservationManager mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "observationManager must not be null");
                 doReturn(journal).when(mock).getEventJournal();
             }
         };
@@ -270,7 +269,7 @@ public abstract class ObservationManagerStubbingOperation implements ExceptionSt
         return new ObservationManagerStubbingOperation() {
             @Override
             public void of(ObservationManager mock) throws RepositoryException {
-                assertThat(mock, notNullValue());
+                Require.Argument.notNull(mock, "observationManager must not be null");
                 doReturn(journal).when(mock).getEventJournal(eventTypes, absPath, isDeep, uuid, nodeTypeName);
             }
         };

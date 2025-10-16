@@ -20,6 +20,8 @@ package de.ibmix.magkit.assertations;
  * #L%
  */
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -34,6 +36,7 @@ public abstract class Require {
 
     public static final Predicate<Object> IS_NULL = Objects::isNull;
     public static final Predicate<CharSequence> IS_EMPTY_STRING = s -> s.length() == 0;
+    public static final Predicate<CharSequence> IS_BLANK_STRING = StringUtils::isBlank;
     public static final Predicate<Object[]> IS_EMPTY_ARRAY = a -> a.length == 0;
     public static final Predicate<Iterable<?>> IS_EMPTY_ITERABLE = i -> !i.iterator().hasNext();
 
@@ -56,6 +59,11 @@ public abstract class Require {
     public static void requireNotEmpty(final CharSequence value, final String message, final ExceptionFactory ex) {
         requireNotNull(value, message, ex);
         reject(IS_EMPTY_STRING, value, message, ex);
+    }
+
+    public static void requireNotBlank(final CharSequence value, final String message, final ExceptionFactory ex) {
+        requireNotEmpty(value, message, ex);
+        reject(IS_BLANK_STRING, value, message, ex);
     }
 
     public static void requireNotEmpty(final Object[] value, final String message, final ExceptionFactory ex) {
@@ -91,6 +99,10 @@ public abstract class Require {
             requireNotEmpty(str, message, FACTORY);
         }
 
+        public static void notBlank(final CharSequence str, final String message) {
+            requireNotBlank(str, message, FACTORY);
+        }
+
         public static void notEmpty(final Iterable<?> iterable, final String message) {
             requireNotEmpty(iterable, message, FACTORY);
         }
@@ -101,6 +113,10 @@ public abstract class Require {
 
         public static void isInstanceof(final Object obj, final Class<?> clazz, final String message) {
             requireInstanceOf(obj, clazz, message, FACTORY);
+        }
+
+        public static void reject(Predicate<Object> condition, Object toTest, String message) {
+            Require.reject(condition, toTest, message, FACTORY);
         }
     }
 
@@ -121,6 +137,10 @@ public abstract class Require {
             requireNotEmpty(str, message, FACTORY);
         }
 
+        public static void notBlank(final CharSequence str, final String message) {
+            requireNotBlank(str, message, FACTORY);
+        }
+
         public static void notEmpty(final Iterable<?> iterable, final String message) {
             requireNotEmpty(iterable, message, FACTORY);
         }
@@ -131,6 +151,10 @@ public abstract class Require {
 
         public static void isInstanceof(final Object obj, final Class<?> clazz, final String message) {
             requireInstanceOf(obj, clazz, message, FACTORY);
+        }
+
+        public static void reject(Predicate<Object> condition, Object toTest, String message) {
+            Require.reject(condition, toTest, message, FACTORY);
         }
     }
 
