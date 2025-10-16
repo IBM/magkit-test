@@ -23,7 +23,7 @@
         <dependency>
             <groupId>de.ibmix.magkit</groupId>
             <artifactId>magkit-test-assert</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
          <!-- migrated from JUnit4 to JUnit5: remove old junit 4 dependency and use Jupiter -->
         <dependency>
@@ -57,12 +57,6 @@
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.ibmix.magkit</groupId>
-            <artifactId>magkit-test-assert</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
