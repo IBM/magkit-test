@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.jcr.query;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.jcr.RowStubbingOperation;
 import org.apache.jackrabbit.api.query.JackrabbitQueryResult;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;

@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.dam;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.jcr.NodeStubbingOperation;
 import info.magnolia.dam.api.Asset;

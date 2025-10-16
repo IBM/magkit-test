@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.node;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation;
 import de.ibmix.magkit.test.cms.templating.TemplateMockUtils;
 import info.magnolia.jcr.util.NodeTypes;

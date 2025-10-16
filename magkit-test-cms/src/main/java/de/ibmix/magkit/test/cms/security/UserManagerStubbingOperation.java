@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;

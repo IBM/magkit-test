@@ -1,4 +1,4 @@
-package de.ibmix.magkit.assertations;
+package de.ibmix.magkit.assertions;
 
 /*-
  * #%L

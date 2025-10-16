@@ -21,7 +21,7 @@ package de.ibmix.magkit.test.jcr;
  */
 
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.RepositoryException;

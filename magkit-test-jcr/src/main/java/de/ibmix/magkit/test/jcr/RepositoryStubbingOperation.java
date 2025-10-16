@@ -19,7 +19,7 @@ package de.ibmix.magkit.test.jcr;
  * limitations under the License.
  * #L% */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 
 import javax.jcr.Repository;

@@ -20,7 +20,7 @@ package de.ibmix.magkit.test.cms.templating;
  * #L%
  */
 
-import de.ibmix.magkit.assertations.Require;
+import de.ibmix.magkit.assertions.Require;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.ComponentAvailability;
