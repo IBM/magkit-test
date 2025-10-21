@@ -133,7 +133,7 @@ public final class MagnoliaNodeMockUtils {
      * @return mocked node with primary type {@code mgnl:page}
      * @throws RepositoryException if one of the stubbing operations throws an exception
      */
-    public static Node mockPageNode(String name, PageNodeStubbingOperation... nodeStubbings) throws RepositoryException {
+    public static Node mockPageNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(WEBSITE, name, NodeTypes.Page.NAME, nodeStubbings);
     }
 
@@ -145,7 +145,7 @@ public final class MagnoliaNodeMockUtils {
      * @return mocked node with primary type {@code mgnl:area}
      * @throws RepositoryException if one of the stubbing operations throws an exception
      */
-    public static Node mockAreaNode(String name, AreaNodeStubbingOperation... nodeStubbings) throws RepositoryException {
+    public static Node mockAreaNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(WEBSITE, name, NodeTypes.Area.NAME, nodeStubbings);
     }
 
@@ -169,7 +169,7 @@ public final class MagnoliaNodeMockUtils {
      * @return mocked node with primary type {@code mgnl:user}
      * @throws RepositoryException if one of the stubbing operations throws an exception
      */
-    public static Node mockUserNode(String name, UserNodeStubbingOperation... nodeStubbings) throws RepositoryException {
+    public static Node mockUserNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(USERS, name, NodeTypes.User.NAME, nodeStubbings);
     }
 
@@ -181,7 +181,7 @@ public final class MagnoliaNodeMockUtils {
      * @return mocked node with primary type {@code mgnl:group}
      * @throws RepositoryException if one of the stubbing operations throws an exception
      */
-    public static Node mockGroupNode(String name, GroupNodeStubbingOperation... nodeStubbings) throws RepositoryException {
+    public static Node mockGroupNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(USER_GROUPS, name, NodeTypes.Group.NAME, nodeStubbings);
     }
 
@@ -193,7 +193,7 @@ public final class MagnoliaNodeMockUtils {
      * @return mocked node with primary type {@code mgnl:role}
      * @throws RepositoryException if one of the stubbing operations throws an exception
      */
-    public static Node mockRoleNode(String name, RoleNodeStubbingOperation... nodeStubbings) throws RepositoryException {
+    public static Node mockRoleNode(String name, NodeStubbingOperation... nodeStubbings) throws RepositoryException {
         return mockMgnlNode(USER_ROLES, name, NodeTypes.Role.NAME, nodeStubbings);
     }
 
