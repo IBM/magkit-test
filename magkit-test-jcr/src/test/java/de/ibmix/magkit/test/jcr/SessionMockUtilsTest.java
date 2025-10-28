@@ -23,6 +23,7 @@ package de.ibmix.magkit.test.jcr;
 import org.apache.jackrabbit.JcrConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -56,6 +57,7 @@ public class SessionMockUtilsTest {
         SessionStubbingOperation op1 = mock(SessionStubbingOperation.class);
         SessionStubbingOperation op2 = mock(SessionStubbingOperation.class);
         Session session = SessionMockUtils.mockSession("testRepository", op1, op2);
+        Mockito.verifyNoInteractions(session);
         assertNotNull(session);
         verify(op1, times(1)).of(session);
         verify(op2, times(1)).of(session);
@@ -67,6 +69,7 @@ public class SessionMockUtilsTest {
     @Test
     public void testMockPlainSession() throws RepositoryException {
         Session session = SessionMockUtils.mockPlainSession();
+        Mockito.verifyNoInteractions(session);
         assertNotNull(session);
         Node root = session.getRootNode();
         assertNotNull(root);

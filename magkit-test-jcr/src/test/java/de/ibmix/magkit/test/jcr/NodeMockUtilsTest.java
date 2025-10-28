@@ -23,6 +23,7 @@ package de.ibmix.magkit.test.jcr;
 import org.apache.jackrabbit.util.ISO8601;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -65,6 +66,7 @@ public class NodeMockUtilsTest {
         NodeStubbingOperation op1 = mock(NodeStubbingOperation.class);
         NodeStubbingOperation op2 = mock(NodeStubbingOperation.class);
         Node node = NodeMockUtils.mockNode(op1, op2);
+        Mockito.verifyNoInteractions(node);
         assertNotNull(node);
         assertNotNull(node.getNodes());
         assertFalse(node.getNodes().hasNext());

@@ -21,6 +21,7 @@ package de.ibmix.magkit.test.jcr;
  */
 
 import de.ibmix.magkit.assertions.Require;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
 import javax.jcr.Node;
@@ -118,6 +119,8 @@ public final class SessionMockUtils {
         for (SessionStubbingOperation stubbing : stubbings) {
             stubbing.of(result);
         }
+        // Clear all invocations to avoid confusion when verifying invocations later:
+        Mockito.clearInvocations(result);
         return result;
     }
 
