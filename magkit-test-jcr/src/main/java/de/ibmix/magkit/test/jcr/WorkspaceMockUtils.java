@@ -21,6 +21,7 @@ package de.ibmix.magkit.test.jcr;
  */
 
 import de.ibmix.magkit.assertions.Require;
+import org.mockito.Mockito;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
@@ -103,6 +104,8 @@ public final class WorkspaceMockUtils {
         for (WorkspaceStubbingOperation stub : stubbings) {
             stub.of(result);
         }
+        // Clear all invocations to avoid confusion when verifying invocations later:
+        Mockito.clearInvocations(result);
         return result;
     }
 }

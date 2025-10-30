@@ -23,6 +23,7 @@ package de.ibmix.magkit.test.jcr;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.mockito.Mockito;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -80,6 +81,7 @@ public class RepositoryMockUtilsTest {
         RepositoryMockUtils.cleanRepository();
         Repository repository = RepositoryMockUtils.mockRepository();
         assertNotNull(repository, "Repository mock should be created.");
+        Mockito.verifyNoInteractions(repository);
     }
 
     @Test
@@ -100,6 +102,7 @@ public class RepositoryMockUtilsTest {
     @Test
     public void customStubbingOperationApplied() throws RepositoryException {
         Repository repository = RepositoryMockUtils.mockRepository(stubDescriptor("foo", "bar"));
+        Mockito.verifyNoInteractions(repository);
         assertEquals("bar", repository.getDescriptor("foo"));
     }
 
@@ -108,6 +111,7 @@ public class RepositoryMockUtilsTest {
         RepositoryMockUtils.cleanRepository();
         Repository first = RepositoryMockUtils.mockRepository(stubDescriptor("a", "1"));
         Repository second = RepositoryMockUtils.mockRepository(stubDescriptor("b", "2"));
+        Mockito.verifyNoInteractions(first);
         assertTrue(first == second, "Same instance expected while accumulating stubbings.");
         assertEquals("1", second.getDescriptor("a"));
         assertEquals("2", second.getDescriptor("b"));

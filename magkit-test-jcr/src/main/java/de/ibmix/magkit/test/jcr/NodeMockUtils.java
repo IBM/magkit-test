@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.mockito.Answers;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.xml.sax.SAXException;
 
@@ -138,6 +139,8 @@ public final class NodeMockUtils {
                 nodeStubbing.of(node);
             }
         }
+        // Clear all invocations to avoid confusion when verifying invocations later:
+        Mockito.clearInvocations(node);
         return node;
     }
 
@@ -279,6 +282,8 @@ public final class NodeMockUtils {
         stubType(NodeType.NT_BASE).of(result);
         when(result.isNodeType(anyString())).then(IS_NODE_TYPE_ANSWER);
         doAnswer(TO_STRING_ANSWER).when(result).toString();
+        // Clear all invocations to avoid confusion when verifying invocations later:
+        Mockito.clearInvocations(result);
         return result;
     }
 

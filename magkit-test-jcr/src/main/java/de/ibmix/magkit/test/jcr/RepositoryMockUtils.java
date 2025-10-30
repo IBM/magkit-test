@@ -19,6 +19,8 @@ package de.ibmix.magkit.test.jcr;
  * limitations under the License.
  * #L% */
 
+import org.mockito.Mockito;
+
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
@@ -97,6 +99,8 @@ public final class RepositoryMockUtils {
         for (RepositoryStubbingOperation stubbing : stubbings) {
             stubbing.of(result);
         }
+        // Clear all invocations to avoid confusion when verifying invocations later:
+        Mockito.clearInvocations(result);
         return result;
     }
 

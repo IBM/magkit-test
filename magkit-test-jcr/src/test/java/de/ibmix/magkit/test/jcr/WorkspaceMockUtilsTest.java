@@ -24,9 +24,13 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubSession;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * Tests for {@link WorkspaceMockUtils} covering default behavior, custom name support
@@ -50,8 +54,13 @@ public class WorkspaceMockUtilsTest {
      */
     @Test
     public void createWorkspaceWithCustomName() throws RepositoryException {
-        Workspace ws = WorkspaceMockUtils.mockWorkspace("custom");
+        WorkspaceStubbingOperation op1 = mock(WorkspaceStubbingOperation.class);
+        WorkspaceStubbingOperation op2 = mock(WorkspaceStubbingOperation.class);
+        Workspace ws = WorkspaceMockUtils.mockWorkspace("custom", op1, op2, stubSession());
+        Mockito.verifyNoInteractions(ws);
         assertEquals("custom", ws.getName());
+        verify(op1).of(ws);
+        verify(op2).of(ws);
     }
 
     /**
