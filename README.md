@@ -46,7 +46,7 @@ You can browse available artifacts through [Magnolia's Nexus](https://nexus.magn
     <dependency>
         <artifactId>magkit-test-cms</artifactId>
         <groupId>de.ibmix.magkit</groupId>
-        <version>1.0.0</version>
+        <version>1.0.8</version>
     </dependency>
 ```
 
