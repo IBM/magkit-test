@@ -3,7 +3,7 @@
     <parent>
         <groupId>de.ibmix.magkit</groupId>
         <artifactId>magkit-test</artifactId>
-        <version>1.0.9</version>
+        <version>1.0.10-SNAPSHOT</version>
     </parent>
     <artifactId>magkit-test-assert</artifactId>
     <name>magkit-test-assert</name>
