@@ -168,11 +168,11 @@
         <!-- required to find our own super POM-->
         <repository>
             <id>magnolia.forge.releases</id>
-            <url>https://nexus.magnolia-cms.com/content/groups/magnolia.forge.releases/</url>
+            <url>https://nexus.magnolia-cms.com/repository/magnolia.forge.releases/</url>
         </repository>
         <repository>
             <id>magnolia.forge.snapshots</id>
-            <url>https://nexus.magnolia-cms.com/content/groups/magnolia.forge.snapshots/</url>
+            <url>https://nexus.magnolia-cms.com/repository/magnolia.forge.snapshots/</url>
         </repository>
     </repositories>
 </project>
