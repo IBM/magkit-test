@@ -7,7 +7,7 @@
         <version>1.0.6</version>
     </parent>
     <artifactId>magkit-test</artifactId>
-    <version>1.0.10-SNAPSHOT</version>
+    <version>1.0.9-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>magkit-test Magnolia Module</name>
 
