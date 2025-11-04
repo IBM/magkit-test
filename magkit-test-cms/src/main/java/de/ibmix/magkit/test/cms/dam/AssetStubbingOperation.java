@@ -39,13 +39,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Factory class providing {@code AssetStubbingOperation} instances to define behaviour of mocked {@link Asset} objects.
+ * Factory class providing {@code AssetStubbingOperation} instances to define behavior of mocked {@link Asset} objects.
  * <p>
- * Each static method returns an {@link AssetStubbingOperation} that, when applied via {@link AssetStubbingOperation#of(Asset)},
+ * Each static method returns an {@link AssetStubbingOperation} that, when applied via {@link AssetStubbingOperation#of(Object)},
  * configures either direct method returns on a generic {@link Asset} mock or underlying JCR node properties for
- * {@link JcrAsset} mocks. This centralises stubbing logic and keeps test code concise and intention revealing.
+ * {@link JcrAsset} mocks. This centralizes stubbing logic and keeps test code concise and intention revealing.
+ * <p>
+ * <strong>Usage</strong>
  * </p>
- * <h3>Usage</h3>
  * <pre>
  * JcrAsset asset = AssetMockUtils.mockJcrAsset("/images/logo.png",
  *     AssetStubbingOperation.stubTitle("Company Logo"),
@@ -54,14 +55,18 @@ import static org.mockito.Mockito.when;
  * </pre>
  * <p>
  * Operations are composable: provide multiple operations to {@link AssetMockUtils#mockAsset(String, String, String, AssetStubbingOperation...)}
- * or invoke {@link AssetStubbingOperation#of(Asset)} sequentially on the same asset mock. If the asset is a {@link JcrAsset},
+ * or invoke {@link AssetStubbingOperation#of(Object)} sequentially on the same asset mock. If the asset is a {@link JcrAsset},
  * node properties (e.g. {@link AssetNodeTypes.AssetResource#MIMETYPE}) are stubbed and will be readable through Magnolia's API.
- * Otherwise simple Mockito stubbing of getter methods applies.
+ * Otherwise, simple Mockito stubbing of getter methods apply.
  * </p>
- * <h3>Thread safety</h3>
+ * <p>
+ * <strong>Thread safety</strong>
  * Returned operations are stateless and thread-safe; they can be reused across tests. Binary stream stubbing creates fresh mocks per invocation.
- * <h3>Error handling</h3>
+ * </p>
+ * <p>
+ * <strong>Error handling</strong>
  * Methods may throw {@link RepositoryException} when interacting with JCR nodes for {@link JcrAsset} stubbing. In typical mock setups these should not occur.
+ * </p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2010-11-17

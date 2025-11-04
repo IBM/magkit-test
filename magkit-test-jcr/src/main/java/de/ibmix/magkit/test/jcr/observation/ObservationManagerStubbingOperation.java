@@ -30,7 +30,6 @@ import javax.jcr.observation.EventJournal;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +50,7 @@ import static org.mockito.Mockito.doReturn;
  * for unit testing purposes.
  * </p>
  *
- * <h3>Key Features:</h3>
+ * <strong>Key Features:</strong>
  * <ul>
  *   <li>Type-safe stubbing operations for ObservationManager mocks</li>
  *   <li>Support for event listener registration and management</li>
@@ -60,7 +59,7 @@ import static org.mockito.Mockito.doReturn;
  *   <li>Integration with existing EventListener and EventJournal mocks</li>
  * </ul>
  *
- * <h3>Usage Patterns:</h3>
+ * <strong>Usage Patterns:</strong>
  * <pre>{@code
  * // Configure ObservationManager with registered event listeners
  * EventListener listener1 = mock(EventListener.class);
@@ -77,7 +76,7 @@ import static org.mockito.Mockito.doReturn;
  * );
  * }</pre>
  *
- * <h3>Thread Safety:</h3>
+ * <strong>Thread Safety:</strong>
  * <p>
  * This class is thread-safe as it only contains static factory methods and does not maintain any shared state.
  * The returned stubbing operations are also thread-safe as they only encapsulate configuration data.

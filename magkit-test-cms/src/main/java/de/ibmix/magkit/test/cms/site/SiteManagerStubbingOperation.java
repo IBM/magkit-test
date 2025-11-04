@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * Factory methods producing {@link SiteManagerStubbingOperation} instances that configure Mockito based {@link SiteManager} mocks.
- * <p>Scope & purpose:</p>
+ * <p>Scope and purpose:</p>
  * <ul>
  *   <li>Provide concise operations to stub current, default and assigned sites.</li>
  *   <li>Register / update individual {@link Site} instances within a {@link SiteManager} (including its internal site collection).</li>

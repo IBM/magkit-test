@@ -23,6 +23,7 @@ package de.ibmix.magkit.test.cms.context;
 import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.StubbingOperation;
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
+import de.ibmix.magkit.test.jcr.SessionStubbingOperation;
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.context.SystemContext;
 
@@ -50,12 +51,12 @@ import static org.mockito.Mockito.when;
  * );
  * }</pre>
  * <p>
- * Contract & behaviour:
+ * Contract and behaviour:
  * <ul>
  *   <li>Idempotent: invoking the same operation multiple times re-applies the same stubbing without accumulating side effects.</li>
  *   <li>Null handling: passing {@code null} for locale or access manager results in the getter returning {@code null}.</li>
  *   <li>Blank repository IDs: any blank (null/empty/whitespace) {@code repositoryId} is replaced by {@link info.magnolia.repository.RepositoryConstants#WEBSITE}.</li>
- *   <li>Overloads for JCR session: one overload accepts an existing {@link Session}, the other creates a mock via {@link de.ibmix.magkit.test.jcr.SessionMockUtils#mockSession(String)}.</li>
+ *   <li>Overloads for JCR session: one overload accepts an existing {@link Session}, the other creates a mock via {@link de.ibmix.magkit.test.jcr.SessionMockUtils#mockSession(String, SessionStubbingOperation...)}.</li>
  *   <li>Exceptions: {@link RepositoryException} is caught and ignored in JCR session stubbings (Magnolia API normally does not throw for mocked access).</li>
  * </ul>
  * <p>
@@ -133,7 +134,7 @@ public abstract class SystemContextStubbingOperation implements StubbingOperatio
 
     /**
      * Creates and stubs a JCR {@link Session} for the given repository id, delegating to {@link #stubJcrSession(String, Session)}.
-     * The session is created via {@link de.ibmix.magkit.test.jcr.SessionMockUtils#mockSession(String)} and then registered in the context.
+     * The session is created via {@link de.ibmix.magkit.test.jcr.SessionMockUtils#mockSession(String, SessionStubbingOperation...)} and then registered in the context.
      * Blank repository ids are mapped to {@link info.magnolia.repository.RepositoryConstants#WEBSITE}.
      *
      * @param repositoryId repository ID/name (blank treated as {@code WEBSITE})

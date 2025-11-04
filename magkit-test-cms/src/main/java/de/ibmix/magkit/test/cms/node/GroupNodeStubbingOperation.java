@@ -29,17 +29,16 @@ import javax.jcr.Node;
  * <p>
  * A Magnolia group node typically holds simple metadata (title, description) plus membership relations to other groups and roles.
  * This utility provides small, composable factory methods that return {@link UserNodeStubbingOperation} instances (historic choice to
- * reuse the same operation type) which, when executed via {@link MagnoliaNodeStubbingOperation#of(Node)}, stub the respective properties
+ * reuse the same operation type) which, when executed via {@link MagnoliaNodeStubbingOperation#of(Object)}, stub the respective properties
  * or create reference list child nodes.
  * </p>
- * <p><strong>Provided operations:</strong>
+ * <strong>Provided operations:</strong>
  * <ul>
  *   <li><code>stubTitle</code>: Stubs textual title property "title".</li>
  *   <li><code>stubDescription</code>: Stubs textual description property "description".</li>
  *   <li><code>stubGroups</code>: Creates/overwrites a child node "groups" and stores referenced group node identifiers under numbered properties ("00", "01", ...).</li>
  *   <li><code>stubRoles</code>: Creates/overwrites a child node "roles" and stores referenced role node identifiers under numbered properties.</li>
  * </ul>
- * </p>
  * <p><strong>Reference list semantics:</strong> The helper {@link MagnoliaNodeStubbingOperation#stubNodeReferenceList(Node, String, Node...)} writes identifiers only; no JCR REFERENCE type or referential integrity is enforced.</p>
  * <p><strong>Thread-safety:</strong> Operations are stateless. Generated mock graphs are not thread-safe and should be confined to a single test method.</p>
  * <p><strong>Example usage:</strong></p>

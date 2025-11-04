@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
  * Factory collection for creating {@link Node}-scoped Mockito stubbing operations.
  * <p>
  * Each static method returns a {@link NodeStubbingOperation} (an {@link ExceptionStubbingOperation}) that encapsulates
- * an idempotent set of Mockito stubs to be applied to a {@link Node} mock via {@link NodeStubbingOperation#of(Node)}.
+ * an idempotent set of Mockito stubs to be applied to a {@link Node} mock via {@link NodeStubbingOperation#of(Object)}.
  * Operations are intentionally small, composable building blocks and may be combined (varargs) by higher level
  * helpers such as {@code NodeMockUtils.mockNode(String, NodeStubbingOperation...)}.
  * </p>
@@ -58,15 +58,14 @@ import static org.mockito.Mockito.when;
  * relations (parent/child, session registration, property collections) consistent. For plain Mockito node mocks the
  * stubbing is deliberately minimal and focused only on the directly requested behavior.
  * </p>
- * <p><strong>Typical usage:</strong>
+ * <strong>Typical usage:</strong>
  * <pre>{@code
- * Node article = NodeMockUtils.mockNode("article",
+ *     Node article = NodeMockUtils.mockNode("article",
  *     NodeStubbingOperation.stubType("mgnl:page"),
  *     NodeStubbingOperation.stubIdentifier("1234-uuid"),
  *     NodeStubbingOperation.stubProperty("title", "Hello")
  * );
  * }</pre>
- * </p>
  * <p><strong>Thread-safety:</strong> Operations are stateless; concurrency concerns relate only to the underlying mock which
  * is normally mutated in a single test thread.</p>
  * <p><strong>Error handling:</strong> Assertions fail fast on invalid inputs (e.g. null target nodes) to surface test setup
@@ -78,7 +77,7 @@ import static org.mockito.Mockito.when;
  * @see SessionStubbingOperation
  */
 public abstract class NodeStubbingOperation implements ExceptionStubbingOperation<Node, RepositoryException> {
-    public static final String PROPNAME_TITLE = "title";
+    public static final String PN_TITLE = "title";
     public static final String UNTITLED = "untitled";
     public static final String UNTITLED_HANDLE = "/" + UNTITLED;
 
@@ -134,7 +133,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
             @Override
             public void of(Node node) throws RepositoryException {
                 Require.Argument.notNull(node, "node must not be null");
-                stubProperty(PROPNAME_TITLE, value).of(node);
+                stubProperty(PN_TITLE, value).of(node);
             }
         };
     }
@@ -395,7 +394,7 @@ public abstract class NodeStubbingOperation implements ExceptionStubbingOperatio
     }
 
     /**
-     * Stub parent relation for a node; re-registers the node (and recursively its descendants & properties) in the new session context if present.
+     * Stub parent relation for a node; re-registers the node (and recursively its descendants and properties) in the new session context if present.
      * <p>Also protects against setting a node as its own parent and clears old session lookups.</p>
      *
      * @param parent new parent node

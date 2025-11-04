@@ -63,12 +63,14 @@ public final class ServerConfigurationMockUtils extends ComponentsMockUtils {
      * <p>
      * If multiple stubbing operations are supplied they are executed sequentially, allowing incremental configuration.
      * </p>
+     * <p>
+     * Implementation Note: The underlying mock is created via {@code mockComponentInstance(ServerConfiguration.class)} inherited from {@link ComponentsMockUtils}.
+     * </p>
      *
      * @param stubbings zero or more {@link ServerConfigurationStubbingOperation} instances defining mock behavior; may be empty
      * @return the mocked and configured {@link ServerConfiguration} instance registered for global lookup
      * @see ServerConfigurationStubbingOperation
      * @see #cleanServerConfiguration()
-     * @implNote The underlying mock is created via {@code mockComponentInstance(ServerConfiguration.class)} inherited from {@link ComponentsMockUtils}.
      */
     public static ServerConfiguration mockServerConfiguration(ServerConfigurationStubbingOperation... stubbings) {
         ServerConfiguration config = mockComponentInstance(ServerConfiguration.class);

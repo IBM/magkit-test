@@ -41,14 +41,12 @@ import static org.mockito.Mockito.doReturn;
  *   <li>Operations assert non-null target roles at execution time (throwing {@link IllegalArgumentException} if violated).</li>
  *   <li>Stateless – no shared mutable data.</li>
  * </ul>
- * <p>
  * Example:
  * <pre>
  *   Role r = Mockito.mock(Role.class);
  *   RoleStubbingOperation.stubName("editors").of(r);
  *   RoleStubbingOperation.stubId("123").of(r);
  * </pre>
- * </p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2023-06-16

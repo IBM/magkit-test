@@ -45,12 +45,12 @@ import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubType;
  * Supported tags:
  * <ul>
  *     <li><code>sv:node</code> – creates a new mocked node and pushes it on an internal path stack.</li>
- *     <li><code>sv:property</code> – collects property meta-data (name & type) and its values.</li>
+ *     <li><code>sv:property</code> – collects property meta-data (name and type) and its values.</li>
  *     <li><code>sv:value</code> – accumulates character data for a single property value.</li>
  * </ul>
  * Properties <code>jcr:primaryType</code> and <code>jcr:uuid</code> are treated specially to stub node type and identifier.
  * <p>
- * After the parse has finished (i.e. the root <code>sv:node</code> element is closed) {@link #getResult()} returns
+ * After the parse has finished (e.g., the root <code>sv:node</code> element is closed) {@link #getResult()} returns
  * the root node of the parsed subtree.
  * <p>
  * Example usage:

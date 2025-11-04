@@ -46,14 +46,12 @@ import static org.mockito.Mockito.doReturn;
  *   <li>Each operation asserts a non-null target group when executed (throwing {@link IllegalArgumentException} if violated).</li>
  *   <li>Operations are stateless and side-effect only on the supplied mock.</li>
  * </ul>
- * <p>
  * Example:
  * <pre>
  *   Group g = Mockito.mock(Group.class);
  *   GroupStubbingOperation.stubName("authors").of(g);
  *   GroupStubbingOperation.stubRoles("editor").of(g);
  * </pre>
- * </p>
  * <p><b>Thread safety:</b> Stateless operations; typical single-threaded test usage assumed.</p>
  *
  * @author wolf.bubenik@ibmix.de

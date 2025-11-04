@@ -59,7 +59,6 @@ import static org.mockito.Mockito.when;
  * Thread safety: The produced mocks are <em>not</em> thread-safe; treat each returned instance as
  * test-method local. The class itself is stateless and therefore thread-safe.
  * </p>
- * <p>
  * Typical usage:
  * <pre>{@code
  * HttpServletRequest request = ServletMockUtils.mockHttpServletRequest(
@@ -68,7 +67,6 @@ import static org.mockito.Mockito.when;
  * HttpServletResponse response = ServletMockUtils.mockHttpServletResponse();
  * }
  * </pre>
- * </p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2011-03-04

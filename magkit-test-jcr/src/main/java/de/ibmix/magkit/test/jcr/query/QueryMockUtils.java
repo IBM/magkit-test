@@ -40,11 +40,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
+import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
 import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubLanguage;
 import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubResult;
 import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubStatement;
-import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
-import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -54,22 +54,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Utility class for mocking JCR query components including QueryResult, Query, QueryManager, and Row objects.
+ * Utility class for mocking JCR query components including QueryResult, Query, QueryManager and Row objects.
  * <p>
  * This utility provides a comprehensive set of factory methods for creating Mockito mocks of JCR query-related
  * interfaces. It simplifies unit testing by allowing developers to create pre-configured query mocks with
  * predefined results and behaviors.
  * </p>
- * <p>
  * Key features:
  * <ul>
  *   <li>Mock QueryManager instances with automatic registration to JCR Workspace</li>
- *   <li>Create Query mocks with configurable language, statements, and results</li>
+ *   <li>Create Query mocks with configurable language, statements and results</li>
  *   <li>Generate QueryResult mocks for both Node and Row-based query results</li>
  *   <li>Support for empty query results and custom stubbing operations</li>
  * </ul>
- * </p>
- * <p>
  * Usage examples:
  * <pre>
  * // Create a QueryManager with empty result for all queries
@@ -84,7 +81,6 @@ import static org.mockito.Mockito.when;
  * // Create a standalone Query mock
  * Query query = QueryMockUtils.mockQuery("SQL-2", "SELECT * FROM [nt:base]");
  * </pre>
- * </p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2013-05-29

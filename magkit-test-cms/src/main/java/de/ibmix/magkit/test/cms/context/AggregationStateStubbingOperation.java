@@ -20,22 +20,21 @@ package de.ibmix.magkit.test.cms.context;
  * #L%
  */
 
-import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Locale;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.ExceptionStubbingOperation;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
 import de.ibmix.magkit.test.cms.node.PageNodeStubbingOperation;
 import info.magnolia.cms.core.AggregationState;
 import info.magnolia.cms.core.Channel;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.util.Locale;
+
+import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockWebContext;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Factory holder for reusable {@code AggregationStateStubbingOperation} instances used to configure a mocked {@link AggregationState} in tests.
@@ -51,7 +50,7 @@ import info.magnolia.cms.core.Channel;
  * );
  * }</pre>
  * <p>
- * Side-effects & coupling:
+ * Side-effects and coupling:
  * <ul>
  *   <li>Some operations also stub derived properties (e.g. {@code stubMainContentNode} stubs handle and repository).</li>
  *   <li>{@link #stubSelectors(String[])} may interact with a mocked {@link info.magnolia.context.WebContext} by exposing selector key/value pairs as request attributes when absent.</li>
@@ -61,7 +60,7 @@ import info.magnolia.cms.core.Channel;
  *   <li>If a provided {@link Node} value is {@code null}, only its direct method (e.g. {@code getMainContentNode()}) is stubbed; dependent stubbings (handle, repository) are skipped.</li>
  *   <li>String parameters may be {@code null}; the corresponding getter will then return {@code null}.</li>
  * </ul>
- * Thread-safety: Thread-safe, intended for multithreaded unit tests. Manipulated static Magnolia runtime state is backed with ThreadLocal<Context>.
+ * Thread-safety: Thread-safe, intended for multithreaded unit tests. Manipulated static Magnolia runtime state is backed with ThreadLocal&lt;Context&gt;.
  * <p>
  * Error handling: All operations delegate to Mockito; no checked exceptions are thrown unless declared (repository access in node based stubbings).
  * <p>

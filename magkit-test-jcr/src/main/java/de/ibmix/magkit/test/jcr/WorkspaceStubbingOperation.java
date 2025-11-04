@@ -40,16 +40,16 @@ import static org.mockito.Mockito.when;
  * <p>
  * Each static factory method returns an immutable, single-use {@link WorkspaceStubbingOperation} implementation
  * (a small anonymous inner class) that applies a specific Mockito stubbing to a provided {@link Workspace} mock
- * when its {@link #of(Workspace)} method is invoked. Multiple operations can be combined (varargs) and are
+ * when its {@link #of(Object)} method is invoked. Multiple operations can be combined (varargs) and are
  * executed in the order supplied by the caller, enabling fine-grained composition without duplicating code.
  * </p>
- * <h3>Design Rationale</h3>
+ * <strong>Design Rationale</strong>
  * <ul>
  *   <li>Promotes DRY test code by encapsulating recurring stubbing patterns (name, session, query manager, etc.).</li>
  *   <li>Improves readability via intention-revealing method names like {@code stubSession(...)}.</li>
  *   <li>Allows conditional creation of dependent mocks (e.g. sessions) only when needed.</li>
  * </ul>
- * <h3>Typical Usage</h3>
+ * <strong>Typical Usage</strong>
  * <pre>{@code
  * Workspace ws = WorkspaceMockUtils.mockWorkspace(
  *     WorkspaceStubbingOperation.stubName("edit"),
@@ -168,7 +168,6 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
      *
      * @param queryManager the query manager to associate (may be a mock or test double)
      * @return a non-null stubbing operation
-     * @throws RepositoryException only declared for consistency with other operations (not thrown here)
      */
     public static WorkspaceStubbingOperation stubQueryManager(final QueryManager queryManager) {
         return new WorkspaceStubbingOperation() {
@@ -190,7 +189,6 @@ public abstract class WorkspaceStubbingOperation implements ExceptionStubbingOpe
      *
      * @param observationManager the observation manager to associate (may be a mock)
      * @return a non-null stubbing operation
-     * @throws RepositoryException only declared for interface compatibility (not thrown here)
      */
     public static WorkspaceStubbingOperation stubObservationManager(final ObservationManager observationManager) {
         return new WorkspaceStubbingOperation() {

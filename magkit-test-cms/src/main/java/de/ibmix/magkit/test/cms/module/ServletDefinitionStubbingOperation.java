@@ -39,7 +39,7 @@ import static org.mockito.Mockito.mock;
  * Operations either append to existing collections (e.g. {@link #stubMapping(String)}, {@link #stubParameter(String, String)})
  * or replace them entirely (e.g. {@link #stubMappings(Collection)}, {@link #stubParams(Collection)}).
  * </p>
- * <h3>Usage Example</h3>
+ * <strong>Usage Example</strong>
  * <pre>{@code
  * ServletDefinition servlet = ModuleMockUtils.mockServletDefinition(
  *     "assetServlet",
@@ -48,10 +48,10 @@ import static org.mockito.Mockito.mock;
  *     ServletDefinitionStubbingOperation.stubParameter("cache", "true")
  * );
  * }</pre>
- * <h3>Thread Safety</h3>
- * Returned operations are stateless; concurrent application to the same mock requires external synchronization of the test.
- * <h3>Null Handling</h3>
- * Parameters must be non-null unless explicitly documented; assertions surface invalid test configuration early.
+ * <p><strong>Thread Safety</strong><br/>
+ * Returned operations are stateless; concurrent application to the same mock requires external synchronization of the test.</p>
+ * <p><strong>Null Handling</strong><br/>
+ * Parameters must be non-null unless explicitly documented; assertions surface invalid test configuration early.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2023-11-13
@@ -60,7 +60,7 @@ public abstract class ServletDefinitionStubbingOperation implements StubbingOper
 
     /**
      * Stubs the servlet name returned by {@link ServletDefinition#getName()}.
-     * <h4>Example</h4>
+     * <strong>Example</strong>
      * <pre>{@code
      * ServletDefinitionStubbingOperation.stubName("myServlet");
      * }</pre>

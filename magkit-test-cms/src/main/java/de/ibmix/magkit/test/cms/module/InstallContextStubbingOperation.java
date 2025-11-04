@@ -33,7 +33,6 @@ import info.magnolia.repository.RepositoryConstants;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,13 +49,13 @@ import static org.mockito.Mockito.when;
  * Mockito mock. These operations allow composing readable test setups by passing multiple operations into
  * {@link ModuleMockUtils#mockInstallContext(InstallContextStubbingOperation...)}.
  * </p>
- * <h3>Design Goals</h3>
+ * <strong>Design Goals</strong>
  * <ul>
  *   <li>Provide single-responsibility stubbing operations (each method configures a distinct facet).</li>
  *   <li>Allow fluent and additive configuration without exposing Mockito details in test classes.</li>
  *   <li>Gracefully handle {@link RepositoryException} where relevant by declaring it in the operation contract.</li>
  * </ul>
- * <h3>Typical Usage</h3>
+ * <strong>Typical Usage</strong>
  * <pre>{@code
  * InstallContext ctx = ModuleMockUtils.mockInstallContext(
  *     InstallContextStubbingOperation.stubCurrentModuleDefinition(moduleDefinition),
@@ -64,9 +63,9 @@ import static org.mockito.Mockito.when;
  *     InstallContextStubbingOperation.stubConfigJCRSession(SessionStubbingOperation.stubRootNode("/"))
  * );
  * }</pre>
- * <h3>Thread Safety</h3>
+ * <strong>Thread Safety</strong>
  * Instances returned are stateless lambda-like objects; they can be reused across tests but are not synchronized.
- * <h3>Error Handling</h3>
+ * <strong>Error Handling</strong>
  * Methods creating sessions or nodes may throw {@link RepositoryException}. Callers passing such operations into the
  * higher-level mock factory should either catch or declare the exception. Operations that do not interact with the JCR
  * layer do not throw checked exceptions.

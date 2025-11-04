@@ -61,7 +61,7 @@ import static org.mockito.Mockito.when;
  *   <li><strong>Session/request creation:</strong> Operations that depend on a request or session will lazily create mocks if absent (e.g. {@link #stubAttribute(String, Object, int)}).</li>
  *   <li><strong>Scope handling:</strong> Attribute stubbing mimics Magnolia's request attribute strategy for LOCAL, SESSION, APPLICATION scopes (application scope currently not implemented).</li>
  * </ul>
- * Side effects & coupling:
+ * Side effects and coupling:
  * <ul>
  *   <li>Some operations (e.g. {@link #stubParameters(Map)}) delegate to {@link #stubExistingRequest(HttpServletRequestStubbingOperation...)} potentially creating a mock request.</li>
  *   <li>Session related operations may create a new {@link javax.servlet.http.HttpSession} if missing.</li>

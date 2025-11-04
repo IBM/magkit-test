@@ -46,14 +46,12 @@ import static org.mockito.Mockito.doReturn;
  *   <li>Argument validation via {@code assertThat} produces {@link IllegalArgumentException} on failure when executed.</li>
  *   <li>Operations only mutate supplied mocks, no shared state retained.</li>
  * </ul>
- * <p>
  * Example:
  * <pre>
  *   Role r = Mockito.mock(Role.class);
  *   RoleStubbingOperation.stubName("publisher").of(r);
  *   RoleManagerStubbingOperation.stubRole(r).of(SecurityMockUtils.mockRoleManager());
  * </pre>
- * </p>
  * <p><b>Thread safety:</b> Stateless operations; typical single-threaded test usage assumed.</p>
  *
  * @author wolf.bubenik@ibmix.de

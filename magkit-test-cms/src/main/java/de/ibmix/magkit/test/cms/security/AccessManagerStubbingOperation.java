@@ -45,13 +45,11 @@ import static org.mockito.Mockito.when;
  *   <li>Execution validates required arguments via {@code assertThat} throwing {@link IllegalArgumentException} on failure.</li>
  *   <li>No persistent state is stored in this class; operations are stateless wrappers.</li>
  * </ul>
- * <p>
- * Example:
+ * <p>Example:</p>
  * <pre>
  *   AccessManager am = SecurityMockUtils.mockAccessManager();
  *   AccessManagerStubbingOperation.stubPermissions("/content/foo", 0x1L, true).of(am);
  * </pre>
- * </p>
  * <p><b>Thread safety:</b> Stateless; individual operations rely on thread-safe mock usage in typical single-threaded tests.</p>
  *
  * @author wolf.bubenik@ibmix.de

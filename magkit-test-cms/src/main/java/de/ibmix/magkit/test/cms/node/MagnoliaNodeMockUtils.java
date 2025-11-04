@@ -38,15 +38,13 @@ import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 /**
  * Factory helper for creating Mockito based {@link Node} mocks preconfigured with Magnolia specific primary types
  * (mgnl:page, mgnl:component, mgnl:area, mgnl:content, mgnl:contentNode, mgnl:user, mgnl:group, mgnl:role).
- * <p>
- * Each factory method will:
+ * <p>Each factory method will:</p>
  * <ul>
  *   <li>Ensure a mocked WebContext providing a JCR session for the requested workspace via {@code MgnlContext.getJcrSession(workspace)} by invoking {@link ContextMockUtils#mockWebContext(WebContextStubbingOperation...)}.</li>
  *   <li>Create (or reuse if already created earlier in the test) a {@link Node} mock for the given path / name using {@link de.ibmix.magkit.test.jcr.NodeMockUtils#mockNode(String, String, NodeStubbingOperation...)}.</li>
  *   <li>Stub the primary node type to the Magnolia type given by the method using {@link NodeStubbingOperation#stubType(String)}.</li>
  *   <li>Apply all provided {@link NodeStubbingOperation} instances in the order supplied.</li>
  * </ul>
- * </p>
  * <p>
  * The String parameters named {@code path} or {@code name} represent a JCR handle (absolute path) when starting with "/" or a simple node name otherwise. For convenience both are forwarded
  * unchanged to {@link de.ibmix.magkit.test.jcr.NodeMockUtils#mockNode(String, String, NodeStubbingOperation...)} which will normalize and create intermediate nodes as required.

@@ -39,7 +39,7 @@ import static org.mockito.Mockito.mock;
  * providing additional operations only meaningful for areas.
  * <ul>
  *   <li>Each static method returns a new immutable {@code AreaDefinitionStubbingOperation}.</li>
- *   <li>The type specific {@link #of(AreaDefinition)} method performs the Mockito stubbing.</li>
+ *   <li>The type specific {@link #of(Object)} method performs the Mockito stubbing.</li>
  *   <li>Multiple operations can be applied sequentially to compose complex stubbing in tests.</li>
  * </ul>
  * Usage example:

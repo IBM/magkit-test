@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
  * <p>Usage pattern: Obtain or create a {@link Site} mock (e.g. via {@link SiteMockUtils#mockSite(String, SiteStubbingOperation...)})
  * and pass one or more operations produced by this class; each returned operation invokes {@link StubbingOperation#of(Object)} to apply
  * its stubbing logic. Operations are small and composable to keep test setup readable and intention revealing.</p>
- * <p>Behaviour & design notes:</p>
+ * <p>Behaviour and design notes:</p>
  * <ul>
  *   <li>All operations assert that the supplied {@link Site} instance is non-null (fail-fast with IllegalArgumentException).</li>
  *   <li>Varargs parameters (e.g. domains, theme stubbings) may be empty; {@code null} arrays lead to adding a {@code null} list element only if explicitly passed (rare).</li>

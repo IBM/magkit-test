@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
  * {@link ModuleDefinition} Mockito mock. By composing multiple operations you can build rich test fixtures without exposing
  * mocking details throughout your test code.
  * </p>
- * <h3>Usage Example</h3>
+ * <strong>Usage Example</strong>
  * <pre>{@code
  * ModuleDefinition module = ModuleMockUtils.mockModuleDefinition(
  *     "search",
@@ -55,9 +55,9 @@ import static org.mockito.Mockito.when;
  *     ModuleDefinitionStubbingOperation.stubDependency("core", "[1.0,2.0)", false)
  * );
  * }</pre>
- * <h3>Thread Safety</h3>
+ * <strong>Thread Safety</strong>
  * Returned operations are stateless and may be reused; applying them concurrently to the same mock requires external synchronization.
- * <h3>Null Handling</h3>
+ * <strong>Null Handling</strong>
  * All parameters must be non-null unless explicitly documented; assertions surface invalid test setup early.
  *
  * @author wolf.bubenik@ibmix.de

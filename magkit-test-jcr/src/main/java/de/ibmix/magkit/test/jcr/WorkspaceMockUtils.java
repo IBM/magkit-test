@@ -40,7 +40,7 @@ import static org.mockito.Mockito.mock;
  *     <li>Always stub the workspace name (default: {@code "test"}).</li>
  *     <li>Apply any additional {@link WorkspaceStubbingOperation}s passed via varargs, in the given order.</li>
  * </ul>
- * <h3>Usage Example</h3>
+ * <strong>Usage Example</strong>
  * <pre>{@code
  * import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubName;
  *

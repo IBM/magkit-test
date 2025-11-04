@@ -43,10 +43,12 @@ import static org.mockito.Mockito.mock;
  * readable. All mocks are created using the shared component provider (via {@link de.ibmix.magkit.test.cms.context.ComponentsMockUtils})
  * to integrate with other test utilities.
  * </p>
- * <h3>Thread Safety</h3>
+ * <p>
+ * <strong>Thread Safety</strong>
  * The helper relies on a static component provider that is backed by ThreadLocal. It is intended for concurrent use across parallel test execution.
  * Call {@link #cleanModuleRegistry()} between tests if isolation is required.
- * <h3>Usage Example</h3>
+ * </p>
+ * <strong>Usage Example</strong>
  * <pre>{@code
  * ModuleDefinition module = ModuleMockUtils.mockModuleDefinition(
  *     ModuleDefinitionStubbingOperation.stubName("my-module"),
@@ -54,9 +56,11 @@ import static org.mockito.Mockito.mock;
  * );
  * }
  * </pre>
- * <h3>Error Handling</h3>
+ * <strong>Error Handling</strong>
+ * <p>
  * Any {@link RepositoryException} thrown while applying stubbing logic for an {@link InstallContext} is caught and ignored
  * because repository interaction is not relevant for pure mocking; tests expecting repository failures must simulate them explicitly.
+ * </p>
  * <p><b>Thread safety:</b> Implementation is backed by ComponentProvider that uses ThreadLocal and is thread-safe; intended for multithreaded test initialization code.</p>
  *
  * @author wolf.bubenik@ibmix.de
@@ -70,7 +74,7 @@ public abstract class ModuleMockUtils {
      * Provided {@code stubbings} allow configuration of the mock. Any {@link RepositoryException} optionally thrown by
      * a stubbing implementation is suppressed because the mock creation phase should not fail for repository access.
      * </p>
-     * <h4>Example</h4>
+     * <strong>Example</strong>
      * <pre>{@code
      * InstallContext ctx = ModuleMockUtils.mockInstallContext(
      *     InstallContextStubbingOperation.stubCurrentModule(moduleDef),

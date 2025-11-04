@@ -42,7 +42,6 @@ import static org.mockito.Mockito.when;
  * the supplied stubbing operations. If a nested object already exists on the given {@link PageContext}, only the
  * provided additional stubbings are applied – no replacement occurs. This makes the operations composable and DRY.
  * </p>
- * <p>
  * Typical usage examples:
  * <pre>
  * PageContext pageContext = mockPageContext(
@@ -57,7 +56,6 @@ import static org.mockito.Mockito.when;
  *     HttpServletResponseStubbingOperation.stubStatus(200)
  * ).of(existingPageContextMock);
  * </pre>
- * </p>
  * <p>
  * Thread-safety: The operations are stateless lambdas (anonymous classes) and therefore thread-safe; however the
  * underlying mocks they act upon are usually <em>not</em> thread-safe and should not be shared across threads.

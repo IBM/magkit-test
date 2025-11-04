@@ -25,8 +25,8 @@ import de.ibmix.magkit.test.StubbingOperation;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 
-import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockModuleDefinition;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubVersion;
+import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockModuleDefinition;
 import static org.mockito.Mockito.doReturn;
 
 /**
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.doReturn;
  * Typical use is to register one or more module definitions so other components under test can resolve them via the registry.
  * Operations can be composed; later stubs for the same name overwrite previous ones if executed in sequence.
  * </p>
- * <h3>Usage Example</h3>
+ * <strong>Usage Example</strong>
  * <pre>{@code
  * ModuleDefinition def = ModuleMockUtils.mockModuleDefinition(
  *     "shop",
@@ -47,9 +47,9 @@ import static org.mockito.Mockito.doReturn;
  *     ModuleRegistryStubbingOperation.stubModuleDefinition("shop", def)
  * );
  * }</pre>
- * <h3>Null Handling</h3>
+ * <strong>Null Handling</strong>
  * All parameters must be non-null unless explicitly stated; assertions guard against invalid input to surface test setup errors early.
- * <h3>Thread Safety</h3>
+ * <strong>Thread Safety</strong>
  * Returned operations are stateless and may be reused across tests; concurrent application to the same mock requires external synchronization.
  *
  * @author wolf.bubenik@ibmix.de
@@ -62,7 +62,7 @@ public abstract class ModuleRegistryStubbingOperation implements StubbingOperati
      * <p>
      * The provided mock {@link ModuleDefinition} will be returned by {@link ModuleRegistry#getDefinition(String)} for the given name.
      * </p>
-     * <h4>Example</h4>
+     * <strong>Example</strong>
      * <pre>{@code
      * ModuleDefinition def = ModuleMockUtils.mockModuleDefinition("demo",
      *     ModuleDefinitionStubbingOperation.stubVersion("1.4.1")
@@ -92,7 +92,7 @@ public abstract class ModuleRegistryStubbingOperation implements StubbingOperati
      * <p>
      * Equivalent to {@code stubModuleDefinition(name, stubVersion(version))}.
      * </p>
-     * <h4>Example</h4>
+     * <strong>Example</strong>
      * <pre>{@code
      * ModuleRegistry registry = ModuleMockUtils.mockModuleRegistry(
      *     ModuleRegistryStubbingOperation.stubModuleDefinition("core", "1.0.0")
@@ -113,7 +113,7 @@ public abstract class ModuleRegistryStubbingOperation implements StubbingOperati
      * Internally delegates to {@link ModuleMockUtils#mockModuleDefinition(String, ModuleDefinitionStubbingOperation...)} and
      * then registers the result via {@link #stubModuleDefinition(String, ModuleDefinition)}.
      * </p>
-     * <h4>Example</h4>
+     * <strong>Example</strong>
      * <pre>{@code
      * ModuleRegistry registry = ModuleMockUtils.mockModuleRegistry(
      *     ModuleRegistryStubbingOperation.stubModuleDefinition(

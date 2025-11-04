@@ -51,7 +51,6 @@ import static org.mockito.Mockito.when;
  *   <li>Where a user does not yet exist it will be created and registered; existing users are reused.</li>
  *   <li>UUID handling for newly created users is delegated to {@link UserStubbingOperation#stubIdentifier(String)} which may provide defaults.</li>
  * </ul>
- * <p>
  * Typical usage example:
  * <pre>
  *   UserManager manager = ... // mocked elsewhere
@@ -60,7 +59,6 @@ import static org.mockito.Mockito.when;
  *       UserStubbingOperation.stubPassword("secret")
  *   ).of(manager);
  * </pre>
- * </p>
  * <p><b>Thread safety:</b> Not thread-safe; intended for single-threaded test setup.</p>
  *
  * @author wolf.bubenik@ibmix.de

@@ -69,7 +69,7 @@ import static org.mockito.Mockito.when;
  * calls through Magnolia's component resolution return the provided mock instances. Use {@link #cleanAssetProviderRegistry()}
  * to clear the registry between tests to avoid cross test interference.
  * </p>
- * <h3>Typical usage</h3>
+ * <strong>Typical usage</strong>
  * <pre>
  * // Create a simple JCR asset mock with default provider and random UUID:
  * JcrAsset asset = AssetMockUtils.mockJcrAsset("/path/to/asset.jpg");

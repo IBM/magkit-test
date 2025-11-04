@@ -47,7 +47,6 @@ import static org.mockito.Mockito.doReturn;
  *   <li>Argument validation uses {@code assertThat} and throws {@link IllegalArgumentException} upon failure when executed.</li>
  *   <li>Operations mutate only the passed mock; no shared state.</li>
  * </ul>
- * <p>
  * Example:
  * <pre>
  *   Group g = Mockito.mock(Group.class);
@@ -55,7 +54,6 @@ import static org.mockito.Mockito.doReturn;
  *   GroupManager manager = SecurityMockUtils.mockGroupManager();
  *   GroupManagerStubbingOperation.stubGroup(g).of(manager);
  * </pre>
- * </p>
  * <p><b>Thread safety:</b> Stateless operations; typical single-threaded test usage assumed.</p>
  *
  * @author wolf.bubenik@ibmix.de

@@ -43,24 +43,23 @@ import static org.mockito.Mockito.when;
  * Factory collection for creating {@link Property}-scoped Mockito stubbing operations.
  * <p>
  * A {@code PropertyStubbingOperation} encapsulates idempotent stubbing logic applied to a given {@link Property} mock via
- * {@link #of(Property)}. Static factory methods cover the most common value types (String, numeric, date, boolean, binary)
+ * {@link #of(Object)}. Static factory methods cover the most common value types (String, numeric, date, boolean, binary)
  * and convenience cases (node reference, visitor acceptance). Multi-value semantic is supported uniformly: all overloads
  * treat the provided varargs as the exact backing array for {@link Property#getValues()}, while {@link Property#getValue()}
  * and singular getters delegate to the first element (or {@code null} if none present) consistent with JCR expectations.
  * </p>
- * <p><strong>Usage example:</strong>
+ * <strong>Usage example:</strong>
  * <pre>{@code
  * PropertyStubbingOperation titleStub = PropertyStubbingOperation.stubValues("Hello World");
  * Property title = PropertyMockUtils.mockProperty("title");
  * titleStub.of(title);
  * }</pre>
- * </p>
  * <p><strong>Thread-safety:</strong> Operations are stateless and safe to reuse across tests; only the targeted mock is mutated.</p>
  * <p><strong>Error handling:</strong> Methods assert non-null arguments (property, value arrays) to fail fast in test setups.
  * {@link RepositoryException} is declared for alignment with JCR APIs though not typically thrown by these operations.
  * </p>
  * <p><strong>Extensibility:</strong> For uncommon property types create a custom operation returning an anonymous subclass or wrap
- * {@link ValueMockUtils#mockValue(Object)} generated values.</p>
+ * {@link ValueMockUtils#mockValue(String)} generated values.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-11-05
@@ -71,14 +70,12 @@ public abstract class PropertyStubbingOperation implements ExceptionStubbingOper
 
     /**
      * Stub a property with prepared {@link Value} instances (multi or single value).
-     * <p>
      * Contract:
      * <ul>
      *   <li>{@link Property#getValue()} returns first element (or {@code null} if array empty).</li>
      *   <li>{@link Property#getValues()} returns the exact provided array (no defensive copy).</li>
      * </ul>
      * Caller ensures the {@link Value} instances match the intended {@link PropertyType} semantics.
-     * </p>
      *
      * @param values non-null array of values (may be empty)
      * @return stubbing operation

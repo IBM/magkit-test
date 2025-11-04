@@ -38,9 +38,8 @@ import static org.mockito.Mockito.doReturn;
  * <p>
  * Each static factory method returns a {@link RowStubbingOperation} that performs a focused stubbing (score, value,
  * values array, path or node related data). Operations are designed to be composable – callers can create several
- * operations and apply them sequentially to the same {@link Row} mock to build up the required behaviour.
+ * operations and apply them sequentially to the same {@link Row} mock to build up the required behavior.
  * </p>
- * <p>
  * Typical usage:
  * <pre>{@code
  * Row row = mock(Row.class);
@@ -48,7 +47,6 @@ import static org.mockito.Mockito.doReturn;
  * RowStubbingOperation.stubPath("/content/sample").of(row);
  * }
  * </pre>
- * </p>
  * <p>
  * Defensive null checks (via Hamcrest {@code assertThat}) are applied to fail fast during test setup when mandatory
  * arguments are missing. All methods return non-null operations.
@@ -190,7 +188,6 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
 
     /**
      * Creates an operation stubbing the relation between a {@link Row} and a backing {@link Node}.
-     * <p>
      * The following methods are stubbed based on the supplied {@code node}:
      * <ul>
      *   <li>{@link Row#getNode()}</li>
@@ -201,7 +198,6 @@ public abstract class RowStubbingOperation implements ExceptionStubbingOperation
      * </ul>
      * Calls to the selector-based methods forward to the respective {@link Node} lookups / property access so that
      * relative path resolution and property retrieval use the actual {@link Node} implementation.
-     * </p>
      *
      * @param node the source node whose data should be exposed through the row (must not be null)
      * @return a non-null stubbing operation

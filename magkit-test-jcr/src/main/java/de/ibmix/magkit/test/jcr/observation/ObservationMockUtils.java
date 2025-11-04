@@ -42,7 +42,7 @@ import static org.mockito.Mockito.mock;
  * that depends on observation functionality without requiring a full JCR repository setup.
  * </p>
  *
- * <h3>Key Features:</h3>
+ * <strong>Key Features:</strong>
  * <ul>
  *   <li>Creates pre-configured ObservationManager mocks with default behavior</li>
  *   <li>Supports custom configuration through ObservationManagerStubbingOperation instances</li>
@@ -50,7 +50,7 @@ import static org.mockito.Mockito.mock;
  *   <li>Validates input parameters to prevent null pointer exceptions</li>
  * </ul>
  *
- * <h3>Usage Examples:</h3>
+ * <strong>Usage Examples:</strong>
  * <pre>{@code
  * // Create a basic ObservationManager mock with default behavior
  * ObservationManager observationManager = ObservationMockUtils.mockObservationManager();
@@ -68,7 +68,7 @@ import static org.mockito.Mockito.mock;
  * );
  * }</pre>
  *
- * <h3>Thread Safety:</h3>
+ * <strong>Thread Safety:</strong>
  * <p>
  * This utility class is thread-safe as it only contains static methods and does not maintain
  * any shared state. However, the created mock instances themselves may not be thread-safe
@@ -92,14 +92,14 @@ public abstract class ObservationMockUtils {
      * modified through the provided stubbing operations.
      * </p>
      *
-     * <h4>Default Behavior:</h4>
+     * <strong>Default Behavior:</strong>
      * <ul>
      *   <li>Registered event listeners collection is initialized as empty</li>
      *   <li>All other methods return Mockito's default values (null for objects, 0 for primitives)</li>
      *   <li>Methods can be further customized using the provided stubbing operations</li>
      * </ul>
      *
-     * <h4>Stubbing Operations:</h4>
+     * <strong>Stubbing Operations:</strong>
      * <p>
      * The stubbing operations are applied in the order they are provided. Later operations
      * may override the behavior configured by earlier operations if they target the same
@@ -111,7 +111,7 @@ public abstract class ObservationMockUtils {
      *   <li>Setting up custom event dispatching logic</li>
      * </ul>
      *
-     * <h4>Usage Examples:</h4>
+     * <strong>Usage Examples:</strong>
      * <pre>{@code
      * // Basic ObservationManager without additional configuration
      * ObservationManager manager = mockObservationManager();

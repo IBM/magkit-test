@@ -205,7 +205,6 @@ public final class SiteMockUtils extends ComponentsMockUtils {
      *
      * @param stubbings non-null vararg of site manager stubbing operations
      * @return site manager mock
-     * @throws RepositoryException if a stubbing operation throws it
      * @throws IllegalArgumentException if {@code stubbings} is null
      */
     public static SiteManager mockSiteManager(SiteManagerStubbingOperation... stubbings) {

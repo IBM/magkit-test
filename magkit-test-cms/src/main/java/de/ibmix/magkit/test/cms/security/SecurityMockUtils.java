@@ -65,13 +65,11 @@ import static org.mockito.Mockito.when;
  *   <li>Ensures idempotent creation inside a single test execution path (reuses already registered mocks).</li>
  *   <li>Vararg stubbing parameters are applied in order of appearance.</li>
  * </ul>
- * <p>
  * Typical usage example:
  * <pre>
  *   User user = SecurityMockUtils.mockUser("author", UserStubbingOperation.stubEnabled(true));
  *   Role editors = SecurityMockUtils.mockRole("editors");
  * </pre>
- * </p>
  *
  * <p><b>Thread safety:</b> Implementation is backed by ComponentProvider that uses ThreadLocal and is thread-safe; intended for multithreaded test initialization code.</p>
  *

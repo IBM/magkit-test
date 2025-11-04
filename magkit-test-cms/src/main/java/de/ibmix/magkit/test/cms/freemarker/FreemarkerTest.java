@@ -104,11 +104,10 @@ public abstract class FreemarkerTest {
     /**
      * Set up the environment for a single test.
      * This can be overridden in sub-classes to extend and change behavior.
-     * There is no need to tag the overridden method again with {@link org.junit.jupiter.api.BeforeEach}.
+     * There is no need to tag the overridden method again with BeforeEach.
      *
      * @throws RepositoryException repository exception
      */
-
     public void setupEnvironment() throws RepositoryException {
         _componentProvider = ComponentsMockUtils.getComponentProvider();
 

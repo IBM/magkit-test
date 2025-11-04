@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
  * <p>
  * Contract:
  * <ul>
- *   <li>{@link #of(ValueFactory)} asserts the provided factory is non-null.</li>
+ *   <li>{@link #of(Object)} asserts the provided factory is non-null.</li>
  *   <li>Every factory method captures its argument and ensures future calls with the same primitive/value instance
  *       return the configured {@link Value}.</li>
  *   <li>Returned {@link Value} mocks implement rich conversion semantics as documented in {@link ValueMockUtils}.</li>

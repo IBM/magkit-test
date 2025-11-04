@@ -32,15 +32,14 @@ import java.util.Calendar;
  * A Magnolia user node commonly stores authentication and profile metadata (email, enabled state, password, language,
  * last access timestamps) plus references to groups and roles. The static methods provided here return
  * {@code UserNodeStubbingOperation} instances (subclass of {@link MagnoliaNodeStubbingOperation}) which, when executed via
- * {@link MagnoliaNodeStubbingOperation#of(Node)}, stub the corresponding single property or create reference list child nodes.
+ * {@link MagnoliaNodeStubbingOperation#of(Object)}, stub the corresponding single property or create reference list child nodes.
  * </p>
  * <p><strong>Reference list semantics:</strong> Group and role relations are represented by a simple child node containing one property per referenced node holding its identifier. No JCR REFERENCE type or referential integrity is enforced.</p>
- * <p><strong>Behavior & validation:</strong>
+ * <strong>Behavior and validation:</strong>
  * <ul>
  *   <li>No semantic validation (e.g. password policy, email format) is performed; null/blank values are written verbatim.</li>
  *   <li>Target node null checks are performed inside delegated operations (Hamcrest assertions) to fail fast for erroneous test setup.</li>
  * </ul>
- * </p>
  * <p><strong>Example usage:</strong></p>
  * <pre>
  *   Node user = MagnoliaNodeMockUtils.mockUserNode("john",

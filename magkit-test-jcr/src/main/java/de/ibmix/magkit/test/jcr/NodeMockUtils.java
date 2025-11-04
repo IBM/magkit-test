@@ -74,7 +74,6 @@ import static org.mockito.Mockito.when;
  * ancestor navigation, adding child nodes, setting properties and basic type checks. More advanced repository behavior (locking, versioning,
  * access control, transient state handling, save semantics etc.) is <strong>not</strong> emulated.
  * </p>
- * <p>
  * Typical usage:
  * <pre>
  *     Node page = NodeMockUtils.mockNode("/content/site/en/page", stubType("mgnl:page"));
@@ -82,7 +81,6 @@ import static org.mockito.Mockito.when;
  *     Node fromXml = NodeMockUtils.mockNodeFromXml("website", inputStream);
  * </pre>
  * All factory methods return fully stubbed nodes whose properties and children can be further refined through {@link NodeStubbingOperation} instances.
- * </p>
  * <p>
  * Thread-safety: instances produced are <em>not</em> thread-safe. Each test should create its own mock graph.
  * </p>
@@ -147,14 +145,12 @@ public final class NodeMockUtils {
     /**
      * Creates (or retrieves if already mocked) a {@link Node} mock by parsing the given XML input stream.
      * The XML must be encoded in UTF-8 and conform to the JCR XML import format used by Magnolia / Jackrabbit.
-     * <p>
      * Implementation details:
      * <ul>
      *   <li>Uses a SAX parser with the default factory settings (no validation, no namespace adjustments).</li>
      *   <li>Delegates element handling to {@code JcrXmlHandler} which creates node mocks and stubs properties accordingly.</li>
      *   <li>The provided input stream is not closed; caller remains responsible for resource cleanup.</li>
      * </ul>
-     * </p>
      * <p><strong>Error handling:</strong> Any {@link ParserConfigurationException}, {@link SAXException} or {@link IOException}
      * encountered during parsing is wrapped in a {@link RuntimeException} to simplify test code (unchecked).</p>
      *

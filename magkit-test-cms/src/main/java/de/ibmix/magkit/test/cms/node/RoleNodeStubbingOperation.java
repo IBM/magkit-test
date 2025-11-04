@@ -28,7 +28,7 @@ import javax.jcr.Node;
  * Factory helpers for stubbing Magnolia role node properties for unit tests.
  * <p>A Magnolia role node typically defines permissions/ACLs (not covered here) and simple descriptive metadata such as
  * a title and description. These factory methods return {@link UserNodeStubbingOperation} instances (historic reuse of the
- * same operation type) which, when executed via {@link MagnoliaNodeStubbingOperation#of(Node)}, stub the respective properties.</p>
+ * same operation type) which, when executed via {@link MagnoliaNodeStubbingOperation#of(Object)}, stub the respective properties.</p>
  * <p><strong>Provided operations:</strong></p>
  * <ul>
  *   <li><code>stubTitle</code>: Stubs textual role title property "title".</li>

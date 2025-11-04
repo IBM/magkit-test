@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  * are typically provided by static factory methods in this class. They enable concise, reusable and composable
  * stubbing of repository behavior in tests without scattering Mockito calls throughout test code.
  * </p>
- * <p><strong>Usage pattern:</strong>
+ * <strong>Usage pattern:</strong>
  * <pre>{@code
  * Repository repo = RepositoryMockUtils.mockRepository(
  *     RepositoryStubbingOperation.stubLogin(mock(Session.class))
@@ -45,9 +45,8 @@ import static org.mockito.Mockito.when;
  * </pre>
  * Multiple operations can be passed to {@link RepositoryMockUtils#mockRepository(RepositoryStubbingOperation...)} and
  * will be executed in the given order, allowing incremental setup.
- * </p>
  * <p><strong>Error handling:</strong><br>
- * The functional method {@link ExceptionStubbingOperation#of(Repository)} of(Repository)} is allowed to throw {@link RepositoryException} so that stubbing
+ * The functional method {@link ExceptionStubbingOperation#of(Object)} is allowed to throw {@link RepositoryException} so that stubbing
  * logic requiring repository related exceptions can be expressed directly.
  * </p>
  * <p><strong>Thread safety:</strong><br>
@@ -68,7 +67,6 @@ public abstract class RepositoryStubbingOperation implements ExceptionStubbingOp
 
     /**
      * Create a {@code RepositoryStubbingOperation} that stubs the {@code login()} related methods of a {@link Repository} mock.
-     * <p>
      * Behavior configured:
      * <ul>
      *   <li>{@code repository.login()} returns the provided {@code session}.</li>
@@ -76,11 +74,10 @@ public abstract class RepositoryStubbingOperation implements ExceptionStubbingOp
      *   <li>If {@code session != null} and {@code session.getWorkspace() != null}, then
      *       {@code repository.login(session.getWorkspace().getName())} returns the same {@code session}.</li>
      * </ul>
-     * </p>
      * <p><strong>Null handling:</strong><br>
      * Passing {@code null} as {@code session} stubs {@code repository.login()} to return {@code null}. Workspace name
      * based login will not be stubbed in that case.</p>
-     * <p><strong>Typical use:</strong>
+     * <strong>Typical use:</strong>
      * <pre>{@code
      * Session session = mock(Session.class);
      * when(session.getWorkspace()).thenReturn(mock(Workspace.class));
@@ -89,7 +86,6 @@ public abstract class RepositoryStubbingOperation implements ExceptionStubbingOp
      * );
      * // repo.login() now yields 'session'
      * }</pre>
-     * </p>
      * <p><strong>Composition:</strong><br>
      * This operation can be combined with other repository stubbing operations in a single call to
      * {@link RepositoryMockUtils#mockRepository(RepositoryStubbingOperation...)} to build up richer behavior.</p>

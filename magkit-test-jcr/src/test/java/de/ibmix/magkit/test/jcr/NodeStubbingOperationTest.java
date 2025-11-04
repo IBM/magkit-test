@@ -83,8 +83,8 @@ public class NodeStubbingOperationTest {
     @Test
     public void testStubTitle() throws Exception {
         NodeStubbingOperation.stubTitle("testTitle").of(_node);
-        assertNotNull(_node.getProperty(NodeStubbingOperation.PROPNAME_TITLE));
-        assertEquals("testTitle", _node.getProperty(NodeStubbingOperation.PROPNAME_TITLE).getString());
+        assertNotNull(_node.getProperty(NodeStubbingOperation.PN_TITLE));
+        assertEquals("testTitle", _node.getProperty(NodeStubbingOperation.PN_TITLE).getString());
     }
 
     @Test

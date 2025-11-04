@@ -35,13 +35,12 @@ import javax.jcr.RepositoryException;
  * with a node and to stub the Magnolia template property ({@code mgnl:template}). This is typically used when building page hierarchies
  * containing area nodes that must expose a template id for rendering or component resolution logic.
  * </p>
- * <p><strong>Behavior:</strong>
+ * <strong>Behavior:</strong>
  * <ul>
  *   <li>Does not validate {@code templateId}; a {@code null} or blank id will be passed through to the underlying mock factory and written verbatim.</li>
  *   <li>Fails fast with a Hamcrest assertion if the target node is {@code null}.</li>
  *   <li>Stubs the property after mocking the area definition so subsequent test logic can retrieve both aspects.</li>
  * </ul>
- * </p>
  * <p>Example usage:</p>
  * <pre>
  *   Node area = MagnoliaNodeMockUtils.mockAreaNode("main",
@@ -74,7 +73,7 @@ public abstract class AreaNodeStubbingOperation extends MagnoliaNodeStubbingOper
      *
      * @param templateId Magnolia template id (e.g. {@code my-module:main}); may be null or blank
      * @param stubbings optional stubbing operations applied to the mocked area definition (may be empty)
-     * @return stubbing operation to be invoked via {@link MagnoliaNodeStubbingOperation#of(Node)}
+     * @return stubbing operation to be invoked via {@link MagnoliaNodeStubbingOperation#of(Object)}
      */
     public static MagnoliaNodeStubbingOperation stubAreaTemplate(final String templateId, final AreaDefinitionStubbingOperation... stubbings) {
         return new MagnoliaNodeStubbingOperation() {
