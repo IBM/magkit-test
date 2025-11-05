@@ -284,7 +284,8 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
                 throw new RuntimeException("Tomcat didn't come up after " + waitedMillis + "ms?!");
             }
         }
-        // Needed since Magnolia 6.3.x for GET-requests to magnolia: init ServerConfiguration: instanceId; Instance UUID is used for creating hash of HMacToken.
+        // Needed since Magnolia 6.3.x for GET-requests to magnolia: init ServerConfiguration: instanceId;
+        // Instance UUID is used for creating hash of HMacToken (CSRF cookie token).
         Components.getComponent(ServerConfiguration.class).setInstanceUuid(UUID.randomUUID().toString());
     }
 
