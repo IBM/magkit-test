@@ -21,10 +21,12 @@ package de.ibmix.magkit.test.webapp;
  */
 
 import static io.restassured.RestAssured.get;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.ibmix.magkit.test.server.MagnoliaConfigSelector;
 import de.ibmix.magkit.test.server.MagnoliaTomcatExtension;
@@ -83,12 +85,12 @@ public class TomcatExtensionPublicTest {
     @Test
     public void testMagnoliaConfigInComponentRegistry() {
         // as a simple example, we are testing something here that Magnolia configures itself,
-        // so this would actually be a test that makes sense for Magnolia itself 
+        // so this would actually be a test that makes sense for Magnolia itself
         CacheModule cacheModule = Components.getComponent(CacheModule.class);
         ContentCachingConfiguration contentCaching = cacheModule.getContentCaching("defaultPageCache");
         assertNotNull(contentCaching, "Expected 'defaultPageCache' ContentCachingConfiguration to exist");
         CachePolicy cachePolicy = contentCaching.getCachePolicy();
-        assertEquals(Default.class, cachePolicy.getClass(), 
+        assertEquals(Default.class, cachePolicy.getClass(),
             "Expected 'defaultCachePolicy' to be have class " + Default.class);
     }
 
@@ -101,14 +103,14 @@ public class TomcatExtensionPublicTest {
         // do like info.magnolia.cms.filters.MgnlMainFilter.getRootFilter() to obtain filter chain,
         // looks like it is not directly accessible as a Component
         MgnlFilter rootFilter = Components.getComponent(info.magnolia.cms.filters.FilterManager.class).getFilterDispatcher().getTargetFilter();
-        // we are making some assumptions on Magnolia's implementation here (not ours); 
+        // we are making some assumptions on Magnolia's implementation here (not ours);
         // if one such assumption is wrong, make test fail with error that states this
         assertEquals(CompositeFilter.class, rootFilter.getClass(), "Magnolia implementation has changed");
         MgnlFilter[] filters = ((CompositeFilter) rootFilter).getFilters();
         MgnlFilter secondFilter = filters[1];
         assertEquals(ContentTypeFilter.class, secondFilter.getClass(), "Magnolia implementation has changed");
         Voter[] filterBypasses = ((ContentTypeFilter) secondFilter).getBypasses();
-        
+
         // we can check for an expected voter to be present ...
         Voter firstVoter = filterBypasses[0];
         assertEquals(URIRegexVoter.class, firstVoter.getClass(), "Magnolia implementation has changed");
@@ -121,7 +123,7 @@ public class TomcatExtensionPublicTest {
         URIRegexVoter uriRegexVoter = (URIRegexVoter) firstVoter;
         assertNotEquals(0, uriRegexVoter.vote(someVaadinPush), "Expected Voter to vote true (!=0) for Vaadin PUSH request");
     }
-    
+
     /**
      * Verify that our {@link MagnoliaConfigSelector} annotation works.
      */
@@ -130,6 +132,7 @@ public class TomcatExtensionPublicTest {
         // verify we are a public instance as desired in our MagnoliaConfigSelector.magnoliaInstanceType annotation
         ServerConfiguration serverConfiguration = Components.getComponent(ServerConfiguration.class);
         assertFalse(serverConfiguration.isAdmin());
+        assertTrue(isNotEmpty(serverConfiguration.getInstanceUuid()));
 
         // verify Magnolia read our test property from src/main/webapp/WEB-INF/config/testprofile/magnolia_public.properties
         // i.e. using the Magnolia profile we gave in our MagnoliaConfigSelector.magnoliaProfile annotation

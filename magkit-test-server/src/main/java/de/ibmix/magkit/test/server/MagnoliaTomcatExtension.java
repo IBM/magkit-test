@@ -1,6 +1,8 @@
 package de.ibmix.magkit.test.server;
 
+import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.init.MagnoliaConfigurationProperties;
+import info.magnolia.objectfactory.Components;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.specification.RequestSpecification;
@@ -31,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.apache.catalina.Context;
@@ -281,6 +284,8 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
                 throw new RuntimeException("Tomcat didn't come up after " + waitedMillis + "ms?!");
             }
         }
+        // Needed since Magnolia 6.3.x for GET-requests to magnolia: init ServerConfiguration: instanceId; Instance UUID is used for creating hash of HMacToken.
+        Components.getComponent(ServerConfiguration.class).setInstanceUuid(UUID.randomUUID().toString());
     }
 
     private Store getStore(ExtensionContext context) {
