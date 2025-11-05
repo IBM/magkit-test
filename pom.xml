@@ -23,6 +23,7 @@
     </modules>
 
     <properties>
+        <version.magnolia>6.3.17</version.magnolia>
         <version.el-api>2.2.5</version.el-api>
         <junitVersion>5.14.0</junitVersion>
         <mockitoVersion>5.20.0</mockitoVersion>
