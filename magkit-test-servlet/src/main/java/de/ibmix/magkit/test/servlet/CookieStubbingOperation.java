@@ -20,84 +20,125 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import de.ibmix.magkit.assertions.Require;
+
 import javax.servlet.http.Cookie;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
  * Utility class that provides factory methods for CookieStubbingOperation.
  * Stubbing operations to be used as parameters in ServletMockUtils.mockCookie(...)
- * or for stubbing the behaviour of an existing mock: CookieStubbingOperation.stubDomain("domain").of(mock).
+ * or for stubbing the behavior of an existing mock: CookieStubbingOperation.stubDomain("domain").of(mock).
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2014-02-11
  */
 public abstract class CookieStubbingOperation {
+    /**
+     * Apply this stubbing operation to the supplied cookie mock.
+     *
+     * @param context cookie mock; must not be null
+     */
     public abstract void of(Cookie context);
 
+    /**
+     * Stubs the domain of a Cookie.
+     *
+     * @param value the domain to be returned by getDomain()
+     * @return a CookieStubbingOperation that stubs the domain
+     */
     public static CookieStubbingOperation stubDomain(final String value) {
         return new CookieStubbingOperation() {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getDomain()).thenReturn(value);
             }
         };
     }
 
+    /**
+     * Stubs the comment of a Cookie.
+     *
+     * @param value the comment to be returned by getComment()
+     * @return a CookieStubbingOperation that stubs the comment
+     */
     public static CookieStubbingOperation stubComment(final String value) {
         return new CookieStubbingOperation() {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getComment()).thenReturn(value);
             }
         };
     }
 
+    /**
+     * Stubs the max age of a Cookie.
+     *
+     * @param value the max age to be returned by getMaxAge()
+     * @return a CookieStubbingOperation that stubs the max age
+     */
     public static CookieStubbingOperation stubMaxAge(final int value) {
         return new CookieStubbingOperation() {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getMaxAge()).thenReturn(value);
             }
         };
     }
 
+    /**
+     * Stubs the path of a Cookie.
+     *
+     * @param value the path to be returned by getPath()
+     * @return a CookieStubbingOperation that stubs the path
+     */
     public static CookieStubbingOperation stubPath(final String value) {
         return new CookieStubbingOperation() {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getPath()).thenReturn(value);
             }
         };
     }
 
+    /**
+     * Stubs the secure flag of a Cookie.
+     *
+     * @param value the secure flag to be returned by getSecure()
+     * @return a CookieStubbingOperation that stubs the secure flag
+     */
     public static CookieStubbingOperation stubSecure(final boolean value) {
         return new CookieStubbingOperation() {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getSecure()).thenReturn(value);
             }
         };
     }
 
+    /**
+     * Stubs the version of a Cookie.
+     *
+     * @param value the version to be returned by getVersion()
+     * @return a CookieStubbingOperation that stubs the version
+     */
     public static CookieStubbingOperation stubVersion(final int value) {
         return new CookieStubbingOperation() {
 
             @Override
             public void of(final Cookie cookie) {
-                assertThat(cookie, notNullValue());
+                Require.Argument.notNull(cookie, "cookie must not be null");
                 when(cookie.getVersion()).thenReturn(value);
             }
         };

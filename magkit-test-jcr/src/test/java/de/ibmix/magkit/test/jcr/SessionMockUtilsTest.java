@@ -21,17 +21,18 @@ package de.ibmix.magkit.test.jcr;
  */
 
 import org.apache.jackrabbit.JcrConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.verify;
  */
 public class SessionMockUtilsTest {
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 
@@ -56,33 +57,35 @@ public class SessionMockUtilsTest {
         SessionStubbingOperation op1 = mock(SessionStubbingOperation.class);
         SessionStubbingOperation op2 = mock(SessionStubbingOperation.class);
         Session session = SessionMockUtils.mockSession("testRepository", op1, op2);
-        assertThat(session, notNullValue());
+        Mockito.verifyNoInteractions(session);
+        assertNotNull(session);
         verify(op1, times(1)).of(session);
         verify(op2, times(1)).of(session);
-        assertThat(session.getRepository(), is(RepositoryMockUtils.mockRepository()));
-        assertThat(session, is(RepositoryMockUtils.mockRepository().login("testRepository")));
-        assertThat(session.getWorkspace().getName(), is("testRepository"));
+        assertEquals(RepositoryMockUtils.mockRepository(), session.getRepository());
+        assertEquals(RepositoryMockUtils.mockRepository().login("testRepository"), session);
+        assertEquals("testRepository", session.getWorkspace().getName());
     }
 
     @Test
     public void testMockPlainSession() throws RepositoryException {
         Session session = SessionMockUtils.mockPlainSession();
-        assertThat(session, notNullValue());
+        Mockito.verifyNoInteractions(session);
+        assertNotNull(session);
         Node root = session.getRootNode();
-        assertThat(root, notNullValue());
-        assertThat(root.getPath(), is("/"));
-        assertThat(root.getName(), is(""));
-        assertThat(root.getIdentifier(), is("cafebabe-cafe-babe-cafe-babecafebabe"));
-        assertThat(root.getPrimaryNodeType(), notNullValue());
-        assertThat(root.getPrimaryNodeType().getName(), is("rep:root"));
-        assertThat(root.getProperty(JcrConstants.JCR_PRIMARYTYPE).getString(), is("rep:root"));
-        assertThat(session.getNode("/"), is(root));
-        assertThat(session.getItem("/"), is(root));
-        assertThat(session.getNodeByIdentifier("cafebabe-cafe-babe-cafe-babecafebabe"), is(root));
-        assertThat(session.itemExists("/"), is(true));
-        assertThat(session.nodeExists("/"), is(true));
-        assertThat(session.getWorkspace(), nullValue());
-        assertThat(session.getRepository(), nullValue());
-        assertThat(session.getRetentionManager(), nullValue());
+        assertNotNull(root);
+        assertEquals("/", root.getPath());
+        assertEquals("", root.getName());
+        assertEquals("cafebabe-cafe-babe-cafe-babecafebabe", root.getIdentifier());
+        assertNotNull(root.getPrimaryNodeType());
+        assertEquals("rep:root", root.getPrimaryNodeType().getName());
+        assertEquals("rep:root", root.getProperty(JcrConstants.JCR_PRIMARYTYPE).getString());
+        assertEquals(root, session.getNode("/"));
+        assertEquals(root, session.getItem("/"));
+        assertEquals(root, session.getNodeByIdentifier("cafebabe-cafe-babe-cafe-babecafebabe"));
+        assertTrue(session.itemExists("/"));
+        assertTrue(session.nodeExists("/"));
+        assertNull(session.getWorkspace());
+        assertNull(session.getRepository());
+        assertNull(session.getRetentionManager());
     }
 }

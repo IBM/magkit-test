@@ -2,9 +2,9 @@ package de.ibmix.magkit.test.cms.templating;
 
 /*-
  * #%L
- * magkit-test-cms Magnolia Module
+ * magkit-test Magnolia Module
  * %%
- * Copyright (C) 2023 IBM iX
+ * Copyright (C) 2025 IBM iX
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,159 +20,122 @@ package de.ibmix.magkit.test.cms.templating;
  * #L%
  */
 
-import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.ComponentAvailability;
 import info.magnolia.rendering.template.InheritanceConfiguration;
-import info.magnolia.rendering.template.TemplateDefinition;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubAvailableComponents;
+import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubContentStructure;
+import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubCreateAreaNode;
+import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubEnabled;
+import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubInheritance;
+import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubMaxComponents;
+import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubOptional;
+import static de.ibmix.magkit.test.cms.templating.AreaDefinitionStubbingOperation.stubType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
- * Testing AreaDefinitionStubbingOperation.
+ * Unit tests for {@link AreaDefinitionStubbingOperation} covering all stubbing factory methods, both inheritance overloads,
+ * null handling (allowed null values) and assertion behavior on null template instance.
+ * Ensures chaining possibility implicitly by applying multiple operations to one mock.
  *
  * @author wolf.bubenik@ibmix.de
- * @since 2023-10-30
+ * @since 2025-10-14
  */
 public class AreaDefinitionStubbingOperationTest {
 
-    private AreaDefinition _areaDefinition;
-    private TemplateDefinition _templateDefinition;
-
-    @Before
-    public void setUp() throws Exception {
-        ContextMockUtils.cleanContext();
-        _areaDefinition = mock(AreaDefinition.class);
-        _templateDefinition = mock(TemplateDefinition.class);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        ContextMockUtils.cleanContext();
-    }
-
+    /**
+     * Tests stubbing of all simple area-specific properties including availableComponents, contentStructure,
+     * createAreaNode, enabled, inheritance (direct object), maxComponents, optional, and type.
+     */
     @Test
-    public void stubAvailableComponentsOfArea() {
-        Map<String, ComponentAvailability> available = new HashMap<>();
-        AreaDefinitionStubbingOperation.stubAvailableComponents(available).of(_areaDefinition);
-        assertThat(_areaDefinition.getAvailableComponents(), is(available));
+    public void shouldStubAllAreaSpecificProperties() {
+        AreaDefinition area = mock(AreaDefinition.class);
+
+        Map<String, ComponentAvailability> components = new HashMap<>();
+        ComponentAvailability availability = mock(ComponentAvailability.class);
+        components.put("compA", availability);
+
+        InheritanceConfiguration inheritance = mock(InheritanceConfiguration.class);
+
+        stubAvailableComponents(components).of(area);
+        stubContentStructure("grid/12").of(area);
+        stubCreateAreaNode(Boolean.TRUE).of(area);
+        stubEnabled(Boolean.FALSE).of(area);
+        stubInheritance(inheritance).of(area);
+        stubMaxComponents(7).of(area);
+        stubOptional(Boolean.TRUE).of(area);
+        stubType("main").of(area);
+
+        assertEquals(components, area.getAvailableComponents());
+        assertTrue(area.getAvailableComponents().containsKey("compA"));
+        assertSame(availability, area.getAvailableComponents().get("compA"));
+        assertEquals("grid/12", area.getContentStructure());
+        assertEquals(Boolean.TRUE, area.getCreateAreaNode());
+        assertEquals(Boolean.FALSE, area.getEnabled());
+        assertEquals(inheritance, area.getInheritance());
+        assertEquals(7, area.getMaxComponents());
+        assertEquals(Boolean.TRUE, area.getOptional());
+        assertEquals("main", area.getType());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void stubAvailableComponentsOfTemplate() {
-        AreaDefinitionStubbingOperation.stubAvailableComponents(null).of(_templateDefinition);
-    }
-
+    /**
+     * Tests the overload stubInheritance(Boolean, Boolean, Boolean) generating a mocked configuration with predicate and comparator.
+     */
     @Test
-    public void stubContentStructureOfArea() {
-        assertThat(_areaDefinition.getContentStructure(), nullValue());
-        AreaDefinitionStubbingOperation.stubContentStructure("test").of(_areaDefinition);
-        assertThat(_areaDefinition.getContentStructure(), is("test"));
+    public void shouldStubInheritanceFromFlags() {
+        AreaDefinition area = mock(AreaDefinition.class);
+        stubInheritance(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE).of(area);
+
+        InheritanceConfiguration cfg = area.getInheritance();
+        assertNotNull(cfg);
+        assertEquals(Boolean.TRUE, cfg.isEnabled());
+        assertEquals(Boolean.FALSE, cfg.isInheritsProperties());
+        assertEquals(Boolean.TRUE, cfg.isInheritsComponents());
+        assertNotNull(cfg.getComponentPredicate());
+        assertNotNull(cfg.getComponentComparator());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void stubContentStructureOfTemplate() {
-        AreaDefinitionStubbingOperation.stubContentStructure(null).of(_templateDefinition);
-    }
-
+    /**
+     * Verifies that null values provided to stubs are returned as null (allowed), without throwing.
+     */
     @Test
-    public void stubCreateAreaNodeOfArea() {
-        assertThat(_areaDefinition.getCreateAreaNode(), is(false));
+    public void shouldAllowNullValues() {
+        AreaDefinition area = mock(AreaDefinition.class);
+        stubAvailableComponents(null).of(area);
+        stubContentStructure(null).of(area);
+        stubCreateAreaNode(null).of(area);
+        stubEnabled(null).of(area);
+        stubInheritance(null).of(area);
+        stubMaxComponents(null).of(area);
+        stubOptional(null).of(area);
+        stubType(null).of(area);
 
-        AreaDefinitionStubbingOperation.stubCreateAreaNode(true).of(_areaDefinition);
-        assertThat(_areaDefinition.getCreateAreaNode(), is(true));
+        assertNull(area.getAvailableComponents());
+        assertNull(area.getContentStructure());
+        assertNull(area.getCreateAreaNode());
+        assertNull(area.getEnabled());
+        assertNull(area.getInheritance());
+        assertNull(area.getMaxComponents());
+        assertNull(area.getOptional());
+        assertNull(area.getType());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void stubCreateAreaNodeOfTemplate() {
-        AreaDefinitionStubbingOperation.stubCreateAreaNode(null).of(_templateDefinition);
-    }
-
+    /**
+     * Verifies assertion failure (Hamcrest) when a null AreaDefinition is supplied.
+     */
     @Test
-    public void stubEnabledOfArea() {
-        assertThat(_areaDefinition.getEnabled(), is(false));
-
-        AreaDefinitionStubbingOperation.stubEnabled(true).of(_areaDefinition);
-        assertThat(_areaDefinition.getEnabled(), is(true));
-    }
-
-    @Test
-    public void stubInheritanceOfArea() {
-        assertThat(_areaDefinition.getInheritance(), nullValue());
-
-        InheritanceConfiguration ic = mock(InheritanceConfiguration.class);
-        AreaDefinitionStubbingOperation.stubInheritance(ic).of(_areaDefinition);
-        assertThat(_areaDefinition.getInheritance(), is(ic));
-        assertThat(_areaDefinition.getInheritance().isInheritsComponents(), is(false));
-        assertThat(_areaDefinition.getInheritance().isInheritsProperties(), is(false));
-        assertThat(_areaDefinition.getInheritance().isEnabled(), is(false));
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void stubInheritanceOfTemplate() {
-        AreaDefinitionStubbingOperation.stubInheritance(null).of(_templateDefinition);
-    }
-
-    @Test
-    public void testStubInheritanceOfArea() {
-        assertThat(_areaDefinition.getInheritance(), nullValue());
-
-        AreaDefinitionStubbingOperation.stubInheritance(true, true, true).of(_areaDefinition);
-        assertThat(_areaDefinition.getInheritance().isInheritsComponents(), is(true));
-        assertThat(_areaDefinition.getInheritance().isInheritsProperties(), is(true));
-        assertThat(_areaDefinition.getInheritance().isEnabled(), is(true));
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testStubInheritanceOfTemplate() {
-        AreaDefinitionStubbingOperation.stubInheritance(true, true, true).of(_templateDefinition);
-    }
-
-    @Test
-    public void stubMaxComponentsOfArea() {
-        assertThat(_areaDefinition.getMaxComponents(), is(0));
-
-        AreaDefinitionStubbingOperation.stubMaxComponents(5).of(_areaDefinition);
-        assertThat(_areaDefinition.getMaxComponents(), is(5));
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void stubMaxComponentsOfTemplate() {
-        AreaDefinitionStubbingOperation.stubMaxComponents(null).of(_templateDefinition);
-    }
-
-    @Test
-    public void stubOptionalOfArea() {
-        assertThat(_areaDefinition.getOptional(), is(false));
-
-        AreaDefinitionStubbingOperation.stubOptional(true).of(_areaDefinition);
-        assertThat(_areaDefinition.getOptional(), is(true));
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void stubOptionalOfTemplate() {
-        AreaDefinitionStubbingOperation.stubOptional(null).of(_templateDefinition);
-    }
-
-    @Test
-    public void stubTypeOfArea() {
-        assertThat(_areaDefinition.getType(), is(nullValue()));
-
-        AreaDefinitionStubbingOperation.stubType("test").of(_areaDefinition);
-        assertThat(_areaDefinition.getType(), is("test"));
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void stubOTypeOfTemplate() {
-        AreaDefinitionStubbingOperation.stubType(null).of(_templateDefinition);
+    public void shouldFailOnNullArea() {
+        assertThrows(IllegalArgumentException.class, () -> stubEnabled(true).of(null));
     }
 }

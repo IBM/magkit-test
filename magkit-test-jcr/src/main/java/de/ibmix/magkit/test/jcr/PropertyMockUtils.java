@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
+import de.ibmix.magkit.assertions.Require;
 import org.mockito.Answers;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -38,13 +39,44 @@ import java.util.stream.Collectors;
 
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubNode;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubValues;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 /**
- * Utility for mocking javax.jcr.Property.
+ * Utility for creating Mockito based {@link Property} test doubles with rich, type-aware default answers.
+ * <p>
+ * The static {@code mockProperty(...)} factory methods in this class allow you to quickly create a JCR
+ * {@link Property} mock that behaves consistently with typical repository semantics:
+ * </p>
+ * <ul>
+ *     <li>If you pass more than one value the property is treated as multi-valued ( {@link Property#isMultiple()} returns {@code true} ).</li>
+ *     <li>All canonical accessor methods ({@code getString()}, {@code getLong()}, {@code getDate()}, ... ) delegate to
+ *     the currently configured {@link Value} instance(s) so that conversions you stub on {@link Value} are respected.</li>
+ *     <li>{@code getType()} dynamically reflects the underlying (first) {@link Value#getType()} and falls back to {@link PropertyType#UNDEFINED}.</li>
+ *     <li>{@code toString()} yields a concise debug representation: {@code <name>:<value>} (single) or joined with ';' (multi-valued).</li>
+ *     <li>{@code remove()} modifies the parent mock node's internal property collection (see {@link NodeMockUtils}).</li>
+ * </ul>
+ * <p>
+ * Overloads let you provide initial values of different Java types (String, Boolean, Long, etc.), pre-built {@link Value}s,
+ * {@link Binary} content, or node references. The dedicated node overload allows specifying the JCR property type
+ * (e.g. {@link PropertyType#REFERENCE} or {@link PropertyType#WEAKREFERENCE}).
+ * </p>
+ * <p>
+ * Typical usage:
+ * </p>
+ * <pre>{@code
+ * Property title = PropertyMockUtils.mockProperty("title", "Hello World");
+ * assertEquals("Hello World", title.getString());
+ *
+ * Property flags = PropertyMockUtils.mockProperty("flags", "a", "b", "c");
+ * assertTrue(flags.isMultiple());
+ *
+ * Property ref = PropertyMockUtils.mockProperty("myRef", someNode); // defaults to REFERENCE
+ * }
+ * </pre>
+ * <p>
+ * For advanced manipulation you can further stub additional interactions on the returned mock using the standard Mockito API.
+ * </p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-11-02
@@ -53,60 +85,138 @@ public final class PropertyMockUtils {
     private PropertyMockUtils() {
     }
 
+    /**
+     * Create a {@link Property} mock with one or more {@link String} values.
+     * <p>If multiple values are supplied the property is marked multi-valued.</p>
+     *
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValues zero or more string values to be wrapped as {@link Value}s
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final String... propertyValues) throws RepositoryException {
         Property property = mockProperty(name);
         stubValues(propertyValues).of(property);
         return property;
     }
 
+    /**
+     * Create a {@link Property} mock with one or more {@link Binary} values.
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValues zero or more binary values
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final Binary... propertyValues) throws RepositoryException {
         Property property = mockProperty(name);
         stubValues(propertyValues).of(property);
         return property;
     }
 
+    /**
+     * Create a {@link Property} mock with one or more {@link Boolean} values.
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValues zero or more boolean values
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final Boolean... propertyValues) throws RepositoryException {
         Property property = mockProperty(name);
         stubValues(propertyValues).of(property);
         return property;
     }
 
+    /**
+     * Create a {@link Property} mock with one or more {@link Calendar} date values.
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValues zero or more calendar values
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final Calendar... propertyValues) throws RepositoryException {
         Property property = mockProperty(name);
         stubValues(propertyValues).of(property);
         return property;
     }
 
+    /**
+     * Create a {@link Property} mock with one or more {@link Double} values.
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValues zero or more double values
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final Double... propertyValues) throws RepositoryException {
         Property property = mockProperty(name);
         stubValues(propertyValues).of(property);
         return property;
     }
 
+    /**
+     * Create a {@link Property} mock with one or more {@link Long} values.
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValues zero or more long values
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final Long... propertyValues) throws RepositoryException {
         Property property = mockProperty(name);
         stubValues(propertyValues).of(property);
         return property;
     }
 
+    /**
+     * Create a {@link Property} mock with one or more pre-built {@link Value} instances.
+     * <p>This is the most flexible overload when you want to control value conversion behavior explicitly.</p>
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValues zero or more {@link Value} objects
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final Value... propertyValues) throws RepositoryException {
         Property property = mockProperty(name);
         stubValues(propertyValues).of(property);
         return property;
     }
 
+    /**
+     * Create a single-valued node reference {@link Property} (defaults to {@link PropertyType#REFERENCE}).
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValues referenced node
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final Node propertyValues) throws RepositoryException {
         return mockProperty(name, propertyValues, PropertyType.REFERENCE);
     }
 
+    /**
+     * Create a single-valued node reference {@link Property} with an explicit JCR property type.
+     * <p>Use this overload for WEAKREFERENCE or similar reference types.</p>
+     * @param name the JCR property name, must not be {@code null}
+     * @param propertyValue referenced node
+     * @param propertyType the JCR property type (e.g. {@link PropertyType#REFERENCE}, {@link PropertyType#WEAKREFERENCE})
+     * @return configured {@link Property} mock
+     * @throws RepositoryException if value stubbing fails
+     */
     public static Property mockProperty(final String name, final Node propertyValue, int propertyType) throws RepositoryException {
         Property property = mockProperty(name);
         stubNode(propertyValue, propertyType).of(property);
         return property;
     }
 
+    /**
+     * Create a bare {@link Property} mock without initial values.
+     * <p>The returned mock has dynamic answers for the standard accessor methods that delegate to the current
+     * (first) {@link Value} when set later via the provided stubbing operations.</p>
+     * <p>Initially the property is single-valued and returns an empty {@code Value[]} for {@link Property#getValues()}.</p>
+     *
+     * @param name the JCR property name, must not be {@code null}
+     * @return base {@link Property} mock ready for further stubbing
+     * @throws RepositoryException if internal stubbing fails
+     */
     public static Property mockProperty(final String name) throws RepositoryException {
-        assertThat(name, notNullValue());
+        Require.Argument.notNull(name, "property name must not be null");
         TestProperty property = Mockito.mock(TestProperty.class);
         when(property.getName()).thenReturn(name);
         when(property.getString()).thenAnswer(STRING_ANSWER);

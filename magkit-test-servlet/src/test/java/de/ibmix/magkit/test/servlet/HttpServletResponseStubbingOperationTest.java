@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.servlet.ServletOutputStream;
@@ -29,9 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -44,7 +44,7 @@ public class HttpServletResponseStubbingOperationTest {
 
     private HttpServletResponse _response;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         _response = mock(HttpServletResponse.class);
     }
@@ -52,74 +52,74 @@ public class HttpServletResponseStubbingOperationTest {
     @Test
     public void testStubContentType() {
         HttpServletResponseStubbingOperation.stubContentType("type").of(_response);
-        assertThat(_response.getContentType(), is("type"));
+        assertEquals("type", _response.getContentType());
 
         HttpServletResponseStubbingOperation.stubContentType(null).of(_response);
-        assertThat(_response.getContentType(), nullValue());
+        assertNull(_response.getContentType());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubContentTypeForNull() {
-        HttpServletResponseStubbingOperation.stubContentType("type").of(null);
+        assertThrows(IllegalArgumentException.class, () -> HttpServletResponseStubbingOperation.stubContentType("type").of(null));
     }
 
     @Test
     public void testStubOutputStream() throws Exception {
         ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
         HttpServletResponseStubbingOperation.stubOutputStream(out).of(_response);
-        assertThat(_response.getOutputStream(), is(out));
+        assertEquals(out, _response.getOutputStream());
 
         HttpServletResponseStubbingOperation.stubOutputStream(null).of(_response);
-        assertThat(_response.getOutputStream(), nullValue());
+        assertNull(_response.getOutputStream());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubOutputStreamForNull() {
         ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
-        HttpServletResponseStubbingOperation.stubOutputStream(out).of(null);
+        assertThrows(IllegalArgumentException.class, () -> HttpServletResponseStubbingOperation.stubOutputStream(out).of(null));
     }
 
     @Test
     public void testStubWriter() throws Exception {
         PrintWriter writer = Mockito.mock(PrintWriter.class);
         HttpServletResponseStubbingOperation.stubWriter(writer).of(_response);
-        assertThat(_response.getWriter(), is(writer));
+        assertEquals(writer, _response.getWriter());
 
         HttpServletResponseStubbingOperation.stubWriter(null).of(_response);
-        assertThat(_response.getWriter(), nullValue());
+        assertNull(_response.getWriter());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubWriterForNull() {
         PrintWriter writer = Mockito.mock(PrintWriter.class);
-        HttpServletResponseStubbingOperation.stubWriter(writer).of(null);
+        assertThrows(IllegalArgumentException.class, () -> HttpServletResponseStubbingOperation.stubWriter(writer).of(null));
     }
 
     @Test
     public void testStubCharacterEncoding() {
         HttpServletResponseStubbingOperation.stubCharacterEncoding("UTF-8").of(_response);
-        assertThat(_response.getCharacterEncoding(), is("UTF-8"));
+        assertEquals("UTF-8", _response.getCharacterEncoding());
 
         HttpServletResponseStubbingOperation.stubCharacterEncoding(null).of(_response);
-        assertThat(_response.getCharacterEncoding(), nullValue());
+        assertNull(_response.getCharacterEncoding());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubCharacterEncodingForNull() {
-        HttpServletResponseStubbingOperation.stubCharacterEncoding("UTF-8").of(null);
+        assertThrows(IllegalArgumentException.class, () -> HttpServletResponseStubbingOperation.stubCharacterEncoding("UTF-8").of(null));
     }
 
     @Test
     public void testStubLocale() {
         HttpServletResponseStubbingOperation.stubLocale(Locale.GERMAN).of(_response);
-        assertThat(_response.getLocale(), is(Locale.GERMAN));
+        assertEquals(Locale.GERMAN, _response.getLocale());
 
         HttpServletResponseStubbingOperation.stubLocale(null).of(_response);
-        assertThat(_response.getLocale(), nullValue());
+        assertNull(_response.getLocale());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubLocaleForNull() {
-        HttpServletResponseStubbingOperation.stubLocale(Locale.GERMAN).of(null);
+        assertThrows(IllegalArgumentException.class, () -> HttpServletResponseStubbingOperation.stubLocale(Locale.GERMAN).of(null));
     }
 }

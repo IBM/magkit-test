@@ -31,13 +31,25 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.MockUtil.isMock;
 
 /**
- * A util class for creating mocks that are registered in the Guice IoC components provider and can be injected into objects.
+ * A utility class for creating and managing Mockito mocks that are registered in the Magnolia Components provider.
+ * This class provides methods to create mocks, register them as components, and manage the component provider
+ * for testing purposes in Magnolia CMS applications.
+ *
+ * <p>This utility is particularly useful for unit testing where you need to mock Magnolia components
+ * and have them injected through the IoC container.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-06-06
  */
 public abstract class ComponentsMockUtils {
 
+    /**
+     * Retrieves or creates a MockComponentProvider instance.
+     * If the current component provider is not a MockComponentProvider,
+     * it creates a new one and sets it as the current provider.
+     *
+     * @return the current MockComponentProvider instance
+     */
     public static MockComponentProvider getComponentProvider() {
         ComponentProvider result = Components.getComponentProvider();
         if (!(result instanceof MockComponentProvider)) {
@@ -47,6 +59,16 @@ public abstract class ComponentsMockUtils {
         return (MockComponentProvider) result;
     }
 
+    /**
+     * Creates or retrieves a mock instance for the specified type and registers it as a component.
+     * If a mock instance already exists for the given type, it returns the existing instance.
+     * Otherwise, it creates a new mock using Mockito and registers it in the component provider.
+     *
+     * @param <T> the type of the component to mock
+     * @param type the Class object representing the type to mock
+     * @return a mock instance of the specified type
+     * @throws IllegalArgumentException if type is null
+     */
     public static <T> T mockComponentInstance(Class<T> type) {
         T result = getComponentSingleton(type);
         if (result == null) {
@@ -56,6 +78,17 @@ public abstract class ComponentsMockUtils {
         return result;
     }
 
+    /**
+     * Creates a mock ComponentFactory for the specified type and instance.
+     * This method creates a mock factory that will return the provided instance
+     * when newInstance() is called, and registers both the factory and the instance
+     * in the component provider.
+     *
+     * @param <T> the type of the component
+     * @param type the Class object representing the type
+     * @param instance the instance that the factory should return
+     * @throws IllegalArgumentException if type or instance is null
+     */
     public static <T> void mockComponentFactory(Class<T> type, T instance) {
         ComponentFactory<T> factory = mock(ComponentFactory.class);
         when(factory.newInstance()).thenReturn(instance);
@@ -63,10 +96,28 @@ public abstract class ComponentsMockUtils {
         setComponentInstance(type, instance);
     }
 
+    /**
+     * Sets a component instance in the component provider.
+     * This is a protected utility method used internally by other methods
+     * to register instances in the MockComponentProvider.
+     *
+     * @param <T> the type of the component
+     * @param type the Class object representing the type
+     * @param instance the instance to register
+     */
     protected static <T> void setComponentInstance(Class<T> type, T instance) {
         getComponentProvider().setInstance(type, instance);
     }
 
+    /**
+     * Retrieves a singleton component instance from the component provider.
+     * This method only returns mock instances. If the component is not mocked
+     * or cannot be instantiated, it returns null.
+     *
+     * @param <T> the type of the component to retrieve
+     * @param type the Class object representing the type to retrieve
+     * @return the mock instance if it exists and is a mock, null otherwise
+     */
     public static <T> T getComponentSingleton(Class<T> type) {
         T result = null;
         try {
@@ -84,10 +135,22 @@ public abstract class ComponentsMockUtils {
         return result;
     }
 
+    /**
+     * Clears all instances from the component provider.
+     * This method removes all registered components and should typically
+     * be called in test cleanup methods to ensure a clean state for subsequent tests.
+     */
     public static void clearComponentProvider() {
         getComponentProvider().clear();
     }
 
+    /**
+     * Clears a specific component instance from the component provider.
+     * This method removes only the specified component type by setting its instance to null.
+     *
+     * @param <T> the type of the component to clear
+     * @param type the Class object representing the type to clear
+     */
     public static <T> void clearComponentProvider(Class<T> type) {
         getComponentProvider().setInstance(type, null);
     }

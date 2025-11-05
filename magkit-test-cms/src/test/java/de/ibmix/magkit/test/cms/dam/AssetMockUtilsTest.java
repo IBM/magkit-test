@@ -28,16 +28,14 @@ import info.magnolia.dam.api.ItemKey;
 import info.magnolia.dam.jcr.JcrAsset;
 import info.magnolia.dam.jcr.JcrAssetProvider;
 import info.magnolia.objectfactory.Components;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import java.util.UUID;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -49,12 +47,12 @@ import static org.mockito.Mockito.mock;
  */
 public class AssetMockUtilsTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ContextMockUtils.cleanContext();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         ContextMockUtils.cleanContext();
     }
@@ -62,11 +60,11 @@ public class AssetMockUtilsTest {
     @Test
     public void mockAssetProviderRegistry() {
         AssetProviderRegistry apr = AssetMockUtils.mockAssetProviderRegistry();
-        assertThat(Components.getComponent(AssetProviderRegistry.class), is(apr));
+        assertEquals(apr, Components.getComponent(AssetProviderRegistry.class));
 
         // repeated mocking returns same mock instance:
         AssetProviderRegistry apr2 = AssetMockUtils.mockAssetProviderRegistry();
-        assertThat(apr2, is(apr));
+        assertEquals(apr, apr2);
     }
 
     @Test
@@ -74,16 +72,16 @@ public class AssetMockUtilsTest {
         AssetProviderRegistry apr = AssetMockUtils.mockAssetProviderRegistry();
         AssetProvider testAp = AssetMockUtils.mockAssetProvider("test");
 
-        assertThat(apr, notNullValue());
-        assertThat(apr.getProviderById("test"), is(testAp));
+        assertNotNull(apr);
+        assertEquals(testAp, apr.getProviderById("test"));
 
         AssetProvider jcrAp = AssetMockUtils.mockAssetProvider("jcr");
-        assertThat(apr.getProviderById("jcr"), is(jcrAp));
+        assertEquals(jcrAp, apr.getProviderById("jcr"));
 
         // repeated mocking with same id returns same mock instance:
         AssetProvider jcrAp2 = AssetMockUtils.mockAssetProvider("jcr");
-        assertThat(jcrAp2, is(jcrAp));
-        assertThat(apr.getProviderById("jcr"), is(jcrAp2));
+        assertEquals(jcrAp, jcrAp2);
+        assertEquals(jcrAp2, apr.getProviderById("jcr"));
     }
 
     @Test
@@ -91,8 +89,8 @@ public class AssetMockUtilsTest {
         AssetProviderRegistry apr = AssetMockUtils.mockAssetProviderRegistry();
         ItemKey itemKey = new ItemKey("jcr", UUID.randomUUID().toString());
         AssetProvider jcrAp = AssetMockUtils.mockAssetProvider(itemKey);
-        assertThat(apr.getProviderById("jcr"), is(jcrAp));
-        assertThat(apr.getProviderFor(itemKey), is(jcrAp));
+        assertEquals(jcrAp, apr.getProviderById("jcr"));
+        assertEquals(jcrAp, apr.getProviderFor(itemKey));
     }
 
     @Test
@@ -102,24 +100,24 @@ public class AssetMockUtilsTest {
         doReturn(itemKey).when(as).getItemKey();
 
         AssetProvider asAp = AssetMockUtils.mockAssetProvider(as);
-        assertThat(asAp, notNullValue());
-        assertThat(asAp.getItem(itemKey), is(as));
-        assertThat(asAp.getAsset(itemKey), is(as));
-        assertThat(((JcrAssetProvider) asAp).getItem(itemKey), is(as));
-        assertThat(((JcrAssetProvider) asAp).getAsset(itemKey), is(as));
+        assertNotNull(asAp);
+        assertEquals(as, asAp.getItem(itemKey));
+        assertEquals(as, asAp.getAsset(itemKey));
+        assertEquals(as, ((JcrAssetProvider) asAp).getItem(itemKey));
+        assertEquals(as, ((JcrAssetProvider) asAp).getAsset(itemKey));
     }
 
     @Test
     public void mockJcrAsset() throws RepositoryException {
         JcrAsset jcrAsset = AssetMockUtils.mockJcrAsset("/test");
         ItemKey itemKey = jcrAsset.getItemKey();
-        assertThat(itemKey, notNullValue());
+        assertNotNull(itemKey);
         AssetProviderRegistry apr = Components.getComponent(AssetProviderRegistry.class);
-        assertThat(apr, notNullValue());
-        assertThat(apr.getProviderById("jcr"), notNullValue());
-        assertThat(apr.getProviderById("jcr").getAsset(itemKey), is(jcrAsset));
-        assertThat(apr.getProviderFor(itemKey), notNullValue());
-        assertThat(apr.getProviderFor(itemKey).getAsset(itemKey), is(jcrAsset));
+        assertNotNull(apr);
+        assertNotNull(apr.getProviderById("jcr"));
+        assertEquals(jcrAsset, apr.getProviderById("jcr").getAsset(itemKey));
+        assertNotNull(apr.getProviderFor(itemKey));
+        assertEquals(jcrAsset, apr.getProviderFor(itemKey).getAsset(itemKey));
     }
 
 }

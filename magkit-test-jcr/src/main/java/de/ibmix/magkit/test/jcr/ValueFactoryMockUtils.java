@@ -17,8 +17,7 @@ package de.ibmix.magkit.test.jcr;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * #L%
- */
+ * #L% */
 
 import org.mockito.stubbing.Answer;
 
@@ -40,30 +39,53 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 /**
- * Util class for mocking javax.jcr.ValueFactory.
+ * Utility for creating Mockito based {@link ValueFactory} test doubles with realistic {@link Value} creation behaviour.
+ * <p>
+ * The produced factory delegates every {@code createValue(..)} call to the corresponding factory method in
+ * {@link ValueMockUtils} so that returned {@link Value} instances mirror JCR conversion rules (numeric/date parsing,
+ * boolean handling, binary stream access, etc.). This eliminates repetitive boilerplate in repository centric unit tests.
+ * <p>
+ * Customisation: Additional behaviour can be layered by supplying one or more {@link ValueFactoryStubbingOperation}
+ * instances via the varargs parameter in {@link #mockValueFactory(ValueFactoryStubbingOperation...)}.
+ * Each supplied operation is executed in order and may override previously defined stubbings (last one wins).
+ * <p>
+ * Thread safety: Returned mocks are fully stubbed and stateless after creation and can be safely reused in parallel test execution.
+ * <p>
+ * Example usage (conceptual):
+ * <pre>
+ * ValueFactory vf = ValueFactoryMockUtils.mockValueFactory(
+ *     ValueFactoryStubbingOperation.stubCreateValue("fixed")
+ * );
+ * Value v = vf.createValue("fixed"); // returns mock with numeric/date conversions if applicable
+ * </pre>
+ * Note: All methods declare {@link RepositoryException} for API symmetry; current implementation never throws it.
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2012-08-03
  */
 public final class ValueFactoryMockUtils {
 
-    private static final Answer<Value> MOCK_STRING_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, String.class));
-    private static final Answer<Value> MOCK_BOOLEAN_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Boolean.class));
-    private static final Answer<Value> MOCK_DOUBLE_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Double.class));
-    private static final Answer<Value> MOCK_LONG_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Long.class));
-    private static final Answer<Value> MOCK_CALENDAR_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Calendar.class));
-    private static final Answer<Value> MOCK_BINARY_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Binary.class));
-    private static final Answer<Value> MOCK_NODE_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Node.class));
-
-    private ValueFactoryMockUtils() {
-    }
-
     /**
-     * Create a ValueFactory mock with Answers for the create methods tha return a Value mock for the given value object.
+     * Create a {@link ValueFactory} mock where each {@code createValue(..)} overload returns a {@link Value}
+     * produced by the corresponding {@link ValueMockUtils#mockValue(String)} (or related overload) factory. Optional
+     * {@link ValueFactoryStubbingOperation}s can further adapt or override behaviour (e.g. alternate return values,
+     * exception simulation).
+     * <p>
+     * Behaviour per overload:
+     * <ul>
+     *   <li>{@code createValue(String)} -> {@link ValueMockUtils#mockValue(String)}</li>
+     *   <li>{@code createValue(boolean)} -> {@link ValueMockUtils#mockValue(boolean)}</li>
+     *   <li>{@code createValue(double)} -> {@link ValueMockUtils#mockValue(double)}</li>
+     *   <li>{@code createValue(long)} -> {@link ValueMockUtils#mockValue(long)}</li>
+     *   <li>{@code createValue(Calendar)} -> {@link ValueMockUtils#mockValue(Calendar)}</li>
+     *   <li>{@code createValue(Binary)} -> {@link ValueMockUtils#mockValue(Binary)}</li>
+     *   <li>{@code createValue(Node)} -> {@link ValueMockUtils#mockValue(Node)}</li>
+     * </ul>
+     * Each supplied stubbing operation receives the freshly created mock allowing additional when/thenReturn clauses.
      *
-     * @param stubbings  the ValueFactoryStubbingOperation to specify the behaviour of the mock
-     * @return  a new mock instance of ValueFactory
-     * @throws RepositoryException never
+     * @param stubbings optional ordered customisation operations; may be empty
+     * @return configured {@link ValueFactory} Mockito mock (never {@code null})
+     * @throws RepositoryException declared for symmetry; not thrown
      */
     public static ValueFactory mockValueFactory(ValueFactoryStubbingOperation... stubbings) throws RepositoryException {
         ValueFactory result = mock(ValueFactory.class);
@@ -78,5 +100,23 @@ public final class ValueFactoryMockUtils {
             stubbing.of(result);
         }
         return result;
+    }
+
+    /** Answer returning a {@link Value} for String inputs using {@link ValueMockUtils#mockValue(String)}. */
+    private static final Answer<Value> MOCK_STRING_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, String.class));
+    /** Answer returning a {@link Value} for boolean inputs using {@link ValueMockUtils#mockValue(boolean)}. */
+    private static final Answer<Value> MOCK_BOOLEAN_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Boolean.class));
+    /** Answer returning a {@link Value} for double inputs using {@link ValueMockUtils#mockValue(double)}. */
+    private static final Answer<Value> MOCK_DOUBLE_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Double.class));
+    /** Answer returning a {@link Value} for long inputs using {@link ValueMockUtils#mockValue(long)}. */
+    private static final Answer<Value> MOCK_LONG_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Long.class));
+    /** Answer returning a {@link Value} for calendar inputs using {@link ValueMockUtils#mockValue(Calendar)}. */
+    private static final Answer<Value> MOCK_CALENDAR_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Calendar.class));
+    /** Answer returning a {@link Value} for binary inputs using {@link ValueMockUtils#mockValue(Binary)}. */
+    private static final Answer<Value> MOCK_BINARY_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Binary.class));
+    /** Answer returning a {@link Value} for node inputs using {@link ValueMockUtils#mockValue(Node)}. */
+    private static final Answer<Value> MOCK_NODE_VALUE = invocationOnMock -> mockValue(invocationOnMock.getArgument(0, Node.class));
+
+    private ValueFactoryMockUtils() {
     }
 }

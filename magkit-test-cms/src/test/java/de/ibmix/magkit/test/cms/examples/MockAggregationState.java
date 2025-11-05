@@ -27,8 +27,8 @@ import info.magnolia.context.WebContext;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.NodeTestUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -38,10 +38,10 @@ import static de.ibmix.magkit.test.cms.context.AggregationStateStubbingOperation
 import static de.ibmix.magkit.test.cms.context.ContextMockUtils.mockAggregationState;
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockComponentNode;
 import static de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils.mockPageNode;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * Compare Magnolia Test-Utils with this API (Magkit-Mock-Utils).
@@ -51,7 +51,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class MockAggregationState {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextMockUtils.cleanContext();
     }
@@ -69,15 +69,15 @@ public class MockAggregationState {
         );
 
         // Now we have a WebContext in the MgnlContext...
-        assertThat(MgnlContext.getInstance(), notNullValue());
+        assertNotNull(MgnlContext.getInstance());
         // ...with the AggregationState mock..
-        assertThat(((WebContext) MgnlContext.getInstance()).getAggregationState(), is(state));
+        assertSame(state, ((WebContext) MgnlContext.getInstance()).getAggregationState());
         // ...and the stubbed Nodes:
-        assertThat(state.getCurrentContentNode().getPath(), is("/page/component"));
-        assertThat(state.getMainContentNode().getPath(), is("/page"));
+        assertEquals("/page/component", state.getCurrentContentNode().getPath());
+        assertEquals("/page", state.getMainContentNode().getPath());
         // Note that current/active nodes and AggregationState properties are consistent:
-        assertThat(state.getHandle(), is("/page/component"));
-        assertThat(state.getRepository(), is(RepositoryConstants.WEBSITE));
+        assertEquals("/page/component", state.getHandle());
+        assertEquals(RepositoryConstants.WEBSITE, state.getRepository());
     }
 
     /**
@@ -94,15 +94,15 @@ public class MockAggregationState {
         state.setCurrentContentNode(NodeTestUtil.createNode("/page/component", RepositoryConstants.WEBSITE, "/page/component"));
 
         // Of course we have a WebContext...
-        assertThat(MgnlContext.getInstance(), notNullValue());
+        assertNotNull(MgnlContext.getInstance());
         // ...with the AggregationState mock...
-        assertThat(((WebContext) MgnlContext.getInstance()).getAggregationState(), is(state));
+        assertSame(state, ((WebContext) MgnlContext.getInstance()).getAggregationState());
         // and the nodes set:
-        assertThat(state.getCurrentContentNode().getPath(), is("/page/component"));
-        assertThat(state.getMainContentNode().getPath(), is("/page"));
+        assertEquals("/page/component", state.getCurrentContentNode().getPath());
+        assertEquals("/page", state.getMainContentNode().getPath());
         // Only the handle is not set...
-        assertThat(state.getHandle(), nullValue());
+        assertNull(state.getHandle());
         // .. and the Repository either:
-        assertThat(state.getRepository(), nullValue());
+        assertNull(state.getRepository());
     }
 }

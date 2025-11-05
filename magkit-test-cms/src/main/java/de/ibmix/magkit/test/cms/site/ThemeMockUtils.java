@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.site;
  * #L%
  */
 
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.module.site.CssResourceDefinition;
@@ -33,22 +34,42 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Mock util class for creating Theme and ThemeReference mocks and register them in a ThemeRegistry mock.
+ * Utility class providing concise factory and helper methods to create Mockito mocks for {@link Theme},
+ * {@link ThemeReference} and associated resource definition objects used in Magnolia site related tests.
+ * <p>Responsibilities:</p>
+ * <ul>
+ *   <li>Create and register {@link Theme} mocks inside a (mocked) {@link ThemeRegistry} held in Magnolia's component provider.</li>
+ *   <li>Provide lightweight helper factories for {@link CssResourceDefinition} and generic {@link ResourceDefinition} mocks.</li>
+ *   <li>Optionally apply one or more {@link ThemeStubbingOperation} instances to enrich a newly created or existing theme mock.</li>
+ * </ul>
+ * <p>Registry handling: If no {@link ThemeRegistry} mock is registered yet, one is created via {@link ComponentsMockUtils#mockComponentInstance(Class)}.
+ * When requesting a theme by name, an existing {@link DefinitionProvider} is reused; otherwise a new provider mock is created and registered.</p>
+ * <p>Thread safety: ComponentProvider is backed by ThreadLocal and therefore thread-safe; intended for multithreaded test initialization code.</p>
+ * <p>Null handling: The vararg parameters for stubbing operations are treated as optional (may be {@code null}). Individual elements are applied in order; {@code null} elements are ignored.</p>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2013-06-05
+ * @see ThemeStubbingOperation
  */
 public final class ThemeMockUtils {
 
     /**
-     * Creates a ThemeReference mock and Theme mock for the given theme name.
-     * Used when mocking a Theme for a Site mock.
+     * Create a {@link ThemeReference} mock (returning the supplied name) and ensure a corresponding {@link Theme} mock
+     * is available and optionally stubbed via provided operations.
+     * <p>Behavior:</p>
+     * <ul>
+     *   <li>Registers or reuses a theme mock named {@code name} inside the mocked {@link ThemeRegistry}.</li>
+     *   <li>Applies each non-null {@link ThemeStubbingOperation} to the theme mock in the given order.</li>
+     *   <li>Returns only the {@link ThemeReference}; access the theme via {@link #mockTheme(String, ThemeStubbingOperation...)} if needed.</li>
+     * </ul>
      *
-     * @param name the name of the Theme
-     * @param stubbings stubbing operations to stub the theme that will be mocked
-     * @return the mockito mock of a ThemeReference
+     * @param name required theme name (must not be {@code null})
+     * @param stubbings optional sequence of stubbing operations; may be {@code null}
+     * @return Mockito mock of {@link ThemeReference} bound to a (possibly newly created) theme mock
+     * @see #mockTheme(String, ThemeStubbingOperation...)
      */
     public static ThemeReference mockThemeReference(String name, ThemeStubbingOperation... stubbings) {
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         ThemeReference result = mock(ThemeReference.class);
         doReturn(name).when(result).getName();
         mockTheme(name, stubbings);
@@ -56,18 +77,27 @@ public final class ThemeMockUtils {
     }
 
     /**
-     * Applies the stubbing operations on the theme mock registered at the ThemeRegistry with the given name.
-     * If the Theme does not exist already a new mock will be created.
-     * If no ThemeRegistry exists in the Components a new ThemeRegistry mock will be created.
+     * Obtain (or create) a {@link Theme} mock with the given name and apply optional stubbing operations.
+     * <p>Implementation details:</p>
+     * <ul>
+     *   <li>Fetches the {@link ThemeRegistry} mock via {@link ComponentsMockUtils#mockComponentInstance(Class)} (creating it if absent).</li>
+     *   <li>If no {@link DefinitionProvider} for {@code name} exists, a new provider mock is created and registered.</li>
+     *   <li>If the provider currently returns {@code null}, a fresh theme mock is created and wired to the provider.</li>
+     *   <li>Each non-null {@link ThemeStubbingOperation} is applied sequentially.</li>
+     * </ul>
+     * <p>Idempotency: Calling this repeatedly with the same name returns the same underlying theme instance (unless the registry mock was replaced externally).</p>
      *
-     * @param name the name of the Theme
-     * @param stubbings stubbing operations to stub the theme that will be mocked
-     * @return a Mockito mock for a Theme with the given name
+     * @param name required theme name (must not be {@code null})
+     * @param stubbings optional sequence of stubbing operations; may be {@code null}
+     * @return existing or newly created theme mock with applied stubbings
+     * @see ThemeStubbingOperation
      */
+    @SuppressWarnings("unchecked")
     public static Theme mockTheme(String name, ThemeStubbingOperation... stubbings) {
-        Theme theme = null;
+        Require.Argument.notNull(stubbings, "stubbings should not be null");
         ThemeRegistry themeRegistry = ComponentsMockUtils.mockComponentInstance(ThemeRegistry.class);
         DefinitionProvider<Theme> definitionProvider = themeRegistry.getProvider(name);
+        Theme theme;
         if (definitionProvider == null) {
             definitionProvider = mock(DefinitionProvider.class);
             theme = definitionProvider.get();
@@ -80,18 +110,22 @@ public final class ThemeMockUtils {
             theme = definitionProvider.get();
         }
 
-        for (ThemeStubbingOperation stubbing : stubbings) {
-            stubbing.of(theme);
+        if (stubbings != null) {
+            for (ThemeStubbingOperation stubbing : stubbings) {
+                if (stubbing != null) {
+                    stubbing.of(theme);
+                }
+            }
         }
         return theme;
     }
 
     /**
-     * Creates a new Theme mock with the given name.
-     * It will NOT be registered at a ThemeRegistry.
+     * Create a new standalone {@link Theme} mock with its {@link Theme#getName()} method stubbed to return the supplied name.
+     * The theme is NOT registered in any {@link ThemeRegistry}.
      *
-     * @param name the name of the theme
-     * @return a new Theme mock instance
+     * @param name required theme name (must not be {@code null})
+     * @return new theme mock instance (unregistered)
      */
     public static Theme mockPlainTheme(String name) {
         Theme theme = mock(Theme.class);
@@ -100,12 +134,13 @@ public final class ThemeMockUtils {
     }
 
     /**
-     * Creates a new CssResourceDefinition mock.
+     * Create a {@link CssResourceDefinition} mock with its key accessors stubbed.
+     * No further behavior is simulated.
      *
-     * @param link the css resource link as String
-     * @param media the css resource media as String
-     * @param conditionalComment the css resources conditional comment
-     * @return the new CssResourceDefinition mock
+     * @param link css resource link (may be {@code null})
+     * @param media css media attribute (may be {@code null})
+     * @param conditionalComment conditional comment (IE) value (may be {@code null})
+     * @return mock of {@link CssResourceDefinition}
      */
     public static CssResourceDefinition mockCssFile(String link, String media, String conditionalComment) {
         CssResourceDefinition result = mock(CssResourceDefinition.class);
@@ -116,11 +151,11 @@ public final class ThemeMockUtils {
     }
 
     /**
-     * Creates a new ResourceDefinition mock.
+     * Create a generic {@link ResourceDefinition} mock, typically used for JavaScript resources.
      *
-     * @param link the resource link as String
-     * @param conditionalComment the resources conditional comment
-     * @return the new CssResourceDefinition mock
+     * @param link resource link (may be {@code null})
+     * @param conditionalComment conditional comment (may be {@code null})
+     * @return mock of {@link ResourceDefinition}
      */
     public static ResourceDefinition mockResource(String link, String conditionalComment) {
         ResourceDefinition result = mock(ResourceDefinition.class);

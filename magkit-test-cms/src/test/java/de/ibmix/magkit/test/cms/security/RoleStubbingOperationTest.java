@@ -21,12 +21,11 @@ package de.ibmix.magkit.test.cms.security;
  */
 
 import info.magnolia.cms.security.Role;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -38,24 +37,24 @@ import static org.mockito.Mockito.mock;
 public class RoleStubbingOperationTest {
 
     private Role _role;
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         _role = mock(Role.class);
     }
 
     @Test
     public void stubName() {
-        assertThat(_role.getName(), nullValue());
+        assertNull(_role.getName());
 
         RoleStubbingOperation.stubName("test").of(_role);
-        assertThat(_role.getName(), is("test"));
+        assertEquals("test", _role.getName());
     }
 
     @Test
     public void stubId() {
-        assertThat(_role.getId(), nullValue());
+        assertNull(_role.getId());
 
         RoleStubbingOperation.stubId("test").of(_role);
-        assertThat(_role.getId(), is("test"));
+        assertEquals("test", _role.getId());
     }
 }

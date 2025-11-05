@@ -21,7 +21,7 @@ package de.ibmix.magkit.test.jcr;
  */
 
 import org.apache.jackrabbit.util.ISO8601;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.jcr.Binary;
@@ -38,10 +38,11 @@ import java.util.Calendar;
 import static de.ibmix.magkit.test.jcr.NodeMockUtils.mockNode;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
 import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubProperty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -57,14 +58,14 @@ public class PropertyMockUtilsTest {
     @Test
     public void testMockPropertyString() throws Exception {
         Property p = PropertyMockUtils.mockProperty("name", "v1", "v2");
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.STRING));
-        assertThat(p.getString(), is("v1"));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getString(), is("v1"));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(2));
-        assertThat(p.toString(), is("name:v1;v2"));
+        assertNotNull(p);
+        assertEquals(PropertyType.STRING, p.getType());
+        assertEquals("v1", p.getString());
+        assertNotNull(p.getValue());
+        assertEquals("v1", p.getValue().getString());
+        assertNotNull(p.getValues());
+        assertEquals(2, p.getValues().length);
+        assertEquals("name:v1;v2", p.toString());
     }
 
     @Test
@@ -74,28 +75,28 @@ public class PropertyMockUtilsTest {
         InputStream bin1Stream = mock(InputStream.class);
         Mockito.when(bin1.getStream()).thenReturn(bin1Stream);
         Property p = PropertyMockUtils.mockProperty("name", bin1, bin2);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.BINARY));
-        assertThat(p.getBinary(), is(bin1));
-        assertThat(p.getStream(), is(bin1Stream));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getBinary(), is(bin1));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(2));
-        assertThat(p.toString(), is("name:Mock for Binary, hashCode: " + bin1.hashCode() + ";Mock for Binary, hashCode: " + bin2.hashCode()));
+        assertNotNull(p);
+        assertEquals(PropertyType.BINARY, p.getType());
+        assertEquals(bin1, p.getBinary());
+        assertEquals(bin1Stream, p.getStream());
+        assertNotNull(p.getValue());
+        assertEquals(bin1, p.getValue().getBinary());
+        assertNotNull(p.getValues());
+        assertEquals(2, p.getValues().length);
+        assertEquals("name:Mock for Binary, hashCode: " + bin1.hashCode() + ";Mock for Binary, hashCode: " + bin2.hashCode(), p.toString());
     }
 
     @Test
     public void testMockPropertyBoolean() throws Exception {
         Property p = PropertyMockUtils.mockProperty("name", true, false, false);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.BOOLEAN));
-        assertThat(p.getBoolean(), is(true));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getBoolean(), is(true));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(3));
-        assertThat(p.toString(), is("name:true;false;false"));
+        assertNotNull(p);
+        assertEquals(PropertyType.BOOLEAN, p.getType());
+        assertTrue(p.getBoolean());
+        assertNotNull(p.getValue());
+        assertTrue(p.getValue().getBoolean());
+        assertNotNull(p.getValues());
+        assertEquals(3, p.getValues().length);
+        assertEquals("name:true;false;false", p.toString());
     }
 
     @Test
@@ -105,40 +106,40 @@ public class PropertyMockUtilsTest {
         Calendar cal2 = Calendar.getInstance();
         cal2.add(Calendar.DAY_OF_YEAR, 1);
         Property p = PropertyMockUtils.mockProperty("name", cal1, cal2);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.DATE));
-        assertThat(p.getDate(), is(cal1));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getDate(), is(cal1));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(2));
-        assertThat(p.toString(), is("name:" + ISO8601.format(cal1) + ";" + ISO8601.format(cal2)));
+        assertNotNull(p);
+        assertEquals(PropertyType.DATE, p.getType());
+        assertEquals(cal1, p.getDate());
+        assertNotNull(p.getValue());
+        assertEquals(cal1, p.getValue().getDate());
+        assertNotNull(p.getValues());
+        assertEquals(2, p.getValues().length);
+        assertEquals("name:" + ISO8601.format(cal1) + ";" + ISO8601.format(cal2), p.toString());
     }
 
     @Test
     public void testMockPropertyDouble() throws Exception {
         Property p = PropertyMockUtils.mockProperty("name", 2D, 3D);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.DOUBLE));
-        assertThat(p.getDouble(), is(2D));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getDouble(), is(2D));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(2));
-        assertThat(p.toString(), is("name:2.0;3.0"));
+        assertNotNull(p);
+        assertEquals(PropertyType.DOUBLE, p.getType());
+        assertEquals(2D, p.getDouble(), 0.0);
+        assertNotNull(p.getValue());
+        assertEquals(2D, p.getValue().getDouble(), 0.0);
+        assertNotNull(p.getValues());
+        assertEquals(2, p.getValues().length);
+        assertEquals("name:2.0;3.0", p.toString());
     }
 
     @Test
     public void testMockPropertyLong() throws Exception {
         Property p = PropertyMockUtils.mockProperty("name", 2L, 3L);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.LONG));
-        assertThat(p.getLong(), is(2L));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getLong(), is(2L));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(2));
-        assertThat(p.toString(), is("name:2;3"));
+        assertNotNull(p);
+        assertEquals(PropertyType.LONG, p.getType());
+        assertEquals(2L, p.getLong());
+        assertNotNull(p.getValue());
+        assertEquals(2L, p.getValue().getLong());
+        assertNotNull(p.getValues());
+        assertEquals(2, p.getValues().length);
+        assertEquals("name:2;3", p.toString());
     }
 
     @Test
@@ -146,15 +147,15 @@ public class PropertyMockUtilsTest {
         Value v1 = ValueMockUtils.mockValue("value1");
         Value v2 = ValueMockUtils.mockValue("value2");
         Property p = PropertyMockUtils.mockProperty("name", v1, v2);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.STRING));
-        assertThat(p.getString(), is("value1"));
-        assertThat(p.getValue(), is(v1));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(2));
-        assertThat(p.getValues()[0], is(v1));
-        assertThat(p.getValues()[1], is(v2));
-        assertThat(p.toString(), is("name:value1;value2"));
+        assertNotNull(p);
+        assertEquals(PropertyType.STRING, p.getType());
+        assertEquals("value1", p.getString());
+        assertEquals(v1, p.getValue());
+        assertNotNull(p.getValues());
+        assertEquals(2, p.getValues().length);
+        assertEquals(v1, p.getValues()[0]);
+        assertEquals(v2, p.getValues()[1]);
+        assertEquals("name:value1;value2", p.toString());
     }
 
 
@@ -162,46 +163,46 @@ public class PropertyMockUtilsTest {
     public void testMockPropertyNode() throws Exception {
         Node value = NodeMockUtils.mockNode("testNode");
         Property p = PropertyMockUtils.mockProperty("name", value, PropertyType.PATH);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.PATH));
-        assertThat(p.getNode(), is(value));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getString(), is("/testNode"));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(1));
-        assertThat(p.toString(), is("name:/testNode"));
+        assertNotNull(p);
+        assertEquals(PropertyType.PATH, p.getType());
+        assertEquals(value, p.getNode());
+        assertNotNull(p.getValue());
+        assertEquals("/testNode", p.getValue().getString());
+        assertNotNull(p.getValues());
+        assertEquals(1, p.getValues().length);
+        assertEquals("name:/testNode", p.toString());
     }
 
     @Test
     public void testMockPropertyContent() throws Exception {
         Node content = NodeMockUtils.mockNode("/root/test", stubIdentifier("uuid-1"));
         Property p = PropertyMockUtils.mockProperty("reference", content);
-        assertThat(p, notNullValue());
-        assertThat(p.getType(), is(PropertyType.REFERENCE));
-        assertThat(p.getNode(), is(content));
-        assertThat(p.getNode().getName(), is("test"));
-        assertThat(p.getValue(), notNullValue());
-        assertThat(p.getValue().getString(), is("uuid-1"));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(1));
-        assertThat(p.toString(), is("reference:uuid-1"));
+        assertNotNull(p);
+        assertEquals(PropertyType.REFERENCE, p.getType());
+        assertEquals(content, p.getNode());
+        assertEquals("test", p.getNode().getName());
+        assertNotNull(p.getValue());
+        assertEquals("uuid-1", p.getValue().getString());
+        assertNotNull(p.getValues());
+        assertEquals(1, p.getValues().length);
+        assertEquals("reference:uuid-1", p.toString());
     }
 
     @Test
     public void testMockProperty() throws Exception {
         Property p = PropertyMockUtils.mockProperty("name");
-        assertThat(p, notNullValue());
-        assertThat(p.getName(), is("name"));
-        assertThat(p.getBoolean(), is(false));
-        assertThat(p.getDate(), nullValue());
-        assertThat(p.getString(), nullValue());
-        assertThat(p.getBinary(), nullValue());
-        assertThat(p.getDecimal(), nullValue());
-        assertThat(p.getDouble(), is(0.0));
-        assertThat(p.getLong(), is(0L));
-        assertThat(p.getValues(), notNullValue());
-        assertThat(p.getValues().length, is(0));
-        assertThat(p.getType(), is(PropertyType.UNDEFINED));
+        assertNotNull(p);
+        assertEquals("name", p.getName());
+        assertFalse(p.getBoolean());
+        assertNull(p.getDate());
+        assertNull(p.getString());
+        assertNull(p.getBinary());
+        assertNull(p.getDecimal());
+        assertEquals(0.0, p.getDouble(), 0.0);
+        assertEquals(0L, p.getLong());
+        assertNotNull(p.getValues());
+        assertEquals(0, p.getValues().length);
+        assertEquals(PropertyType.UNDEFINED, p.getType());
 
         ItemVisitor visitor = mock(ItemVisitor.class);
         p.accept(visitor);
@@ -212,7 +213,7 @@ public class PropertyMockUtilsTest {
     public void testMockPropertyParent() throws Exception {
         Property property = PropertyMockUtils.mockProperty("property", "test");
         Node node = mockNode("node", stubProperty(property));
-        assertThat(property.getParent(), is(node));
+        assertEquals(node, property.getParent());
     }
 
     @Test
@@ -221,12 +222,12 @@ public class PropertyMockUtilsTest {
         Node parent = NodeMockUtils.mockNode("parent");
         Node node = mockNode("node", stubProperty(property), NodeStubbingOperation.stubParent(parent));
 
-        assertThat(property.getDepth(), is(3));
-        assertThat(property.getPath(), is("/parent/node/property"));
+        assertEquals(3, property.getDepth());
+        assertEquals("/parent/node/property", property.getPath());
 
         Session session = SessionMockUtils.mockSession("website");
-        assertThat((Node) session.getItem("/parent/node"), is(node));
-        assertThat((Property) session.getItem("/parent/node/property"), is(property));
+        assertEquals(node, (Node) session.getItem("/parent/node"));
+        assertEquals(property, (Property) session.getItem("/parent/node/property"));
     }
 
     @Test
@@ -239,15 +240,15 @@ public class PropertyMockUtilsTest {
         stubProperty(prop1).of(node1);
         stubProperty(prop2).of(node1);
 
-        assertThat(prop1.getPath(), is("/root/level1/level2/level3/level4/prop1"));
+        assertEquals("/root/level1/level2/level3/level4/prop1", prop1.getPath());
 
-        assertThat(session.getProperty("/root/level1/level2/level3/level4/prop1"), is(prop1));
-        assertThat(session.getProperty("/root/level1/level2/level3/level4/prop2"), is(prop2));
+        assertEquals(prop1, session.getProperty("/root/level1/level2/level3/level4/prop1"));
+        assertEquals(prop2, session.getProperty("/root/level1/level2/level3/level4/prop2"));
 
         Node node2 = session.getNode("/root/level1/level2");
 
-        assertThat(node2.getProperty("level3/level4/prop1"), is(prop1));
-        assertThat(node2.getProperty("level3/level4/prop2"), is(prop2));
+        assertEquals(prop1, node2.getProperty("level3/level4/prop1"));
+        assertEquals(prop2, node2.getProperty("level3/level4/prop2"));
     }
 
     @Test
@@ -259,38 +260,36 @@ public class PropertyMockUtilsTest {
         stubProperty(prop1).of(node3);
         stubProperty(prop2).of(node3);
 
-        assertThat(node3.getProperty("prop1"), is(prop1));
-        assertThat(node3.getProperty("prop2"), is(prop2));
-        assertThat(node3.hasProperty("prop1"), is(true));
-        assertThat(node3.hasProperty("prop2"), is(true));
-        // we always have an primary type property
-        assertThat(node3.getProperties().getSize(), is(3L));
+        assertEquals(prop1, node3.getProperty("prop1"));
+        assertEquals(prop2, node3.getProperty("prop2"));
+        assertTrue(node3.hasProperty("prop1"));
+        assertTrue(node3.hasProperty("prop2"));
+        assertEquals(3L, node3.getProperties().getSize());
 
         Session session = node3.getSession();
-        assertThat(session.getProperty("/root/level1/level2/level3/prop1"), is(prop1));
-        assertThat(session.getProperty("/root/level1/level2/level3/prop2"), is(prop2));
-        assertThat(session.getItem("/root/level1/level2/level3/prop1"), is(prop1));
-        assertThat(session.getItem("/root/level1/level2/level3/prop2"), is(prop2));
+        assertEquals(prop1, session.getProperty("/root/level1/level2/level3/prop1"));
+        assertEquals(prop2, session.getProperty("/root/level1/level2/level3/prop2"));
+        assertEquals(prop1, (Property) session.getItem("/root/level1/level2/level3/prop1"));
+        assertEquals(prop2, (Property) session.getItem("/root/level1/level2/level3/prop2"));
 
-        assertThat(session.itemExists("/root/level1/level2/level3/prop1"), is(true));
-        assertThat(session.itemExists("/root/level1/level2/level3/prop2"), is(true));
+        assertTrue(session.itemExists("/root/level1/level2/level3/prop1"));
+        assertTrue(session.itemExists("/root/level1/level2/level3/prop2"));
 
         // now remove one property:
         prop1.remove();
 
-        assertThat(node3.getProperty("prop1"), nullValue());
-        assertThat(node3.getProperty("prop2"), is(prop2));
-        assertThat(node3.hasProperty("prop1"), is(false));
-        assertThat(node3.hasProperty("prop2"), is(true));
-        // we always have a primary type property
-        assertThat(node3.getProperties().getSize(), is(2L));
+        assertNull(node3.getProperty("prop1"));
+        assertEquals(prop2, node3.getProperty("prop2"));
+        assertFalse(node3.hasProperty("prop1"));
+        assertTrue(node3.hasProperty("prop2"));
+        assertEquals(2L, node3.getProperties().getSize());
 
-        assertThat(session.getProperty("/root/level1/level2/level3/prop1"), nullValue());
-        assertThat(session.getProperty("/root/level1/level2/level3/prop2"), is(prop2));
-        assertThat(session.getItem("/root/level1/level2/level3/prop1"), nullValue());
-        assertThat(session.getItem("/root/level1/level2/level3/prop2"), is(prop2));
+        assertNull(session.getProperty("/root/level1/level2/level3/prop1"));
+        assertEquals(prop2, session.getProperty("/root/level1/level2/level3/prop2"));
+        assertNull(session.getItem("/root/level1/level2/level3/prop1"));
+        assertEquals(prop2, session.getItem("/root/level1/level2/level3/prop2"));
 
-        assertThat(session.itemExists("/root/level1/level2/level3/prop1"), is(false));
-        assertThat(session.itemExists("/root/level1/level2/level3/prop2"), is(true));
+        assertFalse(session.itemExists("/root/level1/level2/level3/prop1"));
+        assertTrue(session.itemExists("/root/level1/level2/level3/prop2"));
     }
 }

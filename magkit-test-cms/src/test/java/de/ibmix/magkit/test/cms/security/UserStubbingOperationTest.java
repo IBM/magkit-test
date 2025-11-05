@@ -21,12 +21,13 @@ package de.ibmix.magkit.test.cms.security;
  */
 
 import info.magnolia.cms.security.User;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -39,118 +40,118 @@ public class UserStubbingOperationTest {
 
     private User _user;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         _user = mock(User.class);
     }
 
     @Test
     public void stubName() {
-        assertThat(_user.getName(), nullValue());
+        assertNull(_user.getName());
 
         UserStubbingOperation.stubName("test").of(_user);
-        assertThat(_user.getName(), is("test"));
+        assertEquals("test", _user.getName());
     }
 
     @Test
     public void stubIdentifier() {
-        assertThat(_user.getIdentifier(), nullValue());
+        assertNull(_user.getIdentifier());
 
         UserStubbingOperation.stubIdentifier("test").of(_user);
-        assertThat(_user.getIdentifier(), is("test"));
+        assertEquals("test", _user.getIdentifier());
     }
 
     @Test
     public void stubPassword() {
-        assertThat(_user.getPassword(), nullValue());
+        assertNull(_user.getPassword());
 
         UserStubbingOperation.stubPassword("test").of(_user);
-        assertThat(_user.getPassword(), is("test"));
+        assertEquals("test", _user.getPassword());
     }
 
     @Test
     public void stubLanguage() {
-        assertThat(_user.getLanguage(), nullValue());
+        assertNull(_user.getLanguage());
 
         UserStubbingOperation.stubLanguage("en").of(_user);
-        assertThat(_user.getLanguage(), is("en"));
+        assertEquals("en", _user.getLanguage());
     }
 
     @Test
     public void stubEnabled() {
-        assertThat(_user.isEnabled(), is(false));
+        assertFalse(_user.isEnabled());
 
         UserStubbingOperation.stubEnabled(true).of(_user);
-        assertThat(_user.isEnabled(), is(true));
+        assertTrue(_user.isEnabled());
     }
 
     @Test
     public void stubProperty() {
-        assertThat(_user.getProperty("name"), nullValue());
+        assertNull(_user.getProperty("name"));
 
         UserStubbingOperation.stubProperty("name", "value").of(_user);
-        assertThat(_user.getProperty("name"), is("value"));
+        assertEquals("value", _user.getProperty("name"));
     }
 
     @Test
     public void stubGroups() {
-        assertThat(_user.getGroups().isEmpty(), is(true));
+        assertTrue(_user.getGroups().isEmpty());
 
         UserStubbingOperation.stubGroups(null).of(_user);
-        assertThat(_user.getGroups().isEmpty(), is(true));
+        assertTrue(_user.getGroups().isEmpty());
 
         UserStubbingOperation.stubGroups("g1", "g2").of(_user);
-        assertThat(_user.getGroups().size(), is(2));
-        assertThat(_user.getAllGroups().isEmpty(), is(true));
+        assertEquals(2, _user.getGroups().size());
+        assertTrue(_user.getAllGroups().isEmpty());
 
         UserStubbingOperation.stubGroups().of(_user);
-        assertThat(_user.getGroups().isEmpty(), is(true));
+        assertTrue(_user.getGroups().isEmpty());
     }
 
     @Test
     public void stubAllGroups() {
-        assertThat(_user.getAllGroups().isEmpty(), is(true));
+        assertTrue(_user.getAllGroups().isEmpty());
 
         UserStubbingOperation.stubAllGroups(null).of(_user);
-        assertThat(_user.getAllGroups().isEmpty(), is(true));
+        assertTrue(_user.getAllGroups().isEmpty());
 
         UserStubbingOperation.stubAllGroups("g1", "g2").of(_user);
-        assertThat(_user.getAllGroups().size(), is(2));
-        assertThat(_user.getGroups().isEmpty(), is(true));
+        assertEquals(2, _user.getAllGroups().size());
+        assertTrue(_user.getGroups().isEmpty());
 
         UserStubbingOperation.stubAllGroups().of(_user);
-        assertThat(_user.getAllGroups().isEmpty(), is(true));
+        assertTrue(_user.getAllGroups().isEmpty());
     }
 
     @Test
     public void stubRoles() {
-        assertThat(_user.getRoles().isEmpty(), is(true));
+        assertTrue(_user.getRoles().isEmpty());
 
         UserStubbingOperation.stubRoles(null).of(_user);
-        assertThat(_user.getRoles().isEmpty(), is(true));
+        assertTrue(_user.getRoles().isEmpty());
 
         UserStubbingOperation.stubRoles("r1", "r2").of(_user);
-        assertThat(_user.getRoles().size(), is(2));
-        assertThat(_user.hasRole("r1"), is(true));
-        assertThat(_user.hasRole("r2"), is(true));
+        assertEquals(2, _user.getRoles().size());
+        assertTrue(_user.hasRole("r1"));
+        assertTrue(_user.hasRole("r2"));
 
         UserStubbingOperation.stubRoles().of(_user);
-        assertThat(_user.getRoles().isEmpty(), is(true));
+        assertTrue(_user.getRoles().isEmpty());
     }
 
     @Test
     public void stubAllRoles() {
-        assertThat(_user.getAllRoles().isEmpty(), is(true));
+        assertTrue(_user.getAllRoles().isEmpty());
 
         UserStubbingOperation.stubAllRoles(null).of(_user);
-        assertThat(_user.getAllRoles().isEmpty(), is(true));
+        assertTrue(_user.getAllRoles().isEmpty());
 
         UserStubbingOperation.stubAllRoles("r1", "r2").of(_user);
-        assertThat(_user.getAllRoles().size(), is(2));
-        assertThat(_user.hasRole("r1"), is(true));
-        assertThat(_user.hasRole("r2"), is(true));
+        assertEquals(2, _user.getAllRoles().size());
+        assertTrue(_user.hasRole("r1"));
+        assertTrue(_user.hasRole("r2"));
 
         UserStubbingOperation.stubAllRoles().of(_user);
-        assertThat(_user.getAllRoles().isEmpty(), is(true));
+        assertTrue(_user.getAllRoles().isEmpty());
     }
 }

@@ -19,28 +19,21 @@
         <module>magkit-test-cms</module>
         <module>magkit-test-server</module>
         <module>magkit-test-webapp</module>
+        <module>magkit-test-assert</module>
     </modules>
 
     <properties>
-        <version.hamcrest-core>2.2</version.hamcrest-core>
         <version.el-api>2.2.5</version.el-api>
-        <junitVersion>5.11.3</junitVersion>
-        <mockitoVersion>5.12.0</mockitoVersion>
-        <restAssuredVersion>5.4.0</restAssuredVersion>
-        <jacocoVersion>0.8.12</jacocoVersion>
+        <junitVersion>5.14.0</junitVersion>
+        <mockitoVersion>5.20.0</mockitoVersion>
+        <restAssuredVersion>5.5.6</restAssuredVersion>
+        <jacocoVersion>0.8.13</jacocoVersion>
         <!-- we need current surefire plugin to run TomcatTest -->
-        <maven.surefire.version>3.3.0</maven.surefire.version>
+        <maven.surefire.version>3.5.4</maven.surefire.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest</artifactId>
-                <version>${version.hamcrest-core}</version>
-                <scope>test</scope>
-            </dependency>
-
             <!-- provided servlet container libs -->
             <dependency>
                 <groupId>javax.el</groupId>
@@ -160,11 +153,11 @@
         <!-- required to find our own super POM-->
         <repository>
             <id>magnolia.forge.releases</id>
-            <url>https://nexus.magnolia-cms.com/content/groups/magnolia.forge.releases/</url>
+            <url>https://nexus.magnolia-cms.com/repository/magnolia.forge.releases/</url>
         </repository>
         <repository>
             <id>magnolia.forge.snapshots</id>
-            <url>https://nexus.magnolia-cms.com/content/groups/magnolia.forge.snapshots/</url>
+            <url>https://nexus.magnolia-cms.com/repository/magnolia.forge.snapshots/</url>
         </repository>
     </repositories>
 </project>

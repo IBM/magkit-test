@@ -25,14 +25,13 @@ import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.module.model.ServletDefinition;
 import info.magnolia.objectfactory.Components;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.clearComponentProvider;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,12 +44,12 @@ import static org.mockito.Mockito.verify;
  */
 public class ModuleMockUtilsTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         clearComponentProvider();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         clearComponentProvider();
     }
@@ -58,30 +57,28 @@ public class ModuleMockUtilsTest {
     @Test
     public void mockModuleRegistry() {
         ModuleRegistry mr = ModuleMockUtils.mockModuleRegistry();
-        assertThat(mr, notNullValue());
-        assertThat(Components.getComponent(ModuleRegistry.class), is(mr));
-
+        assertNotNull(mr);
+        assertEquals(mr, Components.getComponent(ModuleRegistry.class));
         ModuleMockUtils.mockModuleRegistry(ModuleRegistryStubbingOperation.stubModuleDefinition("test-definition", "1.0"));
-        assertThat(mr.getDefinition("test-definition"), notNullValue());
-        assertThat(mr.getDefinition("test-definition").getName(), is("test-definition"));
-        assertThat(mr.getDefinition("test-definition").getVersion().toString(), is("1.0.0"));
+        assertNotNull(mr.getDefinition("test-definition"));
+        assertEquals("test-definition", mr.getDefinition("test-definition").getName());
+        assertEquals("1.0.0", mr.getDefinition("test-definition").getVersion().toString());
     }
 
     @Test
     public void mockModuleDefinition() {
         ModuleDefinitionStubbingOperation op = mock(ModuleDefinitionStubbingOperation.class);
         ModuleDefinition definition = ModuleMockUtils.mockModuleDefinition(op);
-        assertThat(definition, notNullValue());
-        assertThat(definition.getName(), is("test"));
+        assertNotNull(definition);
+        assertEquals("test", definition.getName());
         verify(op, times(1)).of(definition);
-        assertThat(Components.getComponent(ModuleRegistry.class).getDefinition("test"), is(definition));
+        assertEquals(definition, Components.getComponent(ModuleRegistry.class).getDefinition("test"));
     }
 
     @Test
     public void cleanModuleRegistry() {
         ModuleRegistry mr = ModuleMockUtils.mockModuleRegistry();
-        assertThat(Components.getComponent(ModuleRegistry.class), is(mr));
-
+        assertEquals(mr, Components.getComponent(ModuleRegistry.class));
         ModuleMockUtils.cleanModuleRegistry();
         // Well, this results in a NullPointerException at AbstractComponentProvider.getComponentDefinition(AbstractComponentProvider.java:329)
 //        assertThat(Components.getComponent(ModuleRegistry.class), nullValue());
@@ -90,18 +87,18 @@ public class ModuleMockUtilsTest {
     @Test
     public void mockInstallContext() {
         InstallContext ic = ModuleMockUtils.mockInstallContext();
-        assertThat(ic, notNullValue());
+        assertNotNull(ic);
         ModuleDefinition md = ModuleMockUtils.mockModuleDefinition();
         ic = ModuleMockUtils.mockInstallContext(InstallContextStubbingOperation.stubCurrentModuleDefinition(md));
-        assertThat(ic.getCurrentModuleDefinition(), is(md));
+        assertEquals(md, ic.getCurrentModuleDefinition());
     }
 
     @Test
     public void mockServletDefinition() {
         ServletDefinitionStubbingOperation op = mock(ServletDefinitionStubbingOperation.class);
         ServletDefinition servletDefinition = ModuleMockUtils.mockServletDefinition("test", op);
-        assertThat(servletDefinition, notNullValue());
-        assertThat(servletDefinition.getName(), is("test"));
+        assertNotNull(servletDefinition);
+        assertEquals("test", servletDefinition.getName());
         verify(op, times(1)).of(servletDefinition);
     }
 }

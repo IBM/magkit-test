@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.cms.security;
  * #L%
  */
 
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.cms.context.ContextMockUtils;
 import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.cms.security.AccessManager;
@@ -29,8 +30,8 @@ import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.MgnlContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 
@@ -44,10 +45,12 @@ import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockSecuritySu
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockUser;
 import static de.ibmix.magkit.test.cms.security.SecurityMockUtils.mockUserManager;
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,14 +63,14 @@ import static org.mockito.Mockito.verify;
  */
 public class SecurityMockUtilsTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ContextMockUtils.cleanContext();
     }
 
     @Test
     public void mockAccessManagerWebsiteRepositoryTest() throws RepositoryException {
-        assertThat(MgnlContext.hasInstance(), is(false));
+        assertFalse(MgnlContext.hasInstance());
 
         AccessManagerStubbingOperation op1 = mock(AccessManagerStubbingOperation.class);
         AccessManagerStubbingOperation op2 = mock(AccessManagerStubbingOperation.class);
@@ -76,92 +79,92 @@ public class SecurityMockUtilsTest {
         verify(op1, times(1)).of(am);
         verify(op2, times(1)).of(am);
 
-        assertThat(MgnlContext.hasInstance(), is(true));
-        assertThat(MgnlContext.getAccessManager(WEBSITE), is(am));
+        assertTrue(MgnlContext.hasInstance());
+        assertEquals(am, MgnlContext.getAccessManager(WEBSITE));
     }
 
-    @Test(expected = AssertionError.class)
-    public void mockAccessManagerTestForNull() throws RepositoryException {
-        mockAccessManager(null);
+    @Test
+    public void mockAccessManagerTestForNull() {
+        assertThrows(IllegalArgumentException.class, () -> mockAccessManager(null));
     }
 
     @Test
     public void testMockSecuritySupport() {
         SecuritySupport support = mockSecuritySupport();
-        assertThat(support, notNullValue());
+        assertNotNull(support);
 
         // check that we get same instance again
-        assertThat(mockSecuritySupport(), is(support));
+        assertEquals(support, mockSecuritySupport());
 
         // check that mock is available through Components:
-        assertThat(getComponentSingleton(SecuritySupport.class), is(support));
+        assertEquals(support, getComponentSingleton(SecuritySupport.class));
     }
 
     @Test
     public void testMockUserManager() {
         SecuritySupport support = getComponentSingleton(SecuritySupport.class);
-        assertThat(support, nullValue());
+        assertNull(support);
 
         UserManager manager = mockUserManager("test");
-        assertThat(manager, notNullValue());
-        assertThat(manager.getAllUsers(), notNullValue());
-        assertThat(manager.getAllUsers().size(), is(0));
-        assertThat(manager.getAnonymousUser(), nullValue());
-        assertThat(manager.getSystemUser(), nullValue());
+        Require.Argument.notNull(manager, "manager should not be null");
+        assertNotNull(manager.getAllUsers());
+        assertEquals(0, manager.getAllUsers().size());
+        assertNull(manager.getAnonymousUser());
+        assertNull(manager.getSystemUser());
 
         support = getComponentSingleton(SecuritySupport.class);
-        assertThat(support, notNullValue());
-        assertThat(support.getUserManager("test"), is(manager));
+        assertNotNull(support);
+        assertEquals(manager, support.getUserManager("test"));
     }
 
     @Test
     public void testMockUser() {
         UserStubbingOperation op = mock(UserStubbingOperation.class);
         User user = mockUser("test", op);
-        assertThat(user, notNullValue());
+        assertNotNull(user);
         verify(op, times(1)).of(user);
-        assertThat(user.getName(), is("test"));
-        assertThat(user.getIdentifier().length(), is(36));
+        assertEquals("test", user.getName());
+        assertEquals(36, user.getIdentifier().length());
 
         // Repeated mocking of same user results in same user object:
         User user2 = mockUser("test");
-        assertThat(user2, is(user));
+        assertEquals(user, user2);
 
         // text implicit mocking of GroupManager:
-        assertThat(mockUserManager(WEBSITE).getUser("test"), is(user));
-        assertThat(mockUserManager(WEBSITE).getUserById(user.getIdentifier()), is(user));
+        assertEquals(user, mockUserManager(WEBSITE).getUser("test"));
+        assertEquals(user, mockUserManager(WEBSITE).getUserById(user.getIdentifier()));
     }
 
     @Test
     public void testMockGroup() throws AccessDeniedException {
         GroupStubbingOperation op = mock(GroupStubbingOperation.class);
         Group group = mockGroup("test", op);
-        assertThat(group, notNullValue());
+        assertNotNull(group);
         verify(op, times(1)).of(group);
-        assertThat(group.getName(), is("test"));
-        assertThat(group.getId().length(), is(36));
+        assertEquals("test", group.getName());
+        assertEquals(36, group.getId().length());
 
         // Repeated mocking of same group results in same group object:
         Group group2 = mockGroup("test");
-        assertThat(group2, is(group));
+        assertEquals(group, group2);
 
         // text implicit mocking of GroupManager:
-        assertThat(mockGroupManager().getGroup("test"), is(group));
+        assertEquals(group, mockGroupManager().getGroup("test"));
     }
 
     @Test
     public void testMockRole() {
         Role role = mockRole("test");
-        assertThat(role, notNullValue());
-        assertThat(role.getName(), is("test"));
-        assertThat(role.getId().length(), is(36));
+        assertNotNull(role);
+        assertEquals("test", role.getName());
+        assertEquals(36, role.getId().length());
 
         // Repeated mocking of same role results in same role object:
         Role role2 = mockRole("test");
-        assertThat(role2, is(role));
+        assertEquals(role, role2);
 
         // text implicit mocking of RoleManager:
-        assertThat(mockRoleManager().getRole("test"), is(role));
-        assertThat(mockRoleManager().getRoleNameById(role.getId()), is("test"));
+        assertEquals(role, mockRoleManager().getRole("test"));
+        assertEquals("test", mockRoleManager().getRoleNameById(role.getId()));
     }
 }

@@ -26,8 +26,8 @@ import info.magnolia.module.model.PropertyDefinition;
 import info.magnolia.module.model.RepositoryDefinition;
 import info.magnolia.module.model.ServletDefinition;
 import info.magnolia.module.model.Version;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,10 +43,9 @@ import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubName;
 import static de.ibmix.magkit.test.cms.module.ModuleDefinitionStubbingOperation.stubVersion;
 import static de.ibmix.magkit.test.cms.module.ModuleMockUtils.mockServletDefinition;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -59,50 +58,50 @@ public class ModuleDefinitionStubbingOperationTest {
 
     private ModuleDefinition _moduleDefinition;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         _moduleDefinition = mock(ModuleDefinition.class);
     }
 
     @Test
     public void testDisplayName() {
-        assertThat(_moduleDefinition.getDisplayName(), nullValue());
+        assertNull(_moduleDefinition.getDisplayName());
 
         stubDisplayName("DISPLAY_NAME").of(_moduleDefinition);
-        assertThat(_moduleDefinition.getDisplayName(), is("DISPLAY_NAME"));
+        assertEquals("DISPLAY_NAME", _moduleDefinition.getDisplayName());
     }
 
     @Test
     public void testName() {
-        assertThat(_moduleDefinition.getName(), nullValue());
+        assertNull(_moduleDefinition.getName());
 
         stubName("NAME").of(_moduleDefinition);
-        assertThat(_moduleDefinition.getName(), is("NAME"));
+        assertEquals("NAME", _moduleDefinition.getName());
     }
 
     @Test
     public void testVersion() {
-        assertThat(_moduleDefinition.getVersion(), nullValue());
+        assertNull(_moduleDefinition.getVersion());
 
         Version v = Version.parseVersion("1.1.3");
         stubVersion("1.1.3").of(_moduleDefinition);
-        assertThat(_moduleDefinition.getVersion(), is(v));
+        assertEquals(v, _moduleDefinition.getVersion());
     }
 
     @Test
     public void testDescription() {
-        assertThat(_moduleDefinition.getDescription(), nullValue());
+        assertNull(_moduleDefinition.getDescription());
 
         stubDescription("test").of(_moduleDefinition);
-        assertThat(_moduleDefinition.getDescription(), is("test"));
+        assertEquals("test", _moduleDefinition.getDescription());
     }
 
     @Test
     public void testStubClassName() {
-        assertThat(_moduleDefinition.getClassName(), nullValue());
+        assertNull(_moduleDefinition.getClassName());
 
         stubClassName("test").of(_moduleDefinition);
-        assertThat(_moduleDefinition.getClassName(), is("test"));
+        assertEquals("test", _moduleDefinition.getClassName());
     }
 
     @Test
@@ -111,12 +110,12 @@ public class ModuleDefinitionStubbingOperationTest {
 
         ServletDefinition sd = mockServletDefinition("one");
         stubServlet(sd).of(_moduleDefinition);
-        assertThat(_moduleDefinition.getServlets().size(), is(1));
+        assertEquals(1, _moduleDefinition.getServlets().size());
         assertTrue(_moduleDefinition.getServlets().contains(sd));
 
         ServletDefinition sd2 = mockServletDefinition("two");
         stubServlet(sd2).of(_moduleDefinition);
-        assertThat(_moduleDefinition.getServlets().size(), is(2));
+        assertEquals(2, _moduleDefinition.getServlets().size());
         assertTrue(_moduleDefinition.getServlets().contains(sd));
         assertTrue(_moduleDefinition.getServlets().contains(sd2));
     }
@@ -127,12 +126,12 @@ public class ModuleDefinitionStubbingOperationTest {
 
         ServletDefinition sd = mockServletDefinition("one");
         stubServlet(sd).of(_moduleDefinition);
-        assertThat(_moduleDefinition.getServlets().size(), is(1));
+        assertEquals(1, _moduleDefinition.getServlets().size());
         assertTrue(_moduleDefinition.getServlets().contains(sd));
 
         ServletDefinition sd2 = mockServletDefinition("two");
         stubServlets(Collections.singletonList(sd2)).of(_moduleDefinition);
-        assertThat(_moduleDefinition.getServlets().size(), is(1));
+        assertEquals(1, _moduleDefinition.getServlets().size());
         assertTrue(_moduleDefinition.getServlets().contains(sd2));
     }
 
@@ -142,14 +141,14 @@ public class ModuleDefinitionStubbingOperationTest {
 
         stubDependency("dep1", "1.0", true).of(_moduleDefinition);
         List<DependencyDefinition> dependencies = (List<DependencyDefinition>) _moduleDefinition.getDependencies();
-        assertThat(dependencies.size(), is(1));
-        assertThat(dependencies.get(0).getName(), is("dep1"));
-        assertThat(dependencies.get(0).getVersion(), is("1.0"));
-        assertThat(dependencies.get(0).getVersionRange().toString(), is("[1.0.0,1.0.0]"));
-        assertThat(dependencies.get(0).isOptional(), is(true));
+        assertEquals(1, dependencies.size());
+        assertEquals("dep1", dependencies.get(0).getName());
+        assertEquals("1.0", dependencies.get(0).getVersion());
+        assertEquals("[1.0.0,1.0.0]", dependencies.get(0).getVersionRange().toString());
+        assertTrue(dependencies.get(0).isOptional());
 
         stubDependency("dep2", "1.1", false).of(_moduleDefinition);
-        assertThat(_moduleDefinition.getDependencies().size(), is(2));
+        assertEquals(2, _moduleDefinition.getDependencies().size());
     }
 
     @Test
@@ -158,13 +157,13 @@ public class ModuleDefinitionStubbingOperationTest {
 
         stubRepository("rep1", "nodetypes/my-nodetype.yaml", "ws-1", "ws-2").of(_moduleDefinition);
         List<RepositoryDefinition> repositories = (List<RepositoryDefinition>) _moduleDefinition.getRepositories();
-        assertThat(repositories.size(), is(1));
-        assertThat(repositories.get(0).getName(), is("rep1"));
-        assertThat(repositories.get(0).getNodeTypeFile(), is("nodetypes/my-nodetype.yaml"));
-        assertThat(repositories.get(0).getWorkspaces().size(), is(2));
+        assertEquals(1, repositories.size());
+        assertEquals("rep1", repositories.get(0).getName());
+        assertEquals("nodetypes/my-nodetype.yaml", repositories.get(0).getNodeTypeFile());
+        assertEquals(2, repositories.get(0).getWorkspaces().size());
 
         stubRepository("rep1", null, "ws-3").of(_moduleDefinition);
-        assertThat(_moduleDefinition.getRepositories().size(), is(2));
+        assertEquals(2, _moduleDefinition.getRepositories().size());
     }
 
     @Test
@@ -173,15 +172,15 @@ public class ModuleDefinitionStubbingOperationTest {
 
         stubProperty("prop1", "value1").of(_moduleDefinition);
         List<PropertyDefinition> properties = (List<PropertyDefinition>) _moduleDefinition.getProperties();
-        assertThat(properties.size(), is(1));
-        assertThat(properties.get(0).getName(), is("prop1"));
-        assertThat(properties.get(0).getValue(), is("value1"));
-        assertThat(_moduleDefinition.getProperty("prop1"), is("value1"));
+        assertEquals(1, properties.size());
+        assertEquals("prop1", properties.get(0).getName());
+        assertEquals("value1", properties.get(0).getValue());
+        assertEquals("value1", _moduleDefinition.getProperty("prop1"));
 
         stubProperty("prop2", "value2").of(_moduleDefinition);
         properties = (List<PropertyDefinition>) _moduleDefinition.getProperties();
-        assertThat(properties.size(), is(2));
-        assertThat(_moduleDefinition.getProperty("prop1"), is("value1"));
-        assertThat(_moduleDefinition.getProperty("prop2"), is("value2"));
+        assertEquals(2, properties.size());
+        assertEquals("value1", _moduleDefinition.getProperty("prop1"));
+        assertEquals("value2", _moduleDefinition.getProperty("prop2"));
     }
 }

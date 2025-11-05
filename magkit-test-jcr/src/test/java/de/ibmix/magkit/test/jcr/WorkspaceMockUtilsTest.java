@@ -2,9 +2,9 @@ package de.ibmix.magkit.test.jcr;
 
 /*-
  * #%L
- * Aperto Mockito Test-Utils - JCR
+ * magkit-test-jcr Magnolia Module
  * %%
- * Copyright (C) 2023 IBM iX
+ * Copyright (C) 2023 - 2025 IBM iX
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,53 +20,62 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubSession;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * Testing WorkspaceMockUtils.
+ * Tests for {@link WorkspaceMockUtils} covering default behavior, custom name support
+ * and validation (blank / null name assertions).
  *
  * @author wolf.bubenik@ibmix.de
- * @since 2012-08-03
  */
 public class WorkspaceMockUtilsTest {
 
-    @Before
-    public void setUp() {
-        RepositoryMockUtils.cleanRepository();
+    /**
+     * Ensure the default factory method returns a workspace named "test".
+     */
+    @Test
+    public void createWorkspaceWithDefaultName() throws RepositoryException {
+        Workspace ws = WorkspaceMockUtils.mockWorkspace();
+        assertEquals("test", ws.getName());
     }
 
     /**
-     * Test of mockWorkspace method, of class WorkspaceMockUtils.
+     * Ensure a provided custom name is applied.
      */
     @Test
-    public void testMockWorkspaceWithName() throws RepositoryException {
+    public void createWorkspaceWithCustomName() throws RepositoryException {
         WorkspaceStubbingOperation op1 = mock(WorkspaceStubbingOperation.class);
         WorkspaceStubbingOperation op2 = mock(WorkspaceStubbingOperation.class);
-        Workspace ws = WorkspaceMockUtils.mockWorkspace("ws", op1, op2);
-        assertThat(ws, notNullValue());
-        assertThat(ws.getName(), is("ws"));
-        verify(op1, times(1)).of(ws);
-        verify(op2, times(1)).of(ws);
+        Workspace ws = WorkspaceMockUtils.mockWorkspace("custom", op1, op2, stubSession());
+        Mockito.verifyNoInteractions(ws);
+        assertEquals("custom", ws.getName());
+        verify(op1).of(ws);
+        verify(op2).of(ws);
     }
+
+    /**
+     * Expect an IllegalArgumentException for a blank name (documented behavior).
+     */
     @Test
-    public void mockWorkspaceWithDefaultName() throws RepositoryException {
-        WorkspaceStubbingOperation op1 = mock(WorkspaceStubbingOperation.class);
-        WorkspaceStubbingOperation op2 = mock(WorkspaceStubbingOperation.class);
-        Workspace ws = WorkspaceMockUtils.mockWorkspace(op1, op2);
-        assertThat(ws, notNullValue());
-        assertThat(ws.getName(), is("test"));
-        verify(op1, times(1)).of(ws);
-        verify(op2, times(1)).of(ws);
+    public void createWorkspaceWithBlankNameThrowsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> WorkspaceMockUtils.mockWorkspace(" "));
+    }
+
+    /**
+     * Expect an IllegalArgumentException also for null input (defensive behavior consistent with blank check).
+     */
+    @Test
+    public void createWorkspaceWithNullNameThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> WorkspaceMockUtils.mockWorkspace((String) null));
     }
 }

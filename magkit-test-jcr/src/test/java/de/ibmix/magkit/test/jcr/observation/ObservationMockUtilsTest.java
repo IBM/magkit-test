@@ -20,15 +20,14 @@ package de.ibmix.magkit.test.jcr.observation;
  * #L%
  */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.ObservationManager;
 
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -46,12 +45,12 @@ public class ObservationMockUtilsTest {
         ObservationManagerStubbingOperation op1 = mock(ObservationManagerStubbingOperation.class);
         ObservationManagerStubbingOperation op2 = mock(ObservationManagerStubbingOperation.class);
         ObservationManager manager = ObservationMockUtils.mockObservationManager(op1, op2);
-        assertThat(manager, notNullValue());
+        assertNotNull(manager);
         verify(op1, atLeastOnce()).of(manager);
         verify(op2, atLeastOnce()).of(manager);
-        assertThat(manager.getRegisteredEventListeners(), notNullValue());
+        assertNotNull(manager.getRegisteredEventListeners());
         assertFalse(manager.getRegisteredEventListeners().hasNext());
-        assertThat(manager.getEventJournal(), nullValue());
-        assertThat(manager.getEventJournal(123, "path", true, null, null), nullValue());
+        assertNull(manager.getEventJournal());
+        assertNull(manager.getEventJournal(123, "path", true, null, null));
     }
 }

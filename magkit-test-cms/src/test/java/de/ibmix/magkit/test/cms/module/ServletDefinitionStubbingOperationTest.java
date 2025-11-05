@@ -22,16 +22,15 @@ package de.ibmix.magkit.test.cms.module;
 
 import info.magnolia.module.model.ServletDefinition;
 import info.magnolia.module.model.ServletParameterDefinition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -44,33 +43,33 @@ public class ServletDefinitionStubbingOperationTest {
 
     private ServletDefinition _servletDefinition;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         _servletDefinition = mock(ServletDefinition.class);
     }
 
     @Test
     public void stubName() {
-        assertThat(_servletDefinition.getName(), nullValue());
+        assertNull(_servletDefinition.getName());
 
         ServletDefinitionStubbingOperation.stubName("test").of(_servletDefinition);
-        assertThat(_servletDefinition.getName(), is("test"));
+        assertEquals("test", _servletDefinition.getName());
     }
 
     @Test
     public void stubClassName() {
-        assertThat(_servletDefinition.getClassName(), nullValue());
+        assertNull(_servletDefinition.getClassName());
 
         ServletDefinitionStubbingOperation.stubClassName("test").of(_servletDefinition);
-        assertThat(_servletDefinition.getClassName(), is("test"));
+        assertEquals("test", _servletDefinition.getClassName());
     }
 
     @Test
     public void stubComment() {
-        assertThat(_servletDefinition.getComment(), nullValue());
+        assertNull(_servletDefinition.getComment());
 
         ServletDefinitionStubbingOperation.stubComment("test").of(_servletDefinition);
-        assertThat(_servletDefinition.getComment(), is("test"));
+        assertEquals("test", _servletDefinition.getComment());
     }
 
     @Test
@@ -103,10 +102,10 @@ public class ServletDefinitionStubbingOperationTest {
         assertTrue(_servletDefinition.getParams().isEmpty());
 
         ServletDefinitionStubbingOperation.stubParameter("test1", "value1").of(_servletDefinition);
-        assertThat(_servletDefinition.getParams().size(), is(1));
+        assertEquals(1, _servletDefinition.getParams().size());
 
         ServletDefinitionStubbingOperation.stubParameter("test2", "value2").of(_servletDefinition);
-        assertThat(_servletDefinition.getParams().size(), is(2));
+        assertEquals(2, _servletDefinition.getParams().size());
     }
 
     @Test
@@ -114,9 +113,9 @@ public class ServletDefinitionStubbingOperationTest {
         assertTrue(_servletDefinition.getParams().isEmpty());
 
         ServletDefinitionStubbingOperation.stubParams(List.of(mock(ServletParameterDefinition.class), mock(ServletParameterDefinition.class))).of(_servletDefinition);
-        assertThat(_servletDefinition.getParams().size(), is(2));
+        assertEquals(2, _servletDefinition.getParams().size());
 
         ServletDefinitionStubbingOperation.stubParams(List.of(mock(ServletParameterDefinition.class))).of(_servletDefinition);
-        assertThat(_servletDefinition.getParams().size(), is(1));
+        assertEquals(1, _servletDefinition.getParams().size());
     }
 }

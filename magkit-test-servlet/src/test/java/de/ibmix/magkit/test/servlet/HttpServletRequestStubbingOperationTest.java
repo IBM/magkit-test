@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubAttribute;
+import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCharacterEncoding;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubContextPath;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCookie;
 import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.stubCookies;
@@ -51,10 +52,13 @@ import static de.ibmix.magkit.test.servlet.HttpServletRequestStubbingOperation.s
 import static de.ibmix.magkit.test.servlet.HttpSessionStubbingOperation.stubServletContext;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletRequest;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpSession;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -67,299 +71,302 @@ public class HttpServletRequestStubbingOperationTest {
 
     private HttpServletRequest _request;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         _request = mockHttpServletRequest();
     }
 
     @Test
     public void testStubContextPath() {
-        assertThat(_request.getContextPath(), nullValue());
-        assertThat(_request.getSession(), notNullValue());
-        assertThat(_request.getSession().getId(), is("test"));
-        assertThat(_request.getSession().getServletContext(), notNullValue());
+        assertNull(_request.getContextPath());
+        assertNotNull(_request.getSession());
+        assertEquals("test", _request.getSession().getId());
+        assertNotNull(_request.getSession().getServletContext());
 
         stubContextPath("path").of(_request);
-        assertThat(_request.getContextPath(), is("path"));
-        assertThat(_request.getSession().getId(), is("test"));
-        assertThat(_request.getSession().getServletContext().getContextPath(), is("path"));
+        assertEquals("path", _request.getContextPath());
+        assertEquals("test", _request.getSession().getId());
+        assertEquals("path", _request.getSession().getServletContext().getContextPath());
 
         stubContextPath(null).of(_request);
-        assertThat(_request.getContextPath(), nullValue());
+        assertNull(_request.getContextPath());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubContextPathForNull() {
-        stubContextPath("path").of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubContextPath("path").of(null));
     }
 
     @Test
     public void testStubMethod() {
         stubMethod("some method").of(_request);
-        assertThat(_request.getMethod(), is("some method"));
+        assertEquals("some method", _request.getMethod());
 
         stubMethod(null).of(_request);
-        assertThat(_request.getMethod(), nullValue());
+        assertNull(_request.getMethod());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubMethodForNull() {
-        stubMethod("some method").of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubMethod("some method").of(null));
     }
 
     @Test
     public void testStubHeader() {
         stubHeader("name", "value").of(_request);
-        assertThat(_request.getHeader("name"), is("value"));
+        assertEquals("value", _request.getHeader("name"));
 
         stubHeader("name", null).of(_request);
-        assertThat(_request.getHeader("name"), nullValue());
+        assertNull(_request.getHeader("name"));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubHeaderForNullName() {
-        stubHeader(null, "value").of(_request);
+        assertThrows(IllegalArgumentException.class, () -> stubHeader(null, "value").of(_request));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubHeaderForNull() {
-        stubHeader("name", "value").of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubHeader("name", "value").of(null));
     }
 
     @Test
     public void testStubQueryString() {
         stubQueryString("value").of(_request);
-        assertThat(_request.getQueryString(), is("value"));
+        assertEquals("value", _request.getQueryString());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubQueryStringForNull() {
-        stubQueryString("value").of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubQueryString("value").of(null));
     }
 
     @Test
     public void testStubHttpSession() {
         HttpSession session = mock(HttpSession.class);
         stubHttpSession(session).of(_request);
-        assertThat(_request.getSession(), is(session));
-        assertThat(_request.getSession(true), is(session));
-        assertThat(_request.getSession(false), is(session));
+        assertSame(session, _request.getSession());
+        assertSame(session, _request.getSession(true));
+        assertSame(session, _request.getSession(false));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubHttpSessionForNull() {
-        stubHttpSession(mock(HttpSession.class)).of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubHttpSession(mock(HttpSession.class)).of(null));
     }
 
     @Test
     public void testStubHttpSessionWithContextPath() {
-        assertThat(_request.getSession(), notNullValue());
+        assertNotNull(_request.getSession());
         stubContextPath("original").of(_request);
         HttpSession session = _request.getSession();
-        assertThat(_request.getSession(), is(session));
-        assertThat(_request.getContextPath(), is("original"));
-        assertThat(_request.getSession().getServletContext().getContextPath(), is("original"));
+        assertSame(session, _request.getSession());
+        assertEquals("original", _request.getContextPath());
+        assertEquals("original", _request.getSession().getServletContext().getContextPath());
 
         session = mockHttpSession(null, stubServletContext());
         stubHttpSession(session).of(_request);
-        assertThat(_request.getSession(), is(session));
-        assertThat(_request.getContextPath(), nullValue());
+        assertSame(session, _request.getSession());
+        assertNull(_request.getContextPath());
     }
 
     @Test
     public void testStubHttpSessionWithImplicitMocking() {
-        assertThat(_request.getSession(), notNullValue());
+        assertNotNull(_request.getSession());
         stubContextPath("original").of(_request);
-        assertThat(_request.getContextPath(), is("original"));
-        stubHttpSession(null, stubServletContext(ServletContextStubbingOperation.stubContextPath("sessionPath"))).of(
-            _request);
-        assertThat(_request.getSession(), notNullValue());
-        assertThat(_request.getSession().getServletContext(), notNullValue());
-        assertThat(_request.getSession().getServletContext().getContextPath(), is("sessionPath"));
-        assertThat(_request.getContextPath(), is("sessionPath"));
+        assertEquals("original", _request.getContextPath());
+        stubHttpSession(null, stubServletContext(ServletContextStubbingOperation.stubContextPath("sessionPath"))).of(_request);
+        assertNotNull(_request.getSession());
+        assertNotNull(_request.getSession().getServletContext());
+        assertEquals("sessionPath", _request.getSession().getServletContext().getContextPath());
+        assertEquals("sessionPath", _request.getContextPath());
     }
 
     @Test
     public void testStubParameter() {
-        // verify stubbing of first parameter
         stubParameter("name", "value1", "value2").of(_request);
-        assertThat(_request.getParameter("name"), is("value1"));
+        assertEquals("value1", _request.getParameter("name"));
 
-        assertThat(_request.getParameterValues("name"), notNullValue());
-        assertThat(_request.getParameterValues("name").length, is(2));
-        assertThat(_request.getParameterValues("name")[0], is("value1"));
-        assertThat(_request.getParameterValues("name")[1], is("value2"));
+        assertNotNull(_request.getParameterValues("name"));
+        assertEquals(2, _request.getParameterValues("name").length);
+        assertEquals("value1", _request.getParameterValues("name")[0]);
+        assertEquals("value2", _request.getParameterValues("name")[1]);
 
-        assertThat(_request.getParameterMap(), notNullValue());
-        assertThat(_request.getParameterMap().size(), is(1));
-        assertThat(_request.getParameterMap().get("name"), notNullValue());
-        assertThat(_request.getParameterMap().get("name")[0], is("value1"));
-        assertThat(_request.getParameterMap().get("name")[1], is("value2"));
+        assertNotNull(_request.getParameterMap());
+        assertEquals(1, _request.getParameterMap().size());
+        assertNotNull(_request.getParameterMap().get("name"));
+        assertEquals("value1", _request.getParameterMap().get("name")[0]);
+        assertEquals("value2", _request.getParameterMap().get("name")[1]);
 
-        assertThat(_request.getParameterNames(), notNullValue());
-        assertThat(_request.getParameterNames().hasMoreElements(), is(true));
-        assertThat(_request.getParameterNames().nextElement(), is("name"));
+        assertNotNull(_request.getParameterNames());
+        assertTrue(_request.getParameterNames().hasMoreElements());
+        assertEquals("name", _request.getParameterNames().nextElement());
 
-        // verify that existing parameters will be kept on successive stubbing.
         stubParameter("name2", "value").of(_request);
-        assertThat(_request.getParameterMap(), notNullValue());
-        assertThat(_request.getParameterMap().size(), is(2));
-        assertThat(_request.getParameterMap().get("name2"), notNullValue());
-        assertThat(_request.getParameterMap().get("name2")[0], is("value"));
+        assertNotNull(_request.getParameterMap());
+        assertEquals(2, _request.getParameterMap().size());
+        assertNotNull(_request.getParameterMap().get("name2"));
+        assertEquals("value", _request.getParameterMap().get("name2")[0]);
 
         Enumeration<String> parameterNames = _request.getParameterNames();
-        assertThat(parameterNames, notNullValue());
-        assertThat(parameterNames.hasMoreElements(), is(true));
-        assertThat(parameterNames.nextElement(), is("name"));
-        assertThat(parameterNames.nextElement(), is("name2"));
+        assertNotNull(parameterNames);
+        assertTrue(parameterNames.hasMoreElements());
+        assertEquals("name", parameterNames.nextElement());
+        assertEquals("name2", parameterNames.nextElement());
 
-        // verify that parameters will be removed if stubbed with null value
         String[] values = null;
         stubParameter("name2", values).of(_request);
-        assertThat(_request.getParameterMap().size(), is(1));
-        assertThat(_request.getParameter("name2"), nullValue());
+        assertEquals(1, _request.getParameterMap().size());
+        assertNull(_request.getParameter("name2"));
 
         parameterNames = _request.getParameterNames();
-        assertThat(parameterNames, notNullValue());
-        assertThat(parameterNames.hasMoreElements(), is(true));
-        assertThat(parameterNames.nextElement(), is("name"));
-        assertThat(parameterNames.hasMoreElements(), is(false));
+        assertNotNull(parameterNames);
+        assertTrue(parameterNames.hasMoreElements());
+        assertEquals("name", parameterNames.nextElement());
+        assertFalse(parameterNames.hasMoreElements());
     }
 
     @Test
     public void testStubParameterMap() {
-        assertThat(_request.getParameter("name1"), nullValue());
-        assertThat(_request.getParameter("name2"), nullValue());
+        assertNull(_request.getParameter("name1"));
+        assertNull(_request.getParameter("name2"));
 
         Map<String, String[]> parameters = new HashMap<>(2);
         parameters.put("name1", new String[]{"value1"});
         parameters.put("name2", new String[]{"value2a", "value2b"});
         stubParameterMap(parameters).of(_request);
 
-        assertThat(_request.getParameter("name1"), is("value1"));
-        assertThat(_request.getParameter("name2"), is("value2a"));
-        assertThat(_request.getParameterValues("name2")[0], is("value2a"));
-        assertThat(_request.getParameterValues("name2")[1], is("value2b"));
+        assertEquals("value1", _request.getParameter("name1"));
+        assertEquals("value2a", _request.getParameter("name2"));
+        assertEquals("value2a", _request.getParameterValues("name2")[0]);
+        assertEquals("value2b", _request.getParameterValues("name2")[1]);
     }
 
     @Test
     public void testStubAttribute() {
-        assertThat(_request.getAttribute("test"), nullValue());
-        assertThat(_request.getAttributeNames().hasMoreElements(), is(false));
+        assertNull(_request.getAttribute("test"));
+        assertFalse(_request.getAttributeNames().hasMoreElements());
 
         stubAttribute("test", "test string").of(_request);
-        assertThat(_request.getAttribute("test"), is("test string"));
-        assertThat(_request.getAttributeNames().hasMoreElements(), is(true));
-        assertThat(_request.getAttributeNames().nextElement(), is("test"));
+        assertEquals("test string", _request.getAttribute("test"));
+        assertTrue(_request.getAttributeNames().hasMoreElements());
+        assertEquals("test", _request.getAttributeNames().nextElement());
 
         Calendar now = Calendar.getInstance();
         stubAttribute("now", now).of(_request);
-        assertThat(_request.getAttribute("test"), is("test string"));
-        assertThat(_request.getAttribute("now"), is(now));
+        assertEquals("test string", _request.getAttribute("test"));
+        assertEquals(now, _request.getAttribute("now"));
         Enumeration<String> names = _request.getAttributeNames();
-        assertThat(names.hasMoreElements(), is(true));
-        assertThat(names.nextElement(), is("test"));
-        assertThat(names.nextElement(), is("now"));
+        assertTrue(names.hasMoreElements());
+        assertEquals("test", names.nextElement());
+        assertEquals("now", names.nextElement());
 
         stubAttribute("test", null).of(_request);
-        assertThat(_request.getAttribute("test"), nullValue());
-        assertThat(_request.getAttribute("now"), is(now));
+        assertNull(_request.getAttribute("test"));
+        assertEquals(now, _request.getAttribute("now"));
         names = _request.getAttributeNames();
-        assertThat(names.hasMoreElements(), is(true));
-        assertThat(names.nextElement(), is("now"));
-        assertThat(names.hasMoreElements(), is(false));
+        assertTrue(names.hasMoreElements());
+        assertEquals("now", names.nextElement());
+        assertFalse(names.hasMoreElements());
     }
 
     @Test
     public void testStubServerName() {
         stubServerName("www.test.de").of(_request);
-        assertThat(_request.getServerName(), is("www.test.de"));
+        assertEquals("www.test.de", _request.getServerName());
 
         stubServerName(null).of(_request);
-        assertThat(_request.getServerName(), nullValue());
+        assertNull(_request.getServerName());
     }
 
     @Test
     public void testStubServerPort() {
         stubServerPort(8080).of(_request);
-        assertThat(_request.getServerPort(), is(8080));
+        assertEquals(8080, _request.getServerPort());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubServerNameForNull() {
-        stubServerName("www.test.de").of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubServerName("www.test.de").of(null));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubServerPortForNull() {
-        stubServerPort(8080).of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubServerPort(8080).of(null));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testStubProtocolForNull() {
-        stubProtocol("http").of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubProtocol("http").of(null));
     }
 
     @Test
     public void testStubProtocol() {
         stubProtocol("http").of(_request);
-        assertThat(_request.getProtocol(), is("http"));
+        assertEquals("http", _request.getProtocol());
 
         stubProtocol(null).of(_request);
-        assertThat(_request.getProtocol(), nullValue());
+        assertNull(_request.getProtocol());
     }
 
     @Test
     public void getLocaleNameTest() {
-        assertThat(_request.getLocalName(), nullValue());
+        assertNull(_request.getLocalName());
         stubLocalName("name").of(_request);
-        assertThat(_request.getLocalName(), is("name"));
+        assertEquals("name", _request.getLocalName());
     }
 
     @Test
     public void getLocalePortTest() {
-        assertThat(_request.getLocalPort(), is(0));
+        assertEquals(0, _request.getLocalPort());
         stubLocalPort(8765).of(_request);
-        assertThat(_request.getLocalPort(), is(8765));
+        assertEquals(8765, _request.getLocalPort());
     }
 
     @Test
     public void testStubCookie() {
-        assertThat(_request.getCookies(), nullValue());
+        assertNull(_request.getCookies());
         stubCookie("keks 1", "value 1").of(_request);
-        assertThat(_request.getCookies(), notNullValue());
-        assertThat(_request.getCookies().length, is(1));
-        assertThat(_request.getCookies()[0].getName(), is("keks 1"));
-        assertThat(_request.getCookies()[0].getValue(), is("value 1"));
+        assertNotNull(_request.getCookies());
+        assertEquals(1, _request.getCookies().length);
+        assertEquals("keks 1", _request.getCookies()[0].getName());
+        assertEquals("value 1", _request.getCookies()[0].getValue());
 
         stubCookie("keks 2", "value 2").of(_request);
-        assertThat(_request.getCookies(), notNullValue());
-        assertThat(_request.getCookies().length, is(2));
-        assertThat(_request.getCookies()[0].getName(), is("keks 1"));
-        assertThat(_request.getCookies()[1].getName(), is("keks 2"));
+        assertNotNull(_request.getCookies());
+        assertEquals(2, _request.getCookies().length);
+        assertEquals("keks 1", _request.getCookies()[0].getName());
+        assertEquals("keks 2", _request.getCookies()[1].getName());
 
         stubCookies(null).of(_request);
-        assertThat(_request.getCookies(), nullValue());
+        assertNull(_request.getCookies());
     }
 
     @Test
     public void stubRequestUriTest() {
-        assertThat(_request.getRequestURI(), nullValue());
+        assertNull(_request.getRequestURI());
         stubRequestUri("test/uri").of(_request);
-        assertThat(_request.getRequestURI(), is("test/uri"));
+        assertEquals("test/uri", _request.getRequestURI());
     }
 
     @Test
     public void stubRequestUrlTest() {
-        assertThat(_request.getRequestURL(), nullValue());
+        assertNull(_request.getRequestURL());
         stubRequestUrl("test/uri").of(_request);
-        assertThat(_request.getRequestURL().toString(), is("test/uri"));
+        assertEquals("test/uri", _request.getRequestURL().toString());
     }
 
     @Test
     public void stubIsSecureTest() {
-        assertThat(_request.isSecure(), is(false));
+        assertFalse(_request.isSecure());
         stubIsSecure(true).of(_request);
-        assertThat(_request.isSecure(), is(true));
+        assertTrue(_request.isSecure());
+    }
+
+    @Test
+    public void stubCharacterEncodingTest() {
+        assertNull(_request.getCharacterEncoding());
+        stubCharacterEncoding("test-encoding").of(_request);
+        assertEquals("test-encoding", _request.getCharacterEncoding());
     }
 }

@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.jcr.Binary;
@@ -29,9 +29,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import java.util.Calendar;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -44,7 +43,7 @@ public class ValueFactoryStubbingOperationTest {
 
     private ValueFactory _factory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         _factory = mock(ValueFactory.class);
     }
@@ -56,11 +55,11 @@ public class ValueFactoryStubbingOperationTest {
     public void testStubCreateValueString() throws RepositoryException {
         String value1 = "test";
         String value2 = "other";
-        assertThat(_factory.createValue(value1), nullValue());
+        assertNull(_factory.createValue(value1));
 
         ValueFactoryStubbingOperation.stubCreateValue(value1).of(_factory);
-        assertThat(_factory.createValue(value1), notNullValue());
-        assertThat(_factory.createValue(value2), nullValue());
+        assertNotNull(_factory.createValue(value1));
+        assertNull(_factory.createValue(value2));
     }
 
     /**
@@ -68,11 +67,11 @@ public class ValueFactoryStubbingOperationTest {
      */
     @Test
     public void testStubCreateValueBoolean() throws RepositoryException {
-        assertThat(_factory.createValue(true), nullValue());
+        assertNull(_factory.createValue(true));
 
         ValueFactoryStubbingOperation.stubCreateValue(true).of(_factory);
-        assertThat(_factory.createValue(true), notNullValue());
-        assertThat(_factory.createValue(false), nullValue());
+        assertNotNull(_factory.createValue(true));
+        assertNull(_factory.createValue(false));
     }
 
     /**
@@ -81,10 +80,10 @@ public class ValueFactoryStubbingOperationTest {
     @Test
     public void testStubCreateValueCalendar() throws RepositoryException {
         Calendar cal1 = Calendar.getInstance();
-        assertThat(_factory.createValue(cal1), nullValue());
+        assertNull(_factory.createValue(cal1));
 
         ValueFactoryStubbingOperation.stubCreateValue(cal1).of(_factory);
-        assertThat(_factory.createValue(cal1), notNullValue());
+        assertNotNull(_factory.createValue(cal1));
     }
 
     /**
@@ -94,11 +93,11 @@ public class ValueFactoryStubbingOperationTest {
     public void testStubCreateValueDouble() throws RepositoryException {
         double value1 = 1D;
         double value2 = 2D;
-        assertThat(_factory.createValue(value1), nullValue());
+        assertNull(_factory.createValue(value1));
 
         ValueFactoryStubbingOperation.stubCreateValue(value1).of(_factory);
-        assertThat(_factory.createValue(value1), notNullValue());
-        assertThat(_factory.createValue(value2), nullValue());
+        assertNotNull(_factory.createValue(value1));
+        assertNull(_factory.createValue(value2));
     }
 
     /**
@@ -108,11 +107,11 @@ public class ValueFactoryStubbingOperationTest {
     public void testStubCreateValueLong() throws RepositoryException {
         long value1 = 1L;
         long value2 = 2L;
-        assertThat(_factory.createValue(value1), nullValue());
+        assertNull(_factory.createValue(value1));
 
         ValueFactoryStubbingOperation.stubCreateValue(value1).of(_factory);
-        assertThat(_factory.createValue(value1), notNullValue());
-        assertThat(_factory.createValue(value2), nullValue());
+        assertNotNull(_factory.createValue(value1));
+        assertNull(_factory.createValue(value2));
     }
 
     /**
@@ -122,10 +121,10 @@ public class ValueFactoryStubbingOperationTest {
     public void testStubCreateValueBinary() throws RepositoryException {
         Binary value1 = Mockito.mock(Binary.class);
         Binary value2 = Mockito.mock(Binary.class);
-        assertThat(_factory.createValue(value1), nullValue());
+        assertNull(_factory.createValue(value1));
 
         ValueFactoryStubbingOperation.stubCreateValue(value1).of(_factory);
-        assertThat(_factory.createValue(value1), notNullValue());
-        assertThat(_factory.createValue(value2), nullValue());
+        assertNotNull(_factory.createValue(value1));
+        assertNull(_factory.createValue(value2));
     }
 }

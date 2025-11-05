@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.Cookie;
 
@@ -32,9 +32,10 @@ import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubPath;
 import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubSecure;
 import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubVersion;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockCookie;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Testing CookieStubbingOperation.
@@ -45,50 +46,50 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class CookieStubbingOperationTest {
     private Cookie _cookie;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         _cookie = mockCookie("name", "value");
     }
 
     @Test
     public void testStubDomain() {
-        assertThat(_cookie.getDomain(), nullValue());
+        assertNull(_cookie.getDomain());
         stubDomain("test.domain").of(_cookie);
-        assertThat(_cookie.getDomain(), is("test.domain"));
+        assertEquals("test.domain", _cookie.getDomain());
     }
 
     @Test
     public void testStubComment() {
-        assertThat(_cookie.getComment(), nullValue());
+        assertNull(_cookie.getComment());
         stubComment("test").of(_cookie);
-        assertThat(_cookie.getComment(), is("test"));
+        assertEquals("test", _cookie.getComment());
     }
 
     @Test
     public void testStubMaxAge() {
-        assertThat(_cookie.getMaxAge(), is(0));
+        assertEquals(0, _cookie.getMaxAge());
         stubMaxAge(12).of(_cookie);
-        assertThat(_cookie.getMaxAge(), is(12));
+        assertEquals(12, _cookie.getMaxAge());
     }
 
     @Test
     public void testStubPath() {
-        assertThat(_cookie.getPath(), nullValue());
+        assertNull(_cookie.getPath());
         stubPath("test").of(_cookie);
-        assertThat(_cookie.getPath(), is("test"));
+        assertEquals("test", _cookie.getPath());
     }
 
     @Test
     public void testStubSecure() {
-        assertThat(_cookie.getSecure(), is(false));
+        assertFalse(_cookie.getSecure());
         stubSecure(true).of(_cookie);
-        assertThat(_cookie.getSecure(), is(true));
+        assertTrue(_cookie.getSecure());
     }
 
     @Test
     public void testStubVersion() {
-        assertThat(_cookie.getVersion(), is(0));
+        assertEquals(0, _cookie.getVersion());
         stubVersion(12).of(_cookie);
-        assertThat(_cookie.getVersion(), is(12));
+        assertEquals(12, _cookie.getVersion());
     }
 }

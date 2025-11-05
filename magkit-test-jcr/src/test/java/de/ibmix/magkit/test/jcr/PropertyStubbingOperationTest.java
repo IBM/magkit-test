@@ -20,8 +20,8 @@ package de.ibmix.magkit.test.jcr;
  * #L%
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Binary;
 import javax.jcr.ItemVisitor;
@@ -36,10 +36,12 @@ import static de.ibmix.magkit.test.jcr.NodeStubbingOperation.stubIdentifier;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubAccept;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubNode;
 import static de.ibmix.magkit.test.jcr.PropertyStubbingOperation.stubValues;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +56,7 @@ public class PropertyStubbingOperationTest {
 
     private Property _property;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         _property = PropertyMockUtils.mockProperty("test");
     }
@@ -62,51 +64,51 @@ public class PropertyStubbingOperationTest {
     @Test
     public void testStubValues() throws Exception {
         stubValues(new Value[0]).of(_property);
-        assertThat(_property.getValues(), notNullValue());
-        assertThat(_property.getValues().length, is(0));
-        assertThat(_property.getValue(), nullValue());
-        assertThat(_property.isMultiple(), is(false));
+        assertNotNull(_property.getValues());
+        assertEquals(0, _property.getValues().length);
+        assertNull(_property.getValue());
+        assertFalse(_property.isMultiple());
 
         Value v1 = mock(Value.class);
         Value v2 = mock(Value.class);
         stubValues(v1, v2).of(_property);
-        assertThat(_property.getValues(), notNullValue());
-        assertThat(_property.getValues().length, is(2));
-        assertThat(_property.getValue(), is(v1));
-        assertThat(_property.isMultiple(), is(true));
+        assertNotNull(_property.getValues());
+        assertEquals(2, _property.getValues().length);
+        assertEquals(v1, _property.getValue());
+        assertTrue(_property.isMultiple());
     }
 
     @Test
     public void testStubValuesString() throws Exception {
         stubValues("v1", "v2").of(_property);
-        assertThat(_property.getValues(), notNullValue());
-        assertThat(_property.getValues().length, is(2));
-        assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getString(), is("v1"));
-        assertThat(_property.getType(), is(PropertyType.STRING));
-        assertThat(_property.isMultiple(), is(true));
+        assertNotNull(_property.getValues());
+        assertEquals(2, _property.getValues().length);
+        assertNotNull(_property.getValue());
+        assertEquals("v1", _property.getValue().getString());
+        assertEquals(PropertyType.STRING, _property.getType());
+        assertTrue(_property.isMultiple());
     }
 
     @Test
     public void testStubValuesLong() throws Exception {
         stubValues(1L, 2L).of(_property);
-        assertThat(_property.getValues(), notNullValue());
-        assertThat(_property.getValues().length, is(2));
-        assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getLong(), is(1L));
-        assertThat(_property.getType(), is(PropertyType.LONG));
-        assertThat(_property.isMultiple(), is(true));
+        assertNotNull(_property.getValues());
+        assertEquals(2, _property.getValues().length);
+        assertNotNull(_property.getValue());
+        assertEquals(1L, _property.getValue().getLong());
+        assertEquals(PropertyType.LONG, _property.getType());
+        assertTrue(_property.isMultiple());
     }
 
     @Test
     public void testStubValuesDouble() throws Exception {
         stubValues(1D, 2D).of(_property);
-        assertThat(_property.getValues(), notNullValue());
-        assertThat(_property.getValues().length, is(2));
-        assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getDouble(), is(1D));
-        assertThat(_property.getType(), is(PropertyType.DOUBLE));
-        assertThat(_property.isMultiple(), is(true));
+        assertNotNull(_property.getValues());
+        assertEquals(2, _property.getValues().length);
+        assertNotNull(_property.getValue());
+        assertEquals(1D, _property.getValue().getDouble());
+        assertEquals(PropertyType.DOUBLE, _property.getType());
+        assertTrue(_property.isMultiple());
     }
 
     @Test
@@ -115,23 +117,23 @@ public class PropertyStubbingOperationTest {
         Calendar date2 = Calendar.getInstance();
         date2.add(Calendar.DAY_OF_YEAR, 1);
         stubValues(date1, date2).of(_property);
-        assertThat(_property.getValues(), notNullValue());
-        assertThat(_property.getValues().length, is(2));
-        assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getDate(), is(date1));
-        assertThat(_property.getType(), is(PropertyType.DATE));
-        assertThat(_property.isMultiple(), is(true));
+        assertNotNull(_property.getValues());
+        assertEquals(2, _property.getValues().length);
+        assertNotNull(_property.getValue());
+        assertEquals(date1, _property.getValue().getDate());
+        assertEquals(PropertyType.DATE, _property.getType());
+        assertTrue(_property.isMultiple());
     }
 
     @Test
     public void testStubValuesBoolean() throws Exception {
         stubValues(true, true, false).of(_property);
-        assertThat(_property.getValues(), notNullValue());
-        assertThat(_property.getValues().length, is(3));
-        assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getBoolean(), is(true));
-        assertThat(_property.getType(), is(PropertyType.BOOLEAN));
-        assertThat(_property.isMultiple(), is(true));
+        assertNotNull(_property.getValues());
+        assertEquals(3, _property.getValues().length);
+        assertNotNull(_property.getValue());
+        assertTrue(_property.getValue().getBoolean());
+        assertEquals(PropertyType.BOOLEAN, _property.getType());
+        assertTrue(_property.isMultiple());
     }
 
     @Test
@@ -139,11 +141,11 @@ public class PropertyStubbingOperationTest {
         Binary bin1 = mock(Binary.class);
         Binary bin2 = mock(Binary.class);
         stubValues(bin1, bin2).of(_property);
-        assertThat(_property.getValues(), notNullValue());
-        assertThat(_property.getValues().length, is(2));
-        assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getBinary(), is(bin1));
-        assertThat(_property.getType(), is(PropertyType.BINARY));
+        assertNotNull(_property.getValues());
+        assertEquals(2, _property.getValues().length);
+        assertNotNull(_property.getValue());
+        assertEquals(bin1, _property.getValue().getBinary());
+        assertEquals(PropertyType.BINARY, _property.getType());
     }
 
     @Test
@@ -151,26 +153,26 @@ public class PropertyStubbingOperationTest {
         Node node = mockNode("test", stubIdentifier("uuid"));
         stubNode(node, PropertyType.PATH).of(_property);
 
-        assertThat(_property.getNode(), is(node));
-        assertThat(_property.getValues().length, is(1));
-        assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getString(), is("/test"));
-        assertThat(_property.getType(), is(PropertyType.PATH));
+        assertEquals(node, _property.getNode());
+        assertEquals(1, _property.getValues().length);
+        assertNotNull(_property.getValue());
+        assertEquals("/test", _property.getValue().getString());
+        assertEquals(PropertyType.PATH, _property.getType());
 
         node = mockNode("test2", stubIdentifier("uuid2"));
         stubNode(node, PropertyType.REFERENCE).of(_property);
 
-        assertThat(_property.getNode(), is(node));
-        assertThat(_property.getValues().length, is(1));
-        assertThat(_property.getValue(), notNullValue());
-        assertThat(_property.getValue().getString(), is("uuid2"));
-        assertThat(_property.getType(), is(PropertyType.REFERENCE));
+        assertEquals(node, _property.getNode());
+        assertEquals(1, _property.getValues().length);
+        assertNotNull(_property.getValue());
+        assertEquals("uuid2", _property.getValue().getString());
+        assertEquals(PropertyType.REFERENCE, _property.getType());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testStubNodeForException() throws Exception {
         Node node = mockNode("test", stubIdentifier("uuid"));
-        stubNode(node, PropertyType.UNDEFINED).of(_property);
+        assertThrows(IllegalArgumentException.class, () -> stubNode(node, PropertyType.UNDEFINED).of(_property));
     }
 
     @Test

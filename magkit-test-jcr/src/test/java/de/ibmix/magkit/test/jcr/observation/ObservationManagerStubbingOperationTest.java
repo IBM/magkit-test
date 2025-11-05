@@ -26,19 +26,18 @@ package de.ibmix.magkit.test.jcr.observation;
  * @author wolf.bubenik@ibmix.de
  * @since 2013-12-06
  */
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.EventJournal;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -52,12 +51,10 @@ public class ObservationManagerStubbingOperationTest {
     @Test
     public void stubRegisteredEventListeners() throws RepositoryException {
         ObservationManager manager = mock(ObservationManager.class);
-        assertThat(manager.getRegisteredEventListeners(), nullValue());
-
+        assertNull(manager.getRegisteredEventListeners());
         ObservationManagerStubbingOperation.stubRegisteredEventListeners().of(manager);
-        assertThat(manager.getRegisteredEventListeners(), notNullValue());
+        assertNotNull(manager.getRegisteredEventListeners());
         assertFalse(manager.getRegisteredEventListeners().hasNext());
-
         ObservationManagerStubbingOperation.stubRegisteredEventListeners(mock(EventListener.class), mock(EventListener.class)).of(manager);
         assertTrue(manager.getRegisteredEventListeners().hasNext());
     }
@@ -65,27 +62,23 @@ public class ObservationManagerStubbingOperationTest {
     @Test
     public void stubEventJournal() throws RepositoryException {
         ObservationManager manager = mock(ObservationManager.class);
-        assertThat(manager.getEventJournal(), nullValue());
-
+        assertNull(manager.getEventJournal());
         EventJournal journal = mock(EventJournal.class);
         ObservationManagerStubbingOperation.stubEventJournal(journal).of(manager);
-        assertThat(manager.getEventJournal(), is(journal));
-
+        assertEquals(journal, manager.getEventJournal());
         ObservationManagerStubbingOperation.stubEventJournal(null).of(manager);
-        assertThat(manager.getEventJournal(), nullValue());
+        assertNull(manager.getEventJournal());
     }
 
     @Test
     public void testStubEventJournal() throws RepositoryException {
         ObservationManager manager = mock(ObservationManager.class);
-        assertThat(manager.getEventJournal(123, "test", true, null, null), nullValue());
-
+        assertNull(manager.getEventJournal(123, "test", true, null, null));
         EventJournal journal = mock(EventJournal.class);
         ObservationManagerStubbingOperation.stubEventJournal(journal, 123, "test", true, null, null).of(manager);
-        assertThat(manager.getEventJournal(123, "test", true, null, null), is(journal));
-        assertThat(manager.getEventJournal(123, "other", true, null, null), nullValue());
-
+        assertEquals(journal, manager.getEventJournal(123, "test", true, null, null));
+        assertNull(manager.getEventJournal(123, "other", true, null, null));
         ObservationManagerStubbingOperation.stubEventJournal(null, 123, "test", true, null, null).of(manager);
-        assertThat(manager.getEventJournal(123, "test", true, null, null), nullValue());
+        assertNull(manager.getEventJournal(123, "test", true, null, null));
     }
 }

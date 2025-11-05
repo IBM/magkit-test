@@ -20,6 +20,7 @@ package de.ibmix.magkit.test.jcr.query;
  * #L%
  */
 
+import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.jcr.RowStubbingOperation;
 import org.apache.jackrabbit.api.query.JackrabbitQueryResult;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
@@ -39,23 +40,47 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
+import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
 import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubLanguage;
 import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubResult;
 import static de.ibmix.magkit.test.jcr.query.QueryStubbingOperation.stubStatement;
-import static de.ibmix.magkit.test.jcr.SessionMockUtils.mockSession;
-import static de.ibmix.magkit.test.jcr.WorkspaceStubbingOperation.stubQueryManager;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Utility class for mocking javax.jcr.QueryResult, javax.jcr.Query and javax.jcr.QueryManager.
+ * Utility class for mocking JCR query components including QueryResult, Query, QueryManager and Row objects.
+ * <p>
+ * This utility provides a comprehensive set of factory methods for creating Mockito mocks of JCR query-related
+ * interfaces. It simplifies unit testing by allowing developers to create pre-configured query mocks with
+ * predefined results and behaviors.
+ * </p>
+ * Key features:
+ * <ul>
+ *   <li>Mock QueryManager instances with automatic registration to JCR Workspace</li>
+ *   <li>Create Query mocks with configurable language, statements and results</li>
+ *   <li>Generate QueryResult mocks for both Node and Row-based query results</li>
+ *   <li>Support for empty query results and custom stubbing operations</li>
+ * </ul>
+ * Usage examples:
+ * <pre>
+ * // Create a QueryManager with empty result for all queries
+ * QueryManager qm = QueryMockUtils.mockQueryManager();
+ *
+ * // Create a Query with specific result nodes
+ * Node node1 = NodeMockUtils.mockNode("node1");
+ * Node node2 = NodeMockUtils.mockNode("node2");
+ * JackrabbitQueryResult result = QueryMockUtils.mockQueryResult("workspace", "SQL-2",
+ *     "SELECT * FROM [nt:base]", node1, node2);
+ *
+ * // Create a standalone Query mock
+ * Query query = QueryMockUtils.mockQuery("SQL-2", "SELECT * FROM [nt:base]");
+ * </pre>
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2013-05-29
@@ -94,7 +119,7 @@ public final class QueryMockUtils {
      * @throws RepositoryException declared exception from node api but never thrown
      */
     public static QueryManager mockQueryManager(final String workspace, QueryManagerStubbingOperation... stubbings) throws RepositoryException {
-        assertThat(stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null.");
         Session session = mockSession(defaultIfBlank(workspace, "website"));
         QueryManager qm = session.getWorkspace().getQueryManager();
         if (qm == null) {
@@ -120,7 +145,7 @@ public final class QueryMockUtils {
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static Query mockQuery(final String language, final String statement, QueryStubbingOperation... stubbings) throws RepositoryException {
-        assertThat("stubbings should not be null.", stubbings, notNullValue());
+        Require.Argument.notNull(stubbings, "stubbings should not be null.");
         Query q = mock(Query.class);
         stubLanguage(language).of(q);
         stubStatement(statement).of(q);
@@ -164,7 +189,7 @@ public final class QueryMockUtils {
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static JackrabbitQueryResult mockQueryResult(final Node... results) throws RepositoryException {
-        assertThat(results, notNullValue());
+        Require.Argument.notNull(results, "results must not be null");
         return mockQueryResult(asList(results));
     }
 
@@ -176,12 +201,24 @@ public final class QueryMockUtils {
      * @throws RepositoryException never, declared only to match interfaces
      */
     public static JackrabbitQueryResult mockRowQueryResult(final Row... results) throws RepositoryException {
-        assertThat(results, notNullValue());
+        Require.Argument.notNull(results, "results must not be null");
         JackrabbitQueryResult result = mockEmptyQueryResult();
         doReturn(new RowIteratorAdapter(asList(results))).when(result).getRows();
         return result;
     }
 
+    /**
+     * Creates a JackrabbitQueryResult mock from a list of Nodes using the TestQueryResult interface.
+     * <p>
+     * This package-private method serves as the core implementation for creating query result mocks.
+     * It creates a TestQueryResult mock that stores the provided nodes and uses Answer implementations
+     * to provide both NodeIterator and RowIterator access to the same underlying data.
+     * </p>
+     *
+     * @param nodes the list of Nodes to be returned as query result
+     * @return a Mockito mock of the TestQueryResult interface extending JackrabbitQueryResult
+     * @throws RepositoryException never thrown, declared only to match JCR API signatures
+     */
     static JackrabbitQueryResult mockQueryResult(List<Node> nodes) throws RepositoryException {
         TestQueryResult result = mock(TestQueryResult.class);
         when(result.getNodeCollection()).thenReturn(nodes);
@@ -222,6 +259,18 @@ public final class QueryMockUtils {
         return result;
     }
 
+    /**
+     * Creates a Row mock with the specified score and additional stubbing operations.
+     * <p>
+     * The Row mock is initialized with a default score and an empty Values array. Additional
+     * behavior can be configured using the provided RowStubbingOperation instances.
+     * </p>
+     *
+     * @param score the relevance score for this row (typically between 0.0 and 1.0)
+     * @param stubbings optional stubbing operations to configure additional Row behavior
+     * @return a Mockito mock of the javax.jcr.query.Row interface with configured score and values
+     * @throws RepositoryException never thrown, declared only to match JCR API signatures
+     */
     public static Row mockRow(double score, RowStubbingOperation... stubbings) throws RepositoryException {
         Row result = Mockito.mock(Row.class);
         doReturn(score).when(result).getScore();
@@ -232,6 +281,17 @@ public final class QueryMockUtils {
         return result;
     }
 
+    /**
+     * Converts a Node to a Row mock with default score of 0.0.
+     * <p>
+     * This utility method creates a Row mock that wraps the provided Node, allowing
+     * Node-based query results to be used in Row-based query operations.
+     * </p>
+     *
+     * @param node the Node to wrap in a Row mock
+     * @return a Row mock containing the specified Node with score 0.0
+     * @throws RuntimeException if RepositoryException occurs during Row creation
+     */
     static Row toRow(final Node node) {
         try {
             return mockRow(0.0, RowStubbingOperation.stubNode(node));
@@ -240,11 +300,26 @@ public final class QueryMockUtils {
         }
     }
 
+    /**
+     * Mockito Answer implementation for providing NodeIterator results from TestQueryResult mocks.
+     * <p>
+     * This Answer extracts the node collection from a TestQueryResult mock and wraps it
+     * in a NodeIteratorAdapter for use in JCR query result iteration.
+     * </p>
+     */
     public static final Answer<NodeIteratorAdapter> NODES_ANSWER = invocation -> {
         TestQueryResult result = (TestQueryResult) invocation.getMock();
         return new NodeIteratorAdapter(result.getNodeCollection());
     };
 
+    /**
+     * Mockito Answer implementation for providing RowIterator results from TestQueryResult mocks.
+     * <p>
+     * This Answer extracts the node collection from a TestQueryResult mock, converts each
+     * Node to a Row using {@link #toRow(Node)}, and wraps the collection in a RowIteratorAdapter
+     * for use in JCR query result iteration.
+     * </p>
+     */
     public static final Answer<RowIterator> ROWS_ANSWER = invocation -> {
         TestQueryResult result = (TestQueryResult) invocation.getMock();
         Collection<Row> rows = result.getNodeCollection().stream().map(QueryMockUtils::toRow).collect(Collectors.toList());
@@ -252,9 +327,29 @@ public final class QueryMockUtils {
     };
 
     /**
-     * Extended Interface to simplify mocking.
+     * Extended interface for JackrabbitQueryResult that provides access to the underlying Node collection.
+     * <p>
+     * This interface extends JackrabbitQueryResult with an additional method to retrieve the
+     * Node collection directly. This simplifies the implementation of query result mocks by
+     * providing a single source of truth for the result nodes, which can then be adapted
+     * to both NodeIterator and RowIterator formats as needed.
+     * </p>
+     * <p>
+     * This interface is used internally by the QueryMockUtils to create flexible query result
+     * mocks that can provide both Node and Row representations of the same underlying data.
+     * </p>
      */
     interface TestQueryResult extends JackrabbitQueryResult {
+        /**
+         * Returns the collection of Nodes that this query result contains.
+         * <p>
+         * This method provides direct access to the underlying Node collection,
+         * which can be used by Answer implementations to generate appropriate
+         * iterators for both Node and Row-based access patterns.
+         * </p>
+         *
+         * @return the collection of Nodes in this query result
+         */
         Collection<Node> getNodeCollection();
     }
 

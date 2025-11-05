@@ -21,9 +21,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>compile</scope>
+            <groupId>de.ibmix.magkit</groupId>
+            <artifactId>magkit-test-assert</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+         <!-- migrated from JUnit4 to JUnit5: remove old junit 4 dependency and use Jupiter -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

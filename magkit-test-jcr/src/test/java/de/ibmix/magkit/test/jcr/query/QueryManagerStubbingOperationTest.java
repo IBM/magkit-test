@@ -21,8 +21,8 @@ package de.ibmix.magkit.test.jcr.query;
  */
 
 import de.ibmix.magkit.test.jcr.SessionMockUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -31,9 +31,10 @@ import javax.jcr.query.QueryManager;
 
 import static de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation.stubQuery;
 import static de.ibmix.magkit.test.jcr.query.QueryManagerStubbingOperation.stubSupportedQueryLanguages;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -43,32 +44,32 @@ import static org.mockito.Mockito.mock;
  * @since 2013-05-29
  */
 public class QueryManagerStubbingOperationTest {
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         SessionMockUtils.cleanSession();
     }
 
-    @Test(expected = AssertionError.class)
-    public void testStubbQueryWithQueryNull() throws RepositoryException {
+    @Test
+    public void testStubbQueryWithQueryNull() throws javax.jcr.RepositoryException {
         Query q = mock(Query.class);
-        QueryManagerStubbingOperation.stubQuery(q).of(null);
+        assertThrows(IllegalArgumentException.class, () -> QueryManagerStubbingOperation.stubQuery(q).of(null));
     }
 
-    @Test(expected = AssertionError.class)
-    public void testStubbQueryWithStatementNull() throws RepositoryException {
-        QueryManagerStubbingOperation.stubQuery("", "").of(null);
+    @Test
+    public void testStubbQueryWithStatementNull() {
+        assertThrows(IllegalArgumentException.class, () -> QueryManagerStubbingOperation.stubQuery("", "").of(null));
     }
 
-    @Test(expected = AssertionError.class)
-    public void testStubbQueryWithNodeNull() throws RepositoryException {
+    @Test
+    public void testStubbQueryWithNodeNull() throws javax.jcr.RepositoryException {
         Query q = mock(Query.class);
         Node n = mock(Node.class);
-        stubQuery(n, q).of(null);
+        assertThrows(IllegalArgumentException.class, () -> stubQuery(n, q).of(null));
     }
 
-    @Test(expected = AssertionError.class)
-    public void testStubbSupportedQueryLanguagesNull() throws RepositoryException {
-        stubSupportedQueryLanguages().of(null);
+    @Test
+    public void testStubbSupportedQueryLanguagesNull() {
+        assertThrows(IllegalArgumentException.class, () -> stubSupportedQueryLanguages().of(null));
     }
 
     @Test
@@ -76,18 +77,18 @@ public class QueryManagerStubbingOperationTest {
         Query q = mock(Query.class);
         QueryManager m = mock(QueryManager.class);
         QueryManagerStubbingOperation op = QueryManagerStubbingOperation.stubQuery(q);
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         op.of(m);
-        assertThat(m.createQuery("", ""), is(q));
+        assertEquals(q, m.createQuery("", ""));
     }
 
     @Test
     public void testStubbQueryWithStatement() throws RepositoryException {
         QueryManagerStubbingOperation op = QueryManagerStubbingOperation.stubQuery("language", "statement");
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         QueryManager m = mock(QueryManager.class);
         op.of(m);
-        assertThat(m.createQuery("statement", "language"), notNullValue());
+        assertNotNull(m.createQuery("statement", "language"));
     }
 
     @Test
@@ -95,20 +96,29 @@ public class QueryManagerStubbingOperationTest {
         Query q = mock(Query.class);
         Node n = mock(Node.class);
         QueryManagerStubbingOperation op = stubQuery(n, q);
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         QueryManager m = mock(QueryManager.class);
         op.of(m);
+        assertEquals(q, m.getQuery(n));
+
+        op = stubQuery(null, q);
+        op.of(m);
+        assertEquals(q, m.getQuery(null));
+
+        op = stubQuery(null, null);
+        op.of(m);
+        assertNull(m.getQuery(null));
     }
 
     @Test
     public void testStubbSupportedQueryLanguages() throws RepositoryException {
         QueryManagerStubbingOperation op = stubSupportedQueryLanguages("sql", "xpath");
-        assertThat(op, notNullValue());
+        assertNotNull(op);
         QueryManager m = mock(QueryManager.class);
         op.of(m);
-        assertThat(m.getSupportedQueryLanguages(), notNullValue());
-        assertThat(m.getSupportedQueryLanguages().length, is(2));
-        assertThat(m.getSupportedQueryLanguages()[0], is("sql"));
-        assertThat(m.getSupportedQueryLanguages()[1], is("xpath"));
+        assertNotNull(m.getSupportedQueryLanguages());
+        assertEquals(2, m.getSupportedQueryLanguages().length);
+        assertEquals("sql", m.getSupportedQueryLanguages()[0]);
+        assertEquals("xpath", m.getSupportedQueryLanguages()[1]);
     }
 }
