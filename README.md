@@ -58,6 +58,7 @@ To use the magkit-test-cms module in your Maven project, add the following depen
         <version>${module.version}</version>
     </dependency>
 ```
+Please substitute the ${module.version} placeholder by your desired version.
 
 ## Mock Helpers Overview
 
