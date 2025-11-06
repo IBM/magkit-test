@@ -40,13 +40,20 @@ For example:
 The code is built by [GitHub actions](https://github.com/IBM/magkit-test/actions/workflows/build.yaml).
 You can browse available artifacts through [Magnolia's Nexus](https://nexus.magnolia-cms.com/#nexus-search;quick~magkit-test)
 
-### Maven dependency
+### Versions, technology stack and Maven dependency
+
+|  | Java | Magnolia | Tomcat | 
+|-------------|-------------|-----------------|---------------|
+| 1.0.10      | 11          | 6.2.45          | 9.0.74       | 
+| 1.1.0       | 17          | 6.3.17          | 9.0.111       | 
+
+To use the magkit-test-cms module in your Maven project, add the following dependency to your `pom.xml`:
 
 ```xml
     <dependency>
         <artifactId>magkit-test-cms</artifactId>
         <groupId>de.ibmix.magkit</groupId>
-        <version>1.0.8</version>
+        <version>${module.version}</version>
     </dependency>
 ```
 

@@ -23,7 +23,7 @@ The mocks are always created with some basic subbing of a default behaviour.
     <dependency>
         <artifactId>magkit-test-jcr</artifactId>
         <groupId>de.ibmix.magkit</groupId>
-        <version>1.0.8</version>
+        <version>1.1.0</version>
     </dependency>
 ```
 It requires javax.jcr 2.0. 

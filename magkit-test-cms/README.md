@@ -42,7 +42,7 @@ The mocks are always created with some basic stubbing of a default behaviour.
     <dependency>
         <artifactId>magkit-test-cms</artifactId>
         <groupId>de.ibmix.magkit</groupId>
-        <version>1.0.8</version>
+        <version>1.1.0</version>
     </dependency>
 ```
 It requires magnolia 6.2.45 or later and uses magkit-test-servlet and magkit-test-jcr. 
