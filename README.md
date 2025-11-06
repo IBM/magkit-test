@@ -5,7 +5,8 @@
 ## Scope
 
 Multi module project contains Java test libraries to provider test and Mockito mock helpers.
-1. magkit-test-jcr - for JCR mocking
+1. magkit-test-assert - for argument and state validation 
+2. magkit-test-jcr - for JCR mocking
 2. magkit-test-servlet - for servlet container mocking
 3. magkit-test-cms - for Magnolia CMS mocking and testing
 4. [magkit-test-server](./magkit-test-server/README.md) - for running JUnit tests within a Tomcat running our webapp
