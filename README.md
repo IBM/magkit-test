@@ -43,10 +43,11 @@ You can browse available artifacts through [Magnolia's Nexus](https://nexus.magn
 
 ### Versions, technology stack and Maven dependency
 
-|  | Java | Magnolia | Tomcat | 
-|-------------|-------------|-----------------|---------------|
-| 1.0.10      | 11          | 6.2.45          | 9.0.74       | 
-| 1.1.0       | 17          | 6.3.17          | 9.0.111       | 
+|        | Java | Magnolia | Tomcat | 
+|--------|-------------|----------|---------------|
+| 1.0.8  | 11          | 6.2.19   | 9.0.74       | 
+| 1.0.10 | 11          | 6.2.45   | 9.0.74       | 
+| 1.1.0  | 17          | 6.3.17   | 9.0.111       | 
 
 To use the magkit-test-cms module in your Maven project, add the following dependency to your `pom.xml`:
 
