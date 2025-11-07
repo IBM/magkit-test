@@ -342,7 +342,7 @@ public class MockProperties {
         Node linkTarget = MagnoliaNodeMockUtils.mockPageNode("linkTarget");
         // 2. If we want to create external links we need the base URL and file extension at the ServerConfiguration:
         mockServerConfiguration(stubDefaultBaseUrl("http://test.aperto.de"), stubDefaultExtension("html"));
-        // ... and a context pat for absolute links:
+        // ... and a context path for absolute links:
         ContextMockUtils.mockWebContext(stubContextPath("/author"));
 
         assertEquals("/linkTarget.html", LinkUtil.createLink(linkTarget));
