@@ -359,7 +359,7 @@ public class MockProperties {
         config.setDefaultBaseUrl("http://test.aperto.de");
         config.setDefaultExtension("html");
         ComponentsTestUtil.setInstance(ServerConfiguration.class, config);
-        // ... and a context pat for absolute links:
+        // ... and a context path for absolute links:
         ((MockWebContext) MockUtil.getMockContext(true)).setContextPath("/author");
         // And we need an I18nContentSupport instance:
         ComponentsTestUtil.setInstance(I18nContentSupport.class, new DefaultI18nContentSupport());
