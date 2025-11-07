@@ -23,7 +23,7 @@ Add the released artifact as a dependency:
     <version>1.1.0</version>
 </dependency>
 ```
-The aggregate POM currently uses `1.1.0-SNAPSHOT` internally – for production use a published release version.
+Note: `1.1.0-SNAPSHOT` is the current development version used internally. For production, use the latest published release version (e.g., `1.1.0`).
 
 ## Quick Examples
 ```java
