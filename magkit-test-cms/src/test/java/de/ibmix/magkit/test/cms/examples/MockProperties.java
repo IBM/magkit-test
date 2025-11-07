@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Compare Magnolia JCR Mock-Objects with this API.
+ * Compare Magnolia JCR Mock-Objects with magkit builder API for mockito mocks.
  *
  * @author wolf.bubenik@ibmix.de
  * @since 2016-02-17
@@ -81,7 +81,7 @@ public class MockProperties {
     }
 
     /**
-     * This test demonstrates, how to mock node properties using the MagnoliaNodeMockUtils of the Magkit.
+     * This test demonstrates, how to mock node properties using the MagnoliaNodeMockUtils from Magkit.
      */
     @Test
     public void mockMockitoNodeWithProperties() throws RepositoryException {
@@ -102,6 +102,7 @@ public class MockProperties {
 
         // ... and what you get:
         assertTrue(testNode.hasProperties());
+        // Each magnolia node is mocked with a type property. Therefor we have one Property more than expected!
         assertEquals(7L, testNode.getProperties().getSize());
 
         assertTrue(testNode.hasProperty("string"));
@@ -334,14 +335,14 @@ public class MockProperties {
         assertEquals("value3", testNode.getProperty("string").getValues()[2].getString());
     }
 
-    // Scenario: Es soll Code getestet werden, der LinkUtil verwendet, um die URL für einen Node zu erzeugen.
+    // Here we demonstrate how to test code that creates a URL for a node using info.magnolia.link.LinkUtil.
     @Test
     public void mockMockitoNodeWithInternalLink() throws RepositoryException {
-        // 1. Einen Mock für das Link-Ziel erzeugen:
+        // 1. Create a mock for the link target node:
         Node linkTarget = MagnoliaNodeMockUtils.mockPageNode("linkTarget");
-        // 2. Sollen externe Links erzeugt werden, benötigen wir noch den Host-Namen und eine Default-Dateiendung:
+        // 2. If we want to create external links we need the base URL and file extension at the ServerConfiguration:
         mockServerConfiguration(stubDefaultBaseUrl("http://test.aperto.de"), stubDefaultExtension("html"));
-        // ... und ggf einen Context-Pfat für absolute Links:
+        // ... and a context pat for absolute links:
         ContextMockUtils.mockWebContext(stubContextPath("/author"));
 
         assertEquals("/linkTarget.html", LinkUtil.createLink(linkTarget));
@@ -351,16 +352,16 @@ public class MockProperties {
 
     @Test
     public void mockMagnoliaNodeWithInternalLink() throws RepositoryException, IOException {
-        // 1. Einen Mock für das Link-Ziel erzeugen:
+        // 1. Create a mock for the link target node:
         Node linkTarget = NodeTestUtil.createNode("/linkTarget", "webapp", "/linkTarget");
-        // 2. Sollen externe Links erzeugt werden, benötigen wir noch den Host-Namen und eine Default-Dateiendung:
+        // 2. If we want to create external links we need the base URL and file extension at the ServerConfiguration:
         ServerConfiguration config = new ServerConfiguration();
         config.setDefaultBaseUrl("http://test.aperto.de");
         config.setDefaultExtension("html");
         ComponentsTestUtil.setInstance(ServerConfiguration.class, config);
-        // ... und ggf einen Context-Pfad für absolute Links:
+        // ... and a context pat for absolute links:
         ((MockWebContext) MockUtil.getMockContext(true)).setContextPath("/author");
-        // Und wir benötigen noch einen I18nContentSupport:
+        // And we need an I18nContentSupport instance:
         ComponentsTestUtil.setInstance(I18nContentSupport.class, new DefaultI18nContentSupport());
 
         assertEquals("/linkTarget.html", LinkUtil.createLink(linkTarget));
