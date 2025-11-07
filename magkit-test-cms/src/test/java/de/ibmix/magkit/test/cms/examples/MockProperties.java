@@ -102,7 +102,7 @@ public class MockProperties {
 
         // ... and what you get:
         assertTrue(testNode.hasProperties());
-        // Each magnolia node is mocked with a type property. Therefor we have one Property more than expected!
+        // Each magnolia node is mocked with a type property. Therefore we have one Property more than expected!
         assertEquals(7L, testNode.getProperties().getSize());
 
         assertTrue(testNode.hasProperty("string"));
