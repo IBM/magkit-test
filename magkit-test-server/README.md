@@ -8,7 +8,7 @@ This Maven module contains the JUnit5 extension `MagnoliaTomcatExtension`, which
     <dependency>
         <artifactId>magkit-test-server</artifactId>
         <groupId>de.ibmix.magkit</groupId>
-        <version>1.0.8</version>
+        <version>1.1.0</version>
     </dependency>
 ```
 ### Using the JUnit5 extension

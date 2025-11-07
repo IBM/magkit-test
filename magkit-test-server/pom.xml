@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.ibmix.magkit</groupId>
         <artifactId>magkit-test</artifactId>
-        <version>1.0.11-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <test.tomcat.version>9.0.74</test.tomcat.version>
+        <test.tomcat.version>9.0.111</test.tomcat.version>
         <!-- see https://community.sonarsource.com/t/coverage-test-data-importing-jacoco-coverage-report-in-xml-format/12151#multi-module-builds-3 -->
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../magkit-test-webapp/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>

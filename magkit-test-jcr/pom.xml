@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.ibmix.magkit</groupId>
         <artifactId>magkit-test</artifactId>
-        <version>1.0.11-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -51,7 +51,7 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
-        <!-- provided by magnolia -->
+        <!-- following dependencies should be provided by magnolia -->
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-jcr-commons</artifactId>
