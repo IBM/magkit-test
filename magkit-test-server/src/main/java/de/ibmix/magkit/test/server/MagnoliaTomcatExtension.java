@@ -1,11 +1,6 @@
 package de.ibmix.magkit.test.server;
 
-import info.magnolia.cms.beans.config.ServerConfiguration;
-import info.magnolia.init.MagnoliaConfigurationProperties;
-import info.magnolia.objectfactory.Components;
-import io.restassured.config.HttpClientConfig;
-import io.restassured.internal.RequestSpecificationImpl;
-import io.restassured.specification.RequestSpecification;
+import static io.restassured.RestAssured.when;
 
 /*-
  * #%L
@@ -33,19 +28,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.catalina.Context;
-import org.apache.catalina.Lifecycle;
-import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Session;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.groovy.parser.antlr4.util.StringUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.tomcat.util.scan.StandardJarScanner;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -54,6 +48,12 @@ import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+
+import info.magnolia.init.MagnoliaConfigurationProperties;
+import io.restassured.config.HttpClientConfig;
+import io.restassured.internal.RequestSpecificationImpl;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 /**
  * Starts up Tomcat with a given Magnolia webapp. This allows to execute tests
@@ -78,6 +78,8 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
     private static final String EXTENSION_STORE_KEY = MagnoliaTomcatExtension.class.getName();
     public static final String WAR_NAME_SYSTEM_PROPERTY = "project.build.finalName";
     public static final String LOCAL_AUTHOR_URL = "http://127.0.0.1:8080";
+    /** Magnolia readiness check since 6.3. **/
+    public static final String MAGNOLIA_READINESS_ENDPOINT = "/.rest/health";
 
     // system property that tells us to set RestAssured request timeouts to
     // unlimited,
@@ -209,8 +211,30 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
         }
     }
 
+    boolean isMagnoliaUp() {
+        boolean result;
+        try {
+            Response response = when()
+                .get(LOCAL_AUTHOR_URL + MAGNOLIA_READINESS_ENDPOINT)
+                .andReturn();
+                
+            int statusCode = response.getStatusCode();
+            if (statusCode != 200) {
+                result = false;
+            } else {
+                String statusInBody = response.jsonPath().getString("status");
+                result = "UP".equalsIgnoreCase(statusInBody);
+            }
+
+        } catch (Exception e) {
+            result = false;
+        }
+        return result;
+    }
+    
     @Override
     public void beforeAll(ExtensionContext context) throws IOException, LifecycleException, InterruptedException {
+        
         // make ourselves accessible for injection as a parameter to a test method
         getStore(context).put(EXTENSION_STORE_KEY, this);
 
@@ -254,19 +278,6 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
         // have the session reaper Thread execute once per second, see ContainerBase.threadStart()
         _tomcat.getEngine().setBackgroundProcessorDelay(1);
 
-        // prepare LifecycleListener that will tell us when Tomcat has come up
-        // (i.e. at least has come up to the point where its session reaper thread has started)
-        final Boolean[] started = {Boolean.FALSE};
-        _tomcat.getServer().addLifecycleListener(new LifecycleListener() {
-
-            @Override
-            public void lifecycleEvent(LifecycleEvent event) {
-                if (event.getType().equals(Lifecycle.AFTER_START_EVENT)) {
-                    started[0] = true;
-                }
-            }
-        });
-
         _tomcat.start();
         // asynchronously run server loop that waits for shutdown command
         CompletableFuture.supplyAsync(() -> {
@@ -274,19 +285,19 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
             return true;
         });
 
-        // wait for Tomcat to come up
-        int waitedMillis = 0;
-        int maxWaitMillis = 10000;
-        while (!started[0]) {
-            Thread.sleep(100);
-            waitedMillis = waitedMillis + 100;
-            if (waitedMillis > maxWaitMillis) {
-                throw new RuntimeException("Tomcat didn't come up after " + waitedMillis + "ms?!");
-            }
-        }
+        // Wait for Magnolia to become ready. In particular, this means that ServerConfiguration.instanceUuid
+        // was set after several reloads of the ServerConfiguration. We must not poll-wait this,
+        // as obtaining the Magnolia ServerConfiguration component during startup seems to interfere
+        // with its intialization.
         // Needed since Magnolia 6.3.x for GET-requests to magnolia: init ServerConfiguration: instanceId;
         // Instance UUID is used for creating hash of HMacToken (CSRF cookie token).
-        Components.getComponent(ServerConfiguration.class).setInstanceUuid(UUID.randomUUID().toString());
+        // The bean value ServerConfiguration.instanceUuid is set by Observation and happens asynchonous
+        Awaitility.await().atMost(60, TimeUnit.SECONDS).until(() -> {
+            return isMagnoliaUp();
+        });
+        if (!isMagnoliaUp()) {
+            throw new RuntimeException("Tomcat + Magnolia didn't come up after 60s?!"); 
+        }
     }
 
     private Store getStore(ExtensionContext context) {
@@ -305,6 +316,8 @@ public class MagnoliaTomcatExtension implements BeforeAllCallback, AfterAllCallb
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
+        // silence Jackrabbit's complaining about duplicate attempts to close sessions during shutdown
+        org.apache.logging.log4j.core.config.Configurator.setLevel(org.apache.jackrabbit.core.session.SessionState.class, Level.OFF);
         _tomcat.stop();
         _tomcat.destroy();
     }
