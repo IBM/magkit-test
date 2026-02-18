@@ -21,14 +21,14 @@ package de.ibmix.magkit.test.servlet;
  */
 
 import de.ibmix.magkit.assertions.Require;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.apache.commons.collections4.ResettableIterator;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 

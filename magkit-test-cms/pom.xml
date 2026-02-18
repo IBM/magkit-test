@@ -38,7 +38,7 @@
             <artifactId>magnolia-site-jcr</artifactId>
         </dependency>
         <dependency>
-            <groupId>info.magnolia.dam</groupId>
+            <groupId>info.magnolia.dam-app</groupId>
             <artifactId>magnolia-dam-templating</artifactId>
         </dependency>
         <dependency>
@@ -51,15 +51,16 @@
             <groupId>info.magnolia.resources</groupId>
             <artifactId>magnolia-resources</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
+
         <!-- provided container dependencies, in test module use scope compile -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.el</groupId>
+            <artifactId>jakarta.el-api</artifactId>
             <scope>compile</scope>
         </dependency>
 
@@ -74,6 +75,7 @@
             <artifactId>magkit-test-servlet</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <!-- Magnolia test utils -->
         <dependency>
             <groupId>info.magnolia</groupId>
@@ -81,6 +83,7 @@
             <scope>compile</scope>
             <type>test-jar</type>
         </dependency>
+
         <!-- JUnit 5 additions -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

@@ -21,11 +21,11 @@ package de.ibmix.magkit.test.servlet;
  */
 
 import de.ibmix.magkit.assertions.Require;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 import org.apache.commons.collections4.ResettableIterator;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static org.apache.commons.collections4.IteratorUtils.arrayIterator;

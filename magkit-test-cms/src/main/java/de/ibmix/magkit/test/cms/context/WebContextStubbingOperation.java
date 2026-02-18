@@ -32,13 +32,13 @@ import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
 import info.magnolia.context.WebContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Locale;
 import java.util.Map;
 
@@ -64,7 +64,7 @@ import static org.mockito.Mockito.when;
  * Side effects and coupling:
  * <ul>
  *   <li>Some operations (e.g. {@link #stubParameters(Map)}) delegate to {@link #stubExistingRequest(HttpServletRequestStubbingOperation...)} potentially creating a mock request.</li>
- *   <li>Session related operations may create a new {@link javax.servlet.http.HttpSession} if missing.</li>
+ *   <li>Session related operations may create a new {@link jakarta.servlet.http.HttpSession} if missing.</li>
  * </ul>
  * Thread-safety: Not thread-safe; intended for single-threaded test execution manipulating static Magnolia context state.
  * <p>

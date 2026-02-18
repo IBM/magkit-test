@@ -20,7 +20,6 @@ package de.ibmix.magkit.test.cms.dam;
  * #L%
  */
 
-
 import de.ibmix.magkit.assertions.Require;
 import de.ibmix.magkit.test.cms.context.ComponentsMockUtils;
 import de.ibmix.magkit.test.cms.node.MagnoliaNodeMockUtils;
@@ -91,7 +90,7 @@ public final class AssetMockUtils extends ComponentsMockUtils {
      * Each provided {@link AssetStubbingOperation} will be applied to further customize the mock.
      * </p>
      *
-     * @param path the absolute JCR path of the asset node inside the DAM workspace (e.g. /images/logo.png)
+     * @param path      the absolute JCR path of the asset node inside the DAM workspace (e.g. /images/logo.png)
      * @param stubbings optional additional stubbing operations for properties or resource node (must be non-null, may be empty)
      * @return a fully mocked {@link JcrAsset} instance including provider registration
      * @throws RepositoryException if JCR operations performed during setup throw; normally not expected in mocked context
@@ -113,10 +112,10 @@ public final class AssetMockUtils extends ComponentsMockUtils {
      * Use {@link AssetStubbingOperation} instances to set additional asset or resource properties (e.g. file size, mime type).
      * </p>
      *
-     * @param path the absolute path of the asset node in the DAM workspace
+     * @param path       the absolute path of the asset node in the DAM workspace
      * @param providerId the desired asset provider id or blank for {@link DamConstants#DEFAULT_JCR_PROVIDER_ID}
-     * @param itemId the item identifier (UUID) or blank for a generated random UUID
-     * @param stubbings array of stubbing operations (must be non-null, may be empty)
+     * @param itemId     the item identifier (UUID) or blank for a generated random UUID
+     * @param stubbings  array of stubbing operations (must be non-null, may be empty)
      * @return configured {@link Asset} mock instance
      * @throws RepositoryException if a JCR API interaction during mock setup signals an error
      */
@@ -226,11 +225,11 @@ public final class AssetMockUtils extends ComponentsMockUtils {
         ItemKey itemKey = asset.getItemKey();
         Require.Argument.notNull(itemKey, "itemKey should not be null");
         AssetProvider assetProvider = mockAssetProvider(itemKey);
-        when(assetProvider.getItem(itemKey)).thenReturn(asset);
         when(assetProvider.getAsset(itemKey)).thenReturn(asset);
-        if (DamConstants.DEFAULT_JCR_PROVIDER_ID.equals(itemKey.getProviderId())) {
-            when(((JcrAssetProvider) assetProvider).getAsset(asset.getPath())).thenReturn(asset);
-            when(((JcrAssetProvider) assetProvider).getItem(asset.getPath())).thenReturn(asset);
+        when(assetProvider.getItem(itemKey)).thenReturn(asset);
+        if (DamConstants.DEFAULT_JCR_PROVIDER_ID.equals(itemKey.getProviderId()) && asset instanceof final JcrAsset jcrAsset) {
+            when(((JcrAssetProvider) assetProvider).getAsset(asset.getPath())).thenReturn(jcrAsset);
+            when(((JcrAssetProvider) assetProvider).getItem(asset.getPath())).thenReturn(jcrAsset);
         }
         return assetProvider;
     }

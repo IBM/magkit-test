@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.ibmix.magkit</groupId>
         <artifactId>magkit-pom</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
     </parent>
     <artifactId>magkit-test</artifactId>
     <version>1.2.0-SNAPSHOT</version>
@@ -23,9 +23,10 @@
     </modules>
 
     <properties>
-        <version.magnolia>6.3.17</version.magnolia>
-        <version.el-api>2.2.5</version.el-api>
-        <junitVersion>5.14.0</junitVersion>
+        <version.el-api>4.0.0</version.el-api>
+        <version.servlet-api>5.0.0</version.servlet-api>
+        <version.jsp-api>4.0.0</version.jsp-api>
+
         <mockitoVersion>5.20.0</mockitoVersion>
         <restAssuredVersion>5.5.6</restAssuredVersion>
         <jacocoVersion>0.8.13</jacocoVersion>
@@ -37,24 +38,29 @@
         <dependencies>
             <!-- provided servlet container libs -->
             <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
+                <groupId>jakarta.el</groupId>
+                <artifactId>jakarta.el-api</artifactId>
                 <version>${version.el-api}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${version.servlet-api}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
+                <version>${version.jsp-api}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junitVersion}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <scope>test</scope>
                 <version>${mockitoVersion}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>

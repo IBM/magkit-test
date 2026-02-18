@@ -20,11 +20,11 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;

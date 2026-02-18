@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.ibmix.magkit</groupId>
@@ -24,11 +25,17 @@
             <type>pom</type>
             <exclusions>
                 <exclusion>
-                  <!-- exclude groovy from Magnolia, or collides with RestAssured -->
-                  <groupId>info.magnolia.groovy</groupId>
-                  <artifactId>magnolia-groovy</artifactId>
+                    <!-- exclude groovy from Magnolia, or collides with RestAssured -->
+                    <groupId>info.magnolia.groovy</groupId>
+                    <artifactId>magnolia-groovy</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -71,42 +78,42 @@
                 <!-- version 3.0.0-M3 results in java.lang.ClassNotFoundException:
                 org.apache.maven.surefire.junit4.JUnit4Provider-->
                 <configuration>
-                  <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
-                  <skip>true</skip>
+                    <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
+                    <skip>true</skip>
                 </configuration>
                 <executions>
-                  <execution>
-                    <id>unit-tests</id>
-                    <phase>test</phase>
-                    <goals>
-                      <goal>test</goal>
-                    </goals>
-                    <configuration>
-                      <!-- Never skip running the tests when the test phase is invoked -->
-                      <skip>false</skip>
-                      <excludes>
-                        <!-- Exclude integration tests within (unit) test phase. -->
-                        <exclude>**/*Tomcat*Test.java</exclude>
-                      </excludes>
-                      <!-- <argLine>-agentpath:$REBEL_HOME/lib/libjrebel64.dylib</argLine> -->
-                    </configuration>
-                  </execution>
+                    <execution>
+                        <id>unit-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Never skip running the tests when the test phase is invoked -->
+                            <skip>false</skip>
+                            <excludes>
+                                <!-- Exclude integration tests within (unit) test phase. -->
+                                <exclude>**/*Tomcat*Test.java</exclude>
+                            </excludes>
+                            <!-- <argLine>-agentpath:$REBEL_HOME/lib/libjrebel64.dylib</argLine> -->
+                        </configuration>
+                    </execution>
                 </executions>
-              </plugin>
+            </plugin>
 
-              <plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
-                  <execution>
-                    <id>report</id>
-                    <goals>
-                      <goal>report-aggregate</goal>
-                    </goals>
-                    <phase>verify</phase>
-                  </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
                 </executions>
-              </plugin>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -126,60 +133,60 @@
 
         <!-- profile to run TomcatTest -->
         <profile>
-          <id>tomcatTest</id>
-          <activation>
-            <property>
-              <name>tomcatTest</name>
-            </property>
-          </activation>
-          <build>
-            <plugins>
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <executions>
-                  <execution>
-                    <id>integration-tests</id>
-                    <phase>integration-test</phase>
-                    <goals>
-                      <goal>test</goal>
-                    </goals>
-                    <configuration>
-                      <!-- Never skip running the tests when the integration-test phase
-                          is invoked -->
-                      <skip>false</skip>
-                      <includes>
-                        <!-- Include integration tests within integration-test phase. -->
-                        <include>**/*Tomcat*Test.java</include>
-                      </includes>
-                      <systemPropertyVariables>
-                          <!-- tell TomcatTest about the name of the WAR file -->
-                          <project.build.finalName>${project.build.finalName}</project.build.finalName>
-                      </systemPropertyVariables>
-                      <!--
-                        at first restore the argLine set by Jacoco, see https://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html
-                        then massage the Java module system like catalina.sh does
-                      -->
-                      <argLine>@{argLine}
+            <id>tomcatTest</id>
+            <activation>
+                <property>
+                    <name>tomcatTest</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>integration-tests</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Never skip running the tests when the integration-test phase
+                                        is invoked -->
+                                    <skip>false</skip>
+                                    <includes>
+                                        <!-- Include integration tests within integration-test phase. -->
+                                        <include>**/*Tomcat*Test.java</include>
+                                    </includes>
+                                    <systemPropertyVariables>
+                                        <!-- tell TomcatTest about the name of the WAR file -->
+                                        <project.build.finalName>${project.build.finalName}</project.build.finalName>
+                                    </systemPropertyVariables>
+                                    <!--
+                                      at first restore the argLine set by Jacoco, see https://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html
+                                      then massage the Java module system like catalina.sh does
+                                    -->
+                                    <argLine>@{argLine}
                                         <!--
   do like catalina.sh does in https://github.com/apache/tomcat/blob/9.0.74/bin/catalina.sh#L327
   beware: don't indent the following lines!
 -->
---add-opens=java.base/java.lang=ALL-UNNAMED
---add-opens=java.base/java.io=ALL-UNNAMED
---add-opens=java.base/java.util=ALL-UNNAMED
---add-opens=java.base/java.util.concurrent=ALL-UNNAMED
---add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
-                        </argLine>
-                        <forkCount>1</forkCount>
-                        <reuseForks>false</reuseForks>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-          </build>
+                                        --add-opens=java.base/java.lang=ALL-UNNAMED
+                                        --add-opens=java.base/java.io=ALL-UNNAMED
+                                        --add-opens=java.base/java.util=ALL-UNNAMED
+                                        --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+                                        --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
+                                    </argLine>
+                                    <forkCount>1</forkCount>
+                                    <reuseForks>false</reuseForks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
-      </profiles>
+    </profiles>
 
 </project>
