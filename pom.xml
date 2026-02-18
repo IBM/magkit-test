@@ -28,8 +28,8 @@
         <version.jsp-api>4.0.0</version.jsp-api>
 
         <mockitoVersion>5.20.0</mockitoVersion>
-        <restAssuredVersion>5.5.6</restAssuredVersion>
-        <jacocoVersion>0.8.13</jacocoVersion>
+        <restAssuredVersion>5.5.7</restAssuredVersion>
+        <jacocoVersion>0.8.14</jacocoVersion>
         <!-- we need current surefire plugin to run TomcatTest -->
         <maven.surefire.version>3.5.4</maven.surefire.version>
     </properties>
@@ -54,6 +54,12 @@
                 <artifactId>jakarta.servlet.jsp-api</artifactId>
                 <version>${version.jsp-api}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${restAssuredVersion}</version>
             </dependency>
 
             <dependency>

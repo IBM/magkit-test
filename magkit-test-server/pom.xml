@@ -30,12 +30,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
         </dependency>
-        <dependency>                                
-            <groupId>org.awaitility</groupId>       
-            <artifactId>awaitility</artifactId>     
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
             <scope>compile</scope>
         </dependency>
-                                       
+
         <dependency>
             <!-- awaitility uses this in test scope, but as we use awaitility with compile scope, we have to have hamcrest also in compile scope-->
             <groupId>org.hamcrest</groupId>
@@ -46,7 +46,6 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>${restAssuredVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
