@@ -25,7 +25,7 @@
     <properties>
         <version.magnolia>6.3.17</version.magnolia>
         <version.el-api>2.2.5</version.el-api>
-        <junitVersion>5.14.0</junitVersion>
+        <junitVersion>5.14.3</junitVersion>
         <mockitoVersion>5.20.0</mockitoVersion>
         <restAssuredVersion>5.5.6</restAssuredVersion>
         <jacocoVersion>0.8.13</jacocoVersion>
