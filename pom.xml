@@ -23,10 +23,6 @@
     </modules>
 
     <properties>
-        <version.el-api>4.0.0</version.el-api>
-        <version.servlet-api>5.0.0</version.servlet-api>
-        <version.jsp-api>4.0.0</version.jsp-api>
-
         <mockitoVersion>5.20.0</mockitoVersion>
         <restAssuredVersion>5.5.7</restAssuredVersion>
         <jacocoVersion>0.8.14</jacocoVersion>
@@ -36,26 +32,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- provided servlet container libs -->
-            <dependency>
-                <groupId>jakarta.el</groupId>
-                <artifactId>jakarta.el-api</artifactId>
-                <version>${version.el-api}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.servlet</groupId>
-                <artifactId>jakarta.servlet-api</artifactId>
-                <version>${version.servlet-api}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.servlet.jsp</groupId>
-                <artifactId>jakarta.servlet.jsp-api</artifactId>
-                <version>${version.jsp-api}</version>
-                <scope>provided</scope>
-            </dependency>
-
             <dependency>
                 <groupId>io.rest-assured</groupId>
                 <artifactId>rest-assured</artifactId>
