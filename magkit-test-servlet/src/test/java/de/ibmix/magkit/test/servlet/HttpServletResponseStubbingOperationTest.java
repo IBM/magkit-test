@@ -20,12 +20,12 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Locale;
 

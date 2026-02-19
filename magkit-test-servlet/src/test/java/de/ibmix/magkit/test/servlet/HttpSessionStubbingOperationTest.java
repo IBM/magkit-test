@@ -20,10 +20,9 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import javax.servlet.http.HttpSession;
 
 import static de.ibmix.magkit.test.servlet.HttpSessionStubbingOperation.stubAttribute;
 import static de.ibmix.magkit.test.servlet.HttpSessionStubbingOperation.stubServletContext;

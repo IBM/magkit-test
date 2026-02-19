@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.ibmix.magkit</groupId>
         <artifactId>magkit-test</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>1.2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <test.tomcat.version>9.0.111</test.tomcat.version>
+        <test.tomcat.version>10.1.52</test.tomcat.version>
         <!-- see https://community.sonarsource.com/t/coverage-test-data-importing-jacoco-coverage-report-in-xml-format/12151#multi-module-builds-3 -->
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../magkit-test-webapp/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
@@ -30,12 +30,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
         </dependency>
-        <dependency>                                
-            <groupId>org.awaitility</groupId>       
-            <artifactId>awaitility</artifactId>     
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
             <scope>compile</scope>
         </dependency>
-                                       
+
         <dependency>
             <!-- awaitility uses this in test scope, but as we use awaitility with compile scope, we have to have hamcrest also in compile scope-->
             <groupId>org.hamcrest</groupId>
@@ -46,7 +46,6 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>${restAssuredVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
