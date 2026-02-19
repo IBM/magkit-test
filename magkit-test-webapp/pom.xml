@@ -44,7 +44,7 @@
             <plugin><!-- don't pack the war to save time, as we are using only exploded format  -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>3.5.1</version>
                 <executions>
                     <execution>
                         <id>default-war</id>
