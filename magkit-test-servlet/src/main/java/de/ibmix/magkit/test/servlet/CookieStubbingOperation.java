@@ -21,8 +21,7 @@ package de.ibmix.magkit.test.servlet;
  */
 
 import de.ibmix.magkit.assertions.Require;
-
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import static org.mockito.Mockito.when;
 

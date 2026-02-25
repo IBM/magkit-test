@@ -21,16 +21,16 @@ package de.ibmix.magkit.test.servlet;
  */
 
 import de.ibmix.magkit.assertions.Require;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.jsp.PageContext;
 import org.apache.commons.collections4.iterators.IteratorEnumeration;
 import org.mockito.stubbing.Answer;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;

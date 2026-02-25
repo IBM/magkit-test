@@ -20,10 +20,9 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import javax.servlet.http.Cookie;
 
 import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubComment;
 import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubDomain;
@@ -33,9 +32,9 @@ import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubSecure;
 import static de.ibmix.magkit.test.servlet.CookieStubbingOperation.stubVersion;
 import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockCookie;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Testing CookieStubbingOperation.

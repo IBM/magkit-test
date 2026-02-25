@@ -26,12 +26,11 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.dam.templating.functions.DamTemplatingFunctions;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.ComponentsTestUtil;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import javax.inject.Inject;
 
 import static de.ibmix.magkit.test.cms.context.ComponentsMockUtils.mockComponentInstance;
 import static org.junit.jupiter.api.Assertions.assertSame;

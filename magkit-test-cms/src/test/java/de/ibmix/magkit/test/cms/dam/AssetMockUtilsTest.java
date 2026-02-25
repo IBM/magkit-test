@@ -35,7 +35,8 @@ import org.junit.jupiter.api.Test;
 import javax.jcr.RepositoryException;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -95,7 +96,7 @@ public class AssetMockUtilsTest {
 
     @Test
     public void mockAssetProviderForAsset() {
-        Asset as = mock(Asset.class);
+        Asset as = mock(JcrAsset.class);
         ItemKey itemKey = new ItemKey("jcr", UUID.randomUUID().toString());
         doReturn(itemKey).when(as).getItemKey();
 

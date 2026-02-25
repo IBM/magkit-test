@@ -28,15 +28,15 @@ import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
 import info.magnolia.context.WebContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -59,9 +59,9 @@ import static de.ibmix.magkit.test.servlet.ServletMockUtils.mockHttpServletRespo
 import static info.magnolia.repository.RepositoryConstants.WEBSITE;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.mock;
 
 /**

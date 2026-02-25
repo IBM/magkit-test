@@ -4,10 +4,10 @@
     <parent>
         <groupId>de.ibmix.magkit</groupId>
         <artifactId>magkit-pom</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
     </parent>
     <artifactId>magkit-test</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>magkit-test Magnolia Module</name>
 
@@ -23,38 +23,26 @@
     </modules>
 
     <properties>
-        <version.magnolia>6.3.17</version.magnolia>
-        <version.el-api>2.2.5</version.el-api>
-        <junitVersion>5.14.0</junitVersion>
         <mockitoVersion>5.20.0</mockitoVersion>
-        <restAssuredVersion>5.5.6</restAssuredVersion>
-        <jacocoVersion>0.8.13</jacocoVersion>
+        <restAssuredVersion>5.5.7</restAssuredVersion>
+        <jacocoVersion>0.8.14</jacocoVersion>
         <!-- we need current surefire plugin to run TomcatTest -->
         <maven.surefire.version>3.5.4</maven.surefire.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- provided servlet container libs -->
             <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
-                <version>${version.el-api}</version>
-                <scope>provided</scope>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${restAssuredVersion}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junitVersion}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <scope>test</scope>
                 <version>${mockitoVersion}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>

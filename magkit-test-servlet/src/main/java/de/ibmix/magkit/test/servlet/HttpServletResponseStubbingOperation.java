@@ -20,12 +20,13 @@ package de.ibmix.magkit.test.servlet;
  * #L%
  */
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import de.ibmix.magkit.assertions.Require;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
-import de.ibmix.magkit.assertions.Require;
 
 import static org.mockito.Mockito.when;
 
