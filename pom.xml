@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <mockitoVersion>5.20.0</mockitoVersion>
+        <mockitoVersion>5.23.0</mockitoVersion>
         <restAssuredVersion>5.5.7</restAssuredVersion>
         <jacocoVersion>0.8.14</jacocoVersion>
         <!-- we need current surefire plugin to run TomcatTest -->
