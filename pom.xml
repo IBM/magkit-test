@@ -25,7 +25,7 @@
     <properties>
         <mockitoVersion>5.20.0</mockitoVersion>
         <restAssuredVersion>5.5.7</restAssuredVersion>
-        <jacocoVersion>0.8.14</jacocoVersion>
+        <jacocoVersion>0.8.15</jacocoVersion>
         <!-- we need current surefire plugin to run TomcatTest -->
         <maven.surefire.version>3.5.5</maven.surefire.version>
     </properties>
